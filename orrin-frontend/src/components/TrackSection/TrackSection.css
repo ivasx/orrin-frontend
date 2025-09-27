@@ -1,0 +1,54 @@
+.track-row {
+    margin: 20px 0;
+}
+
+.track-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 5px;
+}
+
+.track-row-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.track-row-more {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.track-row-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 150px); /* 6 карток у ширину */
+    grid-template-rows: repeat(2, auto); /* 2 рядки */
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+
+    scrollbar-width: none; /* Firefox */
+}
+.track-row-grid::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* 📱 Адаптив */
+@media (max-width: 768px) {
+    .track-row-grid {
+        grid-template-columns: repeat(4, 140px); /* менше карток на екрані */
+        grid-template-rows: repeat(2, auto);
+    }
+}
+
+@media (max-width: 480px) {
+    .track-row-grid {
+        grid-template-columns: repeat(3, 120px);
+        grid-template-rows: repeat(2, auto);
+    }
+}
