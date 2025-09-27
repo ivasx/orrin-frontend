@@ -1,0 +1,252 @@
+.bottom-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    color: #fff;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-left {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.player-cover {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.player-info {
+    min-width: 0;
+    max-width: 200px;
+}
+
+.player-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.player-artist {
+    font-size: 12px;
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 20px;
+    min-width: 0;
+}
+
+.player-controls {
+    margin-bottom: 8px;
+}
+
+.play-pause-btn {
+    background: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.play-pause-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.play-pause-btn:active {
+    transform: scale(0.98);
+}
+
+.play-pause-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.play-triangle {
+    width: 0;
+    height: 0;
+    border-left: 10px solid #000;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    margin-left: 2px;
+}
+
+.pause-icon {
+    display: flex;
+    gap: 3px;
+}
+
+.pause-icon span {
+    width: 3px;
+    height: 12px;
+    background: #000;
+}
+
+.loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top: 2px solid #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-container {
+    width: 100%;
+    max-width: 400px;
+    cursor: pointer;
+}
+
+.progress-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #000000, rgba(0, 0, 0, 0.63));
+    border-radius: 2px;
+    transition: width 0.1s ease;
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.progress-container:hover .progress-bar::after {
+    opacity: 1;
+}
+
+.player-right {
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.time-display {
+    font-size: 12px;
+    color: #aaa;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+}
+
+/* Мобільна адаптація */
+@media (max-width: 768px) {
+    .bottom-player {
+        padding: 8px 15px;
+    }
+
+    .player-cover {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+
+    .player-info {
+        max-width: 120px;
+    }
+
+    .player-center {
+        margin: 0 15px;
+    }
+
+    .progress-container {
+        max-width: 200px;
+    }
+
+    .play-pause-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+    .play-triangle {
+        border-left-width: 8px;
+        border-top-width: 5px;
+        border-bottom-width: 5px;
+    }
+
+    .pause-icon span {
+        width: 2.5px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bottom-player {
+        flex-direction: column;
+        padding: 10px;
+        height: auto;
+    }
+
+    .player-left {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+
+    .player-center {
+        width: 100%;
+        margin: 0;
+    }
+
+    .player-right {
+        margin-top: 5px;
+    }
+
+    .progress-container {
+        max-width: 100%;
+    }
+}
