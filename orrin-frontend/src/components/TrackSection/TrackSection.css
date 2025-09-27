@@ -26,29 +26,54 @@
 
 .track-row-grid {
     display: grid;
-    grid-template-columns: repeat(6, 150px); /* 6 карток у ширину */
-    grid-template-rows: repeat(2, auto); /* 2 рядки */
-    gap: 16px;
-    overflow-x: auto;
+    grid-auto-flow: column;          /* нові колонки по горизонталі */
+    grid-template-rows: repeat(2, 1fr); /* завжди 2 рядки */
+    grid-auto-columns: 320px;       /* ВИПРАВЛЕНО: відповідає ширині картки */
+    gap: 16px;                       /* відстань між картками */
+    overflow-x: auto;                /* горизонтальний скрол */
+    overflow-y: hidden;              /* приховуємо вертикальний скрол */
     padding-bottom: 10px;
-
-    scrollbar-width: none; /* Firefox */
+    width: 100%;                     /* ВИПРАВЛЕНО: займає всю доступну ширину */
+    scrollbar-width: none;
 }
+
+.track-row-grid:hover {
+    scrollbar-width: initial;
+}
+
 .track-row-grid::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    height: 8px; /* висота горизонтального скролбара */
 }
 
-/* 📱 Адаптив */
+.track-row-grid::-webkit-scrollbar-track {
+    background: #333; /* колір треку */
+    border-radius: 4px;
+}
+
+.track-row-grid::-webkit-scrollbar-thumb {
+    background: #666; /* колір повзунка */
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.track-row-grid::-webkit-scrollbar-thumb:hover {
+    background: #888; /* колір повзунка при hover */
+}
+
+/* Додаткові стилі для кращого UX */
+.track-row-grid {
+    scroll-behavior: smooth; /* плавний скрол */
+}
+
+/* Мобільна адаптація */
 @media (max-width: 768px) {
     .track-row-grid {
-        grid-template-columns: repeat(4, 140px); /* менше карток на екрані */
-        grid-template-rows: repeat(2, auto);
+        grid-auto-columns: 280px; /* ВИПРАВЛЕНО: відповідає мобільній ширині картки */
     }
 }
 
 @media (max-width: 480px) {
     .track-row-grid {
-        grid-template-columns: repeat(3, 120px);
-        grid-template-rows: repeat(2, auto);
+        grid-auto-columns: 250px; /* ВИПРАВЛЕНО: відповідає мобільній ширині картки */
     }
 }

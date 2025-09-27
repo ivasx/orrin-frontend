@@ -1,0 +1,35 @@
+.music-section-wrapper {
+    width: 100%;
+    max-width: 1200px; /* обмежує дуже великі екрани */
+    margin: 2rem auto; /* вертикальний відступ + горизонтальне центровання */
+    padding: 2rem; /* внутрішній відступ з боків та зверху/знизу */
+    box-sizing: border-box; /* щоб padding не збільшував ширину */
+}
+
+.music-section-wrapper--default {
+    gap: 2rem; /* можна використовувати для spacing між дочірніми елементами */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* центрує все по горизонталі */
+}
+
+.music-section-wrapper--small {
+    gap: 1rem;
+}
+
+.music-section-wrapper--large {
+    gap: 3rem;
+}
+
+/* Адаптивність для мобільних */
+@media (max-width: 768px) {
+    .music-section-wrapper {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .music-section-wrapper {
+        padding: 1rem;
+    }
+}

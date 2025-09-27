@@ -5,9 +5,12 @@
     align-items: center;
     color: #fff;
     margin-top: 15px;
-    overflow: visible; /* Changed to allow context menu */
+    overflow: visible;
     background: none;
     position: relative;
+    min-width: 0;
+    flex-shrink: 0;
+    box-sizing: border-box; /* ВАЖЛИВО! */
 }
 
 .track-cover-wrapper {
@@ -16,6 +19,7 @@
     height: 50px;
     cursor: pointer;
     user-select: none;
+    flex-shrink: 0;
 }
 
 .track-cover {
@@ -27,7 +31,7 @@
     transition: filter 0.2s;
 }
 
-/* затемнення картинки при hover */
+/* Затемнення картинки при hover */
 .track-cover-wrapper:hover .track-cover {
     filter: brightness(0.4);
 }
@@ -174,6 +178,9 @@
     margin-left: 10px;
     position: relative;
     overflow: hidden;
+    min-width: 0;
+    padding-right: 75px;
+    width: calc(100% - 70px); /* обмежуємо ширину, враховуючи обкладинку та відступи */
 }
 
 .track-title,
@@ -183,6 +190,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1;
+    width: 100%;
+    display: block;
 }
 
 .track-title {
@@ -196,19 +205,23 @@
     color: #aaa;
 }
 
-/* Контейнер для тривалості - компактніший розмір */
+/* Контейнер для тривалості */
 .track-duration {
     position: absolute;
-    right: 10px;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: color 0.2s;
-    cursor: pointer; /* Changed to pointer for click functionality */
+    cursor: pointer;
     user-select: none;
-    padding: 4px;
+    padding: 4px 8px;
+    flex-shrink: 0;
+    min-width: 65px;
+    z-index: 1;
+    background: transparent;
 }
 
 .track-duration:hover {
@@ -220,16 +233,16 @@
 /* Стилі для тексту тривалості */
 .duration-text {
     font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
+    font-size: 14px; /* Повертаємо оригінальний розмір */
     font-weight: 500;
     color: #aaa;
     white-space: nowrap;
 }
 
-/* Стилі для крапок - піднімаємо їх трохи вгору */
+/* Стилі для крапок */
 .duration-dots {
     font-family: 'Montserrat', sans-serif;
-    font-size: 20px;
+    font-size: 20px; /* Повертаємо оригінальний розмір */
     font-weight: 500;
     color: #aaa;
     white-space: nowrap;
@@ -278,6 +291,47 @@
 @keyframes bounce {
     0% { transform: scaleY(0.3); }
     100% { transform: scaleY(1); }
+}
+
+/* Адаптивна ширина карток на мобільних */
+@media (max-width: 768px) {
+    .card-track {
+        width: 280px;
+    }
+
+    .track-info {
+        padding-right: 65px;
+        width: calc(100% - 70px);
+    }
+
+    .track-duration {
+        min-width: 55px;
+        padding: 4px 6px;
+    }
+
+    .track-title {
+        font-size: 18px;
+    }
+
+    .track-artist {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-track {
+        width: 250px;
+    }
+
+    .track-info {
+        padding-right: 60px;
+        width: calc(100% - 65px);
+    }
+
+    .track-duration {
+        min-width: 50px;
+        padding: 4px 5px;
+    }
 }
 
 /* Reduced motion support */

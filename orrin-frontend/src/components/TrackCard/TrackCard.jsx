@@ -1,109 +1,81 @@
 import "./TrackCard.css";
-import {useRef, useState, useEffect, useCallback} from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import ContextMenu from "../TrackCardContextMenu/TrackCardContextMenu.jsx";
+import { useAudioPlayer } from "../AudioPlayerContext/AudioPlayerContext.jsx";
 
-export default function TrackCard({title, artist, duration, cover, audio}) {
+export default function TrackCard({ title, artist, duration, cover, audio, trackId }) {
+    const { currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying } = useAudioPlayer();
     const audioRef = useRef(null);
-    const [isPlaying, setIsPlaying] = useState(false);
     const [showControls, setShowControls] = useState(false);
     const [durationHovered, setDurationHovered] = useState(false);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
-    const [rippleStyle, setRippleStyle] = useState({});
-    const [showRipple, setShowRipple] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-    const [currentTime, setCurrentTime] = useState(0);
-    const [totalDuration, setTotalDuration] = useState(0);
-    const [volume, setVolume] = useState(1);
+    const [rippleStyle, setRippleStyle] = useState({});
+    const [showRipple, setShowRipple] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [volume, setVolume] = useState(1);
 
-    // Визначаємо чи це touch пристрій
+    // Генеруємо trackId якщо його немає
+    const finalTrackId = trackId || `${title}-${artist}`;
+
+    // Перевірка touch-пристрою
     useEffect(() => {
-        const checkTouchDevice = () => {
-            return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        };
-        setIsTouchDevice(checkTouchDevice());
+        setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
     }, []);
 
-    // Audio event handlers
+    // Ініціалізуємо audioRef для контекстного меню
     useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const handleLoadStart = () => setIsLoading(true);
-        const handleCanPlay = () => setIsLoading(false);
-        const handleError = () => {
-            setError('Failed to load audio');
-            setIsLoading(false);
-            setIsPlaying(false);
-        };
-        const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-        const handleDurationChange = () => setTotalDuration(audio.duration);
-        const handleEnded = () => setIsPlaying(false);
-        const handlePause = () => setIsPlaying(false);
-        const handlePlay = () => setIsPlaying(true);
-
-        audio.addEventListener('loadstart', handleLoadStart);
-        audio.addEventListener('canplay', handleCanPlay);
-        audio.addEventListener('error', handleError);
-        audio.addEventListener('timeupdate', handleTimeUpdate);
-        audio.addEventListener('durationchange', handleDurationChange);
-        audio.addEventListener('ended', handleEnded);
-        audio.addEventListener('pause', handlePause);
-        audio.addEventListener('play', handlePlay);
-
-        return () => {
-            audio.removeEventListener('loadstart', handleLoadStart);
-            audio.removeEventListener('canplay', handleCanPlay);
-            audio.removeEventListener('error', handleError);
-            audio.removeEventListener('timeupdate', handleTimeUpdate);
-            audio.removeEventListener('durationchange', handleDurationChange);
-            audio.removeEventListener('ended', handleEnded);
-            audio.removeEventListener('pause', handlePause);
-            audio.removeEventListener('play', handlePlay);
-        };
-    }, []);
-
-    // Keyboard shortcuts
-    useEffect(() => {
-        const handleKeyPress = (e) => {
-            if (e.key === ' ' || e.key === 'Spacebar') {
-                e.preventDefault();
-                handlePlayPause();
+        if (currentTrack && currentTrack.trackId === finalTrackId) {
+            // Знаходимо аудіо елемент з BottomPlayer
+            const audioElement = document.querySelector('.bottom-player audio');
+            if (audioElement) {
+                audioRef.current = audioElement;
+                setVolume(audioElement.volume);
+                setIsMuted(audioElement.muted);
             }
-        };
-
-        if (showControls || isPlaying) {
-            window.addEventListener('keydown', handleKeyPress);
         }
+    }, [currentTrack, finalTrackId]);
 
-        return () => {
-            window.removeEventListener('keydown', handleKeyPress);
-        };
-    }, [showControls, isPlaying]);
+    const isPlaying = isTrackPlaying(finalTrackId);
+    const isCurrentTrack = currentTrack && currentTrack.trackId === finalTrackId;
 
+    // Play/Pause через глобальний плеєр
     const handlePlayPause = useCallback(() => {
-        if (!audioRef.current || isLoading) return;
-
-        setError(null);
-
-        if (isPlaying) {
-            audioRef.current.pause();
+        if (isCurrentTrack && isPlaying) {
+            // Якщо це поточний трек і він грає - ставимо на паузу
+            pauseTrack();
+        } else if (isCurrentTrack && !isPlaying) {
+            // Якщо це поточний трек на паузі - відновлюємо
+            resumeTrack();
         } else {
-            const playPromise = audioRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.error('Play failed:', error);
-                    setError('Playback failed');
-                    setIsPlaying(false);
-                });
-            }
+            // Якщо це новий трек - запускаємо його
+            playTrack({
+                trackId: finalTrackId,
+                title,
+                artist,
+                cover,
+                audio,
+                duration: parseDuration(duration) // Конвертуємо в секунди
+            });
         }
-    }, [isPlaying, isLoading]);
+    }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId, title, artist, cover, audio, duration]);
 
-    // Menu items configuration
+    // Функція для конвертації тривалості з формату "3:45" в секунди
+    const parseDuration = (durationStr) => {
+        if (typeof durationStr === 'number') return durationStr;
+        if (!durationStr || typeof durationStr !== 'string') return 0;
+
+        const parts = durationStr.split(':');
+        if (parts.length === 2) {
+            const minutes = parseInt(parts[0], 10) || 0;
+            const seconds = parseInt(parts[1], 10) || 0;
+            return minutes * 60 + seconds;
+        }
+        return 0;
+    };
+
+    // Контекстне меню з volume контролами
     const getMenuItems = useCallback(() => [
         {
             id: 'play',
@@ -121,22 +93,12 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
             disabled: !isPlaying,
             action: () => isPlaying && handlePlayPause()
         },
-        {
-            id: 'restart',
-            label: 'Restart',
-            icon: '⏮',
-            action: () => {
-                if (audioRef.current) {
-                    audioRef.current.currentTime = 0;
-                    if (!isPlaying) handlePlayPause();
-                }
-            }
-        },
         { type: 'separator' },
         {
             id: 'mute',
             label: isMuted ? 'Unmute' : 'Mute',
             icon: isMuted ? '🔊' : '🔇',
+            disabled: !isCurrentTrack,
             action: () => {
                 if (audioRef.current) {
                     const newMuted = !isMuted;
@@ -150,6 +112,7 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
             label: 'Volume Up',
             icon: '🔊',
             shortcut: '↑',
+            disabled: !isCurrentTrack || volume >= 1,
             action: () => {
                 if (audioRef.current) {
                     const newVolume = Math.min(1, volume + 0.1);
@@ -167,6 +130,7 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
             label: 'Volume Down',
             icon: '🔉',
             shortcut: '↓',
+            disabled: !isCurrentTrack || volume <= 0,
             action: () => {
                 if (audioRef.current) {
                     const newVolume = Math.max(0, volume - 0.1);
@@ -176,12 +140,6 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
             }
         },
         { type: 'separator' },
-        {
-            id: 'addToPlaylist',
-            label: 'Add to Playlist',
-            icon: '➕',
-            action: () => console.log('Add to playlist:', title)
-        },
         {
             id: 'share',
             label: 'Share',
@@ -211,7 +169,7 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
                 }
             }
         }
-    ], [isPlaying, isMuted, volume, title, artist, audio, handlePlayPause]);
+    ], [isPlaying, isMuted, volume, title, artist, audio, handlePlayPause, isCurrentTrack]);
 
     function createRippleEffect(e) {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -242,26 +200,20 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
         handlePlayPause();
     }
 
-    function handleContextMenu(e) {
+    const handleContextMenu = (e) => {
         e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
         let x = e.clientX;
         let y = e.clientY;
 
-        // Ensure menu doesn't go off screen
         const menuWidth = 200;
         const menuHeight = 300;
-
-        if (x + menuWidth > window.innerWidth) {
-            x = window.innerWidth - menuWidth - 10;
-        }
-        if (y + menuHeight > window.innerHeight) {
-            y = window.innerHeight - menuHeight - 10;
-        }
+        if (x + menuWidth > window.innerWidth) x = window.innerWidth - menuWidth - 10;
+        if (y + menuHeight > window.innerHeight) y = window.innerHeight - menuHeight - 10;
 
         setMenuPosition({ x, y });
         setShowMenu(true);
-    }
+    };
 
     function handleDotsClick(e) {
         e.stopPropagation();
@@ -269,7 +221,6 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
         let x = rect.right;
         let y = rect.top;
 
-        // Ensure menu doesn't go off screen
         const menuWidth = 200;
         const menuHeight = 300;
 
@@ -286,15 +237,7 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
 
     const handleMenuClose = () => setShowMenu(false);
 
-    const formatTime = (seconds) => {
-        if (isNaN(seconds)) return '0:00';
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    // На мобільних показуємо контроли завжди коли трек активний (грає або на паузі)
-    const shouldShowControls = isTouchDevice ? (isPlaying || showControls) : showControls;
+    const shouldShowControls = isTouchDevice ? true : showControls;
 
     return (
         <div
@@ -305,27 +248,13 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
             aria-label={`Track: ${title} by ${artist}`}
         >
             <div
-                className={`track-cover-wrapper ${isPlaying ? 'playing' : ''} ${isLoading ? 'loading' : ''}`}
+                className={`track-cover-wrapper ${isPlaying ? 'playing' : ''}`}
                 onClick={handleCoverClick}
                 onMouseEnter={() => !isTouchDevice && setShowControls(true)}
                 onMouseLeave={() => !isTouchDevice && setShowControls(false)}
                 onTouchStart={() => isTouchDevice && setShowControls(true)}
             >
-                <img src={cover} alt={title} className="track-cover"/>
-
-                {/* Loading indicator */}
-                {isLoading && (
-                    <div className="loading-indicator">
-                        <div className="spinner"></div>
-                    </div>
-                )}
-
-                {/* Error indicator */}
-                {error && (
-                    <div className="error-indicator">
-                        <div className="error-icon">⚠</div>
-                    </div>
-                )}
+                <img src={cover} alt={title} className="track-cover" />
 
                 {/* Ripple effect */}
                 {showRipple && (
@@ -335,8 +264,8 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
                     />
                 )}
 
-                {/* Показуємо контроли */}
-                {shouldShowControls && !isLoading && !error && (
+                {/* Play/Pause контроли */}
+                {shouldShowControls && (
                     <div className="play-icon" onClick={handlePlayButtonClick}>
                         {!isPlaying ? (
                             <div className="triangle"></div>
@@ -349,19 +278,8 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
                     </div>
                 )}
 
-                {/* Progress indicator */}
-                {isPlaying && totalDuration > 0 && (
-                    <div className="progress-indicator">
-                        <div
-                            className="progress-bar"
-                            style={{ width: `${(currentTime / totalDuration) * 100}%` }}
-                        ></div>
-                    </div>
-                )}
-
-                {/* На мобільних показуємо барони тільки коли грає і немає контролів поверх */}
-                {/* На десктопі показуємо барони коли грає і немає hover */}
-                {isPlaying && !shouldShowControls && !isLoading && !error && (
+                {/* Анімаційні барони коли грає */}
+                {isPlaying && !shouldShowControls && (
                     <div className="bars">
                         <span></span>
                         <span></span>
@@ -369,8 +287,8 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
                     </div>
                 )}
 
-                {/* На мобільних показуємо барони завжди коли грає, навіть з контролами */}
-                {isTouchDevice && isPlaying && shouldShowControls && !isLoading && !error && (
+                {/* На мобільних показуємо барони завжди коли грає */}
+                {isTouchDevice && isPlaying && shouldShowControls && (
                     <div className="bars mobile-bars">
                         <span></span>
                         <span></span>
@@ -389,30 +307,19 @@ export default function TrackCard({title, artist, duration, cover, audio}) {
                     onClick={handleDotsClick}
                 >
                     {!durationHovered ? (
-                        <span className="duration-text">
-                            {isPlaying && totalDuration ? formatTime(currentTime) : duration}
-                        </span>
+                        <span className="duration-text">{duration}</span>
                     ) : (
                         <span className="duration-dots">...</span>
                     )}
                 </div>
             </div>
 
-            {/* Context Menu Component */}
             <ContextMenu
                 isVisible={showMenu}
                 position={menuPosition}
                 onClose={handleMenuClose}
                 menuItems={getMenuItems()}
             />
-
-            <audio
-                ref={audioRef}
-                src={audio}
-                preload="metadata"
-                volume={volume}
-                muted={isMuted}
-            ></audio>
         </div>
     );
 }
