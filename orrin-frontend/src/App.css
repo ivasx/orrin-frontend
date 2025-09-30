@@ -1,0 +1,118 @@
+/*#root {*/
+/*    max-width: 1280px;*/
+/*    margin: 0 auto;*/
+/*    padding: 2rem;*/
+/*    text-align: center;*/
+/*}*/
+
+/* Додані стилі для header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 1);
+    margin: 0;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: inherit;
+}
+
+/* Стилі для main */
+main {
+    flex: 1;
+}
+
+main h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear;
+    }
+}
+
+.card {
+    padding: 2em;
+}
+
+.read-the-docs {
+    color: #888;
+}
+
+/* Кореневий контейнер для App */
+.AppContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Щоб займати всю висоту вікна */
+}
+
+/* Основний контент займає весь доступний простір */
+main {
+    flex: 1;
+}
+
+/* Стилі для BottomPlayer */
+.bottom-player {
+    position: sticky; /* або fixed, якщо хочеш завжди бачити при скролі */
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+.bottom-player img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 15px;
+    border-radius: 4px;
+}
+
+.bottom-player .track-info {
+    flex: 1;
+}
+
+.bottom-player .progress-bar {
+    height: 4px;
+    background: #ff4500;
+    width: 0%;
+    border-radius: 2px;
+}
