@@ -1,0 +1,189 @@
+/* Сайдбар */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    background: #0a0a0a;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Стан згорнутого сайдбара */
+.sidebar--collapsed {
+    width: 72px;
+}
+
+/* Стан розгорнутого сайдбара */
+.sidebar--open {
+    width: 240px;
+}
+
+/* Навігація */
+.sidebar__nav {
+    flex: 1;
+    padding: 80px 0 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Прибираємо скролбар */
+.sidebar__nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar__nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar__nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.sidebar__nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Меню */
+.sidebar__menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar__item {
+    margin: 0;
+}
+
+/* Посилання */
+.sidebar__link {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: #b3b3b3;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    position: relative;
+}
+
+.sidebar__link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar__link:active {
+    color: #1db954;
+}
+
+/* Іконки */
+.sidebar__icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.sidebar__link:hover .sidebar__icon {
+    transform: scale(1.1);
+}
+
+/* Підписи */
+.sidebar__label {
+    margin-left: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+/* Ховаємо підписи в згорнутому стані */
+.sidebar--collapsed .sidebar__label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Розділювач */
+.sidebar__divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 16px 12px;
+}
+
+/* Секція */
+.sidebar__section {
+    margin-top: 24px;
+}
+
+.sidebar__section-title {
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b3b3b3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 8px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar--collapsed .sidebar__section-title {
+    opacity: 0;
+}
+
+/* Футер */
+.sidebar__footer {
+    padding: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Backdrop для мобільних */
+.sidebar-backdrop {
+    display: none;
+}
+
+/* Мобільна версія */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 240px !important;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar--open {
+        transform: translateX(0);
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 99;
+        animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+/* Планшетна версія */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar--open {
+        width: 200px;
+    }
+}

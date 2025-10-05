@@ -1,118 +1,91 @@
-/*#root {*/
-/*    max-width: 1280px;*/
-/*    margin: 0 auto;*/
-/*    padding: 2rem;*/
-/*    text-align: center;*/
-/*}*/
-
-/* Додані стилі для header */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    border-bottom: 2px solid rgba(0, 0, 0, 1);
-    margin: 0;
-    text-align: left;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-header h3 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: inherit;
-}
-
-/* Стилі для main */
-main {
-    flex: 1;
-}
-
-main h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-    margin-bottom: 2rem;
-}
-
-.logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-}
-.logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-    filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    a:nth-of-type(2) .logo {
-        animation: logo-spin infinite 20s linear;
-    }
-}
-
-.card {
-    padding: 2em;
-}
-
-.read-the-docs {
-    color: #888;
-}
-
-/* Кореневий контейнер для App */
+/* Основний контейнер */
 .AppContainer {
+    min-height: 100vh;
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Header завжди на повну ширину - перевизначаємо стилі */
+.AppContainer .header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1200 !important;
+    margin-left: 0 !important;
+    transform: none !important;
+}
+
+.AppContainer .header__container {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* Основний контент */
+.main-content {
+    margin-left: 72px;
+    margin-top: 64px; /* Висота header */
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: calc(100vh - 64px);
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Щоб займати всю висоту вікна */
 }
 
-/* Основний контент займає весь доступний простір */
-main {
+/* Контент з відкритим сайдбаром */
+.main-content--shifted {
+    margin-left: 240px;
+}
+
+/* Контент зі згорнутим сайдбаром */
+.main-content--full {
+    margin-left: 72px;
+}
+
+/* Обгортка для основного вмісту */
+.main-wrapper {
     flex: 1;
-}
-
-/* Стилі для BottomPlayer */
-.bottom-player {
-    position: sticky; /* або fixed, якщо хочеш завжди бачити при скролі */
-    bottom: 0;
+    padding: 0 24px 100px;
+    max-width: 1800px;
+    margin: 0 auto;
     width: 100%;
-    display: flex;
-    align-items: center;
-    background: #1a1a1a;
-    color: #fff;
-    padding: 10px 20px;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.5);
-    z-index: 100;
 }
 
-.bottom-player img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-right: 15px;
-    border-radius: 4px;
+/* Мобільна версія */
+@media (max-width: 768px) {
+    .header {
+        position: fixed;
+    }
+
+    .main-content {
+        margin-left: 0;
+        margin-top: 64px;
+    }
+
+    .main-content--shifted,
+    .main-content--full {
+        margin-left: 0;
+    }
+
+    .main-wrapper {
+        padding: 0 16px 100px;
+    }
 }
 
-.bottom-player .track-info {
-    flex: 1;
+/* Планшетна версія */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .main-content--shifted {
+        margin-left: 200px;
+    }
+
+    .main-wrapper {
+        padding: 0 20px 100px;
+    }
 }
 
-.bottom-player .progress-bar {
-    height: 4px;
-    background: #ff4500;
-    width: 0%;
-    border-radius: 2px;
+/* Великі екрани */
+@media (min-width: 1400px) {
+    .main-wrapper {
+        padding: 0 32px 100px;
+    }
 }
