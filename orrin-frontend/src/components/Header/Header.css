@@ -212,7 +212,7 @@
 }
 
 .demo-button {
-    background: #1db954;
+    background: #636363;
     color: #fff;
     border: none;
     padding: 12px 32px;
@@ -225,7 +225,7 @@
 }
 
 .demo-button:hover {
-    background: #1ed760;
+    background: #636363;
     transform: scale(1.04);
 }
 
