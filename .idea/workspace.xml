@@ -4,16 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Track playback works correctly, bottom playback panel created">
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Improve music player: optimized and synced seek bar, added sidebar">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/SearchForm/SearchForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/SearchForm/SearchForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +119,8 @@
       <workItem from="1759089238623" duration="24000" />
       <workItem from="1759259286435" duration="322000" />
       <workItem from="1759662920833" duration="3461000" />
-      <workItem from="1759681527466" duration="1686000" />
+      <workItem from="1759681527466" duration="2777000" />
+      <workItem from="1759778860641" duration="2325000" />
     </task>
     <task id="LOCAL-00001" summary="init orrin-frontend">
       <option name="closed" value="true" />
@@ -154,7 +154,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758979558091</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Improve music player: optimized and synced seek bar, added sidebar">
+      <option name="closed" value="true" />
+      <created>1759684006444</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1759684006444</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,7 +173,8 @@
     <MESSAGE value="Added new components for the website:&#10;- Changed the site background&#10;- Created a track card&#10;- Styled the track card&#10;- Implemented music playback" />
     <MESSAGE value="Changed TrackCard, added context menu" />
     <MESSAGE value="Track playback works correctly, bottom playback panel created" />
-    <option name="LAST_COMMIT_MESSAGE" value="Track playback works correctly, bottom playback panel created" />
+    <MESSAGE value="Improve music player: optimized and synced seek bar, added sidebar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve music player: optimized and synced seek bar, added sidebar" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

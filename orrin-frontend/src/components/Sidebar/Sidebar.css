@@ -78,7 +78,7 @@
 }
 
 .sidebar__link:active {
-    color: #1db954;
+    color: #636363;
 }
 
 /* Іконки */
@@ -134,11 +134,12 @@
 
 .sidebar--collapsed .sidebar__section-title {
     opacity: 0;
+    overflow: hidden
 }
 
 /* Футер */
 .sidebar__footer {
-    padding: 16px;
+    padding: 10px 0 10px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -146,7 +147,40 @@
 .sidebar-backdrop {
     display: none;
 }
+.sidebar__link--active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
 
+.sidebar__link--active .sidebar__icon {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+/* Ховер для активного посилання */
+.sidebar__link--active:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Індикатор активної сторінки (лівий бордер) */
+.sidebar__link--active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #ffffff;
+}
+
+/* В згорнутому стані індикатор залишається видимим */
+.sidebar--collapsed .sidebar__link--active::before {
+    width: 4px;
+}
+
+.sidebar--collapsed .sidebar__section {
+    margin-top: 0;
+}
 /* Мобільна версія */
 @media (max-width: 768px) {
     .sidebar {
@@ -187,3 +221,4 @@
         width: 200px;
     }
 }
+

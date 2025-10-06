@@ -1,31 +1,43 @@
-import { Home, Search, Library, Music, Heart, Clock, TrendingUp, Settings, Disc } from "lucide-react";
-import "./Sidebar.css";
+import { Home, NewspaperIcon, Library, Music, Heart, Clock, TrendingUp, Settings, Disc } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import './Sidebar.css';
 
 export default function Sidebar({ isOpen, onClose }) {
   const menuItems = [
-    { icon: Home, label: "Головна", path: "/" },
-    { icon: Search, label: "Пошук", path: "/search" },
-    { icon: Library, label: "Бібліотека", path: "/library" },
+    { icon: Home, label: 'Головна', path: '/' },
+    { icon: NewspaperIcon, label: 'Стрічка', path: '/feed' },
+    { icon: Library, label: 'Бібліотека', path: '/library' }
   ];
 
   const libraryItems = [
-    { icon: Music, label: "Плейлісти", path: "/playlists" },
-    { icon: Heart, label: "Улюблене", path: "/favorites" },
-    { icon: Clock, label: "Історія", path: "/history" },
-    { icon: TrendingUp, label: "Топ треки", path: "/top" },
-    { icon: Disc, label: "Радіо", path: "/radio" },
+    { icon: Music, label: 'Плейлісти', path: '/playlists' },
+    { icon: Heart, label: 'Улюблене', path: '/favorites' },
+    { icon: Clock, label: 'Історія', path: '/history' },
+    { icon: TrendingUp, label: 'Топ треки', path: '/top' },
+    { icon: Disc, label: 'Радіо', path: '/radio' }
   ];
+
+  const settingsItems = [
+    { icon: Settings, label: 'Налаштування', path: '/settings' }
+  ];
+
+  // Функція для закриття сайдбару тільки на мобільних
+  const handleLinkClick = () => {
+    if (window.innerWidth < 768) {
+      onClose();
+    }
+  };
 
   return (
     <>
-      {/* Backdrop для мобільних */}
-      {isOpen && (
-        <div
-          className="sidebar-backdrop"
-          onClick={onClose}
-          aria-hidden="true"
-        />
-      )}
+    {/* Backdrop для мобільних */}
+    {isOpen && (
+      <div
+        className="sidebar-backdrop"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+    )}
 
       <aside className={`sidebar ${isOpen ? 'sidebar--open' : 'sidebar--collapsed'}`}>
         <nav className="sidebar__nav">
@@ -33,10 +45,16 @@ export default function Sidebar({ isOpen, onClose }) {
           <ul className="sidebar__menu">
             {menuItems.map((item, index) => (
               <li key={index} className="sidebar__item">
-                <a href={item.path} className="sidebar__link">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={handleLinkClick}
+                >
                   <item.icon className="sidebar__icon" />
                   <span className="sidebar__label">{item.label}</span>
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
@@ -50,10 +68,16 @@ export default function Sidebar({ isOpen, onClose }) {
             <ul className="sidebar__menu">
               {libraryItems.map((item, index) => (
                 <li key={index} className="sidebar__item">
-                  <a href={item.path} className="sidebar__link">
+                  <NavLink
+                    to={item.path}
+                    className={({ isActive }) =>
+                      `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
+                    }
+                    onClick={handleLinkClick}
+                  >
                     <item.icon className="sidebar__icon" />
                     <span className="sidebar__label">{item.label}</span>
-                  </a>
+                  </NavLink>
                 </li>
               ))}
             </ul>
@@ -62,10 +86,22 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Налаштування внизу */}
         <div className="sidebar__footer">
-          <a href="/settings" className="sidebar__link">
-            <Settings className="sidebar__icon" />
-            <span className="sidebar__label">Налаштування</span>
-          </a>
+          <ul className="sidebar__menu">
+            {settingsItems.map((item, index) => (
+              <li key={index} className="sidebar__item">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={handleLinkClick}
+                >
+                  <item.icon className="sidebar__icon" />
+                  <span className="sidebar__label">{item.label}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
         </div>
       </aside>
     </>
