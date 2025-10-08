@@ -1,10 +1,9 @@
-import { useAudioPlayer } from "./AudioPlayerContext.jsx";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useAudioPlayer } from './AudioPlayerContext.jsx';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import './BottomPlayer.css';
 
 export default function BottomPlayer() {
-  const { currentTrack, isTrackPlaying, pauseTrack, resumeTrack } = useAudioPlayer();
-  const audioRef = useRef(null);
+  const { currentTrack, isTrackPlaying, pauseTrack, resumeTrack, audioRef } = useAudioPlayer();
   const progressContainerRef = useRef(null);
   const progressBarRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -13,7 +12,6 @@ export default function BottomPlayer() {
   const [lastTrackId, setLastTrackId] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const animationFrameRef = useRef(null);
-
   const trackIsPlaying = currentTrack ? isTrackPlaying(currentTrack.trackId) : false;
 
   // Оновлення прогрес бару без ре-рендеру
@@ -114,10 +112,10 @@ export default function BottomPlayer() {
       pauseTrack();
     };
 
-    audio.addEventListener("loadeddata", handleLoadedData);
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("error", handleError);
+    audio.addEventListener('loadeddata', handleLoadedData);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
 
     if (!isNewTrack && !isLoading) {
       if (trackIsPlaying) {
@@ -128,20 +126,20 @@ export default function BottomPlayer() {
     }
 
     return () => {
-      audio.removeEventListener("loadeddata", handleLoadedData);
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("error", handleError);
+      audio.removeEventListener('loadeddata', handleLoadedData);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
     };
   }, [currentTrack, trackIsPlaying, pauseTrack, lastTrackId, isLoading, isDragging, updateProgressBar]);
 
   if (!currentTrack) return null;
 
   const formatTime = (seconds) => {
-    if (isNaN(seconds) || seconds === 0) return "0:00";
+    if (isNaN(seconds) || seconds === 0) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handlePlayPause = () => {
@@ -232,8 +230,6 @@ export default function BottomPlayer() {
           {formatTime(currentTime)} / {formatTime(duration)}
         </div>
       </div>
-
-      <audio ref={audioRef} preload="metadata" />
     </div>
   );
 

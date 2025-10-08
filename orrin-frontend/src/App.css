@@ -51,6 +51,16 @@
     width: 100%;
 }
 
+.main-wrapper--full-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 0; /* Прибираємо зайвий відступ знизу */
+    margin-top: 70px; /* Висота хедера */
+    min-height: calc(100vh - 70px);
+}
+
 /* Мобільна версія */
 @media (max-width: 768px) {
     .header {
