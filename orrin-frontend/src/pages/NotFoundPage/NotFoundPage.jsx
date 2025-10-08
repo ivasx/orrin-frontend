@@ -1,22 +1,37 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import './NotFoundPage.css';
 import { Link } from 'react-router-dom';
 import sadCat from '../../assets/orrin-404.png';
-
+import song404 from '../../assets/song404.mp3';
+import { useSettings } from '../../context/SettingsContext.jsx';
 
 export default function NotFoundPage() {
+  const { playMusicOn404 } = useSettings();
+  const audioRef = useRef(null);
+
   useEffect(() => {
     // Коли компонент з'являється на екрані, забороняємо скрол
     document.body.style.overflow = 'hidden';
 
-    // Коли компонент зникає, повертаємо скрол назад.
+    if (playMusicOn404 && audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.log("Autoplay was prevented: ", error);
+      });
+    }
+
     return () => {
       document.body.style.overflow = 'auto';
+
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     };
-  }, []);
+  }, [playMusicOn404]);
 
   return (
     <div className="not-found-container">
+      <audio ref={audioRef} src={song404} loop />
       <div className="not-found-content">
         <p className="not-found-subtitle">Ой! Сторінку не знайдено</p>
         <h1 className="not-found-title">

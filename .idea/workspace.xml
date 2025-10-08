@@ -4,33 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Add react-router, simple pages and improve sidebar">
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/assets/orrin-404.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/layouts/HeaderOnlyLayout.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/Auth/Auth.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/Auth/Login.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/Auth/Register.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FavoritesPage/FavoritesPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FeedPage/FeedPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HistoryPage/HistoryPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/LibraryPage/LibraryPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/PlaylistsPage/PlaylistsPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/RadioPage/RadioPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/TopTracksPage/TopTracksPage.jsx" afterDir="false" />
+    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization.">
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/assets/song404.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/context/SettingsContext.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/AudioPlayerContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/AudioPlayerContext.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,9 +22,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="package.json" />
-        <option value="CSS File" />
         <option value="JavaScript File" />
         <option value="JSX File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -98,8 +79,8 @@
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\pages" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\assets" />
+      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\pages" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\QueuePanel" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components" />
@@ -139,7 +120,8 @@
       <workItem from="1759662920833" duration="3461000" />
       <workItem from="1759681527466" duration="2777000" />
       <workItem from="1759778860641" duration="3795000" />
-      <workItem from="1759949048151" duration="3958000" />
+      <workItem from="1759949048151" duration="4536000" />
+      <workItem from="1759954222416" duration="1136000" />
     </task>
     <task id="LOCAL-00001" summary="init orrin-frontend">
       <option name="closed" value="true" />
@@ -189,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759781546251</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization.">
+      <option name="closed" value="true" />
+      <created>1759953761066</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1759953761066</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,7 +192,8 @@
     <MESSAGE value="Track playback works correctly, bottom playback panel created" />
     <MESSAGE value="Improve music player: optimized and synced seek bar, added sidebar" />
     <MESSAGE value="Add react-router, simple pages and improve sidebar" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add react-router, simple pages and improve sidebar" />
+    <MESSAGE value="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

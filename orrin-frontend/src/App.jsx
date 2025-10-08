@@ -22,32 +22,35 @@ import NotFoundPage from './pages/NotFoundPage/NotFoundPage.jsx';
 
 import './App.css';
 import HeaderOnlyLayout from './layouts/HeaderOnlyLayout.jsx';
+import { SettingsProvider } from './context/SettingsContext.jsx';
 
 export default function App() {
   return (
     <Router>
       <AudioPlayerProvider>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/feed" element={<FeedPage />} />
-            <Route path="/library" element={<LibraryPage />} />
-            <Route path="/playlists" element={<PlaylistsPage />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/top" element={<TopTracksPage />} />
-            <Route path="/radio" element={<RadioPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Route>
+        <SettingsProvider>
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/feed" element={<FeedPage />} />
+              <Route path="/library" element={<LibraryPage />} />
+              <Route path="/playlists" element={<PlaylistsPage />} />
+              <Route path="/favorites" element={<FavoritesPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/top" element={<TopTracksPage />} />
+              <Route path="/radio" element={<RadioPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
 
-          <Route element={<HeaderOnlyLayout />}>
+            <Route element={<HeaderOnlyLayout />}>
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<NotFoundPage />} />
-          </Route>
-
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+          </Routes>
+        </SettingsProvider>
       </AudioPlayerProvider>
     </Router>
   );
