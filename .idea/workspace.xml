@@ -4,15 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Improve music player: optimized and synced seek bar, added sidebar">
+    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Add react-router, simple pages and improve sidebar">
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/assets/orrin-404.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/layouts/HeaderOnlyLayout.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/Auth/Auth.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/Auth/Login.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/Auth/Register.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FavoritesPage/FavoritesPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FeedPage/FeedPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HistoryPage/HistoryPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/LibraryPage/LibraryPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/PlaylistsPage/PlaylistsPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/RadioPage/RadioPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/TopTracksPage/TopTracksPage.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/SearchForm/SearchForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/SearchForm/SearchForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/AudioPlayerContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/AudioPlayerContext.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,10 +40,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="package.json" />
+        <option value="CSS File" />
         <option value="JavaScript File" />
         <option value="JSX File" />
-        <option value="CSS File" />
-        <option value="package.json" />
       </list>
     </option>
   </component>
@@ -80,11 +98,11 @@
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\pages" />
+      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\assets" />
+      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\QueuePanel" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components" />
-      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\AudioPlayerContext" />
-      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src" />
-      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\TrackCard" />
     </key>
   </component>
   <component name="RunManager">
@@ -120,7 +138,8 @@
       <workItem from="1759259286435" duration="322000" />
       <workItem from="1759662920833" duration="3461000" />
       <workItem from="1759681527466" duration="2777000" />
-      <workItem from="1759778860641" duration="2325000" />
+      <workItem from="1759778860641" duration="3795000" />
+      <workItem from="1759949048151" duration="3958000" />
     </task>
     <task id="LOCAL-00001" summary="init orrin-frontend">
       <option name="closed" value="true" />
@@ -162,7 +181,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759684006444</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add react-router, simple pages and improve sidebar">
+      <option name="closed" value="true" />
+      <created>1759781546251</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1759781546251</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,7 +201,8 @@
     <MESSAGE value="Changed TrackCard, added context menu" />
     <MESSAGE value="Track playback works correctly, bottom playback panel created" />
     <MESSAGE value="Improve music player: optimized and synced seek bar, added sidebar" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve music player: optimized and synced seek bar, added sidebar" />
+    <MESSAGE value="Add react-router, simple pages and improve sidebar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add react-router, simple pages and improve sidebar" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
