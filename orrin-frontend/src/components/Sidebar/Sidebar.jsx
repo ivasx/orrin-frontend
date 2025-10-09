@@ -2,7 +2,7 @@ import { Home, NewspaperIcon, Library, Music, Heart, Clock, TrendingUp, Settings
 import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
   const menuItems = [
     { icon: Home, label: 'Головна', path: '/' },
     { icon: NewspaperIcon, label: 'Стрічка', path: '/feed' },
@@ -21,7 +21,6 @@ export default function Sidebar({ isOpen, onClose }) {
     { icon: Settings, label: 'Налаштування', path: '/settings' }
   ];
 
-  // Функція для закриття сайдбару тільки на мобільних
   const handleLinkClick = () => {
     if (window.innerWidth < 768) {
       onClose();
@@ -30,18 +29,16 @@ export default function Sidebar({ isOpen, onClose }) {
 
   return (
     <>
-    {/* Backdrop для мобільних */}
-    {isOpen && (
-      <div
-        className="sidebar-backdrop"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-    )}
+      {isOpen && (
+        <div
+          className="sidebar-backdrop"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
 
       <aside className={`sidebar ${isOpen ? 'sidebar--open' : 'sidebar--collapsed'}`}>
         <nav className="sidebar__nav">
-          {/* Основне меню */}
           <ul className="sidebar__menu">
             {menuItems.map((item, index) => (
               <li key={index} className="sidebar__item">
@@ -59,10 +56,8 @@ export default function Sidebar({ isOpen, onClose }) {
             ))}
           </ul>
 
-          {/* Розділювач */}
           <div className="sidebar__divider" />
 
-          {/* Бібліотека */}
           <div className="sidebar__section">
             <h3 className="sidebar__section-title">Моя музика</h3>
             <ul className="sidebar__menu">
@@ -84,8 +79,7 @@ export default function Sidebar({ isOpen, onClose }) {
           </div>
         </nav>
 
-        {/* Налаштування внизу */}
-        <div className="sidebar__footer">
+        <div className={`sidebar__footer ${isPlayerVisible ? 'sidebar__footer--with-player' : ''}`}>
           <ul className="sidebar__menu">
             {settingsItems.map((item, index) => (
               <li key={index} className="sidebar__item">
