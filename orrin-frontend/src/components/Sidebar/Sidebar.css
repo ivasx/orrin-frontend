@@ -141,6 +141,22 @@
 .sidebar__footer {
     padding: 10px 0 10px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar__footer--with-player {
+    position: fixed;
+    bottom: 84px;
+    background: #000000;
+    z-index: 101;
+}
+
+.sidebar--open .sidebar__footer--with-player {
+    width: 240px;
+}
+
+.sidebar--collapsed .sidebar__footer--with-player {
+    width: 72px;
 }
 
 /* Backdrop для мобільних */
@@ -205,6 +221,10 @@
         animation: fadeIn 0.2s ease;
     }
 
+    .sidebar__footer--with-player {
+        bottom: 70px;
+    }
+
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -220,5 +240,13 @@
     .sidebar--open {
         width: 200px;
     }
+    .sidebar--open .sidebar__footer--with-player {
+        width: 200px;
+    }
 }
 
+@media (max-width: 480px) {
+    .sidebar__footer--with-player {
+        bottom: 120px;
+    }
+}
