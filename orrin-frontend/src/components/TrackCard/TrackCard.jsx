@@ -1,7 +1,7 @@
 import './TrackCard.css';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import ContextMenu from '../TrackCardContextMenu/TrackCardContextMenu.jsx';
-import { useAudioPlayer } from '../AudioPlayerContext/AudioPlayerContext.jsx';
+import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
 
 export default function TrackCard({ title, artist, duration, cover, audio, trackId }) {
   const { currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef } = useAudioPlayer();

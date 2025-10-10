@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Компоненти та Провайдери
-import { AudioPlayerProvider } from './components/AudioPlayerContext/AudioPlayerContext.jsx';
+import { AudioPlayerProvider } from './context/AudioPlayerContext.jsx';
 
 // Шаблони (Layouts)
 import MainLayout from './layouts/MainLayout.jsx';

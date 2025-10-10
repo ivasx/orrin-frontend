@@ -61,6 +61,23 @@
     min-height: calc(100vh - 70px);
 }
 
+.player-visible .sidebar {
+    height: calc(100vh - var(--player-height, 84px));
+}
+
+.player-visible .main-wrapper {
+    padding-bottom: calc(var(--player-height, 84px));
+}
+
+@media (max-width: 480px) {
+    .player-visible .sidebar {
+        height: calc(100vh - var(--player-height, 120px));
+    }
+
+    .player-visible .main-wrapper {
+        padding-bottom: var(--player-height, 120px);
+    }
+}
 /* Мобільна версія */
 @media (max-width: 768px) {
     .header {

@@ -1,17 +1,36 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import {Outlet} from 'react-router-dom';
 import Header from '../components/Header/Header.jsx';
 import Sidebar from '../components/Sidebar/Sidebar.jsx';
-import BottomPlayer from '../components/AudioPlayerContext/BottomPlayer.jsx';
-import { useAudioPlayer } from '../components/AudioPlayerContext/AudioPlayerContext.jsx';
+import BottomPlayer from '../components/BottomPlayer/BottomPlayer.jsx';
+import {useAudioPlayer} from '../context/AudioPlayerContext.jsx';
 
 export default function MainLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { currentTrack } = useAudioPlayer();
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const {currentTrack} = useAudioPlayer();
+    const containerClassName = `AppContainer ${currentTrack ? 'player-visible' : ''}`;
+    const playerRef = useRef(null);
+
+    useEffect(() => {
+        const playerElement = playerRef.current;
+        if (!playerElement) return;
+
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                const height = entry.contentRect.height;
+                document.documentElement.style.setProperty('--player-height', `${height}px`);
+            }
+        });
+
+        resizeObserver.observe(playerElement);
+
+        return () => resizeObserver.disconnect();
+    }, [currentTrack]);
+
 
     return (
-        <div className="AppContainer">
-            <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <div className={containerClassName}>
+            <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)}/>
             <Sidebar
                 isOpen={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
@@ -19,10 +38,10 @@ export default function MainLayout() {
             />
             <div className={`main-content ${sidebarOpen ? 'main-content--shifted' : 'main-content--full'}`}>
                 <main className="main-wrapper">
-                    <Outlet />
+                    <Outlet/>
                 </main>
             </div>
-            <BottomPlayer />
+            <BottomPlayer ref={playerRef} />
         </div>
     );
 }
