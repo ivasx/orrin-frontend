@@ -10,7 +10,6 @@
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
     z-index: 1000;
     border-top: 1px solid #333;
 }
@@ -18,7 +17,8 @@
 .player-left {
     display: flex;
     align-items: center;
-    flex: 0 0 auto;
+    gap: 15px; /* Додаємо відступ між елементами */
+    flex: 1; /* Дозволяємо цьому блоку займати більше місця */
     min-width: 0;
 }
 
@@ -27,7 +27,6 @@
     height: 50px;
     object-fit: cover;
     border-radius: 6px;
-    margin-right: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -39,7 +38,6 @@
 .player-title {
     font-size: 14px;
     font-weight: 600;
-    color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -54,40 +52,45 @@
     text-overflow: ellipsis;
 }
 
-.player-center {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 20px;
-    min-width: 0;
-}
-
+/* Нові стилі для кнопок */
 .player-controls {
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.play-pause-btn {
-    background: #fff;
+.control-btn {
+    background: none;
     border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: color 0.2s ease;
 }
+
+.control-btn:hover {
+    color: #fff;
+}
+
+.play-pause-btn {
+     background: #fff;
+     border: none;
+     border-radius: 50%;
+     width: 40px;
+     height: 40px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     cursor: pointer;
+     transition: all 0.2s ease;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+ }
 
 .play-pause-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.play-pause-btn:active {
-    transform: scale(0.98);
 }
 
 .play-pause-btn:disabled {
@@ -117,8 +120,8 @@
 }
 
 .loading-spinner {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border: 2px solid #ccc;
     border-top: 2px solid #000;
     border-radius: 50%;
@@ -130,9 +133,17 @@
     100% { transform: rotate(360deg); }
 }
 
+/* Оновлені стилі для центральної частини */
+.player-center {
+    flex: 2; /* Даємо більше місця прогрес-бару */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px; /* Мінімальна ширина */
+}
+
 .progress-container {
     width: 100%;
-    max-width: 400px;
     cursor: pointer;
 }
 
@@ -140,40 +151,12 @@
     height: 4px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 2px;
-    overflow: hidden;
-    position: relative;
 }
 
-.progress-bar {
+.bottom-player .progress-bar { /* Використовуємо більш конкретний селектор */
     height: 100%;
-    background: linear-gradient(90deg, #000000, rgba(0, 0, 0, 0.63));
+    background: #ff0000;
     border-radius: 2px;
-    transition: width 0.1s ease;
-    position: relative;
-}
-
-.progress-bar::after {
-    content: '';
-    position: absolute;
-    right: -6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.progress-container:hover .progress-bar::after {
-    opacity: 1;
-}
-
-.player-right {
-    flex: 0 0 auto;
-    min-width: 0;
 }
 
 .time-display {
@@ -183,33 +166,20 @@
     white-space: nowrap;
 }
 
-/* Мобільна адаптація */
+.player-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; /* Вирівнюємо вміст справа */
+}
+
+/* Адаптивність */
 @media (max-width: 768px) {
-    .bottom-player {
-        padding: 8px 15px;
-    }
-
-    .player-cover {
-        width: 40px;
-        height: 40px;
-        margin-right: 10px;
-    }
-
     .player-info {
-        max-width: 120px;
+        display: none; /* Ховаємо інфо про трек на маленьких екранах */
     }
 
     .player-center {
-        margin: 0 15px;
-    }
-
-    .progress-container {
-        max-width: 200px;
-    }
-
-    .play-pause-btn {
-        width: 35px;
-        height: 35px;
+        flex: 1;
     }
 
     .play-triangle {
@@ -227,26 +197,20 @@
 @media (max-width: 480px) {
     .bottom-player {
         flex-direction: column;
-        padding: 10px;
         height: auto;
+        padding: 10px;
     }
-
-    .player-left {
+    .player-left, .player-center, .player-right {
         width: 100%;
         justify-content: center;
+    }
+    .player-left {
         margin-bottom: 8px;
     }
-
-    .player-center {
-        width: 100%;
-        margin: 0;
-    }
-
     .player-right {
-        margin-top: 5px;
+        display: none; /* Ховаємо правий блок на мобільних */
     }
-
-    .progress-container {
-        max-width: 100%;
+    .player-cover {
+        display: none; /* Ховаємо обкладинку на мобільних */
     }
 }

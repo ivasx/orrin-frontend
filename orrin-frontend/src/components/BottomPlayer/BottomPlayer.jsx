@@ -1,9 +1,18 @@
 import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
 import {useEffect, useRef, useState, useCallback, forwardRef} from 'react';
+import {Play, Pause, SkipBack, SkipForward} from 'lucide-react';
 import './BottomPlayer.css';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
-    const {currentTrack, isTrackPlaying, pauseTrack, resumeTrack, audioRef} = useAudioPlayer();
+    const {
+        currentTrack,
+        isTrackPlaying,
+        pauseTrack,
+        resumeTrack,
+        nextTrack,
+        previousTrack,
+        audioRef,
+    } = useAudioPlayer();
     const progressContainerRef = useRef(null);
     const progressBarRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(0);
@@ -14,7 +23,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const animationFrameRef = useRef(null);
     const trackIsPlaying = currentTrack ? isTrackPlaying(currentTrack.trackId) : false;
 
-    // Оновлення прогрес бару без ре-рендеру
     const updateProgressBar = useCallback((time) => {
         if (progressBarRef.current && duration) {
             const percentage = (time / duration) * 100;
@@ -22,7 +30,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         }
     }, [duration]);
 
-    // Обробники перетягування
     const handleProgressMouseMove = useCallback((e) => {
         if (!isDragging || !duration || !progressContainerRef.current) return;
 
@@ -50,9 +57,8 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
 
         audioRef.current.currentTime = currentTime;
         setIsDragging(false);
-    }, [isDragging, currentTime]);
+    }, [isDragging, currentTime, audioRef]);
 
-    // Глобальні слухачі для перетягування
     useEffect(() => {
         if (isDragging) {
             document.addEventListener('mousemove', handleProgressMouseMove);
@@ -68,7 +74,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         }
     }, [isDragging, handleProgressMouseMove, handleProgressMouseUp]);
 
-    // Основна логіка аудіо
     useEffect(() => {
         if (!audioRef.current || !currentTrack) return;
 
@@ -103,7 +108,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         };
 
         const handleEnded = () => {
-            pauseTrack();
+            nextTrack();
         };
 
         const handleError = (e) => {
@@ -131,7 +136,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
             audio.removeEventListener('ended', handleEnded);
             audio.removeEventListener('error', handleError);
         };
-    }, [currentTrack, trackIsPlaying, pauseTrack, lastTrackId, isLoading, isDragging, updateProgressBar]);
+    }, [currentTrack, trackIsPlaying, pauseTrack, lastTrackId, isLoading, isDragging, updateProgressBar, nextTrack]);
 
     if (!currentTrack) return null;
 
@@ -185,10 +190,10 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                     <div className="player-title">{currentTrack.title}</div>
                     <div className="player-artist">{currentTrack.artist}</div>
                 </div>
-            </div>
-
-            <div className="player-center">
                 <div className="player-controls">
+                    <button className="control-btn" onClick={() => previousTrack()}>
+                        <SkipBack size={20}/>
+                    </button>
                     <button
                         className="play-pause-btn"
                         onClick={handlePlayPause}
@@ -205,8 +210,14 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                             <div className="play-triangle"></div>
                         )}
                     </button>
+                    <button className="control-btn" onClick={() => nextTrack()}>
+                        <SkipForward size={20}/>
+                    </button>
                 </div>
+            </div>
 
+            <div className="player-center">
+                <div className="time-display time-display--left">{formatTime(currentTime)}</div>
                 <div
                     ref={progressContainerRef}
                     className="progress-container"
@@ -223,12 +234,11 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                         />
                     </div>
                 </div>
+                <div className="time-display time-display--right">{formatTime(duration)}</div>
             </div>
 
             <div className="player-right">
-                <div className="time-display">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                </div>
+                {/* Тут можуть бути іконки гучності, черги і т.д. */}
             </div>
         </div>
     );

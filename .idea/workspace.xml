@@ -4,18 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Track playback works correctly, bottom playback panel created">
+    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/AudioPlayerContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/context/AudioPlayerContext.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/AudioPlayerContext/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,31 +44,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaScript Debug.127.0.0.1:4040.executor": "Debug",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Node.js.Header.jsx.executor": "Run",
-    "Node.js.main.js.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/User/WebstormProjects/orrin-frontend/orrin-frontend/src/components/TrackCardContextMenu",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "C:/Users/User/WebstormProjects/orrin-frontend/src/main.js",
-    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\User\\WebstormProjects\\orrin-frontend\\node_modules\\prettier",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2025.2.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.127.0.0.1:4040.executor&quot;: &quot;Debug&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Node.js.Header.jsx.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js.main.js.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/WebstormProjects/orrin-frontend/orrin-frontend/src/components/TrackCardContextMenu&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/User/WebstormProjects/orrin-frontend/src/main.js&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\User\\WebstormProjects\\orrin-frontend\\node_modules\\prettier&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.2.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\TrackCardContextMenu" />
@@ -120,6 +114,7 @@
       <workItem from="1758979686175" duration="9000" />
       <workItem from="1759089238623" duration="24000" />
       <workItem from="1759259286435" duration="322000" />
+      <workItem from="1760211483839" duration="1687000" />
     </task>
     <task id="LOCAL-00001" summary="init orrin-frontend">
       <option name="closed" value="true" />
@@ -153,7 +148,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758979558091</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements.">
+      <option name="closed" value="true" />
+      <created>1760122505214</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1760122505214</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,7 +167,8 @@
     <MESSAGE value="Added new components for the website:&#10;- Changed the site background&#10;- Created a track card&#10;- Styled the track card&#10;- Implemented music playback" />
     <MESSAGE value="Changed TrackCard, added context menu" />
     <MESSAGE value="Track playback works correctly, bottom playback panel created" />
-    <option name="LAST_COMMIT_MESSAGE" value="Track playback works correctly, bottom playback panel created" />
+    <MESSAGE value="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements." />
+    <option name="LAST_COMMIT_MESSAGE" value="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
