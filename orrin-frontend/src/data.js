@@ -88,3 +88,37 @@ export const ways = [
     audio: 'https://cdn7.sefon.pro/prev/MmiSwT1ySDLn4LNb0OIuRA/1759008773/118/Metallica%20-%20Master%20Of%20Puppets%20%28192kbps%29.mp3'
   }
 ];
+
+
+export const popularArtists = [
+    {
+        id: 1,
+        name: 'Nirvana',
+        subtitle: 'Grunge, Alternative Rock',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/ru/e/e9/Band_Nirvana.jpg' // Приклад посилання
+    },
+    {
+        id: 2,
+        name: 'The Beatles',
+        subtitle: 'Rock, Pop',
+        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROedTMkjYze84CtPR0Eq4X5mW8EK7pSOja2A&s'
+    },
+    {
+        id: 3,
+        name: 'Queen',
+        subtitle: 'Rock',
+        imageUrl: 'https://sefon.pro/img/artist_photos/queen.jpg'
+    },
+    {
+        id: 4,
+        name: 'Led Zeppelin',
+        subtitle: 'Hard Rock, Blues Rock',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/49/LedZeppelinmontage.jpg'
+    },
+    {
+        id: 5,
+        name: 'Pink Floyd',
+        subtitle: 'Progressive Rock',
+        imageUrl: 'https://www.kino-teatr.ru/acter/photo/4/4/518644/1152979.jpg'
+    }
+];

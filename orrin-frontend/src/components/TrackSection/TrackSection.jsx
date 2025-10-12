@@ -1,24 +1,21 @@
+// src/components/TrackSection/TrackSection.jsx
 import './TrackSection.css';
 import TrackCard from '../TrackCard/TrackCard.jsx';
+import SectionHeader from '../SectionHeader/SectionHeader.jsx';
 
 export default function TrackSection({ title, tracks, onMoreClick }) {
-  return (
-    <section className="track-row">
-      <div className="track-row-header">
-        <h3 className="track-row-title">{title}</h3>
-        <button className="track-row-more" onClick={onMoreClick}>
-          Більше
-        </button>
-      </div>
-
-      <div className="track-row-grid">
-        {tracks.map((track) => (
-          <TrackCard
-            key={track.trackId}
-            {...track}
-          />
-        ))}
-      </div>
-    </section>
-  );
+    return (
+        <section className="track-section">
+            <SectionHeader title={title} onMoreClick={onMoreClick} />
+            <div className="track-section-grid">
+                {tracks.map((track) => (
+                    <TrackCard
+                        key={track.trackId}
+                        {...track}
+                        tracks={tracks}
+                    />
+                ))}
+            </div>
+        </section>
+    );
 }

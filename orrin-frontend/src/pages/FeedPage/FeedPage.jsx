@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
-import MusicSectionWrapper from '../../components/TrackSection/MusicSectionWrapper.jsx';
+import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import { ways } from '../../data'; //
 
 export default function FeedPage() {

@@ -1,0 +1,20 @@
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px;
+}
+
+.section-title {
+    font-size: 22px; /* ← Єдиний розмір для всіх заголовків */
+    font-weight: bold;
+    color: #fff;
+}
+
+.section-more {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 14px; /* ← Єдиний розмір для всіх кнопок */
+}

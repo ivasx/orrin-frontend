@@ -1,0 +1,35 @@
+.login-prompt-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px; /* Мінімальна висота, щоб вміст був по центру */
+    padding: 2rem;
+    background-color: #1c1c1c; /* Трохи світліший фон для контрасту */
+    border-radius: 8px;
+    text-align: center;
+    gap: 1.5rem; /* Відстань між текстом та кнопкою */
+}
+
+.login-prompt-text {
+    font-size: 1.1rem; /* 18px */
+    color: #b3b3b3; /* Світло-сірий текст */
+    margin: 0;
+}
+
+.login-prompt-button {
+    background-color: #f0f0f0; /* Світлий фон кнопки */
+    color: #121212; /* Темний текст */
+    border: none;
+    border-radius: 500px; /* Робить кнопку овальною */
+    padding: 0.8rem 2rem; /* Внутрішні відступи */
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.login-prompt-button:hover {
+    background-color: #fff;
+    transform: scale(1.05); /* Легке збільшення при наведенні */
+}

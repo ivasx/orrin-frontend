@@ -189,14 +189,20 @@
 }
 
 .track-title {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .track-artist {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
     color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Контейнер для тривалості */

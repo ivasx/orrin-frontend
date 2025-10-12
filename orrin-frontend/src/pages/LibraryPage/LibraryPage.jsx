@@ -1,4 +1,4 @@
-import MusicSectionWrapper from '../../components/TrackSection/MusicSectionWrapper.jsx';
+import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
 import { ways } from '../../data.js';
 import { useEffect, useState } from 'react';

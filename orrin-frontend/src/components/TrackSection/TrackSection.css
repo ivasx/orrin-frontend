@@ -1,30 +1,4 @@
-.track-row {
-    margin: 20px 0;
-}
-
-.track-row-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    padding: 0 5px;
-}
-
-.track-row-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.track-row-more {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.track-row-grid {
+.track-section-grid {
     display: grid;
     grid-auto-flow: column;          /* нові колонки по горизонталі */
     grid-template-rows: repeat(2, 1fr); /* завжди 2 рядки */
@@ -37,43 +11,43 @@
     scrollbar-width: none;
 }
 
-.track-row-grid:hover {
+.track-section-grid:hover {
     scrollbar-width: initial;
 }
 
-.track-row-grid::-webkit-scrollbar {
+.track-section-grid::-webkit-scrollbar {
     height: 8px; /* висота горизонтального скролбара */
 }
 
-.track-row-grid::-webkit-scrollbar-track {
+.track-section-grid::-webkit-scrollbar-track {
     background: #333; /* колір треку */
     border-radius: 4px;
 }
 
-.track-row-grid::-webkit-scrollbar-thumb {
+.track-section-grid::-webkit-scrollbar-thumb {
     background: #666; /* колір повзунка */
     border-radius: 4px;
     transition: background 0.2s;
 }
 
-.track-row-grid::-webkit-scrollbar-thumb:hover {
+.track-section-grid::-webkit-scrollbar-thumb:hover {
     background: #888; /* колір повзунка при hover */
 }
 
 /* Додаткові стилі для кращого UX */
-.track-row-grid {
+.track-section-grid {
     scroll-behavior: smooth; /* плавний скрол */
 }
 
 /* Мобільна адаптація */
 @media (max-width: 768px) {
-    .track-row-grid {
+    .track-section-grid {
         grid-auto-columns: 280px; /* ВИПРАВЛЕНО: відповідає мобільній ширині картки */
     }
 }
 
 @media (max-width: 480px) {
-    .track-row-grid {
+    .track-section-grid {
         grid-auto-columns: 250px; /* ВИПРАВЛЕНО: відповідає мобільній ширині картки */
     }
 }

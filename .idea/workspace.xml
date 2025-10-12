@@ -4,12 +4,46 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements.">
+    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization.">
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistCard/ArtistCard.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistCard/ArtistCard.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistSection/ArtistSection.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistSection/ArtistSection.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/EmptyStateSection/EmptyStateSection.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/EmptyStateSection/EmptyStateSection.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/LoginPromptSection/LoginPromptSection.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/LoginPromptSection/LoginPromptSection.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionSkeleton/SectionSkeleton.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionSkeleton/SectionSkeleton.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCardContextMenu/TrackCardContextMenu.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/context/TrackCardContextMenu/TrackCardContextMenu.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCardContextMenu/TrackCardContextMenu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/context/TrackCardContextMenu/TrackCardContextMenu.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCardContextMenu/trackMenuItems.js" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/context/TrackCardContextMenu/trackMenuItems.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/MusicSectionWrapper.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/MusicSectionWrapper/MusicSectionWrapper.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/MusicSectionWrapper.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/MusicSectionWrapper/MusicSectionWrapper.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/FavoritesPage/FavoritesPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FavoritesPage/FavoritesPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/FeedPage/FeedPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FeedPage/FeedPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/HistoryPage/HistoryPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HistoryPage/HistoryPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/LibraryPage/LibraryPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/LibraryPage/LibraryPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/PlaylistsPage/PlaylistsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/PlaylistsPage/PlaylistsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/RadioPage/RadioPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/RadioPage/RadioPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/TopTracksPage/TopTracksPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/TopTracksPage/TopTracksPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,7 +53,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="package.json" />
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
         <option value="JSX File" />
         <option value="CSS File" />
       </list>
@@ -28,10 +64,11 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="dev" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -44,31 +81,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JavaScript Debug.127.0.0.1:4040.executor&quot;: &quot;Debug&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Node.js.Header.jsx.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.main.js.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/WebstormProjects/orrin-frontend/orrin-frontend/src/components/TrackCardContextMenu&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/User/WebstormProjects/orrin-frontend/src/main.js&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\User\\WebstormProjects\\orrin-frontend\\node_modules\\prettier&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.2.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JavaScript Debug.127.0.0.1:4040.executor": "Debug",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Node.js.Header.jsx.executor": "Run",
+    "Node.js.main.js.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/User/WebstormProjects/orrin-frontend/orrin-frontend/src/components/TrackCardContextMenu",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "C:/Users/User/WebstormProjects/orrin-frontend/src/main.js",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\User\\WebstormProjects\\orrin-frontend\\node_modules\\prettier",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2025.2.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\TrackCardContextMenu" />
@@ -76,11 +113,11 @@
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\BottomPlayer" />
+      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\MusicSectionWrapper" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\context" />
-      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\AudioPlayerContext" />
+      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\assets" />
+      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\pages" />
       <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src" />
-      <recent name="C:\Users\User\WebstormProjects\orrin-frontend\orrin-frontend\src\components\TrackCard" />
     </key>
   </component>
   <component name="RunManager">
@@ -89,6 +126,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.127.0.0.1:4040" />
         <item itemvalue="JavaScript Debug.127.0.0.1:4040" />
       </list>
     </recent_temporary>
@@ -114,7 +152,11 @@
       <workItem from="1758979686175" duration="9000" />
       <workItem from="1759089238623" duration="24000" />
       <workItem from="1759259286435" duration="322000" />
-      <workItem from="1760211483839" duration="1687000" />
+      <workItem from="1759662920833" duration="3461000" />
+      <workItem from="1759681527466" duration="2777000" />
+      <workItem from="1759778860641" duration="3795000" />
+      <workItem from="1759949048151" duration="4536000" />
+      <workItem from="1759954222416" duration="1136000" />
     </task>
     <task id="LOCAL-00001" summary="init orrin-frontend">
       <option name="closed" value="true" />
@@ -148,15 +190,31 @@
       <option name="project" value="LOCAL" />
       <updated>1758979558091</updated>
     </task>
-    <task id="LOCAL-00005" summary="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements.">
+    <task id="LOCAL-00005" summary="Improve music player: optimized and synced seek bar, added sidebar">
       <option name="closed" value="true" />
-      <created>1760122505214</created>
+      <created>1759684006444</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1760122505214</updated>
+      <updated>1759684006444</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add react-router, simple pages and improve sidebar">
+      <option name="closed" value="true" />
+      <created>1759781546251</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1759781546251</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization.">
+      <option name="closed" value="true" />
+      <created>1759953761066</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1759953761066</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,8 +225,10 @@
     <MESSAGE value="Added new components for the website:&#10;- Changed the site background&#10;- Created a track card&#10;- Styled the track card&#10;- Implemented music playback" />
     <MESSAGE value="Changed TrackCard, added context menu" />
     <MESSAGE value="Track playback works correctly, bottom playback panel created" />
-    <MESSAGE value="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements." />
-    <option name="LAST_COMMIT_MESSAGE" value="Make NotFoundPage responsive and fix layout paddings&#10;&#10;- Implemented a fully responsive design for the 404 NotFoundPage using media queries to ensure proper display on tablet and mobile devices.&#10;- Corrected sidebar footer padding issues by using media queries to apply different spacing on mobile vs. desktop, resolving inconsistent gaps when the bottom player is active.&#10;- Refactored the NotFoundPage component to reliably disable and re-enable scrolling on the `&lt;html&gt;` and `&lt;body&gt;` elements." />
+    <MESSAGE value="Improve music player: optimized and synced seek bar, added sidebar" />
+    <MESSAGE value="Add react-router, simple pages and improve sidebar" />
+    <MESSAGE value="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

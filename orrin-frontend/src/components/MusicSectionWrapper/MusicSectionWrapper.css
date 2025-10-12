@@ -1,0 +1,43 @@
+.music-section-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+}
+
+.music-section-wrapper--default {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.music-section-wrapper--tight {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.music-section-wrapper--top-only {
+    margin-top: 2rem;
+    margin-bottom: 0;
+}
+
+.music-section-wrapper--none {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+.music-section-wrapper--small {
+    gap: 1rem;
+}
+
+.music-section-wrapper--large {
+    gap: 3rem;
+}
+
+@media (max-width: 480px) {
+    .music-section-wrapper {
+        padding: 0 1rem;
+    }
+}

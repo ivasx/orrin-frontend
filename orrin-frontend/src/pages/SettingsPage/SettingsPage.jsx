@@ -1,4 +1,4 @@
-import MusicSectionWrapper from '../../components/TrackSection/MusicSectionWrapper.jsx';
+import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import { useSettings } from '../../context/SettingsContext'; // <-- 1. Імпортуй хук
 import './SettingsPage.css';
 

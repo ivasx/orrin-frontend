@@ -1,0 +1,29 @@
+.artist-section-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content; /* Колонки адаптуються до розміру карток */
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 5px;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Для Firefox */
+}
+
+/* Стилізація скролбару для Webkit-браузерів (Chrome, Safari) */
+.artist-section-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.artist-section-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.artist-section-grid::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.artist-section-grid::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
