@@ -1,5 +1,5 @@
 import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
-import { useEffect, useRef, useState, forwardRef } from 'react';
+import { useEffect, useRef, useState, forwardRef, useCallback } from 'react';
 import { SkipBack, SkipForward } from 'lucide-react';
 import './BottomPlayer.css';
 
@@ -7,7 +7,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const {
         currentTrack,
         isPlaying,
-        playTrack,
         pauseTrack,
         resumeTrack,
         nextTrack,
@@ -19,9 +18,12 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const [duration, setDuration] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isDragging, setIsDragging] = useState(false);
-    const titleRef = useRef(null);
-    const artistRef = useRef(null);
-    const animationFrameRef = useRef(null);
+
+    const progressBarRef = useRef(null);
+    const progressBarFillRef = useRef(null);
+    const currentTimeRef = useRef(null);
+    const wasPlayingRef = useRef(false);
+    const dragAnimationRef = useRef(null);
 
 
     useEffect(() => {
@@ -52,7 +54,9 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
             setDuration(audio.duration);
             setIsLoading(false);
         };
+
         const handleEnded = () => {
+            if (isDragging) return;
             if (currentTrack?.loop) {
                 audio.currentTime = 0;
                 audio.play();
@@ -60,40 +64,27 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                 nextTrack();
             }
         };
+
         const handleError = () => setIsLoading(false);
+
+        const handleTimeUpdate = () => {
+            if (!isDragging) {
+                setCurrentTime(audio.currentTime);
+            }
+        };
 
         audio.addEventListener('loadeddata', handleLoadedData);
         audio.addEventListener('ended', handleEnded);
         audio.addEventListener('error', handleError);
+        audio.addEventListener('timeupdate', handleTimeUpdate);
 
         return () => {
             audio.removeEventListener('loadeddata', handleLoadedData);
             audio.removeEventListener('ended', handleEnded);
             audio.removeEventListener('error', handleError);
+            audio.removeEventListener('timeupdate', handleTimeUpdate);
         };
-    }, [audioRef, currentTrack, nextTrack]);
-
-    useEffect(() => {
-        const audio = audioRef.current;
-
-        const animate = () => {
-            if (audio && !isDragging) {
-                setCurrentTime(audio.currentTime);
-            }
-            animationFrameRef.current = requestAnimationFrame(animate);
-        };
-
-        animationFrameRef.current = requestAnimationFrame(animate);
-
-        return () => {
-            cancelAnimationFrame(animationFrameRef.current);
-        };
-    }, [isDragging, audioRef]);
-
-    useEffect(() => {
-    }, [currentTrack]);
-
-
+    }, [audioRef, currentTrack, nextTrack, isDragging]);
 
     const handlePlayPause = () => {
         if (isPlaying) {
@@ -103,19 +94,75 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         }
     };
 
-    const handleProgressChange = (e) => {
-        if (!audioRef.current || !duration) return;
-        const newTime = (e.nativeEvent.offsetX / e.currentTarget.offsetWidth) * duration;
-        audioRef.current.currentTime = newTime;
-        setCurrentTime(newTime);
-    };
-
     const formatTime = (seconds) => {
         if (isNaN(seconds) || seconds < 0) return '0:00';
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
+
+
+    const updateVisualSeek = (newTime) => {
+        if (progressBarFillRef.current) {
+            progressBarFillRef.current.style.width = `${(newTime / duration) * 100}%`;
+        }
+        if (currentTimeRef.current) {
+            currentTimeRef.current.textContent = formatTime(newTime);
+        }
+    };
+
+    const getSeekTime = (e) => {
+        if (!progressBarRef.current || !duration) return 0;
+        const progressBar = progressBarRef.current;
+        const rect = progressBar.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
+        return percentage * duration;
+    };
+
+    const handleMouseDown = (e) => {
+        wasPlayingRef.current = isPlaying;
+        if(isPlaying) pauseTrack();
+        setIsDragging(true);
+        updateVisualSeek(getSeekTime(e.nativeEvent));
+    };
+
+    const handleMouseMove = useCallback((e) => {
+        if (isDragging) {
+            e.preventDefault();
+            if (dragAnimationRef.current) cancelAnimationFrame(dragAnimationRef.current);
+            dragAnimationRef.current = requestAnimationFrame(() => {
+                updateVisualSeek(getSeekTime(e));
+            });
+        }
+    }, [isDragging, duration]);
+
+    const handleMouseUp = useCallback((e) => {
+        if (isDragging) {
+            if (dragAnimationRef.current) cancelAnimationFrame(dragAnimationRef.current);
+            const newTime = getSeekTime(e);
+            if(audioRef.current) {
+                audioRef.current.currentTime = newTime;
+            }
+            setCurrentTime(newTime);
+            setIsDragging(false);
+
+            if (wasPlayingRef.current) {
+                resumeTrack();
+            }
+        }
+    }, [isDragging, duration, resumeTrack, audioRef]);
+
+    useEffect(() => {
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [handleMouseMove, handleMouseUp]);
+
 
     if (!currentTrack) return null;
 
@@ -127,10 +174,10 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
             <div className="player-left">
                 <img src={currentTrack.cover} alt={currentTrack.title} className="player-cover"/>
                 <div className="player-info">
-                    <div className="player-title" ref={titleRef}>
+                    <div className="player-title">
                         <span>{currentTrack.title}</span>
                     </div>
-                    <div className="player-artist" ref={artistRef}>
+                    <div className="player-artist">
                         <span>{currentTrack.artist}</span>
                     </div>
                 </div>
@@ -155,10 +202,18 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                     </button>
                 </div>
                 <div className="progress-wrapper">
-                    <div className="time-display">{formatTime(currentTime)}</div>
-                    <div className="progress-container" onClick={handleProgressChange}>
+                    <div className="time-display" ref={currentTimeRef}>{formatTime(currentTime)}</div>
+                    <div
+                        className="progress-container"
+                        onMouseDown={handleMouseDown}
+                        ref={progressBarRef}
+                    >
                         <div className="progress-track">
-                            <div className="progress-bar" style={{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }}/>
+                            <div
+                                className="progress-bar"
+                                ref={progressBarFillRef}
+                                style={{ width: !isDragging && duration ? `${(currentTime / duration) * 100}%` : undefined }}
+                            />
                         </div>
                     </div>
                     <div className="time-display">{formatTime(duration)}</div>
