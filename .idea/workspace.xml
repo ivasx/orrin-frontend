@@ -4,46 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization.">
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistCard/ArtistCard.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistCard/ArtistCard.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistSection/ArtistSection.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/ArtistSection/ArtistSection.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/EmptyStateSection/EmptyStateSection.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/EmptyStateSection/EmptyStateSection.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/LoginPromptSection/LoginPromptSection.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/LoginPromptSection/LoginPromptSection.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionSkeleton/SectionSkeleton.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionSkeleton/SectionSkeleton.jsx" afterDir="false" />
+    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="The player architecture has been changed, many bugs have been improved and fixed, artist cards have been added, the homepage has been filled in, and recommendations from friends have been added.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCard/TrackCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCardContextMenu/TrackCardContextMenu.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/context/TrackCardContextMenu/TrackCardContextMenu.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCardContextMenu/TrackCardContextMenu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/context/TrackCardContextMenu/TrackCardContextMenu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackCardContextMenu/trackMenuItems.js" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/context/TrackCardContextMenu/trackMenuItems.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/MusicSectionWrapper.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/MusicSectionWrapper/MusicSectionWrapper.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/MusicSectionWrapper.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/MusicSectionWrapper/MusicSectionWrapper.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/TrackSection/TrackSection.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/layouts/MainLayout.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/FavoritesPage/FavoritesPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FavoritesPage/FavoritesPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/FeedPage/FeedPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/FeedPage/FeedPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/HistoryPage/HistoryPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HistoryPage/HistoryPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/LibraryPage/LibraryPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/LibraryPage/LibraryPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/NotFoundPage/NotFoundPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/PlaylistsPage/PlaylistsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/PlaylistsPage/PlaylistsPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/RadioPage/RadioPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/RadioPage/RadioPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/TopTracksPage/TopTracksPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/TopTracksPage/TopTracksPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,7 +176,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759953761066</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="The player architecture has been changed, many bugs have been improved and fixed, artist cards have been added, the homepage has been filled in, and recommendations from friends have been added.">
+      <option name="closed" value="true" />
+      <created>1760285623376</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1760285623376</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,7 +198,8 @@
     <MESSAGE value="Improve music player: optimized and synced seek bar, added sidebar" />
     <MESSAGE value="Add react-router, simple pages and improve sidebar" />
     <MESSAGE value="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add custom 404 page and improve app structure&#10;&#10;- Add a new route and component for a custom 404 &quot;Not Found&quot; page.&#10;- Refactor the audio player context to provide a reliable ref to the audio element, removing direct DOM queries.&#10;- Restructure page components into a dedicated 'pages' directory for better organization." />
+    <MESSAGE value="The player architecture has been changed, many bugs have been improved and fixed, artist cards have been added, the homepage has been filled in, and recommendations from friends have been added." />
+    <option name="LAST_COMMIT_MESSAGE" value="The player architecture has been changed, many bugs have been improved and fixed, artist cards have been added, the homepage has been filled in, and recommendations from friends have been added." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

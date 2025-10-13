@@ -13,5 +13,8 @@
   "private": true,
   "dependencies": {
     "lucide-react": "^0.544.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.5"
   }
 }
