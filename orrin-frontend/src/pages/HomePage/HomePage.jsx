@@ -45,11 +45,11 @@ export default function HomePage() {
 
     return (
         <>
-            <div style={{ textAlign: 'center', margin: '20px' }}>
-                <button onClick={() => setIsLoggedIn(!isLoggedIn)}>
-                    {isLoggedIn ? 'Вийти' : 'Увійти (для тесту)'}
-                </button>
-            </div>
+            {/*<div style={{ textAlign: 'center', margin: '20px' }}>*/}
+            {/*    <button onClick={() => setIsLoggedIn(!isLoggedIn)}>*/}
+            {/*        {isLoggedIn ? 'Вийти' : 'Увійти (для тесту)'}*/}
+            {/*    </button>*/}
+            {/*</div>*/}
 
             <MusicSectionWrapper spacing="top-only">
                 <TrackSection

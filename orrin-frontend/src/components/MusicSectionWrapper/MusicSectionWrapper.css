@@ -36,8 +36,16 @@
     gap: 3rem;
 }
 
+@media (max-width: 768px) {
+    .music-section-wrapper {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
 @media (max-width: 480px) {
     .music-section-wrapper {
-        padding: 0 1rem;
+        padding-left: 0;
+        padding-right: 0;
     }
 }
