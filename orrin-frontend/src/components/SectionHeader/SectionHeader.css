@@ -6,7 +6,7 @@
 }
 
 .section-title {
-    font-size: 22px; /* ← Єдиний розмір для всіх заголовків */
+    font-size: 22px;
     font-weight: bold;
     color: #fff;
 }
@@ -16,5 +16,5 @@
     border: none;
     color: #aaa;
     cursor: pointer;
-    font-size: 14px; /* ← Єдиний розмір для всіх кнопок */
+    font-size: 14px;
 }

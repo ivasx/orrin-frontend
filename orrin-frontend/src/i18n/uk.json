@@ -1,0 +1,25 @@
+{
+  "translation": {
+    "listen_now": "Слухати зараз",
+    "popular_artists": "Популярні виконавці",
+    "from_friends": "Від друзів",
+    "more": "Більше",
+    "search_placeholder": "Що хочете послухати?",
+    "sidebar_main": "Головна",
+    "sidebar_feed": "Стрічка",
+    "sidebar_library": "Бібліотека",
+    "sidebar_playlists": "Плейлісти",
+    "sidebar_favorites": "Улюблене",
+    "sidebar_history": "Історія",
+    "sidebar_top_tracks": "Топ треки",
+    "sidebar_radio": "Радіо",
+    "sidebar_settings": "Налаштування",
+    "login": "Увійти",
+    "register": "Зареєструватись",
+    "logout": "Вийти",
+    "sf_close_search": "Закрити пошук",
+    "sf_search": "Пошук",
+    "sf_search_placeholder": "Що хочете послухати?",
+    "sf_clear_search_field": "Очистити поле"
+  }
+}

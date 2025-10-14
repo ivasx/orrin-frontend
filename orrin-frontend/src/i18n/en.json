@@ -1,0 +1,25 @@
+{
+  "translation": {
+    "listen_now": "Listen Now",
+    "popular_artists": "Popular Artists",
+    "from_friends": "From Friends",
+    "more": "More",
+    "search_placeholder": "What do you want to listen to?",
+    "sidebar_main": "Main",
+    "sidebar_feed": "Feed",
+    "sidebar_library": "Library",
+    "sidebar_playlists": "Playlists",
+    "sidebar_favorites": "Favorites",
+    "sidebar_history": "History",
+    "sidebar_top_tracks": "Top Tracks",
+    "sidebar_radio": "Radio",
+    "sidebar_settings": "Settings",
+    "login": "Log in",
+    "register": "Sign up",
+    "logout": "Log out",
+    "sf_close_search": "Close search",
+    "sf_search": "Search",
+    "sf_search_placeholder": "What do you want to listen?",
+    "sf_clear_search_field": "Clear field"
+  }
+}

@@ -4,9 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Add test data">
+    <list default="true" id="56e3ee2a-c942-48bb-a3c2-8c1c36d347cf" name="Changes" comment="Optimize player seek bar performance">
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/i18n/en.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/i18n/i18n.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orrin-frontend/src/i18n/uk.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/BottomPlayer/BottomPlayer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Header/SearchForm/SearchForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Header/SearchForm/SearchForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.css" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/SectionHeader/SectionHeader.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/components/Sidebar/Sidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/main.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/HomePage/HomePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/orrin-frontend/src/pages/SettingsPage/SettingsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +136,8 @@
       <workItem from="1759949048151" duration="4536000" />
       <workItem from="1759954222416" duration="1136000" />
       <workItem from="1760380050880" duration="315000" />
-      <workItem from="1760381626476" duration="4852000" />
+      <workItem from="1760381626476" duration="4983000" />
+      <workItem from="1760467688413" duration="4126000" />
     </task>
     <task id="LOCAL-00001" summary="init orrin-frontend">
       <option name="closed" value="true" />
@@ -203,7 +219,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760385240057</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Optimize player seek bar performance">
+      <option name="closed" value="true" />
+      <created>1760387420953</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1760387420953</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,7 +244,8 @@
     <MESSAGE value="The player architecture has been changed, many bugs have been improved and fixed, artist cards have been added, the homepage has been filled in, and recommendations from friends have been added." />
     <MESSAGE value="add serve for render" />
     <MESSAGE value="Add test data" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add test data" />
+    <MESSAGE value="Optimize player seek bar performance" />
+    <option name="LAST_COMMIT_MESSAGE" value="Optimize player seek bar performance" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -228,7 +253,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/orrin-frontend/src/data.js</url>
           <line>15</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

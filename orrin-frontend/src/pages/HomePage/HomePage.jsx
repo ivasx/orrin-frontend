@@ -7,6 +7,7 @@ import {ways, popularArtists as popularArtistsData} from '../../data.js'; // �
 import LoginPromptSection from '../../components/LoginPromptSection/LoginPromptSection.jsx';
 import EmptyStateSection from '../../components/EmptyStateSection/EmptyStateSection.jsx';
 import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
+import {useTranslation} from "react-i18next";
 
 const mockRecommendations = ways.slice(0, 4);
 
@@ -16,6 +17,7 @@ export default function HomePage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Чи увійшов користувач?
     const [friendsRecommendations, setFriendsRecommendations] = useState([]); // Список рекомендацій
     const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -53,7 +55,7 @@ export default function HomePage() {
 
             <MusicSectionWrapper spacing="top-only">
                 <TrackSection
-                    title="Слухати зараз"
+                    title={t('listen_now')}
                     tracks={listenNowTracks}
                     onMoreClick={() => console.log('Більше натиснуто')}
                 />
@@ -61,7 +63,7 @@ export default function HomePage() {
 
             <MusicSectionWrapper spacing="default">
                 <ArtistSection
-                    title="Популярні виконавці"
+                    title={t('popular_artists')}
                     artists={popularArtists}
                     onMoreClick={() => console.log('Більше натиснуто')}
                 />
@@ -70,24 +72,23 @@ export default function HomePage() {
             <MusicSectionWrapper spacing="default">
                 {!isLoggedIn ? (
                     <LoginPromptSection
-                        title="Від друзів"
+                        title={t('from_friends')}
                         promptText="Увійдіть щоб отримувати рекомендації від друзів"
                         buttonText="Увійти"
                         onLoginClick={() => setIsLoggedIn(true)}
                         onMoreClick={() => console.log('Більше від друзів')}
                     />
                 ) : isLoading ? (
-                    // 👇 Замість тексту тепер використовуємо скелет
-                    <SectionSkeleton title="Від друзів" />
+                    <SectionSkeleton title={t('from_friends')} />
                 ) : friendsRecommendations.length > 0 ? (
                     <TrackSection
-                        title="Від друзів"
+                        title={t('from_friends')}
                         tracks={friendsRecommendations}
                         onMoreClick={() => console.log('Більше від друзів')}
                     />
                 ) : (
                     <EmptyStateSection
-                        title="Від друзів"
+                        title={t('from_friends')}
                         message="Жоден друг ще нічого не порекомендував"
                         onMoreClick={() => console.log('Більше від друзів')}
                     />
@@ -96,7 +97,7 @@ export default function HomePage() {
 
             <MusicSectionWrapper spacing="default">
                 <TrackSection
-                    title="Слухати зараз"
+                    title={t('listen_now')}
                     tracks={listenNowTracks}
                     onMoreClick={() => console.log('Більше натиснуто')}
                 />
@@ -104,7 +105,7 @@ export default function HomePage() {
 
             <MusicSectionWrapper spacing="default">
                 <TrackSection
-                    title="Слухати зараз"
+                    title={t('listen_now')}
                     tracks={listenNowTracks}
                     onMoreClick={() => console.log('Більше натиснуто')}
                 />
