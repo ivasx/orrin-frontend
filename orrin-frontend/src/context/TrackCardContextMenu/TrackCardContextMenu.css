@@ -72,23 +72,23 @@
 /* Hover and focus states */
 .menu-item:hover,
 .menu-item:focus {
-    background: rgba(0, 122, 255, 0.08);
-    color: #007aff;
+    background: rgba(138, 111, 81, 0.34);
+    color: #AF947EFF;
     transform: translateX(2px);
 }
 
 @media (prefers-color-scheme: dark) {
     .menu-item:hover,
     .menu-item:focus {
-        background: rgba(10, 132, 255, 0.12);
-        color: #0a84ff;
+        background: rgba(138, 111, 81, 0.34);
+        color: #AF947EFF;
     }
 }
 
 /* Active state */
 .menu-item:active {
     transform: translateX(2px) scale(0.98);
-    background: rgba(0, 122, 255, 0.12);
+    background: rgba(138, 111, 81, 0.34);
 }
 
 /* Disabled state */
@@ -138,7 +138,7 @@
 }
 
 .menu-badge {
-    background: #007aff;
+    background: #AF947EFF;
     color: white;
     font-size: 10px;
     padding: 2px 6px;
@@ -151,7 +151,7 @@
 
 @media (prefers-color-scheme: dark) {
     .menu-badge {
-        background: #0a84ff;
+        background: #AF947EFF;
     }
 }
 

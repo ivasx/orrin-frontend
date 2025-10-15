@@ -7,9 +7,9 @@ export default function Sidebar({isOpen, onClose, isPlayerVisible}) {
     const {t} = useTranslation();
 
     const menuItems = [
-        { icon: Home, label: t('sidebar_main'), path: '/' },
-        { icon: NewspaperIcon, label: t('sidebar_feed'), path: '/feed' },
-        { icon: Library, label: t('sidebar_library'), path: '/library' }
+        {icon: Home, label: t('sidebar_main'), path: '/'},
+        {icon: NewspaperIcon, label: t('sidebar_feed'), path: '/feed'},
+        {icon: Library, label: t('sidebar_library'), path: '/library'}
     ];
 
     const libraryItems = [
@@ -62,7 +62,7 @@ export default function Sidebar({isOpen, onClose, isPlayerVisible}) {
                     <div className="sidebar__divider"/>
 
                     <div className="sidebar__section">
-                        <h3 className="sidebar__section-title">Моя музика</h3>
+                        <h3 className="sidebar__section-title">{t('sidebar_my_music')}</h3>
                         <ul className="sidebar__menu">
                             {libraryItems.map((item, index) => (
                                 <li key={index} className="sidebar__item">

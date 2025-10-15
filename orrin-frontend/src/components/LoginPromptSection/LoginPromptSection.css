@@ -3,26 +3,26 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 150px; /* Мінімальна висота, щоб вміст був по центру */
+    min-height: 150px;
     padding: 2rem;
-    background-color: #1c1c1c; /* Трохи світліший фон для контрасту */
+    background-color: #1c1c1c;
     border-radius: 8px;
     text-align: center;
-    gap: 1.5rem; /* Відстань між текстом та кнопкою */
+    gap: 1.5rem;
 }
 
 .login-prompt-text {
-    font-size: 1.1rem; /* 18px */
-    color: #b3b3b3; /* Світло-сірий текст */
+    font-size: 1.1rem;
+    color: #b3b3b3;
     margin: 0;
 }
 
 .login-prompt-button {
-    background-color: #f0f0f0; /* Світлий фон кнопки */
-    color: #121212; /* Темний текст */
+    background-color: #f0f0f0;
+    color: #121212;
     border: none;
-    border-radius: 500px; /* Робить кнопку овальною */
-    padding: 0.8rem 2rem; /* Внутрішні відступи */
+    border-radius: 500px;
+    padding: 0.8rem 2rem;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
@@ -31,5 +31,5 @@
 
 .login-prompt-button:hover {
     background-color: #fff;
-    transform: scale(1.05); /* Легке збільшення при наведенні */
+    transform: scale(1.05);
 }

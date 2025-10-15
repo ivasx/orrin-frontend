@@ -1,16 +1,15 @@
 .artist-section-grid {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: max-content; /* Колонки адаптуються до розміру карток */
+    grid-auto-columns: max-content;
     gap: 24px;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 10px 5px;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Для Firefox */
+    scrollbar-width: none;
 }
 
-/* Стилізація скролбару для Webkit-браузерів (Chrome, Safari) */
 .artist-section-grid::-webkit-scrollbar {
     height: 8px;
 }

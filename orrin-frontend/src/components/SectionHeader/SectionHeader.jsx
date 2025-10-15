@@ -1,8 +1,8 @@
 import './SectionHeader.css';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
-export default function SectionHeader({ title, onMoreClick }) {
-    const { t } = useTranslation();
+export default function SectionHeader({title, onMoreClick}) {
+    const {t} = useTranslation();
 
     return (
         <div className="section-header">

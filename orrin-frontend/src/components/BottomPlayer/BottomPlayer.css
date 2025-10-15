@@ -19,7 +19,6 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    /* Задаємо ширину розгорнутого сайдбара (240px) */
     flex: 1;
     min-width: 240px;
     max-width: 240px;
@@ -57,8 +56,12 @@
 }
 
 @keyframes marquee-loop {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
 }
 
 .player-title {
@@ -79,7 +82,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px; /* Зменшив відступ між кнопками і прогресом */
+    gap: 5px;
     min-width: 250px;
     padding: 0 20px;
 }
@@ -103,51 +106,195 @@
     flex: 1;
     min-width: 240px;
     max-width: 240px;
-    /* Можна додати елементи сюди і вирівняти їх по правому краю */
     display: flex;
     justify-content: flex-end;
 }
 
 .control-btn, .play-pause-btn {
-    /* Стилі кнопок залишаються без змін */
 }
 
-.control-btn { background: none; border: none; color: #aaa; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; transition: color 0.2s ease; }
-.control-btn:hover { color: #fff; }
-.play-pause-btn { background: #fff; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
-.play-pause-btn:hover { transform: scale(1.05); }
-.play-pause-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
-.play-triangle { width: 0; height: 0; border-left: 10px solid #000; border-top: 6px solid transparent; border-bottom: 6px solid transparent; margin-left: 2px; }
-.pause-icon { display: flex; gap: 3px; }
-.pause-icon span { width: 3px; height: 12px; background: #000; }
-.loading-spinner { width: 20px; height: 20px; border: 2px solid #ccc; border-top: 2px solid #000; border-radius: 50%; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.progress-container { width: 100%; cursor: pointer; }
-.progress-track { height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 2px; overflow: hidden; position: relative; }
-.progress-bar { height: 100%; background: linear-gradient(90deg, #bababa, rgb(255, 255, 255)); border-radius: 2px; transition: width 0.1s ease; position: relative; }
-.progress-bar:hover { background: linear-gradient(90deg, #8a6f51, rgb(175, 148, 126)); }
-.progress-bar::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #fff; border-radius: 50%; opacity: 0; transition: opacity 0.2s ease; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
-.progress-container:hover .progress-bar::after { opacity: 1; }
-.time-display { font-size: 12px; color: #aaa; font-family: 'Courier New', monospace; white-space: nowrap; }
+.control-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.control-btn:hover {
+    color: #fff;
+}
+
+.play-pause-btn {
+    background: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.play-pause-btn:hover {
+    transform: scale(1.05);
+}
+
+.play-pause-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.play-triangle {
+    width: 0;
+    height: 0;
+    border-left: 10px solid #000;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    margin-left: 2px;
+}
+
+.pause-icon {
+    display: flex;
+    gap: 3px;
+}
+
+.pause-icon span {
+    width: 3px;
+    height: 12px;
+    background: #000;
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-top: 2px solid #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.progress-container {
+    width: 100%;
+    cursor: pointer;
+}
+
+.progress-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #bababa, rgb(255, 255, 255));
+    border-radius: 2px;
+    transition: width 0.1s ease;
+    position: relative;
+}
+
+.progress-bar:hover {
+    background: linear-gradient(90deg, #8a6f51, rgb(175, 148, 126));
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.progress-container:hover .progress-bar::after {
+    opacity: 1;
+}
+
+.time-display {
+    font-size: 12px;
+    color: #aaa;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+}
 
 .bottom-player--hidden {
     transform: translateY(100%);
     transition: transform 0.3s ease-in-out;
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
-    .player-left { min-width: 0; max-width: none; flex: 1; }
-    .player-info { display: none; }
-    .player-center { padding: 0 10px; }
-    .player-right { display: none; }
+    .player-left {
+        min-width: 0;
+        max-width: none;
+        flex: 1;
+    }
+
+    .player-info {
+        display: none;
+    }
+
+    .player-center {
+        padding: 0 10px;
+    }
+
+    .player-right {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
-    .bottom-player { flex-direction: column; height: auto; padding: 10px; }
-    .player-left, .player-center, .player-right { width: 100%; justify-content: center; min-width: 0; max-width: none; }
-    .player-left { margin-bottom: 8px; }
-    .player-cover { display: none; }
-    .player-info { display: block; text-align: center; } /* Показуємо інфо на маленьких екранах */
-    .progress-wrapper { display: none; } /* Ховаємо прогрес-бар */
+    .bottom-player {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+
+    .player-left, .player-center, .player-right {
+        width: 100%;
+        justify-content: center;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .player-left {
+        margin-bottom: 8px;
+    }
+
+    .player-cover {
+        display: none;
+    }
+
+    .player-info {
+        display: block;
+        text-align: center;
+    }
+
+    .progress-wrapper {
+        display: none;
+    }
 }

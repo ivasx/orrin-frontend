@@ -1,15 +1,18 @@
 import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
-import { ways } from '../../data.js';
+import {ways} from '../../data.js';
+import {useTranslation} from "react-i18next";
 
 export default function TopTracksPage() {
-  return (
-    <MusicSectionWrapper spacing="top-only">
-      <TrackSection
-        title="Топ треки"
-        tracks={ways}
-        onMoreClick={() => console.log('Більше натиснуто')}
-      />
-    </MusicSectionWrapper>
-  );
+    const {t} = useTranslation();
+
+    return (
+        <MusicSectionWrapper spacing="top-only">
+            <TrackSection
+                title={t('top_tracks')}
+                tracks={ways}
+                onMoreClick={() => console.log(t('more_pressed'))}
+            />
+        </MusicSectionWrapper>
+    );
 }

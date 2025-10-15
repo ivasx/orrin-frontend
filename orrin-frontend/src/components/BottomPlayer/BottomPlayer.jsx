@@ -1,6 +1,6 @@
-import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
-import { useEffect, useRef, useState, forwardRef, useCallback } from 'react';
-import { SkipBack, SkipForward } from 'lucide-react';
+import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
+import {useEffect, useRef, useState, forwardRef, useCallback} from 'react';
+import {SkipBack, SkipForward} from 'lucide-react';
 import './BottomPlayer.css';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
@@ -122,7 +122,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
 
     const handleMouseDown = (e) => {
         wasPlayingRef.current = isPlaying;
-        if(isPlaying) pauseTrack();
+        if (isPlaying) pauseTrack();
         setIsDragging(true);
         updateVisualSeek(getSeekTime(e.nativeEvent));
     };
@@ -141,7 +141,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         if (isDragging) {
             if (dragAnimationRef.current) cancelAnimationFrame(dragAnimationRef.current);
             const newTime = getSeekTime(e);
-            if(audioRef.current) {
+            if (audioRef.current) {
                 audioRef.current.currentTime = newTime;
             }
             setCurrentTime(newTime);
@@ -212,7 +212,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                             <div
                                 className="progress-bar"
                                 ref={progressBarFillRef}
-                                style={{ width: !isDragging && duration ? `${(currentTime / duration) * 100}%` : undefined }}
+                                style={{width: !isDragging && duration ? `${(currentTime / duration) * 100}%` : undefined}}
                             />
                         </div>
                     </div>

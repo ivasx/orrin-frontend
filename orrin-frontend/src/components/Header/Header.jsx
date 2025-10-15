@@ -32,7 +32,7 @@ export default function Header({user, onLogout, onSearch, onMenuToggle}) {
                         className="menu-toggle"
                         type="button"
                         onClick={onMenuToggle}
-                        aria-label="Відкрити меню"
+                        aria-label={t('open_menu')}
                     >
                         <span className="navbar-toggler-icon-custom">
                             <span></span>
@@ -55,7 +55,7 @@ export default function Header({user, onLogout, onSearch, onMenuToggle}) {
                     <button
                         className="search-toggle"
                         onClick={() => setMobileSearchOpen(true)}
-                        aria-label="Відкрити пошук"
+                        aria-label={t('open_search')}
                     >
                         <svg className="search-icon" viewBox="0 0 24 24">
                             <path
@@ -63,7 +63,6 @@ export default function Header({user, onLogout, onSearch, onMenuToggle}) {
                                 fill="none" stroke="currentColor" strokeWidth="2"/>
                         </svg>
                     </button>
-
 
 
                     {user ? (

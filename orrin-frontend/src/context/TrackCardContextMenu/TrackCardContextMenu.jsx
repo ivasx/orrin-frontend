@@ -1,5 +1,6 @@
 import "./TrackCardContextMenu.css";
-import { useEffect, useRef, useCallback } from "react";
+import {useEffect, useRef, useCallback} from "react";
+import {useTranslation} from "react-i18next";
 
 export default function ContextMenu({
                                         isVisible,
@@ -9,13 +10,12 @@ export default function ContextMenu({
                                         className = ""
                                     }) {
     const menuRef = useRef(null);
+    const {t} = useTranslation();
 
-    // Memoized close handler
     const handleClose = useCallback(() => {
         onClose();
     }, [onClose]);
 
-    // Close menu when clicking outside or pressing escape
     useEffect(() => {
         if (!isVisible) return;
 
@@ -32,7 +32,6 @@ export default function ContextMenu({
             }
         };
 
-        // Small delay to prevent immediate closing
         const timeoutId = setTimeout(() => {
             document.addEventListener('mousedown', handleClickOutside);
             document.addEventListener('touchstart', handleClickOutside);
@@ -47,7 +46,6 @@ export default function ContextMenu({
         };
     }, [isVisible, handleClose]);
 
-    // Auto-focus first menu item when opened
     useEffect(() => {
         if (isVisible && menuRef.current) {
             // Small delay for animation
@@ -60,7 +58,6 @@ export default function ContextMenu({
         }
     }, [isVisible]);
 
-    // Handle keyboard navigation
     useEffect(() => {
         if (!isVisible) return;
 
@@ -112,7 +109,6 @@ export default function ContextMenu({
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [isVisible]);
 
-    // Position adjustment to keep menu in viewport
     const getAdjustedPosition = useCallback(() => {
         if (!menuRef.current) return position;
 
@@ -121,9 +117,8 @@ export default function ContextMenu({
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
-        let { x, y } = position;
+        let {x, y} = position;
 
-        // Adjust horizontal position
         if (x + menuRect.width > viewportWidth - 20) {
             x = viewportWidth - menuRect.width - 20;
         }
@@ -131,7 +126,6 @@ export default function ContextMenu({
             x = 20;
         }
 
-        // Adjust vertical position
         if (y + menuRect.height > viewportHeight - 20) {
             y = viewportHeight - menuRect.height - 20;
         }
@@ -139,7 +133,7 @@ export default function ContextMenu({
             y = 20;
         }
 
-        return { x, y };
+        return {x, y};
     }, [position]);
 
     if (!isVisible) return null;
@@ -150,7 +144,6 @@ export default function ContextMenu({
 
         if (item.disabled) return;
 
-        // Execute action with small delay for better UX
         if (item.action) {
             setTimeout(() => item.action(), 50);
         }
@@ -171,7 +164,7 @@ export default function ContextMenu({
                 zIndex: 1000
             }}
             role="menu"
-            aria-label="Context menu"
+            aria-label={t('context_menu_label')}
         >
             {menuItems.map((item, index) => {
                 if (item.type === 'separator') {
@@ -206,13 +199,13 @@ export default function ContextMenu({
                         </span>
 
                         {item.shortcut && (
-                            <span className="menu-shortcut" aria-label={`Shortcut: ${item.shortcut}`}>
+                            <span className="menu-shortcut" aria-label={t('shortcut_label', {shortcut: item.shortcut})}>
                                 {item.shortcut}
                             </span>
                         )}
 
                         {item.badge && (
-                            <span className="menu-badge" aria-label={`Badge: ${item.badge}`}>
+                            <span className="menu-badge" aria-label={t('badge_label', {badge: item.badge})}>
                                 {item.badge}
                             </span>
                         )}

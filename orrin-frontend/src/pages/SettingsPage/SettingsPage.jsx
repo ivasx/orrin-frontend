@@ -1,61 +1,64 @@
 import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
-import {useSettings} from '../../context/SettingsContext';
-import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
+import { useSettings } from '../../context/SettingsContext';
 import './SettingsPage.css';
-import {useTranslation} from 'react-i18next';
-import {useEffect} from "react";
+import { useTranslation } from 'react-i18next';
 
 export default function SettingsPage() {
-    const {i18n} = useTranslation();
-    const {playMusicOn404, setPlayMusicOn404} = useSettings();
-    const {audioRef} = useAudioPlayer();
+    const { t, i18n } = useTranslation();
+    const { playMusicOn404, setPlayMusicOn404 } = useSettings();
 
-    const changeLanguage = (lng) => {
-        i18n.changeLanguage(lng);
+    const handleLanguageChange = (event) => {
+        i18n.changeLanguage(event.target.value);
     };
 
-
     const handleCheckboxChange = () => {
-        const willBeEnabled = !playMusicOn404;
         setPlayMusicOn404(prevValue => !prevValue);
-
-        if (willBeEnabled && audioRef.current && audioRef.current.paused) {
-            const audio = audioRef.current;
-            const originalVolume = audio.volume;
-            audio.volume = 0;
-
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    audio.pause();
-                    audio.volume = originalVolume;
-                    console.log('Autoplay permission granted!');
-                }).catch(error => {
-                    console.error('Could not unlock autoplay:', error);
-                    audio.volume = originalVolume;
-                });
-            }
-        }
     };
 
     return (
         <MusicSectionWrapper spacing="top-only">
-            <div className="settings-container">
-                <h1>Налаштування</h1>
+            <div className="settings-page">
+                <h1>{t('settings_title')}</h1>
 
+                {/* --- Секція Мови --- */}
                 <div className="settings-section">
-                    <h2>Експериментальні функції</h2>
-                    <label className="setting-toggle">
-                        <input
-                            type="checkbox"
-                            checked={playMusicOn404}
-                            onChange={handleCheckboxChange}
-                        />
-                        <span className="slider"></span>
-                        <span className="label-text">Відтворювати музику на сторінці 404</span>
-                    </label>
-                    <button onClick={() => changeLanguage('uk')}>UK</button>
-                    <button onClick={() => changeLanguage('en')}>EN</button>
+                    <div className="setting-row">
+                        <label className="setting-label" htmlFor="language-select">
+                            {t('settings_language')}
+                        </label>
+                        <div className="setting-control">
+                            <select
+                                id="language-select"
+                                className="language-select"
+                                value={i18n.language}
+                                onChange={handleLanguageChange}
+                            >
+                                <option value="uk">Українська</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* --- Секція Експериментальних функцій --- */}
+                <div className="settings-section">
+                    <h2>{t('settings_experimental')}</h2>
+                    <div className="setting-row">
+                        <span className="setting-label">
+                            {t('settings_404_music')}
+                        </span>
+                        <div className="setting-control">
+                            <label className="setting-toggle">
+                                <input
+                                    type="checkbox"
+                                    checked={playMusicOn404}
+                                    onChange={handleCheckboxChange}
+                                />
+                                <span className="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    {/* Можна додати інші налаштування сюди */}
                 </div>
 
             </div>

@@ -1,13 +1,13 @@
 .track-section-grid {
     display: grid;
-    grid-auto-flow: column;          /* нові колонки по горизонталі */
-    grid-template-rows: repeat(2, 1fr); /* завжди 2 рядки */
-    grid-auto-columns: 320px;       /* ВИПРАВЛЕНО: відповідає ширині картки */
-    gap: 16px;                       /* відстань між картками */
-    overflow-x: auto;                /* горизонтальний скрол */
-    overflow-y: hidden;              /* приховуємо вертикальний скрол */
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-columns: 320px;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
     padding-bottom: 10px;
-    width: 100%;                     /* ВИПРАВЛЕНО: займає всю доступну ширину */
+    width: 100%;
     scrollbar-width: none;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .track-section-grid::-webkit-scrollbar {
-    height: 8px; /* висота горизонтального скролбара */
+    height: 8px;
 }
 
 .track-section-grid::-webkit-scrollbar-track {
@@ -25,29 +25,28 @@
 }
 
 .track-section-grid::-webkit-scrollbar-thumb {
-    background: #666; /* колір повзунка */
+    background: #666;
     border-radius: 4px;
     transition: background 0.2s;
 }
 
 .track-section-grid::-webkit-scrollbar-thumb:hover {
-    background: #888; /* колір повзунка при hover */
+    background: #888;
 }
 
-/* Додаткові стилі для кращого UX */
 .track-section-grid {
-    scroll-behavior: smooth; /* плавний скрол */
+    scroll-behavior: smooth;
 }
 
-/* Мобільна адаптація */
+
 @media (max-width: 768px) {
     .track-section-grid {
-        grid-auto-columns: 280px; /* ВИПРАВЛЕНО: відповідає мобільній ширині картки */
+        grid-auto-columns: 280px;
     }
 }
 
 @media (max-width: 480px) {
     .track-section-grid {
-        grid-auto-columns: 250px; /* ВИПРАВЛЕНО: відповідає мобільній ширині картки */
+        grid-auto-columns: 250px;
     }
 }

@@ -1,14 +1,16 @@
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 import './NotFoundPage.css';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import sadCat from '../../assets/orrin-404.png';
 import song404 from '../../assets/song404.mp3';
-import { useSettings } from '../../context/SettingsContext.jsx';
-import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
+import {useSettings} from '../../context/SettingsContext.jsx';
+import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
+import {useTranslation} from 'react-i18next';
 
 export default function NotFoundPage() {
-    const { playMusicOn404 } = useSettings();
-    const { playTrack, stopTrack } = useAudioPlayer();
+    const {t} = useTranslation();
+    const {playMusicOn404} = useSettings();
+    const {playTrack, stopTrack} = useAudioPlayer();
 
     useEffect(() => {
         document.documentElement.style.overflow = 'hidden';
@@ -27,7 +29,6 @@ export default function NotFoundPage() {
         return () => {
             document.documentElement.style.overflow = 'auto';
             document.body.style.overflow = 'auto';
-
             stopTrack();
         };
     }, [playMusicOn404, playTrack, stopTrack]);
@@ -35,15 +36,15 @@ export default function NotFoundPage() {
     return (
         <div className="not-found-container">
             <div className="not-found-content">
-                <p className="not-found-subtitle">Ой! Сторінку не знайдено</p>
+                <p className="not-found-subtitle">{t('not_found_subtitle')}</p>
                 <h1 className="not-found-title">
                     4
-                    <img src={sadCat} alt="Crying Cat" className="not-found-cat"/>
+                    <img src={sadCat} alt={t('not_found_alt_cat')} className="not-found-cat"/>
                     4
                 </h1>
-                <p className="not-found-text">На жаль, Orrin не зміг знайти те, що ви шукали.</p>
+                <p className="not-found-text">{t('not_found_text')}</p>
                 <Link to="/" className="not-found-button">
-                    Повернутись на головну
+                    {t('not_found_button')}
                 </Link>
             </div>
         </div>

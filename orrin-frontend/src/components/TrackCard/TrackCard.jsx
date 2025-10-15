@@ -1,9 +1,13 @@
 import './TrackCard.css';
-import {useState, useEffect, useCallback, useRef} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import ContextMenu from '../../context/TrackCardContextMenu/TrackCardContextMenu.jsx';
 import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
+import {useTranslation} from "react-i18next";
+import { createTrackMenuItems } from './trackMenuItems.jsx';
 
 export default function TrackCard({title, artist, duration, cover, audio, trackId, tracks}) {
+    const {t} = useTranslation();
+
     const {currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef} = useAudioPlayer();
 
     const [showControls, setShowControls] = useState(false);
@@ -34,7 +38,6 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
         } else if (isCurrentTrack && !isPlaying) {
             resumeTrack();
         } else {
-            // 👇 2. Передайте 'tracks' як другий аргумент
             playTrack({
                 trackId: finalTrackId,
                 title,
@@ -42,7 +45,7 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
                 cover,
                 audio,
                 duration: parseDuration(duration)
-            }, tracks); // 👈 ОСЬ ГОЛОВНА ЗМІНА
+            }, tracks);
         }
     }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId, title, artist, cover, audio, duration, tracks]); // 👈 3. Додайте 'tracks' в масив залежностей
 
@@ -61,100 +64,9 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
     };
 
     // Контекстне меню з volume контролами
-    const getMenuItems = useCallback(() => [
-        {
-            id: 'play',
-            label: 'Play',
-            icon: '▶',
-            shortcut: 'Space',
-            disabled: isPlaying,
-            action: () => !isPlaying && handlePlayPause()
-        },
-        {
-            id: 'pause',
-            label: 'Pause',
-            icon: '⏸',
-            shortcut: 'Space',
-            disabled: !isPlaying,
-            action: () => isPlaying && handlePlayPause()
-        },
-        {type: 'separator'},
-        {
-            id: 'mute',
-            label: isMuted ? 'Unmute' : 'Mute',
-            icon: isMuted ? '🔊' : '🔇',
-            disabled: !isCurrentTrack,
-            action: () => {
-                if (audioRef.current) {
-                    const newMuted = !isMuted;
-                    audioRef.current.muted = newMuted;
-                    setIsMuted(newMuted);
-                }
-            }
-        },
-        {
-            id: 'volumeUp',
-            label: 'Volume Up',
-            icon: '🔊',
-            shortcut: '↑',
-            disabled: !isCurrentTrack || volume >= 1,
-            action: () => {
-                if (audioRef.current) {
-                    const newVolume = Math.min(1, volume + 0.1);
-                    audioRef.current.volume = newVolume;
-                    setVolume(newVolume);
-                    if (isMuted) {
-                        audioRef.current.muted = false;
-                        setIsMuted(false);
-                    }
-                }
-            }
-        },
-        {
-            id: 'volumeDown',
-            label: 'Volume Down',
-            icon: '🔉',
-            shortcut: '↓',
-            disabled: !isCurrentTrack || volume <= 0,
-            action: () => {
-                if (audioRef.current) {
-                    const newVolume = Math.max(0, volume - 0.1);
-                    audioRef.current.volume = newVolume;
-                    setVolume(newVolume);
-                }
-            }
-        },
-        {type: 'separator'},
-        {
-            id: 'share',
-            label: 'Share',
-            icon: '📤',
-            action: () => {
-                if (navigator.share) {
-                    navigator.share({
-                        title: `${title} by ${artist}`,
-                        text: `Listen to ${title} by ${artist}`,
-                        url: window.location.href
-                    });
-                } else {
-                    navigator.clipboard.writeText(`${title} by ${artist} - ${window.location.href}`);
-                }
-            }
-        },
-        {
-            id: 'download',
-            label: 'Download',
-            icon: '💾',
-            action: () => {
-                if (audio) {
-                    const link = document.createElement('a');
-                    link.href = audio;
-                    link.download = `${title} - ${artist}.mp3`;
-                    link.click();
-                }
-            }
-        }
-    ], [isPlaying, isMuted, volume, title, artist, audio, handlePlayPause, isCurrentTrack, audioRef]);
+    const getMenuItems = useCallback(() => createTrackMenuItems({
+        t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef, setIsMuted, setVolume, title, artist, audio
+    }), [t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef, title, artist, audio]);
 
     function createRippleEffect(e) {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -174,7 +86,7 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
     }
 
     function handleCoverClick(e) {
-        if (e.button !== 0) return; // Only left click
+        if (e.button !== 0) return;
         createRippleEffect(e);
         handlePlayPause();
     }
@@ -230,7 +142,7 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
-            aria-label={`Track: ${title} by ${artist}`}
+            aria-label={t('track_card_aria_label', { title, artist })}
         >
             <div
                 className={`track-cover-wrapper ${isPlaying ? 'playing' : ''}`}
@@ -241,7 +153,7 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
             >
                 <img src={cover} alt={title} className="track-cover"/>
 
-                {/* Ripple effect */}
+
                 {showRipple && (
                     <div
                         className="ripple-effect"
@@ -263,7 +175,6 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
                     </div>
                 )}
 
-                {/* Анімаційні барони коли грає */}
                 {isPlaying && !shouldShowControls && (
                     <div className="bars">
                         <span></span>
@@ -272,7 +183,6 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
                     </div>
                 )}
 
-                {/* На мобільних показуємо барони завжди коли грає */}
                 {isTouchDevice && isPlaying && shouldShowControls && (
                     <div className="bars mobile-bars">
                         <span></span>
