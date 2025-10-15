@@ -1,6 +1,5 @@
 .gitignore
 
-songs
 # Logs
 logs
 *.log
@@ -47,4 +46,5 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react
 
-songs/
+public/songs/*
+!public/songs/.gitkeep
