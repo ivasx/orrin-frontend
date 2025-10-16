@@ -128,12 +128,17 @@
     letter-spacing: 1px;
     margin: 0 0 8px;
     opacity: 1;
-    transition: opacity 0.2s ease;
+    overflow: hidden;
+    height: 27px;
+    transition: opacity 0.2s ease, height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
 }
 
 .sidebar--collapsed .sidebar__section-title {
     opacity: 0;
-    overflow: hidden
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 /* Футер */
@@ -183,9 +188,6 @@
     width: 4px;
 }
 
-.sidebar--collapsed .sidebar__section {
-    margin-top: 0;
-}
 /* Мобільна версія */
 @media (max-width: 768px) {
     .sidebar {

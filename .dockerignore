@@ -1,0 +1,11 @@
+# Ігнорувати залежності та збірку
+node_modules
+dist
+dist-ssr
+.vscode
+.idea
+.DS_Store
+*.local
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*

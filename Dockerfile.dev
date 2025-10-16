@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Копіюємо package.json та lock-файл
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Нам не потрібно копіювати весь код зараз, бо ми будемо використовувати Volume
+# І не запускаємо `npm run build`
+
+# Порт, на якому працює Vite Dev Server
+EXPOSE 5173
+
+# Команда для запуску Dev Server (Vite)
+# --host 0.0.0.0 потрібен, щоб він був доступний з хост-машини
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
