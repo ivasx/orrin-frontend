@@ -29,18 +29,23 @@ Orrin — це інноваційний веб-додаток, який поєд
 
 ```
 orrin-frontend/
+├── public/                  # Публічні статичні файли (логотип, тощо)
 ├── src/
-│   ├── components/
-│   │   ├── AudioPlayerContext/  # Контекст глобального плеєра
-│   │   ├── Header/              # Шапка сайту з навігацією
-│   │   ├── Sidebar/             # Бокова панель
-│   │   ├── TrackCard/           # Картка треку
-│   │   ├── TrackSection/        # Секція з треками
-│   │   └── TrackCardContextMenu/ # Контекстне меню треку
-│   ├── data/                    # Дані для розробки
-│   └── App.jsx                  # Головний компонент
-├── public/                      # Статичні файли
-└── package.json
+│   ├── assets/              # Ресурси (зображення, аудіофайли)
+│   ├── components/          # Перевикористовувані UI компоненти (Header, Sidebar, TrackCard)
+│   ├── context/             # React Contexts (AudioPlayerContext, SettingsContext)
+│   ├── i18n/                # Файли локалізації (en.json, uk.json)
+│   ├── layouts/             # Макети сторінок (MainLayout, HeaderOnlyLayout)
+│   ├── pages/               # Компоненти сторінок (HomePage, SettingsPage, Auth)
+│   ├── App.jsx              # Головний компонент з роутингом
+│   ├── data.js              # Тестові дані для розробки (пісні, артисти)
+│   ├── main.jsx             # Вхідна точка додатку
+│   └── index.css            # Глобальні стилі
+├── .dockerignore            # Файли, що ігноруються Docker
+├── Dockerfile               # Dockerfile для продакшен-збірки
+├── Dockerfile.dev           # Dockerfile для розробки
+├── package.json             # Залежності та скрипти проекту
+└── README.md                # Цей файл
 ```
 
 ## Встановлення та запуск
