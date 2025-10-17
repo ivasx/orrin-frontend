@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import './Auth.css';
 import { useTranslation } from 'react-i18next';
+import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
+import './Auth.css';
 
 export default function Login() {
     const { t } = useTranslation();
@@ -13,9 +14,11 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login:', formData);
-        // Після успішного логіну:
-        // navigate('/');
+        console.log('Login attempt with:', formData);
+    };
+
+    const handleSocialLogin = (provider) => {
+        console.log(`Login with ${provider}`);
     };
 
     const handleChange = (e) => {
@@ -28,16 +31,22 @@ export default function Login() {
     return (
         <div className="auth-page">
             <div className="auth-container">
+                <Link to="/" className="back-to-home" aria-label={t('back_to_home_aria')}>
+                    <FaArrowLeft />
+                </Link>
+
                 <div className="auth-header">
+                    <img src="/orrin-logo.svg" alt="Orrin Logo" className="auth-logo" />
                     <h1 className="auth-title">{t('login_title')}</h1>
-                    <p className="auth-subtitle">{t('login_subtitle')}</p>
+                    <p className="auth-subtitle">
+                        {t('no_account_yet')}{' '}
+                        <Link to="/register" className="auth-link">{t('register_link')}</Link>
+                    </p>
                 </div>
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="email" className="form-label">
-                            {t('email_label')}
-                        </label>
+                        <label htmlFor="email" className="form-label">{t('email_label')}</label>
                         <input
                             type="email"
                             id="email"
@@ -51,9 +60,7 @@ export default function Login() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="password" className="form-label">
-                            {t('password_label')}
-                        </label>
+                        <label htmlFor="password" className="form-label">{t('password_label')}</label>
                         <input
                             type="password"
                             id="password"
@@ -67,25 +74,22 @@ export default function Login() {
                     </div>
 
                     <button type="submit" className="auth-button">
-                        {t('login_link')}
+                        {t('login_button')}
                     </button>
                 </form>
 
-                <div className="auth-footer">
-                    <p className="auth-footer-text">
-                        {t('no_account_yet')}{' '}
-                        <Link to="/register" className="auth-link">
-                            {t('register_link')}
-                        </Link>
-                    </p>
+                <div className="social-register">
+                    <div className="divider"><span>{t('login_with_divider')}</span></div>
+                    <div className="social-buttons">
+                        <button className="social-button google" onClick={() => handleSocialLogin('Google')}>
+                            <FaGoogle /> Google
+                        </button>
+                        <button className="social-button apple" onClick={() => handleSocialLogin('Apple')}>
+                            <FaApple /> Apple
+                        </button>
+                    </div>
                 </div>
 
-                <button
-                    className="back-home-button"
-                    onClick={() => navigate('/')}
-                >
-                    {t('back_to_home')}
-                </button>
             </div>
         </div>
     );
