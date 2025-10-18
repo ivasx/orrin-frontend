@@ -1,6 +1,7 @@
 import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
 import {useEffect, useRef, useState, forwardRef, useCallback} from 'react';
 import {SkipBack, SkipForward} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './BottomPlayer.css';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
@@ -172,10 +173,14 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     return (
         <div className={playerClassName} ref={ref}>
             <div className="player-left">
-                <img src={currentTrack.cover} alt={currentTrack.title} className="player-cover"/>
+                <Link to={`/track/${currentTrack.trackId}`}>
+                    <img src={currentTrack.cover} alt={currentTrack.title} className="player-cover"/>
+                </Link>
                 <div className="player-info">
                     <div className="player-title">
-                        <span>{currentTrack.title}</span>
+                        <Link to={`/track/${currentTrack.trackId}`}>
+                            <span>{currentTrack.title}</span>
+                        </Link>
                     </div>
                     <div className="player-artist">
                         <span>{currentTrack.artist}</span>

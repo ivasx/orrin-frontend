@@ -1,0 +1,27 @@
+.track-page {
+    padding: 20px;
+}
+
+.track-page-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.track-page-cover {
+    width: 150px;
+    height: 150px;
+    margin-right: 20px;
+    border-radius: 10px;
+}
+
+.track-page-info h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+.track-page-info p {
+    margin: 5px 0;
+    font-size: 1.2em;
+    color: #ccc;
+}

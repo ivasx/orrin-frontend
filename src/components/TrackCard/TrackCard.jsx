@@ -3,7 +3,8 @@ import {useState, useEffect, useCallback} from 'react';
 import ContextMenu from '../../context/TrackCardContextMenu/TrackCardContextMenu.jsx';
 import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
 import {useTranslation} from "react-i18next";
-import { createTrackMenuItems } from './trackMenuItems.jsx';
+import {createTrackMenuItems} from './trackMenuItems.jsx';
+import { Link } from 'react-router-dom';
 
 export default function TrackCard({title, artist, duration, cover, audio, trackId, tracks}) {
     const {t} = useTranslation();
@@ -65,7 +66,18 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
 
     // Контекстне меню з volume контролами
     const getMenuItems = useCallback(() => createTrackMenuItems({
-        t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef, setIsMuted, setVolume, title, artist, audio
+        t,
+        isPlaying,
+        isMuted,
+        volume,
+        handlePlayPause,
+        isCurrentTrack,
+        audioRef,
+        setIsMuted,
+        setVolume,
+        title,
+        artist,
+        audio
     }), [t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef, title, artist, audio]);
 
     function createRippleEffect(e) {
@@ -142,7 +154,7 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
-            aria-label={t('track_card_aria_label', { title, artist })}
+            aria-label={t('track_card_aria_label', {title, artist})}
         >
             <div
                 className={`track-cover-wrapper ${isPlaying ? 'playing' : ''}`}
@@ -193,7 +205,9 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
             </div>
 
             <div className="track-info">
-                <div className="track-title" title={title}>{title}</div>
+                <Link to={`/track/${finalTrackId}`} className="track-title" title={title}>
+                    {title}
+                </Link>
                 <div className="track-artist" title={artist}>{artist}</div>
                 <div
                     className="track-duration"
