@@ -247,6 +247,15 @@
     transition: transform 0.3s ease-in-out;
 }
 
+.player-info a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.player-info a:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 768px) {
     .player-left {
         min-width: 0;
