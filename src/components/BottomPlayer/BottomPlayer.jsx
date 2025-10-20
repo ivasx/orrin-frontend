@@ -1,161 +1,106 @@
+// BottomPlayer.jsx
+
 import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
-import { useEffect, useRef, useState, forwardRef, useCallback } from 'react';
-import { SkipBack, SkipForward } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, forwardRef } from 'react';
 import './BottomPlayer.css';
+
+import TrackInfo from './TrackInfo';
+import PlayerControls from './PlayerControls';
+import TimeControls from './TimeControls';
+import { useProgressBar } from '../../hooks/useProgressBar';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const {
         currentTrack, isPlaying, pauseTrack, resumeTrack,
         nextTrack, previousTrack, audioRef,
+        repeatMode, toggleRepeat, isShuffled, toggleShuffle
     } = useAudioPlayer();
 
-    const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isDragging, setIsDragging] = useState(false);
+    // Стан завантаження залишається, він корисний для UI
+    const [isLoading, setIsLoading] = useState(false);
 
-    const [isTitleScrolling, setIsTitleScrolling] = useState(false);
-    const [isArtistScrolling, setIsArtistScrolling] = useState(false);
-    const titleContainerRef = useRef(null);
-    const artistContainerRef = useRef(null);
-    const titleContentRef = useRef(null);
-    const artistContentRef = useRef(null);
+    const {
+        currentTime, duration, progressPercent, progressBarRef,
+        handleMouseDown, formatTime
+    } = useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack);
 
-    const progressBarRef = useRef(null);
-    const progressBarFillRef = useRef(null);
-    const currentTimeRef = useRef(null);
-    const wasPlayingRef = useRef(false);
-    const dragAnimationRef = useRef(null);
-    const topProgressBarRef = useRef(null);
+    // ▼▼▼ ОСНОВНІ ЗМІНИ ТУТ ▼▼▼
+    // Об'єднуємо всю логіку, пов'язану з аудіо-елементом, в один useEffect
 
-    useEffect(() => {
-        setIsTitleScrolling(false);
-        setIsArtistScrolling(false);
-    }, [currentTrack?.trackId]);
-
-    useEffect(() => {
-        const checkScrolling = (containerRef, contentRef, setScrolling) => {
-            if (containerRef.current && contentRef.current) {
-                const containerWidth = containerRef.current.offsetWidth;
-                const contentWidth = contentRef.current.scrollWidth;
-                setScrolling(contentWidth > containerWidth);
-            }
-        };
-
-        const timeoutId = setTimeout(() => {
-            checkScrolling(titleContainerRef, titleContentRef, setIsTitleScrolling);
-            checkScrolling(artistContainerRef, artistContentRef, setIsArtistScrolling);
-        }, 100);
-
-        return () => clearTimeout(timeoutId);
-    }, [currentTrack]);
-
-    useEffect(() => {
-        const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-
-        if (progressBarFillRef.current) {
-            progressBarFillRef.current.style.width = `${progressPercent}%`;
-        }
-        if (topProgressBarRef.current) {
-            topProgressBarRef.current.style.width = `${progressPercent}%`;
-        }
-    }, [currentTime, duration]);
-
+    // 1. Керування джерелом аудіо (src)
     useEffect(() => {
         const audio = audioRef.current;
         if (audio && currentTrack) {
-            setIsLoading(true);
-            audio.src = currentTrack.audio;
-            audio.load();
+            // Якщо джерело не збігається, оновлюємо його
+            if (audio.src !== currentTrack.audio) {
+                setIsLoading(true);
+                audio.src = currentTrack.audio;
+                audio.load(); // Рекомендується для кращої сумісності
+            }
         }
     }, [currentTrack, audioRef]);
 
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio || isLoading) return;
-        if (isPlaying) {
-            audio.play().catch(e => console.error("Playback error:", e));
-        } else {
-            audio.pause();
-        }
-    }, [isPlaying, isLoading, audioRef]);
-
+    // 2. Керування відтворенням (play/pause) та подіями завантаження
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
-        const handleLoadedData = () => { setDuration(audio.duration); setIsLoading(false); };
-        const handleEnded = () => { if (!isDragging) currentTrack?.loop ? (audio.currentTime = 0, audio.play()) : nextTrack(); };
-        const handleError = () => setIsLoading(false);
-        const handleTimeUpdate = () => { if (!isDragging) setCurrentTime(audio.currentTime); };
 
-        audio.addEventListener('loadeddata', handleLoadedData);
-        audio.addEventListener('ended', handleEnded);
-        audio.addEventListener('error', handleError);
-        audio.addEventListener('timeupdate', handleTimeUpdate);
-        return () => {
-            audio.removeEventListener('loadeddata', handleLoadedData);
-            audio.removeEventListener('ended', handleEnded);
-            audio.removeEventListener('error', handleError);
-            audio.removeEventListener('timeupdate', handleTimeUpdate);
+        const playPromise = () => {
+            const promise = audio.play();
+            if (promise !== undefined) {
+                promise.catch(error => {
+                    console.error("Помилка відтворення:", error);
+                    // Якщо автоплей не спрацював, ставимо на паузу в UI
+                    pauseTrack();
+                }).then(() => {
+                    setIsLoading(false); // Вимикаємо завантаження після успішного старту
+                });
+            }
         };
-    }, [audioRef, currentTrack, nextTrack, isDragging]);
+
+        // Коли аудіо готове до відтворення
+        const handleCanPlay = () => {
+            setIsLoading(false);
+            if (isPlaying) {
+                playPromise();
+            }
+        };
+
+        // Якщо виникла помилка
+        const handleError = () => {
+            console.error("Помилка завантаження аудіо.");
+            setIsLoading(false);
+        };
+
+        // Починаємо слухати події
+        audio.addEventListener('canplay', handleCanPlay);
+        audio.addEventListener('error', handleError);
+        audio.addEventListener('stalled', handleError); // Обробка "зависання" завантаження
+
+        // Керуємо відтворенням/паузою на основі стану isPlaying
+        if (isPlaying) {
+            // Якщо трек вже завантажений, просто граємо.
+            // readyState > 2 означає, що є достатньо даних для відтворення.
+            if (audio.readyState > 2) {
+                playPromise();
+            } else {
+                // Якщо ще не завантажено, показуємо спіннер.
+                // handleCanPlay подбає про відтворення, коли буде готове.
+                setIsLoading(true);
+            }
+        } else {
+            audio.pause();
+        }
+
+        // Очищення слухачів
+        return () => {
+            audio.removeEventListener('canplay', handleCanPlay);
+            audio.removeEventListener('error', handleError);
+            audio.removeEventListener('stalled', handleError);
+        };
+    }, [isPlaying, currentTrack, audioRef, pauseTrack]); // Додаємо pauseTrack в залежності
 
     const handlePlayPause = () => isPlaying ? pauseTrack() : resumeTrack();
-    const formatTime = (seconds) => {
-        if (isNaN(seconds) || seconds < 0) return '0:00';
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    const handleMouseDown = (e) => {
-        wasPlayingRef.current = isPlaying;
-        if (isPlaying) pauseTrack();
-        setIsDragging(true);
-        updateVisualSeek(getSeekTime(e.nativeEvent));
-    };
-
-    const getSeekTime = (e) => {
-        if (!progressBarRef.current || !duration) return 0;
-        const rect = progressBarRef.current.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
-        const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
-        return percentage * duration;
-    };
-
-    const updateVisualSeek = (newTime) => {
-        if (progressBarFillRef.current) progressBarFillRef.current.style.width = `${(newTime / duration) * 100}%`;
-        if (currentTimeRef.current) currentTimeRef.current.textContent = formatTime(newTime);
-    };
-
-    const handleMouseMove = useCallback((e) => {
-        if (isDragging) {
-            e.preventDefault();
-            cancelAnimationFrame(dragAnimationRef.current);
-            dragAnimationRef.current = requestAnimationFrame(() => updateVisualSeek(getSeekTime(e)));
-        }
-    }, [isDragging, duration]);
-
-    const handleMouseUp = useCallback((e) => {
-        if (isDragging) {
-            cancelAnimationFrame(dragAnimationRef.current);
-            const newTime = getSeekTime(e);
-            if (audioRef.current) audioRef.current.currentTime = newTime;
-            setCurrentTime(newTime);
-            setIsDragging(false);
-            if (wasPlayingRef.current) resumeTrack();
-        }
-    }, [isDragging, duration, resumeTrack, audioRef]);
-
-    useEffect(() => {
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, [handleMouseMove, handleMouseUp]);
 
     if (!currentTrack) return null;
 
@@ -164,47 +109,28 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
 
     return (
         <div className={playerClassName} ref={ref}>
-            <div ref={topProgressBarRef} className="top-progress-bar"></div>
-
-            <div className="player-left">
-                <Link to={`/track/${currentTrack.trackId}`}>
-                    <img src={currentTrack.cover} alt={currentTrack.title} className="player-cover"/>
-                </Link>
-                <div className="player-info">
-                    <div ref={titleContainerRef} className={`player-title ${isTitleScrolling ? 'scrolling' : ''}`}>
-                        <Link to={`/track/${currentTrack.trackId}`}>
-                            <div className="marquee__content" ref={titleContentRef}>
-                                <span>{currentTrack.title}</span>
-                                <span aria-hidden="true">{currentTrack.title}</span>
-                            </div>
-                        </Link>
-                    </div>
-                    <div ref={artistContainerRef} className={`player-artist ${isArtistScrolling ? 'scrolling' : ''}`}>
-                        <div className="marquee__content" ref={artistContentRef}>
-                            <span>{currentTrack.artist}</span>
-                            <span aria-hidden="true">{currentTrack.artist}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <div className="top-progress-bar" style={{ width: `${progressPercent}%` }}></div>
+            <TrackInfo track={currentTrack} />
             <div className="player-center">
-                <div className="player-controls">
-                    <button className="control-btn" onClick={() => previousTrack()}><SkipBack size={20}/></button>
-                    <button className="play-pause-btn" onClick={handlePlayPause} disabled={isLoading}>
-                        {isLoading ? <div className="loading-spinner"></div> : isPlaying ? <div className="pause-icon"><span></span><span></span></div> : <div className="play-triangle"></div>}
-                    </button>
-                    <button className="control-btn" onClick={() => nextTrack()}><SkipForward size={20}/></button>
-                </div>
-                <div className="progress-wrapper">
-                    <div className="time-display" ref={currentTimeRef}>{formatTime(currentTime)}</div>
-                    <div className="progress-container" onMouseDown={handleMouseDown} ref={progressBarRef}>
-                        <div className="progress-track">
-                            <div className="progress-bar" ref={progressBarFillRef} />
-                        </div>
-                    </div>
-                    <div className="time-display">{formatTime(duration)}</div>
-                </div>
+                <PlayerControls
+                    isPlaying={isPlaying}
+                    isLoading={isLoading}
+                    isShuffled={isShuffled}
+                    repeatMode={repeatMode}
+                    onPlayPause={handlePlayPause}
+                    onNext={nextTrack}
+                    onPrevious={previousTrack}
+                    onToggleShuffle={toggleShuffle}
+                    onToggleRepeat={toggleRepeat}
+                />
+                <TimeControls
+                    progressBarRef={progressBarRef}
+                    progressPercent={progressPercent}
+                    currentTime={currentTime}
+                    duration={duration}
+                    onMouseDown={handleMouseDown}
+                    formatTime={formatTime}
+                />
             </div>
             <div className="player-right"></div>
         </div>

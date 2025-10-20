@@ -298,6 +298,26 @@
     text-decoration: underline;
 }
 
+.control-btn.active {
+    color: #fff;
+    position: relative;
+}
+
+.control-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 50%;
+}
+.repeat-one-icon {
+    stroke-width: 2.5;
+}
+
 @media (max-width: 768px) {
     .player-left { min-width: 0; flex: 1; }
     .player-info { display: block; }
@@ -318,5 +338,10 @@
 
     .top-progress-bar {
         display: block;
+    }
+
+    .player-controls > .control-btn:first-child,
+    .player-controls > .control-btn:last-child {
+        display: none;
     }
 }
