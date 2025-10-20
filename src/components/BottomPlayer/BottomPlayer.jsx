@@ -1,17 +1,13 @@
-import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
-import {useEffect, useRef, useState, forwardRef, useCallback} from 'react';
-import {SkipBack, SkipForward} from 'lucide-react';
+import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
+import { useEffect, useRef, useState, forwardRef, useCallback } from 'react';
+import { SkipBack, SkipForward } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './BottomPlayer.css';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const {
-        currentTrack,
-        isPlaying,
-        pauseTrack,
-        resumeTrack,
-        nextTrack,
-        previousTrack,
-        audioRef,
+        currentTrack, isPlaying, pauseTrack, resumeTrack,
+        nextTrack, previousTrack, audioRef,
     } = useAudioPlayer();
 
     const [currentTime, setCurrentTime] = useState(0);
@@ -19,12 +15,52 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const [isLoading, setIsLoading] = useState(true);
     const [isDragging, setIsDragging] = useState(false);
 
+    const [isTitleScrolling, setIsTitleScrolling] = useState(false);
+    const [isArtistScrolling, setIsArtistScrolling] = useState(false);
+    const titleContainerRef = useRef(null);
+    const artistContainerRef = useRef(null);
+    const titleContentRef = useRef(null);
+    const artistContentRef = useRef(null);
+
     const progressBarRef = useRef(null);
     const progressBarFillRef = useRef(null);
     const currentTimeRef = useRef(null);
     const wasPlayingRef = useRef(false);
     const dragAnimationRef = useRef(null);
+    const topProgressBarRef = useRef(null);
 
+    useEffect(() => {
+        setIsTitleScrolling(false);
+        setIsArtistScrolling(false);
+    }, [currentTrack?.trackId]);
+
+    useEffect(() => {
+        const checkScrolling = (containerRef, contentRef, setScrolling) => {
+            if (containerRef.current && contentRef.current) {
+                const containerWidth = containerRef.current.offsetWidth;
+                const contentWidth = contentRef.current.scrollWidth;
+                setScrolling(contentWidth > containerWidth);
+            }
+        };
+
+        const timeoutId = setTimeout(() => {
+            checkScrolling(titleContainerRef, titleContentRef, setIsTitleScrolling);
+            checkScrolling(artistContainerRef, artistContentRef, setIsArtistScrolling);
+        }, 100);
+
+        return () => clearTimeout(timeoutId);
+    }, [currentTrack]);
+
+    useEffect(() => {
+        const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+        if (progressBarFillRef.current) {
+            progressBarFillRef.current.style.width = `${progressPercent}%`;
+        }
+        if (topProgressBarRef.current) {
+            topProgressBarRef.current.style.width = `${progressPercent}%`;
+        }
+    }, [currentTime, duration]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -38,7 +74,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || isLoading) return;
-
         if (isPlaying) {
             audio.play().catch(e => console.error("Playback error:", e));
         } else {
@@ -49,35 +84,15 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
-
-        const handleLoadedData = () => {
-            setDuration(audio.duration);
-            setIsLoading(false);
-        };
-
-        const handleEnded = () => {
-            if (isDragging) return;
-            if (currentTrack?.loop) {
-                audio.currentTime = 0;
-                audio.play();
-            } else {
-                nextTrack();
-            }
-        };
-
+        const handleLoadedData = () => { setDuration(audio.duration); setIsLoading(false); };
+        const handleEnded = () => { if (!isDragging) currentTrack?.loop ? (audio.currentTime = 0, audio.play()) : nextTrack(); };
         const handleError = () => setIsLoading(false);
-
-        const handleTimeUpdate = () => {
-            if (!isDragging) {
-                setCurrentTime(audio.currentTime);
-            }
-        };
+        const handleTimeUpdate = () => { if (!isDragging) setCurrentTime(audio.currentTime); };
 
         audio.addEventListener('loadeddata', handleLoadedData);
         audio.addEventListener('ended', handleEnded);
         audio.addEventListener('error', handleError);
         audio.addEventListener('timeupdate', handleTimeUpdate);
-
         return () => {
             audio.removeEventListener('loadeddata', handleLoadedData);
             audio.removeEventListener('ended', handleEnded);
@@ -86,38 +101,12 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         };
     }, [audioRef, currentTrack, nextTrack, isDragging]);
 
-    const handlePlayPause = () => {
-        if (isPlaying) {
-            pauseTrack();
-        } else {
-            resumeTrack();
-        }
-    };
-
+    const handlePlayPause = () => isPlaying ? pauseTrack() : resumeTrack();
     const formatTime = (seconds) => {
         if (isNaN(seconds) || seconds < 0) return '0:00';
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
-
-
-    const updateVisualSeek = (newTime) => {
-        if (progressBarFillRef.current) {
-            progressBarFillRef.current.style.width = `${(newTime / duration) * 100}%`;
-        }
-        if (currentTimeRef.current) {
-            currentTimeRef.current.textContent = formatTime(newTime);
-        }
-    };
-
-    const getSeekTime = (e) => {
-        if (!progressBarRef.current || !duration) return 0;
-        const progressBar = progressBarRef.current;
-        const rect = progressBar.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
-        const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
-        return percentage * duration;
     };
 
     const handleMouseDown = (e) => {
@@ -127,42 +116,46 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         updateVisualSeek(getSeekTime(e.nativeEvent));
     };
 
+    const getSeekTime = (e) => {
+        if (!progressBarRef.current || !duration) return 0;
+        const rect = progressBarRef.current.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
+        return percentage * duration;
+    };
+
+    const updateVisualSeek = (newTime) => {
+        if (progressBarFillRef.current) progressBarFillRef.current.style.width = `${(newTime / duration) * 100}%`;
+        if (currentTimeRef.current) currentTimeRef.current.textContent = formatTime(newTime);
+    };
+
     const handleMouseMove = useCallback((e) => {
         if (isDragging) {
             e.preventDefault();
-            if (dragAnimationRef.current) cancelAnimationFrame(dragAnimationRef.current);
-            dragAnimationRef.current = requestAnimationFrame(() => {
-                updateVisualSeek(getSeekTime(e));
-            });
+            cancelAnimationFrame(dragAnimationRef.current);
+            dragAnimationRef.current = requestAnimationFrame(() => updateVisualSeek(getSeekTime(e)));
         }
     }, [isDragging, duration]);
 
     const handleMouseUp = useCallback((e) => {
         if (isDragging) {
-            if (dragAnimationRef.current) cancelAnimationFrame(dragAnimationRef.current);
+            cancelAnimationFrame(dragAnimationRef.current);
             const newTime = getSeekTime(e);
-            if (audioRef.current) {
-                audioRef.current.currentTime = newTime;
-            }
+            if (audioRef.current) audioRef.current.currentTime = newTime;
             setCurrentTime(newTime);
             setIsDragging(false);
-
-            if (wasPlayingRef.current) {
-                resumeTrack();
-            }
+            if (wasPlayingRef.current) resumeTrack();
         }
     }, [isDragging, duration, resumeTrack, audioRef]);
 
     useEffect(() => {
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
-
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
     }, [handleMouseMove, handleMouseUp]);
-
 
     if (!currentTrack) return null;
 
@@ -171,58 +164,49 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
 
     return (
         <div className={playerClassName} ref={ref}>
+            <div ref={topProgressBarRef} className="top-progress-bar"></div>
+
             <div className="player-left">
-                <img src={currentTrack.cover} alt={currentTrack.title} className="player-cover"/>
+                <Link to={`/track/${currentTrack.trackId}`}>
+                    <img src={currentTrack.cover} alt={currentTrack.title} className="player-cover"/>
+                </Link>
                 <div className="player-info">
-                    <div className="player-title">
-                        <span>{currentTrack.title}</span>
+                    <div ref={titleContainerRef} className={`player-title ${isTitleScrolling ? 'scrolling' : ''}`}>
+                        <Link to={`/track/${currentTrack.trackId}`}>
+                            <div className="marquee__content" ref={titleContentRef}>
+                                <span>{currentTrack.title}</span>
+                                <span aria-hidden="true">{currentTrack.title}</span>
+                            </div>
+                        </Link>
                     </div>
-                    <div className="player-artist">
-                        <span>{currentTrack.artist}</span>
+                    <div ref={artistContainerRef} className={`player-artist ${isArtistScrolling ? 'scrolling' : ''}`}>
+                        <div className="marquee__content" ref={artistContentRef}>
+                            <span>{currentTrack.artist}</span>
+                            <span aria-hidden="true">{currentTrack.artist}</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="player-center">
                 <div className="player-controls">
-                    <button className="control-btn" onClick={() => previousTrack()}>
-                        <SkipBack size={20}/>
-                    </button>
+                    <button className="control-btn" onClick={() => previousTrack()}><SkipBack size={20}/></button>
                     <button className="play-pause-btn" onClick={handlePlayPause} disabled={isLoading}>
-                        {isLoading ? (
-                            <div className="loading-spinner"></div>
-                        ) : isPlaying ? (
-                            <div className="pause-icon"><span></span><span></span></div>
-                        ) : (
-                            <div className="play-triangle"></div>
-                        )}
+                        {isLoading ? <div className="loading-spinner"></div> : isPlaying ? <div className="pause-icon"><span></span><span></span></div> : <div className="play-triangle"></div>}
                     </button>
-                    <button className="control-btn" onClick={() => nextTrack()}>
-                        <SkipForward size={20}/>
-                    </button>
+                    <button className="control-btn" onClick={() => nextTrack()}><SkipForward size={20}/></button>
                 </div>
                 <div className="progress-wrapper">
                     <div className="time-display" ref={currentTimeRef}>{formatTime(currentTime)}</div>
-                    <div
-                        className="progress-container"
-                        onMouseDown={handleMouseDown}
-                        ref={progressBarRef}
-                    >
+                    <div className="progress-container" onMouseDown={handleMouseDown} ref={progressBarRef}>
                         <div className="progress-track">
-                            <div
-                                className="progress-bar"
-                                ref={progressBarFillRef}
-                                style={{width: !isDragging && duration ? `${(currentTime / duration) * 100}%` : undefined}}
-                            />
+                            <div className="progress-bar" ref={progressBarFillRef} />
                         </div>
                     </div>
                     <div className="time-display">{formatTime(duration)}</div>
                 </div>
             </div>
-
-            <div className="player-right">
-                {/* Тут можуть бути іконки гучності, черги і т.д. */}
-            </div>
+            <div className="player-right"></div>
         </div>
     );
 });

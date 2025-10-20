@@ -24,6 +24,7 @@ import RegisterPage from './pages/Auth/Register.jsx';
 import LoginPage from './pages/Auth/Login.jsx';
 
 import './App.css';
+import TrackPage from "./pages/TrackPage/TrackPage.jsx";
 
 function AppContent() {
     const { currentTrack } = useAudioPlayer();
@@ -58,6 +59,7 @@ function AppContent() {
                     <Route path="/top" element={<TopTracksPage />} />
                     <Route path="/radio" element={<RadioPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/track/:trackId" element={<TrackPage />} />
                 </Route>
 
                 <Route element={<HeaderOnlyLayout />}>

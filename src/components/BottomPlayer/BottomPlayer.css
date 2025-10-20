@@ -14,7 +14,20 @@
     border-top: 1px solid #333;
 }
 
-/* --- БЛОК 1: ІНФОРМАЦІЯ ПРО ТРЕК --- */
+/* --- ВЕРХНІЙ ПРОГРЕС-БАР --- */
+.top-progress-bar {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    height: 2px;
+    background: #fff;
+    width: 0;
+    pointer-events: none;
+    display: none;
+    transition: width 0.1s linear;
+    z-index: 1;
+}
+
 .player-left {
     display: flex;
     align-items: center;
@@ -40,28 +53,15 @@
 
 .player-title,
 .player-artist {
-    overflow: hidden;
-    white-space: nowrap;
     width: 100%;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
 }
 
-.player-title span, .player-artist span {
-    display: inline-block;
-    padding-right: 2em;
-}
-
-.scrolling > span {
-    animation: marquee-loop var(--animation-duration, 15s) linear infinite;
-    animation-delay: 1s;
-}
-
-@keyframes marquee-loop {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-50%);
-    }
+.player-title.scrolling,
+.player-artist.scrolling {
+    overflow: visible;
 }
 
 .player-title {
@@ -75,7 +75,57 @@
     color: #aaa;
 }
 
-/* --- БЛОК 2: ЦЕНТРАЛЬНА ЧАСТИНА --- */
+.player-title a,
+.player-artist a {
+    display: inline-block;
+    overflow: visible;
+}
+
+/* Контейнер для marquee */
+.marquee__content {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.scrolling .marquee__content {
+    display: inline-flex;
+    width: max-content;
+    animation: marquee-scroll 16s linear infinite;
+}
+
+.scrolling .marquee__content > span {
+    padding-right: 3em;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.marquee__content > span[aria-hidden="true"] {
+    display: none;
+}
+
+.scrolling .marquee__content > span[aria-hidden="true"] {
+    display: inline-block;
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    3.125% {
+        /* Пауза 0.5с на початку */
+        transform: translateX(0);
+    }
+    96.875% {
+        /* Рух завершується */
+        transform: translateX(-50%);
+    }
+    100% {
+        /* Пауза 0.5с в кінці */
+        transform: translateX(-50%);
+    }
+}
+
+/* --- РЕШТА СТИЛІВ --- */
 .player-center {
     flex: 2;
     display: flex;
@@ -101,16 +151,12 @@
     max-width: 450px;
 }
 
-/* --- БЛОК 3: ПРАВА ЧАСТИНА --- */
 .player-right {
     flex: 1;
     min-width: 240px;
     max-width: 240px;
     display: flex;
     justify-content: flex-end;
-}
-
-.control-btn, .play-pause-btn {
 }
 
 .control-btn {
@@ -183,12 +229,8 @@
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .progress-container {
@@ -208,7 +250,7 @@
     height: 100%;
     background: linear-gradient(90deg, #bababa, rgb(255, 255, 255));
     border-radius: 2px;
-    transition: width 0.1s ease;
+    transition: width 0.1s linear;
     position: relative;
 }
 
@@ -247,54 +289,34 @@
     transition: transform 0.3s ease-in-out;
 }
 
+.player-info a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.player-info a:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 768px) {
-    .player-left {
-        min-width: 0;
-        max-width: none;
-        flex: 1;
-    }
-
-    .player-info {
-        display: none;
-    }
-
-    .player-center {
-        padding: 0 10px;
-    }
-
-    .player-right {
-        display: none;
-    }
+    .player-left { min-width: 0; flex: 1; }
+    .player-info { display: block; }
+    .player-center { flex-shrink: 0; padding: 0 15px; }
+    .player-right { display: none; }
 }
 
 @media (max-width: 480px) {
-    .bottom-player {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-    }
-
-    .player-left, .player-center, .player-right {
-        width: 100%;
-        justify-content: center;
-        min-width: 0;
-        max-width: none;
-    }
-
-    .player-left {
-        margin-bottom: 8px;
-    }
-
-    .player-cover {
-        display: none;
-    }
-
-    .player-info {
-        display: block;
-        text-align: center;
-    }
+    .bottom-player { flex-direction: row; justify-content: space-between; height: auto; padding: 10px 15px; }
+    .player-left { flex: 1; min-width: 0; width: auto; margin-bottom: 0; }
+    .player-center { flex: none; width: auto; min-width: auto; padding: 0; margin-left: 15px; }
+    .player-cover { width: 45px; height: 45px; }
+    .player-info { display: block; text-align: left; }
 
     .progress-wrapper {
         display: none;
+    }
+
+    .top-progress-bar {
+        display: block;
     }
 }

@@ -1,5 +1,13 @@
 export const ways = [
     {
+        trackId: 'track-0',
+        title: 'Mind Over Matter',
+        artist: 'Young the Giant',
+        duration: '4:04',
+        cover: 'https://i.scdn.co/image/ab67616d0000b2735d1a1b0e0f3e0fc586393092',
+        audio: '/songs/Young_the_Giant_Mind_Over_Matter.mp3'
+    },
+    {
         trackId: 'track-1',
         title: 'No more tears',
         artist: 'Ozzy Osbourne',

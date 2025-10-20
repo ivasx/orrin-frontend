@@ -10,7 +10,7 @@
     position: relative;
     min-width: 0;
     flex-shrink: 0;
-    box-sizing: border-box; /* ВАЖЛИВО! */
+    box-sizing: border-box;
 }
 
 .track-cover-wrapper {
@@ -199,6 +199,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-decoration: none;
+}
+
+.track-title:hover {
+    text-decoration: underline;
 }
 
 .track-artist {
