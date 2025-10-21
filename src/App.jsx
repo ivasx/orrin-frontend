@@ -1,8 +1,6 @@
-// src/App.jsx
 import { useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// Компоненти та Провайдери
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AudioPlayerProvider, useAudioPlayer } from './context/AudioPlayerContext.jsx';
 import { SettingsProvider } from './context/SettingsContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
@@ -25,6 +23,43 @@ import LoginPage from './pages/Auth/Login.jsx';
 
 import './App.css';
 import TrackPage from "./pages/TrackPage/TrackPage.jsx";
+
+const updateMetaTags = (t, i18n, location) => {
+    const title = t('app_title');
+    const description = t('app_description');
+
+    document.title = title;
+    document.documentElement.lang = i18n.language;
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+        metaDescription.setAttribute('content', description);
+    }
+
+
+
+    const baseUrl = 'https://orrin-yl1x.onrender.com/';
+    const currentPath = location.pathname;
+
+    // Оновлюємо посилання для кожної мови
+    const enLink = document.getElementById('hreflang-en');
+    if (enLink) {
+        enLink.setAttribute('href', `${baseUrl}${currentPath.replace('/uk', '') || '/'}`);
+    }
+
+    const ukLink = document.getElementById('hreflang-uk');
+    if (ukLink) {
+        // Додаємо /uk, якщо його ще немає
+        const ukPath = currentPath.startsWith('/uk') ? currentPath : `/uk${currentPath}`;
+        ukLink.setAttribute('href', `${baseUrl}${ukPath}`);
+    }
+
+    // 'x-default' - це версія за замовчуванням (зазвичай англійська)
+    const defaultLink = document.getElementById('hreflang-default');
+    if (defaultLink) {
+        defaultLink.setAttribute('href', `${baseUrl}${currentPath.replace('/uk', '') || '/'}`);
+    }
+};
 
 function AppContent() {
     const { currentTrack } = useAudioPlayer();

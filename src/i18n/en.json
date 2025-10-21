@@ -1,5 +1,7 @@
 {
   "translation": {
+    "app_title": "Orrin",
+    "app_description": "Orrin — an innovative web application that combines the functionality of a music service and a social network.",
     "login": "Log in",
     "register": "Sign up",
     "listen_now": "Listen Now",
