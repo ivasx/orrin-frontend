@@ -1,5 +1,3 @@
-// BottomPlayer.jsx
-
 import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
 import { useEffect, useState, forwardRef } from 'react';
 import './BottomPlayer.css';
@@ -8,6 +6,7 @@ import TrackInfo from './TrackInfo';
 import PlayerControls from './PlayerControls';
 import TimeControls from './TimeControls';
 import { useProgressBar } from '../../hooks/useProgressBar';
+import VolumeControls from './VolumeControls'; // <-- Імпорт є
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const {
@@ -16,7 +15,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         repeatMode, toggleRepeat, isShuffled, toggleShuffle
     } = useAudioPlayer();
 
-    // Стан завантаження залишається, він корисний для UI
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -24,18 +22,14 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         handleMouseDown, formatTime
     } = useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack);
 
-    // ▼▼▼ ОСНОВНІ ЗМІНИ ТУТ ▼▼▼
-    // Об'єднуємо всю логіку, пов'язану з аудіо-елементом, в один useEffect
-
     // 1. Керування джерелом аудіо (src)
     useEffect(() => {
         const audio = audioRef.current;
         if (audio && currentTrack) {
-            // Якщо джерело не збігається, оновлюємо його
             if (audio.src !== currentTrack.audio) {
                 setIsLoading(true);
                 audio.src = currentTrack.audio;
-                audio.load(); // Рекомендується для кращої сумісності
+                audio.load();
             }
         }
     }, [currentTrack, audioRef]);
@@ -50,15 +44,13 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
             if (promise !== undefined) {
                 promise.catch(error => {
                     console.error("Помилка відтворення:", error);
-                    // Якщо автоплей не спрацював, ставимо на паузу в UI
                     pauseTrack();
                 }).then(() => {
-                    setIsLoading(false); // Вимикаємо завантаження після успішного старту
+                    setIsLoading(false);
                 });
             }
         };
 
-        // Коли аудіо готове до відтворення
         const handleCanPlay = () => {
             setIsLoading(false);
             if (isPlaying) {
@@ -66,39 +58,31 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
             }
         };
 
-        // Якщо виникла помилка
         const handleError = () => {
             console.error("Помилка завантаження аудіо.");
             setIsLoading(false);
         };
 
-        // Починаємо слухати події
         audio.addEventListener('canplay', handleCanPlay);
         audio.addEventListener('error', handleError);
-        audio.addEventListener('stalled', handleError); // Обробка "зависання" завантаження
+        audio.addEventListener('stalled', handleError);
 
-        // Керуємо відтворенням/паузою на основі стану isPlaying
         if (isPlaying) {
-            // Якщо трек вже завантажений, просто граємо.
-            // readyState > 2 означає, що є достатньо даних для відтворення.
             if (audio.readyState > 2) {
                 playPromise();
             } else {
-                // Якщо ще не завантажено, показуємо спіннер.
-                // handleCanPlay подбає про відтворення, коли буде готове.
                 setIsLoading(true);
             }
         } else {
             audio.pause();
         }
 
-        // Очищення слухачів
         return () => {
             audio.removeEventListener('canplay', handleCanPlay);
             audio.removeEventListener('error', handleError);
             audio.removeEventListener('stalled', handleError);
         };
-    }, [isPlaying, currentTrack, audioRef, pauseTrack]); // Додаємо pauseTrack в залежності
+    }, [isPlaying, currentTrack, audioRef, pauseTrack]);
 
     const handlePlayPause = () => isPlaying ? pauseTrack() : resumeTrack();
 
@@ -132,7 +116,9 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                     formatTime={formatTime}
                 />
             </div>
-            <div className="player-right"></div>
+            <div className="player-right">
+                <VolumeControls />
+            </div>
         </div>
     );
 });

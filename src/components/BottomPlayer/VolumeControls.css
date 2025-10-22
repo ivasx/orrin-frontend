@@ -1,0 +1,34 @@
+.volume-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 150px;
+
+}
+
+.volume-icon-btn {
+    flex-shrink: 0;
+}
+
+.volume-container {
+    width: 100%;
+}
+
+.volume-track {
+}
+
+.volume-bar {
+    transition: none;
+    background: linear-gradient(90deg, #bababa, rgb(255, 255, 255));
+}
+.volume-container:hover .volume-bar {
+    background: linear-gradient(90deg, #8a6f51, rgb(175, 148, 126));
+}
+
+.volume-container:hover .volume-track {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.volume-container:hover .volume-bar::after {
+    opacity: 1;
+}

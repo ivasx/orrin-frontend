@@ -1,30 +1,37 @@
+// src/components/TrackCard/TrackCard.jsx
 import './TrackCard.css';
-import {useState, useEffect, useCallback} from 'react';
+import { useState, useEffect, useCallback } from 'react'; // Прибираємо 'useState' для isMuted
 import ContextMenu from '../../context/TrackCardContextMenu/TrackCardContextMenu.jsx';
-import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
-import {useTranslation} from "react-i18next";
-import {createTrackMenuItems} from './trackMenuItems.jsx';
+import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
+import { useTranslation } from "react-i18next";
+import { createTrackMenuItems } from './trackMenuItems.jsx';
 import { Link } from 'react-router-dom';
 
-export default function TrackCard({title, artist, duration, cover, audio, trackId, tracks}) {
-    const {t} = useTranslation();
+export default function TrackCard({ title, artist, duration, cover, audio, trackId, tracks }) {
+    const { t } = useTranslation();
 
-    const {currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef} = useAudioPlayer();
+    // ▼▼▼ ЗМІНА ТУТ ▼▼▼
+    const {
+        currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef,
+        isMuted, // Дістаємо isMuted з контексту
+        toggleMute, // Дістаємо toggleMute з контексту
+        volume, // Залишаємо volume, якщо він потрібен для меню (наприклад, для disabled стану кнопок гучності)
+        updateVolume // Можливо, теж знадобиться для меню Volume Up/Down
+    } = useAudioPlayer();
 
     const [showControls, setShowControls] = useState(false);
     const [durationHovered, setDurationHovered] = useState(false);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
+    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const [rippleStyle, setRippleStyle] = useState({});
     const [showRipple, setShowRipple] = useState(false);
-    const [isMuted, setIsMuted] = useState(false);
-    const [volume, setVolume] = useState(1);
+    // Прибираємо локальний стан isMuted та volume, якщо він керується тільки в меню
+    // const [isMuted, setIsMuted] = useState(false); // <--- ВИДАЛИТИ
+    // const [volume, setVolume] = useState(1); // <--- Можна видалити, якщо updateVolume теж береться з контексту
 
-    // Генеруємо trackId якщо його немає
     const finalTrackId = trackId || `${title}-${artist}`;
 
-    // Перевірка touch-пристрою
     useEffect(() => {
         setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
     }, []);
@@ -32,8 +39,8 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
     const isPlaying = isTrackPlaying(finalTrackId);
     const isCurrentTrack = currentTrack && currentTrack.trackId === finalTrackId;
 
-    // Play/Pause через глобальний плеєр
     const handlePlayPause = useCallback(() => {
+        // ... (код без змін)
         if (isCurrentTrack && isPlaying) {
             pauseTrack();
         } else if (isCurrentTrack && !isPlaying) {
@@ -48,10 +55,10 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
                 duration: parseDuration(duration)
             }, tracks);
         }
-    }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId, title, artist, cover, audio, duration, tracks]); // 👈 3. Додайте 'tracks' в масив залежностей
+    }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId, title, artist, cover, audio, duration, tracks]);
 
-    // Функція для конвертації тривалості з формату "3:45" в секунди
     const parseDuration = (durationStr) => {
+        // ... (код без змін)
         if (typeof durationStr === 'number') return durationStr;
         if (!durationStr || typeof durationStr !== 'string') return 0;
 
@@ -64,22 +71,33 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
         return 0;
     };
 
-    // Контекстне меню з volume контролами
+    // ▼▼▼ ЗМІНА ТУТ ▼▼▼
+    // Тепер передаємо isMuted та toggleMute з контексту
     const getMenuItems = useCallback(() => createTrackMenuItems({
         t,
         isPlaying,
-        isMuted,
-        volume,
+        isMuted, // <-- З контексту
+        volume, // <-- З контексту
         handlePlayPause,
         isCurrentTrack,
         audioRef,
-        setIsMuted,
-        setVolume,
+        toggleMute, // <-- Передаємо функцію toggleMute з контексту
+        // setIsMuted, // <--- ВИДАЛИТИ (більше не потрібен сеттер локального стану)
+        updateVolume, // <-- З контексту, для Volume Up/Down
+        // setVolume, // <--- ВИДАЛИТИ (якщо використовуємо updateVolume з контексту)
         title,
         artist,
         audio
-    }), [t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef, title, artist, audio]);
+        // Додаємо volume та updateVolume, якщо вони потрібні для Volume Up/Down
+    }), [
+        t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef,
+        toggleMute, // Додаємо в залежності
+        updateVolume, // Додаємо в залежності
+        title, artist, audio
+    ]);
 
+
+    // ... (решта коду handleContextMenu, handleDotsClick і т.д. без змін)
     function createRippleEffect(e) {
         const rect = e.currentTarget.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
@@ -148,7 +166,9 @@ export default function TrackCard({title, artist, duration, cover, audio, trackI
 
     const shouldShowControls = isTouchDevice ? true : showControls;
 
+
     return (
+        // ... (JSX без змін)
         <div
             className="card-track"
             onContextMenu={handleContextMenu}
