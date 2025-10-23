@@ -103,6 +103,10 @@
     "not_found_alt_cat": "Crying Cat",
     "not_found_text": "Unfortunately, Orrin couldn't find what you were looking for.",
     "not_found_button": "Back to home",
+    "player_menu_add_to_queue": "Add to queue (TBD)",
+    "player_menu_share": "Share (TBD)",
+    "player_menu_go_to_artist": "Go to artist (TBD)",
+    "player_menu_options_aria": "Track options",
     "months": {
       "january": "January",
       "february": "February",

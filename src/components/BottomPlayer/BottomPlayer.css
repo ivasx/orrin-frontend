@@ -157,6 +157,8 @@
     max-width: 240px;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
 }
 
 .control-btn {

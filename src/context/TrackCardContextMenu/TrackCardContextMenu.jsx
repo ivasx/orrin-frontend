@@ -7,7 +7,8 @@ export default function ContextMenu({
                                         position,
                                         onClose,
                                         menuItems = [],
-                                        className = ""
+                                        className = "",
+                                        openDirection = "down" // 👈 ДОДАНО
                                     }) {
     const menuRef = useRef(null);
     const {t} = useTranslation();
@@ -109,6 +110,7 @@ export default function ContextMenu({
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [isVisible]);
 
+    // 👇 ЛОГІКУ ПОВНІСТЮ ОНОВЛЕНО
     const getAdjustedPosition = useCallback(() => {
         if (!menuRef.current) return position;
 
@@ -117,24 +119,51 @@ export default function ContextMenu({
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
-        let {x, y} = position;
+        const margin = 10; // Відступ від країв екрану
 
-        if (x + menuRect.width > viewportWidth - 20) {
-            x = viewportWidth - menuRect.width - 20;
+        let x = position.x;
+        let y = position.y;
+
+        // 1. Розрахунок X (горизонталь)
+        // position.x - це 'rect.right' з плеєра.
+        // Перевіряємо, чи влізе меню праворуч від точки.
+        if (x + menuRect.width > viewportWidth - margin) {
+            // Не влізає, ставимо зліва від точки
+            // position.x тут це rect.right, нам треба rect.left,
+            // але ми не маємо rect.left.
+            // Припустимо, що position.x - це точка кліку/кнопки.
+            // Найкраще - передавати x як rect.left, а не rect.right
+            // Давайте припустимо, що position.x - це лівий край кнопки (rect.left)
+            // (Ми це змінимо в BottomPlayer.jsx)
+
+            // Якщо x (лівий край) + ширина меню вилазить,
+            // ставимо x так, щоб правий край меню = правий край екрану
+            if (x + menuRect.width > viewportWidth - margin) {
+                x = viewportWidth - menuRect.width - margin;
+            }
         }
-        if (x < 20) {
-            x = 20;
+        if (x < margin) {
+            x = margin;
         }
 
-        if (y + menuRect.height > viewportHeight - 20) {
-            y = viewportHeight - menuRect.height - 20;
+        // 2. Розрахунок Y (вертикаль)
+        if (openDirection === 'up') {
+            // position.y - це top кнопки.
+            // Ставимо bottom меню на top кнопки.
+            y = position.y - menuRect.height;
         }
-        if (y < 20) {
-            y = 20;
+        // else (openDirection === 'down'), y = position.y (вже вірно)
+
+        // 3. Фінальна перевірка Y (щоб не вилізло за межі)
+        if (y + menuRect.height > viewportHeight - margin) {
+            y = viewportHeight - menuRect.height - margin;
+        }
+        if (y < margin) {
+            y = margin;
         }
 
         return {x, y};
-    }, [position]);
+    }, [position, openDirection]); // 👈 ДОДАНО openDirection
 
     if (!isVisible) return null;
 

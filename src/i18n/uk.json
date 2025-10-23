@@ -103,6 +103,10 @@
     "not_found_alt_cat": "Сумний кіт",
     "not_found_text": "На жаль, Orrin не зміг знайти те, що ви шукали.",
     "not_found_button": "Повернутись на головну",
+    "player_menu_add_to_queue": "Додати в чергу (TBD)",
+    "player_menu_share": "Поділитись (TBD)",
+    "player_menu_go_to_artist": "Перейти до виконавця (TBD)",
+    "player_menu_options_aria": "Опції треку",
     "months": {
       "january": "Січень",
       "february": "Лютий",
