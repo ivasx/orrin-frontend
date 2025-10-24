@@ -1,0 +1,190 @@
+/* src/components/Header/SearchForm/SearchSuggestions.css */
+.search-suggestions-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #272727;
+    border: 1px solid #fff;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+}
+
+.search-suggestions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.suggestion-item {
+    padding: 12px 16px;
+    padding-right: 44px; /* Резервуємо місце для кнопки видалення */
+    font-size: 0.875rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    min-height: 44px; /* Фіксована висота */
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item:focus {
+    background-color: #3a3a3a;
+    outline: none;
+}
+
+.suggestion-item:active {
+    background-color: #4a4a4a;
+}
+
+/* Іконки */
+.suggestion-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: #888;
+}
+
+.suggestion-svg-icon {
+    width: 18px;
+    height: 18px;
+    color: #888;
+}
+
+.suggestion-item:hover .suggestion-svg-icon {
+    color: #fff;
+}
+
+/* Текст підказки */
+.suggestion-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Кнопка видалення з історії */
+.suggestion-remove-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+/* На десктопі ховаємо кнопку, показуємо при hover */
+@media (min-width: 1025px) {
+    .suggestion-remove-btn {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .suggestion-item:hover .suggestion-remove-btn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* На планшетах і мобільних завжди показуємо */
+@media (max-width: 1024px) {
+    .suggestion-remove-btn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.suggestion-remove-btn:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+.suggestion-remove-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Стан завантаження */
+.search-suggestions-container.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+
+.search-suggestions-container.loading .suggestion-item {
+    color: #888;
+    cursor: default;
+    text-align: center;
+    border-bottom: none;
+    justify-content: center;
+}
+
+.search-suggestions-container.loading .suggestion-item:hover {
+    background-color: transparent;
+}
+
+/* Стилі для скролбару */
+.search-suggestions-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.search-suggestions-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.search-suggestions-container::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.search-suggestions-container::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* Порожній стан */
+.search-suggestions-container.empty {
+    display: none;
+}
+
+/* Адаптивність */
+@media (max-width: 767px) {
+    .suggestion-item {
+        padding: 14px 16px;
+        padding-right: 44px;
+        font-size: 0.9rem;
+    }
+
+    .search-suggestions-container {
+        max-height: 300px;
+    }
+
+    .suggestion-remove-btn {
+        padding: 6px;
+    }
+}

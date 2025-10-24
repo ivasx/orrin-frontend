@@ -6,6 +6,7 @@
 
 .search-form {
     width: 100%;
+    position: relative; /* ВАЖЛИВО: додаємо для позиціонування підказок */
 }
 
 .search-form__wrapper {
@@ -21,7 +22,7 @@
     background: #272727;
     border: 1px solid transparent;
     border-radius: 10px;
-    color: #636363;
+    color: #fff; /* Змінено з #636363 на #fff для кращої читабельності */
     font-weight: 500;
     font-size: 0.875rem;
     padding-left: 40px;
@@ -41,8 +42,14 @@
 .search-input:focus {
     background: #272727;
     border-color: #fff;
-    color: #636363;
+    color: #fff; /* Змінено для кращої читабельності */
     outline: none;
+    border-radius: 10px 10px 0 0; /* Змінюємо радіус коли відкриті підказки */
+}
+
+/* Коли підказки відкриті, змінюємо радіус інпуту */
+.search-form.suggestions-open .search-input {
+    border-radius: 10px 10px 0 0;
 }
 
 .search-icon-wrapper {

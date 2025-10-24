@@ -1,16 +1,15 @@
+// src/components/Header/Header.jsx
 import logo from "/orrin-logo.svg";
-import {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // <-- Імпортуємо useNavigate
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import "./Header.css";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
-
-export default function Header({user, onLogout, onSearch, onMenuToggle}) {
-    const {t} = useTranslation();
+export default function Header({ user, onLogout, /* прибираємо onSearch */ onMenuToggle }) {
+    const { t } = useTranslation();
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-    const navigate = useNavigate();
-
+    const navigate = useNavigate(); // <-- Ініціалізуємо useNavigate
 
     useEffect(() => {
         document.body.style.overflow = mobileSearchOpen ? "hidden" : "auto";
@@ -19,9 +18,17 @@ export default function Header({user, onLogout, onSearch, onMenuToggle}) {
         };
     }, [mobileSearchOpen]);
 
+    // --- Початок змін ---
+    // Функція, яка буде викликатись при сабміті форми пошуку
     const handleSearchSubmit = (query) => {
-        if (onSearch) onSearch(query);
-        setMobileSearchOpen(false);
+        console.log("Search submitted with query:", query);
+        setMobileSearchOpen(false); // Закриваємо мобільний пошук, якщо він був відкритий
+
+        // Переходимо на сторінку результатів пошуку
+        // Вам потрібно буде створити сторінку SearchResultsPage та додати роут для '/search' в App.jsx
+        if (query.trim()) { // Переходимо, тільки якщо запит не порожній
+            navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+        }
     };
 
     return (
@@ -63,8 +70,6 @@ export default function Header({user, onLogout, onSearch, onMenuToggle}) {
                                 fill="none" stroke="currentColor" strokeWidth="2"/>
                         </svg>
                     </button>
-
-
                     {user ? (
                         <>
                             <span className="username">{user.username}</span>
@@ -90,7 +95,6 @@ export default function Header({user, onLogout, onSearch, onMenuToggle}) {
                     )}
                 </div>
             </div>
-
             {mobileSearchOpen && (
                 <div className="mobile-search open">
                     <div className="mobile-search__container">
