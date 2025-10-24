@@ -9,7 +9,7 @@ import { useProgressBar } from '../../hooks/useProgressBar';
 import VolumeControls from './VolumeControls';
 import { MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import ContextMenu from '../../context/TrackCardContextMenu/TrackCardContextMenu.jsx';
+import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const {

@@ -8,36 +8,44 @@
     overflow-y: hidden;
     padding-bottom: 10px;
     width: 100%;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
 }
 
 .track-section-grid:hover {
-    scrollbar-width: initial;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
+/* Webkit */
 .track-section-grid::-webkit-scrollbar {
-    height: 8px;
+    height: 10px;
 }
 
 .track-section-grid::-webkit-scrollbar-track {
-    background: #333; /* колір треку */
-    border-radius: 4px;
+    background: transparent;
 }
 
 .track-section-grid::-webkit-scrollbar-thumb {
-    background: #666;
-    border-radius: 4px;
-    transition: background 0.2s;
+    background: transparent;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.track-section-grid:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .track-section-grid::-webkit-scrollbar-thumb:hover {
-    background: #888;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.track-section-grid::-webkit-scrollbar-button {
+    display: none;
 }
 
 .track-section-grid {
     scroll-behavior: smooth;
 }
-
 
 @media (max-width: 768px) {
     .track-section-grid {

@@ -1,7 +1,7 @@
 // src/components/TrackCard/TrackCard.jsx
 import './TrackCard.css';
 import { useState, useEffect, useCallback } from 'react'; // Прибираємо 'useState' для isMuted
-import ContextMenu from '../../context/TrackCardContextMenu/TrackCardContextMenu.jsx';
+import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
 import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
 import { useTranslation } from "react-i18next";
 import { createTrackMenuItems } from './trackMenuItems.jsx';

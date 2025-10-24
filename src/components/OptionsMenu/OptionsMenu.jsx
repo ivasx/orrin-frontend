@@ -1,6 +1,6 @@
-import "./TrackCardContextMenu.css";
-import {useEffect, useRef, useCallback} from "react";
-import {useTranslation} from "react-i18next";
+import "./OptionsMenu.css";
+import { useEffect, useRef, useCallback, useLayoutEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ContextMenu({
                                         isVisible,
@@ -8,18 +8,73 @@ export default function ContextMenu({
                                         onClose,
                                         menuItems = [],
                                         className = "",
-                                        openDirection = "down" // 👈 ДОДАНО
+                                        openDirection = "down"
                                     }) {
     const menuRef = useRef(null);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+
+
+    useLayoutEffect(() => {
+        if (isVisible && menuRef.current) {
+            const menu = menuRef.current;
+            menu.style.left = '0px';
+            menu.style.top = '0px';
+            menu.style.visibility = 'hidden';
+
+            requestAnimationFrame(() => {
+                const menuRect = menu.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const margin = 10;
+
+                let x = position.x;
+                let y = position.y;
+
+                if (x + menuRect.width > viewportWidth - margin) {
+                    x = viewportWidth - menuRect.width - margin;
+                }
+                if (x < margin) {
+                    x = margin;
+                }
+
+                if (openDirection === 'up') {
+                    y = position.y - menuRect.height;
+                }
+
+                if (y + menuRect.height > viewportHeight - margin) {
+                    y = viewportHeight - menuRect.height - margin;
+                }
+                if (y < margin) {
+                    y = margin;
+                }
+
+                menu.style.left = `${x}px`;
+                menu.style.top = `${y}px`;
+                menu.style.visibility = 'visible';
+
+                setTimeout(() => {
+                    const firstItem = menu.querySelector('.menu-item:not([disabled])');
+                    if (firstItem && document.activeElement !== firstItem) {
+                        firstItem.focus();
+                    }
+                }, 50);
+            });
+
+        } else if (menuRef.current) {
+            // Ховаємо меню при isVisible = false
+            menuRef.current.style.visibility = 'hidden';
+        }
+    }, [isVisible, position, openDirection]);
+
 
     const handleClose = useCallback(() => {
         onClose();
     }, [onClose]);
 
+    // useEffect для обробки кліків поза меню та Escape - залишається без змін
     useEffect(() => {
         if (!isVisible) return;
-
+        // ... (решта коду цього useEffect без змін) ...
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 handleClose();
@@ -47,21 +102,13 @@ export default function ContextMenu({
         };
     }, [isVisible, handleClose]);
 
-    useEffect(() => {
-        if (isVisible && menuRef.current) {
-            // Small delay for animation
-            setTimeout(() => {
-                const firstItem = menuRef.current.querySelector('.menu-item:not([disabled])');
-                if (firstItem) {
-                    firstItem.focus();
-                }
-            }, 100);
-        }
-    }, [isVisible]);
 
+    // useEffect для фокусування на першому елементі перенесено в useLayoutEffect
+
+    // useEffect для навігації клавішами - залишається без змін
     useEffect(() => {
         if (!isVisible) return;
-
+        // ... (решта коду цього useEffect без змін) ...
         const handleKeyDown = (event) => {
             const menuItemsElements = Array.from(
                 menuRef.current?.querySelectorAll('.menu-item:not([disabled])') || []
@@ -110,62 +157,8 @@ export default function ContextMenu({
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [isVisible]);
 
-    // 👇 ЛОГІКУ ПОВНІСТЮ ОНОВЛЕНО
-    const getAdjustedPosition = useCallback(() => {
-        if (!menuRef.current) return position;
 
-        const menu = menuRef.current;
-        const menuRect = menu.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-
-        const margin = 10; // Відступ від країв екрану
-
-        let x = position.x;
-        let y = position.y;
-
-        // 1. Розрахунок X (горизонталь)
-        // position.x - це 'rect.right' з плеєра.
-        // Перевіряємо, чи влізе меню праворуч від точки.
-        if (x + menuRect.width > viewportWidth - margin) {
-            // Не влізає, ставимо зліва від точки
-            // position.x тут це rect.right, нам треба rect.left,
-            // але ми не маємо rect.left.
-            // Припустимо, що position.x - це точка кліку/кнопки.
-            // Найкраще - передавати x як rect.left, а не rect.right
-            // Давайте припустимо, що position.x - це лівий край кнопки (rect.left)
-            // (Ми це змінимо в BottomPlayer.jsx)
-
-            // Якщо x (лівий край) + ширина меню вилазить,
-            // ставимо x так, щоб правий край меню = правий край екрану
-            if (x + menuRect.width > viewportWidth - margin) {
-                x = viewportWidth - menuRect.width - margin;
-            }
-        }
-        if (x < margin) {
-            x = margin;
-        }
-
-        // 2. Розрахунок Y (вертикаль)
-        if (openDirection === 'up') {
-            // position.y - це top кнопки.
-            // Ставимо bottom меню на top кнопки.
-            y = position.y - menuRect.height;
-        }
-        // else (openDirection === 'down'), y = position.y (вже вірно)
-
-        // 3. Фінальна перевірка Y (щоб не вилізло за межі)
-        if (y + menuRect.height > viewportHeight - margin) {
-            y = viewportHeight - menuRect.height - margin;
-        }
-        if (y < margin) {
-            y = margin;
-        }
-
-        return {x, y};
-    }, [position, openDirection]); // 👈 ДОДАНО openDirection
-
-    if (!isVisible) return null;
+    if (!isVisible) return null; // Залишаємо це, щоб компонент не рендерився взагалі, коли невидимий
 
     const handleMenuItemClick = (item, event) => {
         event.stopPropagation();
@@ -174,13 +167,12 @@ export default function ContextMenu({
         if (item.disabled) return;
 
         if (item.action) {
-            setTimeout(() => item.action(), 50);
+            setTimeout(() => item.action(), 50); // Невелика затримка перед закриттям
         }
 
         handleClose();
     };
 
-    const adjustedPosition = menuRef.current ? getAdjustedPosition() : position;
 
     return (
         <div
@@ -188,9 +180,10 @@ export default function ContextMenu({
             className={`context-menu ${className}`}
             style={{
                 position: 'fixed',
-                left: adjustedPosition.x,
-                top: adjustedPosition.y,
-                zIndex: 1000
+                zIndex: 1000,
+                left: '-9999px',
+                top: '-9999px',
+                visibility: 'hidden',
             }}
             role="menu"
             aria-label={t('context_menu_label')}
