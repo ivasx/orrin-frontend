@@ -1,0 +1,261 @@
+/* --- 1. Хедер (Hero) --- */
+.artist-hero {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    padding: 40px;
+    display: flex;
+    align-items: flex-end; /* Вирівнюємо контент по низу */
+    box-sizing: border-box;
+    background-size: cover;
+    background-position: center 30%;
+    border-radius: 0 0 15px 15px;
+    overflow: hidden;
+}
+
+.artist-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%, #000 100%);
+    z-index: 1;
+}
+
+.artist-hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.artist-hero-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.artist-hero-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.artist-hero-name {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #fff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.artist-hero-listeners {
+    font-size: 1rem;
+    color: #eee;
+    margin: 0 0 20px 0;
+}
+
+.artist-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Використовуємо існуючі класи кнопок */
+.artist-hero-actions .play-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+}
+.artist-hero-actions .btn-outline-light {
+    padding: 10px 24px;
+}
+
+/* Стилі для кнопок-іконок (як у плеєрі) */
+.artist-hero-actions .control-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+.artist-hero-actions .control-btn:hover {
+    color: #fff;
+}
+
+
+/* --- 2. Вкладки (Tabs) --- */
+.artist-tabs {
+    display: flex;
+    gap: 10px;
+    padding: 20px 40px;
+    border-bottom: 1px solid #333;
+    background: #000;
+    position: sticky;
+    top: 70px; /* Висота вашого хедера */
+    z-index: 900;
+}
+
+.artist-tab-button {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.artist-tab-button:hover {
+    background: #272727;
+    color: #fff;
+}
+
+.artist-tab-button.active {
+    background: #272727;
+    color: #fff;
+}
+
+/* --- 3. Контент вкладок --- */
+.artist-tab-content {
+    color: #eee;
+    line-height: 1.6;
+}
+
+.artist-about-section .artist-description {
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+}
+
+.artist-meta {
+    margin-bottom: 24px;
+}
+.artist-meta p {
+    margin: 4px 0;
+    color: #ccc;
+}
+
+.artist-socials {
+    display: flex;
+    gap: 20px;
+}
+.artist-socials a {
+    color: #aaa;
+    font-size: 1.5rem;
+    transition: color 0.2s;
+}
+.artist-socials a:hover {
+    color: #fff;
+}
+
+/* Склад гурту */
+.artist-members-grid {
+    display: grid;
+    /* Використовуємо той же grid, що й ArtistSection */
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 5px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+.artist-members-grid::-webkit-scrollbar {
+    display: none;
+}
+
+/* Дискографія */
+.artist-discography-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.album-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #1c1c1c;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.album-card:hover {
+    background: #272727;
+}
+
+.album-cover {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.album-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.album-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.album-meta {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* --- 5. Нотатки (Mockup) --- */
+.notes-mockup {
+    background: #1c1c1c;
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 100px;
+    color: #aaa;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .artist-hero {
+        min-height: 300px;
+        padding: 20px;
+    }
+    .artist-hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .artist-hero-avatar {
+        width: 150px;
+        height: 150px;
+    }
+    .artist-hero-name {
+        font-size: 2.5rem;
+    }
+    .artist-tabs {
+        padding: 15px 20px;
+        gap: 5px;
+    }
+    .artist-tab-button {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+}

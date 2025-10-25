@@ -12,7 +12,8 @@ export default function ArtistSection({ title, artists, onMoreClick }) {
                     <ArtistCard
                         key={artist.id}
                         {...artist}
-                        onClick={() => console.log(`Clicked on ${artist.name}`)}
+                        // 1. Прибираємо onClick, оскільки Link в ArtistCard тепер обробляє навігацію
+                        // onClick={() => console.log(`Clicked on ${artist.name}`)}
                     />
                 ))}
             </div>

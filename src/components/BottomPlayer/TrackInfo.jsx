@@ -5,6 +5,14 @@ export default function TrackInfo({ track }) {
     const { isScrolling: isTitleScrolling, containerRef: titleContainerRef, contentRef: titleContentRef } = useMarquee(track.trackId);
     const { isScrolling: isArtistScrolling, containerRef: artistContainerRef, contentRef: artistContentRef } = useMarquee(track.trackId);
 
+    // Виносимо вміст, що повторюється, в окрему змінну
+    const artistContent = (
+        <div className="marquee__content" ref={artistContentRef}>
+            <span>{track.artist}</span>
+            <span aria-hidden="true">{track.artist}</span>
+        </div>
+    );
+
     return (
         <div className="player-left">
             <Link to={`/track/${track.trackId}`}>
@@ -20,10 +28,13 @@ export default function TrackInfo({ track }) {
                     </Link>
                 </div>
                 <div ref={artistContainerRef} className={`player-artist ${isArtistScrolling ? 'scrolling' : ''}`}>
-                    <div className="marquee__content" ref={artistContentRef}>
-                        <span>{track.artist}</span>
-                        <span aria-hidden="true">{track.artist}</span>
-                    </div>
+                    {track.artistId ? (
+                        <Link to={`/artist/${track.artistId}`} className="player-artist-link">
+                            {artistContent}
+                        </Link>
+                    ) : (
+                        artistContent
+                    )}
                 </div>
             </div>
         </div>

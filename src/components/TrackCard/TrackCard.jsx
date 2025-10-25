@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { createTrackMenuItems } from './trackMenuItems.jsx';
 import { Link } from 'react-router-dom';
 
-export default function TrackCard({ title, artist, duration, cover, audio, trackId, tracks }) {
+export default function TrackCard({ title, artist, duration, cover, audio, trackId, artistId, tracks }) {
     const { t } = useTranslation();
 
     // ▼▼▼ ЗМІНА ТУТ ▼▼▼
@@ -52,7 +52,8 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
                 artist,
                 cover,
                 audio,
-                duration: parseDuration(duration)
+                duration: parseDuration(duration),
+                artistId
             }, tracks);
         }
     }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId, title, artist, cover, audio, duration, tracks]);
@@ -71,24 +72,20 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
         return 0;
     };
 
-    // ▼▼▼ ЗМІНА ТУТ ▼▼▼
-    // Тепер передаємо isMuted та toggleMute з контексту
+
     const getMenuItems = useCallback(() => createTrackMenuItems({
         t,
         isPlaying,
-        isMuted, // <-- З контексту
-        volume, // <-- З контексту
+        isMuted,
+        volume,
         handlePlayPause,
         isCurrentTrack,
         audioRef,
-        toggleMute, // <-- Передаємо функцію toggleMute з контексту
-        // setIsMuted, // <--- ВИДАЛИТИ (більше не потрібен сеттер локального стану)
-        updateVolume, // <-- З контексту, для Volume Up/Down
-        // setVolume, // <--- ВИДАЛИТИ (якщо використовуємо updateVolume з контексту)
+        toggleMute,
+        updateVolume,
         title,
         artist,
         audio
-        // Додаємо volume та updateVolume, якщо вони потрібні для Volume Up/Down
     }), [
         t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef,
         toggleMute, // Додаємо в залежності
@@ -168,7 +165,6 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
 
 
     return (
-        // ... (JSX без змін)
         <div
             className="card-track"
             onContextMenu={handleContextMenu}
@@ -228,7 +224,15 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
                 <Link to={`/track/${finalTrackId}`} className="track-title" title={title}>
                     {title}
                 </Link>
-                <div className="track-artist" title={artist}>{artist}</div>
+                <div className="track-artist" title={artist}>
+                    {artistId ? (
+                        <Link to={`/artist/${artistId}`} className="track-artist-link">
+                            {artist}
+                        </Link>
+                    ) : (
+                        <span>{artist}</span>
+                    )}
+                </div>
                 <div
                     className="track-duration"
                     onMouseEnter={() => !isTouchDevice && setDurationHovered(true)}

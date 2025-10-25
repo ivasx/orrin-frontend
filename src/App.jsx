@@ -24,6 +24,7 @@ import LoginPage from './pages/Auth/Login.jsx';
 import './App.css';
 import TrackPage from "./pages/TrackPage/TrackPage.jsx";
 import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.jsx";
+import ArtistPage from "./pages/ArtistPage/ArtistPage.jsx";
 
 const updateMetaTags = (t, i18n, location) => {
     const title = t('app_title');
@@ -97,6 +98,7 @@ function AppContent() {
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/track/:trackId" element={<TrackPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
+                    <Route path="/artist/:artistId" element={<ArtistPage />} />
                 </Route>
 
                 <Route element={<HeaderOnlyLayout />}>

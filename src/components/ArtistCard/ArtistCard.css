@@ -52,3 +52,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+/* Додайте цей клас на початок файлу або в кінець */
+.artist-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block; /* Важливо, щоб Link займав простір картки */
+    outline: none;
+}
+
+.artist-card-link:focus-visible .artist-card {
+    /* Додаємо контур для доступності при фокусі */
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    border-radius: 5px; /* (допоміжний, щоб контур був гарним) */
+}
+

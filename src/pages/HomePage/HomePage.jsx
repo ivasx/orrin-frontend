@@ -32,7 +32,7 @@ export default function HomePage() {
 
     useEffect(() => {
         setListenNowTracks(ways);
-        setPopularArtists(popularArtistsData.slice(0, 5));
+        setPopularArtists(popularArtistsData);
     }, []);
 
     return (
