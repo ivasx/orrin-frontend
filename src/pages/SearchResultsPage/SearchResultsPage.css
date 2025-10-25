@@ -1,0 +1,35 @@
+/* src/pages/SearchResultsPage/SearchResultsPage.css */
+.search-results-page {
+    padding-top: 20px;
+}
+
+.search-results-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    padding-left: 5px; /* Невеликий відступ як у заголовків секцій */
+}
+
+.no-results-message {
+    text-align: center;
+    color: #aaa;
+    margin-top: 40px;
+    font-size: 1.1rem;
+}
+
+/* Модифікація TrackSection для сторінки результатів: показувати всі треки */
+.search-results-page .track-section-grid {
+    grid-template-rows: none; /* Прибираємо обмеження в 2 ряди */
+    grid-auto-flow: row; /* Розташовуємо елементи по рядках */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Адаптивна сітка */
+    overflow-x: hidden; /* Забороняємо горизонтальний скрол */
+    padding-bottom: 20px; /* Повертаємо стандартний відступ */
+    scrollbar-width: none; /* Ховаємо скролбар Firefox */
+}
+/* Ховаємо скролбар Webkit */
+.search-results-page .track-section-grid::-webkit-scrollbar {
+    display: none;
+}
+/* Прибираємо кнопку "Більше" у секціях на сторінці пошуку */
+.search-results-page .section-header .section-more {
+    display: none;
+}

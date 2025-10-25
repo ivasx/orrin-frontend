@@ -23,6 +23,7 @@ import LoginPage from './pages/Auth/Login.jsx';
 
 import './App.css';
 import TrackPage from "./pages/TrackPage/TrackPage.jsx";
+import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.jsx";
 
 const updateMetaTags = (t, i18n, location) => {
     const title = t('app_title');
@@ -95,6 +96,7 @@ function AppContent() {
                     <Route path="/radio" element={<RadioPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/track/:trackId" element={<TrackPage />} />
+                    <Route path="/search" element={<SearchResultsPage />} />
                 </Route>
 
                 <Route element={<HeaderOnlyLayout />}>
