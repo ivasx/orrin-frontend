@@ -177,60 +177,163 @@
 }
 
 /* Дискографія */
-.artist-discography-list {
+/* src/pages/ArtistPage/ArtistPage.css */
+
+/* ... (стилі для Hero, Tabs, About, History, Members) ... */
+
+/* --- Дискографія (Стиль а-ля YouTube Music з Play кнопкою) --- */
+.artist-discography-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px 16px;
+    padding: 10px 0;
 }
 
-.album-card {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: #1c1c1c;
-    padding: 12px;
-    border-radius: 8px;
-    transition: background 0.2s;
-}
-.album-card:hover {
-    background: #272727;
+.discography-album-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    outline: none;
+    border-radius: 8px; /* Додаємо для візуального відображення фокусу */
+    /* transition: background-color 0.2s ease; */ /* Прибираємо, бо фон не змінюється */
 }
 
-.album-cover {
-    width: 60px;
-    height: 60px;
-    border-radius: 4px;
-    object-fit: cover;
+/* Стиль для фокусу клавіатурою */
+.discography-album-link:focus-visible {
+    box-shadow: 0 0 0 2px #fff; /* Білий контур фокусу */
 }
 
-.album-info {
+.discography-album-item {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
     overflow: hidden;
+    /* position: relative; */ /* Не потрібно тут, бо wrapper вже відносний */
 }
 
-.album-title {
-    font-size: 1rem;
-    font-weight: 600;
+/* --- Обгортка для обкладинки та hover-елементів --- */
+.discography-album-cover-wrapper {
+    position: relative; /* Батьківський елемент для абсолютного позиціонування */
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.discography-album-cover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: filter 0.3s ease; /* Тільки затемнення, без scale */
+}
+
+/* --- Затемнення та кнопки --- */
+.album-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Напівпрозоре затемнення */
+    border-radius: 8px; /* Відповідає заокругленню обкладинки */
+    display: flex;
+    flex-direction: column; /* Щоб три крапки та кнопка були вертикально */
+    justify-content: space-between; /* Рознесе по вертикалі */
+    align-items: flex-end; /* Все праворуч */
+    padding: 10px; /* Внутрішній відступ від країв */
+    opacity: 0; /* Сховано за замовчуванням */
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* За замовчуванням не перехоплює кліки */
+    z-index: 1; /* Під кнопками */
+}
+
+.album-more-options-button {
+    background: none;
+    border: none;
+    color: #fff; /* Білий колір іконки */
+    cursor: pointer;
+    padding: 5px; /* Для зручності кліку */
+    display: flex; /* Для центрування іконки */
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    pointer-events: auto; /* Перехоплює кліки */
+}
+.album-more-options-button:hover {
+    color: #aaa; /* Легке затемнення при наведенні */
+}
+
+.album-play-button {
+    /* position: absolute; */ /* Не потрібно, якщо використовується flex в overlay */
+    /* bottom: 10px; */
+    /* right: 10px; */
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    /* opacity: 0; */ /* Вже контролюється через батьківський overlay */
+    /* transform: translateY(10px); */ /* Вже контролюється через батьківський overlay */
+    transition: background-color 0.2s ease;
+    pointer-events: auto; /* Перехоплює кліки */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Додаємо легку тінь */
+}
+
+.album-play-button:hover {
+    background-color: rgba(0, 0, 0, 0.9); /* Трохи темніший фон при наведенні */
+}
+
+.album-play-button svg {
+    margin-left: 2px;
+}
+
+/* --- Ефекти при наведенні на все посилання --- */
+.discography-album-link:hover .discography-album-cover {
+    filter: brightness(0.7); /* Затемнення обкладинки */
+}
+
+.discography-album-link:hover .album-hover-overlay {
+    opacity: 1; /* Показати весь оверлей */
+    pointer-events: auto; /* Тепер елементи всередині можуть бути клікабельними */
+}
+/* --- Кінець ефектів --- */
+
+
+.discography-album-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 0 4px; /* Залишаємо відступи для тексту */
+}
+
+.discography-album-title {
+    font-size: 0.95rem;
+    font-weight: 500;
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.3;
 }
 
-.album-meta {
-    font-size: 0.9rem;
+.discography-album-meta {
+    font-size: 0.85rem;
     color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
 }
 
-/* --- 5. Нотатки (Mockup) --- */
-.notes-mockup {
-    background: #1c1c1c;
-    border-radius: 8px;
-    padding: 20px;
-    min-height: 100px;
-    color: #aaa;
-}
+/* ... (решта стилів) ... */
 
 /* Адаптивність */
 @media (max-width: 768px) {

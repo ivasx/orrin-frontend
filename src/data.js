@@ -230,9 +230,10 @@ export const popularArtists = [
             { id: 'member-3', name: 'Дмитро Жолудь', role: 'Гітара', imageUrl: 'https://antytila.com/wp-content/uploads/2019/04/jolyd-e1555512165844.jpg' },
         ],
         discography: [
-            { id: 'album-1', title: 'Hello', year: 2019, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/uk/thumb/0/05/Antytila_Hello.jpg/440px-Antytila_Hello.jpg' },
-            { id: 'album-2', title: 'Сонце', year: 2016, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/uk/thumb/1/1e/Antytila_Sontse.jpg/440px-Antytila_Sontse.jpg' },
-            { id: 'single-1', title: 'Фортеця Бахмут', year: 2023, type: 'Сингл', cover: 'https://i.scdn.co/image/ab67616d0000b273b4e3391104e53b6fdeaa5f3c' },
+            { id: 'album-1', title: 'Hello', year: 2019, type: 'Альбом', cover: '...', trackIds: ['track-16'] },
+            { id: 'album-2', title: 'Сонце', year: 2016, type: 'Альбом', cover: '...', trackIds: [] },
+            { id: 'album-3', title: 'MLNL', year: 2022, type: 'Альбом', cover: '...', trackIds: [] },
+            { id: 'single-1', title: 'Фортеця Бахмут', year: 2023, type: 'Сингл', cover: '...', trackIds: [] },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -254,11 +255,23 @@ export const popularArtists = [
         history: 'Кар\'єра Оззі почалася в групі Black Sabbath...',
         members: [],
         discography: [
-            { id: 'album-1', title: 'Blizzard of Ozz', year: 1980, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/2/2c/Ozzy_Osbourne_-_Blizzard_of_Ozz.jpg' },
-            { id: 'album-2', title: 'No More Tears', year: 1991, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/0/03/OzzyOsbourneNoMoreTears.jpg' },
+            { id: 'album-1', title: 'Blizzard of Ozz', year: 1980, type: 'Альбом', cover: '...', trackIds: [] },
+            { id: 'album-2', title: 'No More Tears', year: 1991, type: 'Альбом', cover: '...', trackIds: ['track-1'] }, // Додайте ID треків
         ],
         popularTracks: popularTracks,
-        similarArtists: similarArtistsMock
+        similarArtists: similarArtistsMock,
+        notes: [
+            {
+                id: 'note-4',
+                author: 'MetalHead88',
+                avatar: 'https://i.scdn.co/image/ab6761610000e5eb81c81e1f74c83d29a6a43c11',
+                text: 'No More Tears - це просто класика на всі часи.',
+                type: 'public',
+                timestamp: '1 тиждень тому',
+                trackContext: { trackId: 'track-1', title: 'No more tears' },
+                timecode: '4:55'
+            }
+        ]
     },
     // --- NIRVANA (ID 3) ---
     {

@@ -1,0 +1,85 @@
+/* src/components/NoteCard/NoteCard.css */
+.note-card {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: #1c1c1c;
+    border-radius: 8px;
+    border: 1px solid #272727;
+}
+
+.note-card.private-note {
+    background: #25221e;
+    border-color: #5a4b3a;
+}
+
+.note-author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.note-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.note-author-name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.note-timestamp {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.note-text {
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.5;
+    margin: 0 0 10px 0;
+    white-space: pre-wrap; /* Зберігає переноси рядків */
+}
+
+.note-track-context {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #272727;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #aaa;
+    text-decoration: none;
+    transition: background 0.2s;
+    max-width: fit-content;
+}
+
+.note-track-context:hover {
+    background: #333;
+    color: #fff;
+}
+
+.note-track-title {
+    font-weight: 500;
+}
+
+.note-track-timecode {
+    font-family: monospace;
+    background: #111;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
