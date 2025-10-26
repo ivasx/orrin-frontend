@@ -1,8 +1,8 @@
 // src/components/ArtistNotesTab/ArtistNotesTab.jsx
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom'; // Додано Link
-import { Music, Clock, Users, Globe, Lock } from 'lucide-react'; // Додано іконки
+// Link видалено, оскільки він не використовувався тут
+import { Music, Clock, Users, Globe, Lock } from 'lucide-react';
 import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './ArtistNotesTab.css';
 
@@ -24,7 +24,8 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
         const newNote = {
             id: `note-new-${Date.now()}`,
             author: t('notes_you', 'Ви (Me)'),
-            avatar: 'https://i.pravda.com.ua/images/doc/a/1/a1b553a-zelenskyj--1-.jpg',
+            // TODO: Замінити на реальний аватар користувача з системи аутентифікації
+            avatar: '/path/to/default/user/avatar.png', // Замінено жорстко закодований URL
             text: newNoteText,
             type: noteType,
             timestamp: t('notes_just_now', 'щойно'),
@@ -57,14 +58,15 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
 
     const { myNotes, publicNotes } = useMemo(() => {
         return notes.reduce((acc, note) => {
-            if (note.type === 'private' || note.author.includes('Ви (Me)')) {
+            // Перевіряємо, чи автор "Ви (Me)" або тип "private"
+            if (note.type === 'private' || note.author === t('notes_you', 'Ви (Me)')) {
                 acc.myNotes.push(note);
             } else {
                 acc.publicNotes.push(note);
             }
             return acc;
         }, { myNotes: [], publicNotes: [] });
-    }, [notes]);
+    }, [notes, t]); // Додано t до залежностей useMemo
 
     return (
         <div className="artist-notes-tab">
@@ -78,17 +80,16 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                         {t('notes_add_yours', 'Додати свою нотатку')}
                     </button>
                 ) : (
-                    <form className="add-note-form modern" onSubmit={handleAddNote}> {/* Додано клас modern */}
+                    <form className="add-note-form modern" onSubmit={handleAddNote}>
                         <textarea
-                            className="note-textarea-modern" // Новий клас
+                            className="note-textarea-modern"
                             value={newNoteText}
                             onChange={(e) => setNewNoteText(e.target.value)}
                             placeholder={t('notes_placeholder', 'Що ви думаєте про цього артиста?')}
-                            rows="3" // Зменшено початкову висоту
+                            rows="3"
                             required
                             autoFocus
                         />
-                        {/* --- Новий рядок для опцій та кнопок --- */}
                         <div className="note-options-row">
                             <div className="note-options-controls">
                                 {/* Вибір типу (з іконкою) */}
@@ -187,21 +188,9 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                     </div>
                 </div>
             )}
-            {myNotes.length === 0 && publicNotes.length === 0 && (
+            {myNotes.length === 0 && publicNotes.length === 0 && !isAddingNote && ( // Додано !isAddingNote, щоб не показувати, коли форма відкрита
                 <p className="no-notes-message">{t('notes_empty', 'Поки що немає жодної нотатки.')}</p>
             )}
         </div>
     );
 }
-
-// Допоміжний клас для приховування міток, але залишення їх для скрінрідерів
-const visuallyHiddenStyle = {
-    position: 'absolute',
-    width: '1px',
-    height: '1px',
-    margin: '-1px',
-    padding: '0',
-    overflow: 'hidden',
-    clip: 'rect(0, 0, 0, 0)',
-    border: '0',
-};

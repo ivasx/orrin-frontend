@@ -1,12 +1,12 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { Volume2, Volume1, VolumeX } from 'lucide-react';
-import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
-// Важливо: Імпортуємо стилі від TimeControls ТАКОЖ, щоб перевикористати класи
+import { useAudioCore } from '../../context/AudioCoreContext.jsx';
+
 import './VolumeControls.css'; // Стилі саме для VolumeControls
 import '../BottomPlayer/BottomPlayer.css'; // Імпортуємо стилі плеєра для перевикористання
 
 export default function VolumeControls() {
-    const { volume, isMuted, toggleMute, updateVolume } = useAudioPlayer();
+    const { volume, isMuted, toggleMute, updateVolume } = useAudioCore();
     const volumeBarRef = useRef(null); // Ref для контейнера повзунка
     const [isDragging, setIsDragging] = useState(false);
 

@@ -4,13 +4,13 @@ import {Link} from 'react-router-dom';
 import sadCat from '../../assets/orrin-404.png';
 import song404 from '../../assets/song404.mp3';
 import {useSettings} from '../../context/SettingsContext.jsx';
-import {useAudioPlayer} from '../../context/AudioPlayerContext.jsx';
+import {useAudioCore} from '../../context/AudioCoreContext.jsx';
 import {useTranslation} from 'react-i18next';
 
 export default function NotFoundPage() {
     const {t} = useTranslation();
     const {playMusicOn404} = useSettings();
-    const {playTrack, stopTrack} = useAudioPlayer();
+    const {playTrack, stopTrack} = useAudioCore();
 
     useEffect(() => {
         document.documentElement.style.overflow = 'hidden';

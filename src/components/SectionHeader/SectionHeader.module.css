@@ -1,20 +1,29 @@
-.section-header {
+.sectionHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 5px;
+    margin-bottom: 10px;
 }
 
-.section-title {
+.sectionTitle {
     font-size: 22px;
     font-weight: bold;
     color: #fff;
+    margin: 0;
 }
 
-.section-more {
+.sectionMore {
     background: none;
     border: none;
     color: #aaa;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 600;
+    padding: 5px;
+    transition: color 0.2s;
+}
+
+.sectionMore:hover {
+    color: #fff;
 }

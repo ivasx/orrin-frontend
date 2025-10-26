@@ -1,8 +1,7 @@
-// src/components/TrackCard/TrackCard.jsx
 import './TrackCard.css';
-import { useState, useEffect, useCallback } from 'react'; // Прибираємо 'useState' для isMuted
+import { useState, useEffect, useCallback } from 'react';
 import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
-import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
+import { useAudioCore } from '../../context/AudioCoreContext.jsx';
 import { useTranslation } from "react-i18next";
 import { createTrackMenuItems } from './trackMenuItems.jsx';
 import { Link } from 'react-router-dom';
@@ -10,14 +9,10 @@ import { Link } from 'react-router-dom';
 export default function TrackCard({ title, artist, duration, cover, audio, trackId, artistId, tracks }) {
     const { t } = useTranslation();
 
-    // ▼▼▼ ЗМІНА ТУТ ▼▼▼
     const {
         currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef,
-        isMuted, // Дістаємо isMuted з контексту
-        toggleMute, // Дістаємо toggleMute з контексту
-        volume, // Залишаємо volume, якщо він потрібен для меню (наприклад, для disabled стану кнопок гучності)
-        updateVolume // Можливо, теж знадобиться для меню Volume Up/Down
-    } = useAudioPlayer();
+        isMuted, toggleMute, volume, updateVolume
+    } = useAudioCore();
 
     const [showControls, setShowControls] = useState(false);
     const [durationHovered, setDurationHovered] = useState(false);
@@ -26,11 +21,7 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const [rippleStyle, setRippleStyle] = useState({});
     const [showRipple, setShowRipple] = useState(false);
-    // Прибираємо локальний стан isMuted та volume, якщо він керується тільки в меню
-    // const [isMuted, setIsMuted] = useState(false); // <--- ВИДАЛИТИ
-    // const [volume, setVolume] = useState(1); // <--- Можна видалити, якщо updateVolume теж береться з контексту
-
-    const finalTrackId = trackId || `${title}-${artist}`;
+    const finalTrackId = trackId
 
     useEffect(() => {
         setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
@@ -40,7 +31,11 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
     const isCurrentTrack = currentTrack && currentTrack.trackId === finalTrackId;
 
     const handlePlayPause = useCallback(() => {
-        // ... (код без змін)
+        if (!finalTrackId) {
+            console.error("TrackCard: trackId is missing!");
+            return;
+        }
+
         if (isCurrentTrack && isPlaying) {
             pauseTrack();
         } else if (isCurrentTrack && !isPlaying) {
@@ -59,7 +54,6 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
     }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId, title, artist, cover, audio, duration, tracks]);
 
     const parseDuration = (durationStr) => {
-        // ... (код без змін)
         if (typeof durationStr === 'number') return durationStr;
         if (!durationStr || typeof durationStr !== 'string') return 0;
 
@@ -88,13 +82,12 @@ export default function TrackCard({ title, artist, duration, cover, audio, track
         audio
     }), [
         t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef,
-        toggleMute, // Додаємо в залежності
-        updateVolume, // Додаємо в залежності
+        toggleMute,
+        updateVolume,
         title, artist, audio
     ]);
 
 
-    // ... (решта коду handleContextMenu, handleDotsClick і т.д. без змін)
     function createRippleEffect(e) {
         const rect = e.currentTarget.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);

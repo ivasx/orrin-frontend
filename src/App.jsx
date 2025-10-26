@@ -1,13 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AudioPlayerProvider, useAudioPlayer } from './context/AudioPlayerContext.jsx';
+
+import { QueueProvider } from './context/QueueContext.jsx';
+import { PlayerUIProvider } from './context/PlayerUIContext.jsx';
+import { AudioCoreProvider, useAudioCore } from './context/AudioCoreContext.jsx';
+
 import { SettingsProvider } from './context/SettingsContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 import HeaderOnlyLayout from './layouts/HeaderOnlyLayout.jsx';
 import BottomPlayer from './components/BottomPlayer/BottomPlayer.jsx';
 
-// Сторінки
 import HomePage from './pages/HomePage/HomePage.jsx';
 import FeedPage from './pages/FeedPage/FeedPage.jsx';
 import LibraryPage from './pages/LibraryPage/LibraryPage.jsx';
@@ -26,45 +29,10 @@ import TrackPage from "./pages/TrackPage/TrackPage.jsx";
 import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.jsx";
 import ArtistPage from "./pages/ArtistPage/ArtistPage.jsx";
 
-const updateMetaTags = (t, i18n, location) => {
-    const title = t('app_title');
-    const description = t('app_description');
 
-    document.title = title;
-    document.documentElement.lang = i18n.language;
-
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-        metaDescription.setAttribute('content', description);
-    }
-
-
-
-    const baseUrl = 'https://orrin-yl1x.onrender.com/';
-    const currentPath = location.pathname;
-
-    // Оновлюємо посилання для кожної мови
-    const enLink = document.getElementById('hreflang-en');
-    if (enLink) {
-        enLink.setAttribute('href', `${baseUrl}${currentPath.replace('/uk', '') || '/'}`);
-    }
-
-    const ukLink = document.getElementById('hreflang-uk');
-    if (ukLink) {
-        // Додаємо /uk, якщо його ще немає
-        const ukPath = currentPath.startsWith('/uk') ? currentPath : `/uk${currentPath}`;
-        ukLink.setAttribute('href', `${baseUrl}${ukPath}`);
-    }
-
-    // 'x-default' - це версія за замовчуванням (зазвичай англійська)
-    const defaultLink = document.getElementById('hreflang-default');
-    if (defaultLink) {
-        defaultLink.setAttribute('href', `${baseUrl}${currentPath.replace('/uk', '') || '/'}`);
-    }
-};
 
 function AppContent() {
-    const { currentTrack } = useAudioPlayer();
+    const { currentTrack } = useAudioCore();
     const playerRef = useRef(null);
 
     useEffect(() => {
@@ -80,6 +48,7 @@ function AppContent() {
         resizeObserver.observe(playerElement);
         return () => resizeObserver.disconnect();
     }, [currentTrack]);
+
 
     const isPlayerUiVisible = currentTrack && currentTrack.trackId !== 'song-404';
 
@@ -117,11 +86,15 @@ function AppContent() {
 export default function App() {
     return (
         <Router>
-            <AudioPlayerProvider>
-                <SettingsProvider>
-                    <AppContent />
-                </SettingsProvider>
-            </AudioPlayerProvider>
+            <SettingsProvider>
+                <QueueProvider>
+                    <PlayerUIProvider>
+                        <AudioCoreProvider>
+                            <AppContent />
+                        </AudioCoreProvider>
+                    </PlayerUIProvider>
+                </QueueProvider>
+            </SettingsProvider>
         </Router>
     );
 }

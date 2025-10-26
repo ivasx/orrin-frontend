@@ -1,4 +1,6 @@
-import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
+import { useAudioCore } from '../../context/AudioCoreContext.jsx';
+import { useQueue } from '../../context/QueueContext.jsx'; // <-- Додано
+import { usePlayerUI } from '../../context/PlayerUIContext.jsx'; // <-- Додано
 import { useEffect, useState, forwardRef, useRef, useCallback, useMemo } from 'react';
 import './BottomPlayer.css';
 
@@ -12,102 +14,70 @@ import { useTranslation } from 'react-i18next';
 import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
+    // Отримуємо дані з усіх трьох контекстів
     const {
         currentTrack, isPlaying, pauseTrack, resumeTrack,
         nextTrack, previousTrack, audioRef,
-        repeatMode, toggleRepeat, isShuffled, toggleShuffle
-    } = useAudioPlayer();
+        repeatMode, toggleRepeat,
+        // isShuffled та toggleShuffle тепер беруться з useQueue
+    } = useAudioCore();
+
+    const { isShuffled, toggleShuffle } = useQueue(); // <-- Отримуємо стан та функцію shuffle
+    const { isExpanded } = usePlayerUI(); // <-- Отримуємо стан UI (приклад)
 
     const { t } = useTranslation();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // Залишаємо локальний стан завантаження
 
-    // --- Стан для меню ---
+    // --- Стан для меню (без змін) ---
     const [isPlayerMenuOpen, setIsPlayerMenuOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const optionsMenuBtnRef = useRef(null);
 
+    // --- Хук прогрес-бару (без змін) ---
     const {
         currentTime, duration, progressPercent, progressBarRef,
         handleMouseDown, formatTime
     } = useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack);
 
-    // ... (useEffect-и для аудіо залишаються без змін) ...
-    // 1. Керування джерелом аудіо (src)
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (audio && currentTrack) {
-            if (audio.src !== currentTrack.audio) {
-                setIsLoading(true);
-                audio.src = currentTrack.audio;
-                audio.load();
-            }
-        }
-    }, [currentTrack, audioRef]);
-
-    // 2. Керування відтворенням (play/pause) та подіями завантаження
+    // --- Ефекти для аудіо (майже без змін, але можемо прибрати дублювання isLoading) ---
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        const playPromise = () => {
-            const promise = audio.play();
-            if (promise !== undefined) {
-                promise.catch(error => {
-                    console.error("Помилка відтворення:", error);
-                    pauseTrack();
-                }).then(() => {
-                    setIsLoading(false);
-                });
-            }
-        };
-
-        const handleCanPlay = () => {
-            setIsLoading(false);
-            if (isPlaying) {
-                playPromise();
-            }
-        };
-
-        const handleError = () => {
-            console.error("Помилка завантаження аудіо.");
+        const handleLoadStart = () => setIsLoading(true);
+        const handleCanPlay = () => setIsLoading(false);
+        const handleError = (e) => {
+            console.error("Audio Error:", e);
             setIsLoading(false);
         };
+        const handleStalled = () => setIsLoading(true); // Показуємо завантаження при буферизації
 
+        audio.addEventListener('loadstart', handleLoadStart);
         audio.addEventListener('canplay', handleCanPlay);
+        audio.addEventListener('canplaythrough', handleCanPlay); // Додатково
         audio.addEventListener('error', handleError);
-        audio.addEventListener('stalled', handleError);
+        audio.addEventListener('stalled', handleStalled);
+        audio.addEventListener('waiting', handleLoadStart); // Показуємо завантаження при очікуванні даних
 
-        if (isPlaying) {
-            if (audio.readyState > 2) {
-                playPromise();
-            } else {
-                setIsLoading(true);
-            }
-        } else {
-            audio.pause();
-        }
-
+        // Прибираємо слухачі при розмонтуванні
         return () => {
+            audio.removeEventListener('loadstart', handleLoadStart);
             audio.removeEventListener('canplay', handleCanPlay);
+            audio.removeEventListener('canplaythrough', handleCanPlay);
             audio.removeEventListener('error', handleError);
-            audio.removeEventListener('stalled', handleError);
+            audio.removeEventListener('stalled', handleStalled);
+            audio.removeEventListener('waiting', handleLoadStart);
         };
-    }, [isPlaying, currentTrack, audioRef, pauseTrack]);
+    }, [audioRef]); // Залежність тільки від audioRef
+
 
     const handlePlayPause = () => isPlaying ? pauseTrack() : resumeTrack();
 
-    // --- Логіка меню опцій ---
-    const handleMenuClose = useCallback(() => {
-        setIsPlayerMenuOpen(false);
-    }, []);
-
-    // 👇 ОНОВЛЕНО розрахунок позиції
+    // --- Логіка меню опцій (без змін) ---
+    const handleMenuClose = useCallback(() => setIsPlayerMenuOpen(false), []);
     const handleOptionsMenuClick = useCallback(() => {
         if (optionsMenuBtnRef.current) {
             const rect = optionsMenuBtnRef.current.getBoundingClientRect();
-            // Передаємо лівий верхній кут кнопки.
-            // ContextMenu сам зсунеться вгору (завдяки openDirection="up")
-            // і вліво (завдяки своїй логіці getAdjustedPosition)
             setMenuPosition({ x: rect.left, y: rect.top });
         }
         setIsPlayerMenuOpen(prev => !prev);
@@ -118,7 +88,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         { id: 'player_share', label: t('player_menu_share'), action: () => console.log('TBD: Share'), disabled: true },
         { id: 'player_go_to_artist', label: t('player_menu_go_to_artist'), action: () => console.log('TBD: Go to artist'), disabled: true },
     ], [t]);
-    // --- Кінець логіки меню ---
+
 
     if (!currentTrack) return null;
 
@@ -129,18 +99,20 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         <>
             <div className={playerClassName} ref={ref}>
                 <div className="top-progress-bar" style={{ width: `${progressPercent}%` }}></div>
+
                 <TrackInfo track={currentTrack} />
+
                 <div className="player-center">
                     <PlayerControls
                         isPlaying={isPlaying}
-                        isLoading={isLoading}
-                        isShuffled={isShuffled}
-                        repeatMode={repeatMode}
+                        isLoading={isLoading} // Використовуємо локальний isLoading
+                        isShuffled={isShuffled} // З QueueContext
+                        repeatMode={repeatMode} // З AudioCoreContext
                         onPlayPause={handlePlayPause}
-                        onNext={nextTrack}
-                        onPrevious={previousTrack}
-                        onToggleShuffle={toggleShuffle}
-                        onToggleRepeat={toggleRepeat}
+                        onNext={nextTrack} // З AudioCoreContext
+                        onPrevious={previousTrack} // З AudioCoreContext
+                        onToggleShuffle={toggleShuffle} // З QueueContext
+                        onToggleRepeat={toggleRepeat} // З AudioCoreContext
                     />
                     <TimeControls
                         progressBarRef={progressBarRef}
@@ -151,8 +123,9 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                         formatTime={formatTime}
                     />
                 </div>
+
                 <div className="player-right">
-                    <VolumeControls />
+                    <VolumeControls /> {/* VolumeControls використовує useAudioCore всередині себе */}
                     <button
                         ref={optionsMenuBtnRef}
                         className="control-btn"
@@ -164,7 +137,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                 </div>
             </div>
 
-            {/* 👇 ДОДАНО openDirection="up" */}
             <ContextMenu
                 isVisible={isPlayerMenuOpen}
                 position={menuPosition}

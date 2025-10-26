@@ -1,4 +1,3 @@
-// src/components/TrackCard/trackMenuItems.jsx
 import {
     Play,
     Pause,
@@ -9,11 +8,11 @@ import {
     Download
 } from 'lucide-react';
 
-// ▼▼▼ ЗМІНА ТУТ: Приймаємо toggleMute та updateVolume замість setIsMuted та setVolume ▼▼▼
+
 export const createTrackMenuItems = ({
                                          t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef,
-                                         toggleMute, // <--- Замість setIsMuted
-                                         updateVolume, // <--- Замість setVolume
+                                         toggleMute,
+                                         updateVolume,
                                          title, artist, audio
                                      }) => [
     {
@@ -37,10 +36,9 @@ export const createTrackMenuItems = ({
         id: 'mute',
         label: isMuted ? t('menu_unmute') : t('menu_mute'),
         icon: isMuted ? <Volume2 size={16}/> : <VolumeX size={16}/>,
-        disabled: !isCurrentTrack, // Можна м'ютити тільки поточний трек
-        // ▼▼▼ ЗМІНА ТУТ: Використовуємо toggleMute з контексту ▼▼▼
+        disabled: !isCurrentTrack,
         action: () => {
-            if (isCurrentTrack) { // Додаткова перевірка
+            if (isCurrentTrack) {
                 toggleMute();
             }
         }

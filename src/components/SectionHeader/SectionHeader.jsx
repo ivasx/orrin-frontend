@@ -1,15 +1,17 @@
-import './SectionHeader.css';
-import {useTranslation} from 'react-i18next';
+import styles from './SectionHeader.module.css';
+import { useTranslation } from 'react-i18next';
 
 export default function SectionHeader({title, onMoreClick}) {
     const {t} = useTranslation();
 
     return (
-        <div className="section-header">
-            <h3 className="section-title">{title}</h3>
-            <button className="section-more" onClick={onMoreClick}>
-                {t('more')}
-            </button>
+        <div className={styles.sectionHeader}>
+            <h3 className={styles.sectionTitle}>{title}</h3>
+            {onMoreClick && (
+                <button className={styles.sectionMore} onClick={onMoreClick}>
+                    {t('more')}
+                </button>
+            )}
         </div>
     );
 }

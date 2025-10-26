@@ -9,11 +9,8 @@ import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSecti
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
 import ArtistSection from '../../components/ArtistSection/ArtistSection.jsx';
 import ArtistCard from '../../components/ArtistCard/ArtistCard.jsx';
-// Важливо: Правильний шлях до ArtistNotesTab!
-// Якщо він у тій же папці: import ArtistNotesTab from './ArtistNotesTab.jsx';
-// Якщо він у components:
 import ArtistNotesTab from '../../components/ArtistNotesTab/ArtistNotesTab.jsx';
-import { useAudioPlayer } from '../../context/AudioPlayerContext.jsx';
+import { useAudioCore } from '../../context/AudioCoreContext.jsx';
 
 
 // --- Внутрішні компоненти вкладок ---
@@ -62,7 +59,7 @@ function MembersTab({ members }) {
 }
 
 function DiscographyTab({ albums }) {
-    const { playTrack } = useAudioPlayer();
+    const { playTrack } = useAudioCore();
     const navigate = useNavigate();
 
     const handlePlayAlbumClick = (event, album) => {

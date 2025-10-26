@@ -8,6 +8,7 @@ export function useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack) {
     const progressBarRef = useRef(null);
     const wasPlayingRef = useRef(false);
     const animationFrameRef = useRef(null);
+    const lastUpdateTimeRef = useRef(0); // ✅ Для throttling
 
     // Оновлення часу
     useEffect(() => {
@@ -19,79 +20,157 @@ export function useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack) {
                 setCurrentTime(audio.currentTime);
             }
         };
-        const handleLoadedData = () => setDuration(audio.duration);
+
+        const handleLoadedMetadata = () => {
+            if (audio.duration && isFinite(audio.duration)) {
+                setDuration(audio.duration);
+            }
+        };
+
+        const handleDurationChange = () => {
+            if (audio.duration && isFinite(audio.duration)) {
+                setDuration(audio.duration);
+            }
+        };
 
         audio.addEventListener('timeupdate', handleTimeUpdate);
-        audio.addEventListener('loadeddata', handleLoadedData);
+        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.addEventListener('durationchange', handleDurationChange);
+
+        if (audio.duration && isFinite(audio.duration)) {
+            setDuration(audio.duration);
+        }
+        setCurrentTime(audio.currentTime);
 
         return () => {
             audio.removeEventListener('timeupdate', handleTimeUpdate);
-            audio.removeEventListener('loadeddata', handleLoadedData);
+            audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            audio.removeEventListener('durationchange', handleDurationChange);
         };
     }, [audioRef, isDragging]);
 
-    const getSeekTime = (event) => {
-        if (!progressBarRef.current || !duration) return 0;
+    // ✅ ОПТИМІЗАЦІЯ: Мемоізована функція для розрахунку часу
+    const getSeekTime = useCallback((event) => {
+        if (!progressBarRef.current || !duration || !isFinite(duration)) return 0;
+
         const rect = progressBarRef.current.getBoundingClientRect();
-        const offsetX = (event.clientX || event.touches[0].clientX) - rect.left;
+        const clientX = event.clientX ?? event.touches?.[0]?.clientX;
+
+        if (clientX === undefined) return 0;
+
+        const offsetX = clientX - rect.left;
         const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
         return percentage * duration;
-    };
+    }, [duration]); // Залежить тільки від duration
 
     const handleMouseDown = useCallback((e) => {
+        e.preventDefault();
+        if (!duration || !isFinite(duration)) return;
+
         wasPlayingRef.current = isPlaying;
-        if (isPlaying) pauseTrack();
+        if (isPlaying) {
+            pauseTrack();
+        }
         setIsDragging(true);
         setCurrentTime(getSeekTime(e.nativeEvent));
-    }, [isPlaying, pauseTrack, duration]);
+    }, [isPlaying, pauseTrack, duration, getSeekTime]);
 
     const handleMouseUp = useCallback((e) => {
         if (!isDragging) return;
+        e.preventDefault();
+
+        const audio = audioRef.current;
+        if (!audio) {
+            setIsDragging(false);
+            return;
+        }
 
         const newTime = getSeekTime(e);
-        if (audioRef.current) {
-            audioRef.current.currentTime = newTime;
-        }
-        setCurrentTime(newTime);
-        setIsDragging(false);
-        if (wasPlayingRef.current) resumeTrack();
-    }, [isDragging, resumeTrack, audioRef, duration]);
 
+        if (audio.readyState >= 1 && isFinite(newTime)) {
+            console.log(`Seeking to: ${newTime.toFixed(2)}`);
+            audio.currentTime = newTime;
+            setCurrentTime(newTime);
+        } else {
+            console.warn("Audio not ready for seeking or newTime is invalid.");
+        }
+
+        setIsDragging(false);
+
+        if (wasPlayingRef.current) {
+            console.log("Resuming track after seek");
+            resumeTrack();
+        }
+
+    }, [isDragging, resumeTrack, audioRef, getSeekTime]);
+
+    // ✅ ОПТИМІЗАЦІЯ: Throttling для handleMouseMove
     const handleMouseMove = useCallback((e) => {
         if (!isDragging) return;
+        e.preventDefault();
 
-        cancelAnimationFrame(animationFrameRef.current);
+        const now = performance.now();
+        // Throttle до ~60 FPS (16ms між оновленнями)
+        if (now - lastUpdateTimeRef.current < 16) return;
+
+        lastUpdateTimeRef.current = now;
+
+        // Скасовуємо попередній запланований кадр
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+        }
+
         animationFrameRef.current = requestAnimationFrame(() => {
-            setCurrentTime(getSeekTime(e));
+            const newTime = getSeekTime(e);
+            if (isFinite(newTime)) {
+                setCurrentTime(newTime);
+            }
         });
-    }, [isDragging, duration]);
+    }, [isDragging, getSeekTime]);
 
+    // Глобальні слухачі для перетягування
     useEffect(() => {
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('touchmove', handleMouseMove);
-        window.addEventListener('touchend', handleMouseUp);
+        if (!isDragging) return;
+
+        const handleMove = (e) => handleMouseMove(e);
+        const handleUp = (e) => handleMouseUp(e);
+
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('mouseup', handleUp);
+        document.addEventListener('touchmove', handleMove, { passive: false });
+        document.addEventListener('touchend', handleUp);
 
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
-            window.removeEventListener('touchmove', handleMouseMove);
-            window.removeEventListener('touchend', handleMouseUp);
-            cancelAnimationFrame(animationFrameRef.current);
-        };
-    }, [handleMouseMove, handleMouseUp]);
+            document.removeEventListener('mousemove', handleMove);
+            document.removeEventListener('mouseup', handleUp);
+            document.removeEventListener('touchmove', handleMove);
+            document.removeEventListener('touchend', handleUp);
 
-    const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [isDragging, handleMouseMove, handleMouseUp]);
+
+    const progressPercent = (duration && isFinite(duration) && duration > 0)
+        ? (currentTime / duration) * 100
+        : 0;
 
     const formatTime = (seconds) => {
-        if (isNaN(seconds) || seconds < 0) return '0:00';
+        if (seconds === null || seconds === undefined || isNaN(seconds) || !isFinite(seconds) || seconds < 0) {
+            return '0:00';
+        }
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
     return {
-        currentTime, duration, progressPercent, progressBarRef,
-        handleMouseDown, formatTime
+        currentTime,
+        duration,
+        progressPercent,
+        progressBarRef,
+        handleMouseDown,
+        formatTime
     };
 }
