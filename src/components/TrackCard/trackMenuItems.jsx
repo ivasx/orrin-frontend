@@ -10,7 +10,7 @@ import {
 
 
 export const createTrackMenuItems = ({
-                                         t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, audioRef,
+                                         t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
                                          toggleMute,
                                          updateVolume,
                                          title, artist, audio

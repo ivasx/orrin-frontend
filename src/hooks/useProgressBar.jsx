@@ -1,16 +1,24 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
-export function useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack) {
+export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => {
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
-
     const progressBarRef = useRef(null);
-    const wasPlayingRef = useRef(false);
-    const animationFrameRef = useRef(null);
-    const lastUpdateTimeRef = useRef(0); // ✅ Для throttling
+    const wasPlayingBeforeDrag = useRef(false);
 
-    // Оновлення часу
+    // Форматування часу
+    const formatTime = useCallback((seconds) => {
+        if (!isFinite(seconds) || seconds < 0) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }, []);
+
+    // Обчислення прогресу
+    const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+    // Оновлення currentTime та duration з audio елемента
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -22,25 +30,23 @@ export function useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack) {
         };
 
         const handleLoadedMetadata = () => {
-            if (audio.duration && isFinite(audio.duration)) {
-                setDuration(audio.duration);
-            }
+            setDuration(audio.duration);
+            setCurrentTime(audio.currentTime);
         };
 
         const handleDurationChange = () => {
-            if (audio.duration && isFinite(audio.duration)) {
-                setDuration(audio.duration);
-            }
+            setDuration(audio.duration);
         };
 
         audio.addEventListener('timeupdate', handleTimeUpdate);
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
         audio.addEventListener('durationchange', handleDurationChange);
 
-        if (audio.duration && isFinite(audio.duration)) {
+        // Ініціалізація, якщо дані вже завантажені
+        if (audio.duration) {
             setDuration(audio.duration);
+            setCurrentTime(audio.currentTime);
         }
-        setCurrentTime(audio.currentTime);
 
         return () => {
             audio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -49,84 +55,78 @@ export function useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack) {
         };
     }, [audioRef, isDragging]);
 
-    // ✅ ОПТИМІЗАЦІЯ: Мемоізована функція для розрахунку часу
-    const getSeekTime = useCallback((event) => {
-        if (!progressBarRef.current || !duration || !isFinite(duration)) return 0;
+    // Функція для обчислення нового часу на основі позиції кліку
+    const calculateTimeFromPosition = useCallback((clientX) => {
+        if (!progressBarRef.current || !duration) return null;
 
         const rect = progressBarRef.current.getBoundingClientRect();
-        const clientX = event.clientX ?? event.touches?.[0]?.clientX;
-
-        if (clientX === undefined) return 0;
-
         const offsetX = clientX - rect.left;
-        const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
-        return percentage * duration;
-    }, [duration]); // Залежить тільки від duration
+        const width = rect.width;
+        const percent = Math.max(0, Math.min(1, offsetX / width));
+        return percent * duration;
+    }, [duration]);
 
+    // Функція перемотування
+    const seekToTime = useCallback((time) => {
+        const audio = audioRef.current;
+        if (!audio || !isFinite(time)) return;
+
+        audio.currentTime = Math.max(0, Math.min(time, duration || audio.duration));
+        setCurrentTime(audio.currentTime);
+    }, [audioRef, duration]);
+
+    // Обробник початку перетягування
     const handleMouseDown = useCallback((e) => {
         e.preventDefault();
-        if (!duration || !isFinite(duration)) return;
+        setIsDragging(true);
+        wasPlayingBeforeDrag.current = isPlaying;
 
-        wasPlayingRef.current = isPlaying;
+        // Паузимо відтворення під час перетягування для плавності
         if (isPlaying) {
             pauseTrack();
         }
-        setIsDragging(true);
-        setCurrentTime(getSeekTime(e.nativeEvent));
-    }, [isPlaying, pauseTrack, duration, getSeekTime]);
 
-    const handleMouseUp = useCallback((e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-
-        const audio = audioRef.current;
-        if (!audio) {
-            setIsDragging(false);
-            return;
+        // Одразу перемотуємо на позицію кліку
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const newTime = calculateTimeFromPosition(clientX);
+        if (newTime !== null) {
+            seekToTime(newTime);
         }
+    }, [isPlaying, pauseTrack, calculateTimeFromPosition, seekToTime]);
 
-        const newTime = getSeekTime(e);
-
-        if (audio.readyState >= 1 && isFinite(newTime)) {
-            console.log(`Seeking to: ${newTime.toFixed(2)}`);
-            audio.currentTime = newTime;
-            setCurrentTime(newTime);
-        } else {
-            console.warn("Audio not ready for seeking or newTime is invalid.");
-        }
-
-        setIsDragging(false);
-
-        if (wasPlayingRef.current) {
-            console.log("Resuming track after seek");
-            resumeTrack();
-        }
-
-    }, [isDragging, resumeTrack, audioRef, getSeekTime]);
-
-    // ✅ ОПТИМІЗАЦІЯ: Throttling для handleMouseMove
+    // Обробник руху під час перетягування
     const handleMouseMove = useCallback((e) => {
         if (!isDragging) return;
         e.preventDefault();
 
-        const now = performance.now();
-        // Throttle до ~60 FPS (16ms між оновленнями)
-        if (now - lastUpdateTimeRef.current < 16) return;
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const newTime = calculateTimeFromPosition(clientX);
+        if (newTime !== null) {
+            setCurrentTime(newTime); // Оновлюємо UI
+        }
+    }, [isDragging, calculateTimeFromPosition]);
 
-        lastUpdateTimeRef.current = now;
+    // Обробник завершення перетягування
+    const handleMouseUp = useCallback((e) => {
+        if (!isDragging) return;
 
-        // Скасовуємо попередній запланований кадр
-        if (animationFrameRef.current) {
-            cancelAnimationFrame(animationFrameRef.current);
+        const clientX = e.type.includes('touch')
+            ? (e.changedTouches?.[0]?.clientX ?? currentTime / duration * progressBarRef.current?.getBoundingClientRect().width)
+            : e.clientX;
+
+        const newTime = calculateTimeFromPosition(clientX);
+        if (newTime !== null) {
+            seekToTime(newTime); // Встановлюємо фінальну позицію
         }
 
-        animationFrameRef.current = requestAnimationFrame(() => {
-            const newTime = getSeekTime(e);
-            if (isFinite(newTime)) {
-                setCurrentTime(newTime);
-            }
-        });
-    }, [isDragging, getSeekTime]);
+        setIsDragging(false);
+
+        // Відновлюємо відтворення, якщо воно було активне
+        if (wasPlayingBeforeDrag.current) {
+            resumeTrack();
+        }
+        wasPlayingBeforeDrag.current = false;
+    }, [isDragging, calculateTimeFromPosition, seekToTime, resumeTrack, currentTime, duration]);
 
     // Глобальні слухачі для перетягування
     useEffect(() => {
@@ -145,25 +145,8 @@ export function useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack) {
             document.removeEventListener('mouseup', handleUp);
             document.removeEventListener('touchmove', handleMove);
             document.removeEventListener('touchend', handleUp);
-
-            if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current);
-            }
         };
     }, [isDragging, handleMouseMove, handleMouseUp]);
-
-    const progressPercent = (duration && isFinite(duration) && duration > 0)
-        ? (currentTime / duration) * 100
-        : 0;
-
-    const formatTime = (seconds) => {
-        if (seconds === null || seconds === undefined || isNaN(seconds) || !isFinite(seconds) || seconds < 0) {
-            return '0:00';
-        }
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
 
     return {
         currentTime,
@@ -171,6 +154,8 @@ export function useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack) {
         progressPercent,
         progressBarRef,
         handleMouseDown,
-        formatTime
+        formatTime,
+        isDragging,
+        seekToTime, // Експортуємо для можливості програмного перемотування
     };
-}
+};
