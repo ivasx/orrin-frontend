@@ -121,6 +121,25 @@
       "november": "November",
       "december": "December"
     },
-    "error_loading_tracks": "Error loading tracks"
+    "error_loading_tracks": "Error loading tracks",
+    "player_error_unknown": "Playback error",
+    "player_error_network": "Network error",
+    "player_error_decode": "Decoding error",
+    "player_error_format": "Format not supported",
+    "player_error_aborted": "Loading aborted",
+    "player_retry": "Retry",
+    "player_retrying": "Retrying...",
+    "player_retry_aria": "Retry loading",
+    "player_click_retry": "Click to retry",
+    "player_pause_aria": "Pause",
+    "player_play_aria": "Play",
+    "player_repeat_aria": "Repeat",
+    "player_previous_aria": "Previous track",
+    "player_next_aria": "Next track",
+    "player_shuffle_aria": "Shuffle",
+    "track_unavailable": "Unavailable",
+    "track_no_audio": "Audio unavailable",
+    "track_loading": "Loading...",
+    "track_error": "Error"
   }
 }

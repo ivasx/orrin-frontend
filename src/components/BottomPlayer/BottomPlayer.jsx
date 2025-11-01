@@ -1,7 +1,8 @@
 import { useAudioCore } from '../../context/AudioCoreContext.jsx';
-import { useQueue } from '../../context/QueueContext.jsx'; // <-- Додано
-import { usePlayerUI } from '../../context/PlayerUIContext.jsx'; // <-- Додано
+import { useQueue } from '../../context/QueueContext.jsx';
+import { usePlayerUI } from '../../context/PlayerUIContext.jsx';
 import { useEffect, useState, forwardRef, useRef, useCallback, useMemo } from 'react';
+import { AlertCircle, WifiOff } from 'lucide-react';
 import './BottomPlayer.css';
 
 import TrackInfo from './TrackInfo';
@@ -12,69 +13,128 @@ import VolumeControls from './VolumeControls';
 import { MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
+import { normalizeTrackData, isTrackPlayable } from '../../constants/fallbacks.js';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
-    // Отримуємо дані з усіх трьох контекстів
     const {
-        currentTrack, isPlaying, pauseTrack, resumeTrack,
+        currentTrack: rawCurrentTrack, isPlaying, pauseTrack, resumeTrack,
         nextTrack, previousTrack, audioRef,
         repeatMode, toggleRepeat,
-        // isShuffled та toggleShuffle тепер беруться з useQueue
     } = useAudioCore();
 
-    const { isShuffled, toggleShuffle } = useQueue(); // <-- Отримуємо стан та функцію shuffle
-    const { isExpanded } = usePlayerUI(); // <-- Отримуємо стан UI (приклад)
-
+    const { isShuffled, toggleShuffle } = useQueue();
+    const { isExpanded } = usePlayerUI();
     const { t } = useTranslation();
-    const [isLoading, setIsLoading] = useState(false); // Залишаємо локальний стан завантаження
 
-    // --- Стан для меню (без змін) ---
+    const currentTrack = rawCurrentTrack ? normalizeTrackData(rawCurrentTrack) : null;
+    const isPlayable = currentTrack ? isTrackPlayable(currentTrack) : false;
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadError, setLoadError] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
+    const MAX_RETRY_ATTEMPTS = 3;
+
     const [isPlayerMenuOpen, setIsPlayerMenuOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const optionsMenuBtnRef = useRef(null);
 
-    // --- Хук прогрес-бару (без змін) ---
     const {
         currentTime, duration, progressPercent, progressBarRef,
         handleMouseDown, formatTime
     } = useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack);
 
-    // --- Ефекти для аудіо (майже без змін, але можемо прибрати дублювання isLoading) ---
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        const handleLoadStart = () => setIsLoading(true);
-        const handleCanPlay = () => setIsLoading(false);
-        const handleError = (e) => {
-            console.error("Audio Error:", e);
-            setIsLoading(false);
+        const handleLoadStart = () => {
+            setIsLoading(true);
+            setLoadError(null);
         };
-        const handleStalled = () => setIsLoading(true); // Показуємо завантаження при буферизації
+
+        const handleCanPlay = () => {
+            setIsLoading(false);
+            setLoadError(null);
+            setRetryCount(0);
+        };
+
+        const handleError = (e) => {
+            console.error("Audio Error:", e, audio.error);
+            setIsLoading(false);
+
+            let errorMessage = t('player_error_unknown', 'Помилка відтворення');
+            let errorType = 'unknown';
+
+            if (audio.error) {
+                switch(audio.error.code) {
+                    case MediaError.MEDIA_ERR_NETWORK:
+                        errorMessage = t('player_error_network', 'Помилка мережі');
+                        errorType = 'network';
+                        break;
+                    case MediaError.MEDIA_ERR_DECODE:
+                        errorMessage = t('player_error_decode', 'Помилка декодування');
+                        errorType = 'decode';
+                        break;
+                    case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                        errorMessage = t('player_error_format', 'Формат не підтримується');
+                        errorType = 'format';
+                        break;
+                    case MediaError.MEDIA_ERR_ABORTED:
+                        errorMessage = t('player_error_aborted', 'Завантаження перервано');
+                        errorType = 'aborted';
+                        break;
+                }
+            }
+
+            setLoadError({ message: errorMessage, type: errorType });
+        };
+
+        const handleStalled = () => setIsLoading(true);
+        const handleWaiting = () => setIsLoading(true);
 
         audio.addEventListener('loadstart', handleLoadStart);
         audio.addEventListener('canplay', handleCanPlay);
-        audio.addEventListener('canplaythrough', handleCanPlay); // Додатково
+        audio.addEventListener('canplaythrough', handleCanPlay);
         audio.addEventListener('error', handleError);
         audio.addEventListener('stalled', handleStalled);
-        audio.addEventListener('waiting', handleLoadStart); // Показуємо завантаження при очікуванні даних
+        audio.addEventListener('waiting', handleWaiting);
 
-        // Прибираємо слухачі при розмонтуванні
         return () => {
             audio.removeEventListener('loadstart', handleLoadStart);
             audio.removeEventListener('canplay', handleCanPlay);
             audio.removeEventListener('canplaythrough', handleCanPlay);
             audio.removeEventListener('error', handleError);
             audio.removeEventListener('stalled', handleStalled);
-            audio.removeEventListener('waiting', handleLoadStart);
+            audio.removeEventListener('waiting', handleWaiting);
         };
-    }, [audioRef]); // Залежність тільки від audioRef
+    }, [audioRef, t]);
 
+    const handlePlayPause = () => {
+        if (loadError && retryCount < MAX_RETRY_ATTEMPTS) {
+            handleRetry();
+        } else if (!loadError || retryCount >= MAX_RETRY_ATTEMPTS) {
+            isPlaying ? pauseTrack() : resumeTrack();
+        }
+    };
 
-    const handlePlayPause = () => isPlaying ? pauseTrack() : resumeTrack();
+    const handleRetry = useCallback(() => {
+        if (!currentTrack || !isPlayable) return;
 
-    // --- Логіка меню опцій (без змін) ---
+        setLoadError(null);
+        setIsLoading(true);
+        setRetryCount(prev => prev + 1);
+
+        const audio = audioRef.current;
+        if (audio) {
+            audio.load();
+            audio.play().catch(err => {
+                console.error("Retry play failed:", err);
+            });
+        }
+    }, [currentTrack, isPlayable, audioRef]);
+
     const handleMenuClose = useCallback(() => setIsPlayerMenuOpen(false), []);
+
     const handleOptionsMenuClick = useCallback(() => {
         if (optionsMenuBtnRef.current) {
             const rect = optionsMenuBtnRef.current.getBoundingClientRect();

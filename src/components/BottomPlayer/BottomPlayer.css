@@ -312,6 +312,120 @@
     stroke-width: 2.5;
 }
 
+.player-cover-skeleton {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Заглушка для обкладинки */
+.player-cover[src*="orrin-logo.svg"] {
+    padding: 8px;
+    background: #1a1a1a;
+    object-fit: contain;
+}
+
+/* Анімація пульсації для помилки обкладинки */
+.player-cover.error {
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
+/* Стилі для placeholder тексту */
+.player-title.loading,
+.player-artist.loading {
+    background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    color: transparent;
+    border-radius: 4px;
+    height: 1em;
+    width: 150px;
+    margin-bottom: 4px;
+}
+
+.player-artist.loading {
+    width: 100px;
+    height: 0.9em;
+}
+
+/* Skeleton для контролів */
+.player-controls.loading .control-btn,
+.player-controls.loading .play-pause-btn {
+    background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    color: transparent;
+    pointer-events: none;
+}
+
+/* Skeleton для прогрес-бару */
+.progress-wrapper.loading .progress-track {
+    background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.progress-wrapper.loading .time-display {
+    background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    color: transparent;
+    border-radius: 4px;
+    min-width: 35px;
+}
+
+/* Стан "не готовий" для плеєра */
+.bottom-player.not-ready {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.bottom-player.not-ready .player-cover {
+    filter: grayscale(80%);
+}
+
+/* Індикатор буферизації */
+.buffering-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.buffering-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+    );
+    animation: buffering 1.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .player-cover-skeleton,
+    .player-title.loading,
+    .player-artist.loading,
+    .player-controls.loading *,
+    .progress-wrapper.loading *,
+    .buffering-indicator::after {
+        animation: none;
+    }
+}
+
 @media (max-width: 768px) {
     .player-left { min-width: 0; flex: 1; }
     .player-info { display: block; }
@@ -337,5 +451,24 @@
     .player-controls > .control-btn:first-child,
     .player-controls > .control-btn:last-child {
         display: none;
+    }
+
+    .player-cover-skeleton {
+         width: 45px;
+         height: 45px;
+     }
+}
+@media (max-width: 768px) {
+    .player-cover-skeleton {
+        width: 45px;
+        height: 45px;
+    }
+
+    .player-title.loading {
+        width: 120px;
+    }
+
+    .player-artist.loading {
+        width: 80px;
     }
 }

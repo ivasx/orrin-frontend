@@ -121,6 +121,25 @@
       "november": "Листопад",
       "december": "Грудень"
     },
-    "error_loading_tracks": "Помилка завантаження треків"
+    "error_loading_tracks": "Помилка завантаження треків",
+    "player_error_unknown": "Помилка відтворення",
+    "player_error_network": "Помилка мережі",
+    "player_error_decode": "Помилка декодування",
+    "player_error_format": "Формат не підтримується",
+    "player_error_aborted": "Завантаження перервано",
+    "player_retry": "Повторити",
+    "player_retrying": "Спроба...",
+    "player_retry_aria": "Повторити завантаження",
+    "player_click_retry": "Натисніть, щоб повторити",
+    "player_pause_aria": "Пауза",
+    "player_play_aria": "Відтворити",
+    "player_repeat_aria": "Повторення",
+    "player_previous_aria": "Попередній трек",
+    "player_next_aria": "Наступний трек",
+    "player_shuffle_aria": "Перемішати",
+    "track_unavailable": "Недоступно",
+    "track_no_audio": "Аудіо недоступне",
+    "track_loading": "Завантаження...",
+    "track_error": "Помилка"
   }
 }

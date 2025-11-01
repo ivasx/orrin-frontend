@@ -1,23 +1,30 @@
+// src/components/TrackCard/TrackCard.jsx
 import './TrackCard.css';
-import { useState, useEffect, useCallback, useRef } from 'react'; // Додаємо useRef
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
 import { useAudioCore } from '../../context/AudioCoreContext.jsx';
 import { useTranslation } from "react-i18next";
 import { createTrackMenuItems } from './trackMenuItems.jsx';
 import { Link } from 'react-router-dom';
+import { AlertCircle, Music } from 'lucide-react';
 
-// --- ЗМІНА 1: Оновлюємо імена пропсів ---
+// Константи для fallback-значень
+const FALLBACK_COVER = '/orrin-logo.svg'; // Логотип Orrin як обкладинка за замовчуванням
+const FALLBACK_TITLE = 'Unknown Track';
+const FALLBACK_ARTIST = 'Unknown Artist';
+const FALLBACK_DURATION = '0:00';
+
 export default function TrackCard(props) {
     const {
         title,
         artist,
-        duration_formatted, // Використовуємо форматовану тривалість з API
-        cover_url,          // Використовуємо URL обкладинки з API
-        audio_url,          // Використовуємо URL аудіо з API
+        duration_formatted,
+        cover_url,
+        audio_url,
         trackId,
         artistId,
-        tracks              // Список всіх треків секції
-    } = props; // Отримуємо всі пропси
+        tracks
+    } = props;
 
     const { t } = useTranslation();
     const {
@@ -25,6 +32,12 @@ export default function TrackCard(props) {
         isMuted, toggleMute, volume, updateVolume
     } = useAudioCore();
 
+    // Стани для обробки помилок
+    const [coverError, setCoverError] = useState(false);
+    const [audioError, setAudioError] = useState(false);
+    const [isAudioLoading, setIsAudioLoading] = useState(false);
+
+    // Стани для UI
     const [showControls, setShowControls] = useState(false);
     const [durationHovered, setDurationHovered] = useState(false);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -32,23 +45,62 @@ export default function TrackCard(props) {
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const [rippleStyle, setRippleStyle] = useState({});
     const [showRipple, setShowRipple] = useState(false);
+
+    const dotsButtonRef = useRef(null);
     const finalTrackId = trackId;
 
-    // --- Додаємо Ref для кнопки "крапок" ---
-    const dotsButtonRef = useRef(null);
+    // Безпечні значення з fallback
+    const safeTitle = title?.trim() || t('unknown_track', FALLBACK_TITLE);
+    const safeArtist = artist?.trim() || t('unknown_artist', FALLBACK_ARTIST);
+    const safeCover = !coverError && cover_url ? cover_url : FALLBACK_COVER;
+    const safeDuration = duration_formatted || FALLBACK_DURATION;
+    const hasValidAudio = audio_url && !audioError;
 
     useEffect(() => {
         setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
     }, []);
 
+    // Скидання помилок при зміні треку
+    useEffect(() => {
+        setCoverError(false);
+        setAudioError(false);
+    }, [trackId]);
+
+    // Перевірка помилок аудіо для поточного треку
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio || currentTrack?.trackId !== finalTrackId) return;
+
+        const handleAudioError = (e) => {
+            console.error('Audio error for track:', finalTrackId, e);
+            setAudioError(true);
+            setIsAudioLoading(false);
+        };
+
+        const handleLoadStart = () => setIsAudioLoading(true);
+        const handleCanPlay = () => setIsAudioLoading(false);
+        const handleLoadedData = () => setIsAudioLoading(false);
+
+        audio.addEventListener('error', handleAudioError);
+        audio.addEventListener('loadstart', handleLoadStart);
+        audio.addEventListener('canplay', handleCanPlay);
+        audio.addEventListener('loadeddata', handleLoadedData);
+
+        return () => {
+            audio.removeEventListener('error', handleAudioError);
+            audio.removeEventListener('loadstart', handleLoadStart);
+            audio.removeEventListener('canplay', handleCanPlay);
+            audio.removeEventListener('loadeddata', handleLoadedData);
+        };
+    }, [audioRef, currentTrack, finalTrackId]);
+
     const isPlaying = isTrackPlaying(finalTrackId);
     const isCurrentTrack = currentTrack && currentTrack.trackId === finalTrackId;
+    const showLoadingIndicator = isCurrentTrack && isAudioLoading;
+    const showErrorIndicator = isCurrentTrack && audioError;
 
-    // --- ЗМІНА 2: Оновлюємо parseDuration, щоб працював з "M:SS" ---
     const parseDuration = (durationStr) => {
-        // Якщо вже число (секунди), повертаємо його
         if (typeof durationStr === 'number') return durationStr;
-        // Якщо прийшов рядок "M:SS"
         if (typeof durationStr === 'string' && durationStr.includes(':')) {
             const parts = durationStr.split(':');
             if (parts.length === 2) {
@@ -57,12 +109,11 @@ export default function TrackCard(props) {
                 return minutes * 60 + seconds;
             }
         }
-        // Якщо прийшло число у вигляді рядка (напр., з API як "439")
         if (typeof durationStr === 'string') {
             const parsedInt = parseInt(durationStr, 10);
             if (!isNaN(parsedInt)) return parsedInt;
         }
-        return 0; // Fallback
+        return 0;
     };
 
     const handlePlayPause = useCallback(() => {
@@ -71,26 +122,31 @@ export default function TrackCard(props) {
             return;
         }
 
+        // Перевірка наявності аудіо
+        if (!hasValidAudio) {
+            console.warn("TrackCard: Cannot play - no valid audio URL");
+            // Можна показати тост-повідомлення користувачу
+            return;
+        }
+
         if (isCurrentTrack && isPlaying) {
             pauseTrack();
         } else if (isCurrentTrack && !isPlaying) {
             resumeTrack();
         } else {
-            // --- ЗМІНА 3: Передаємо правильні поля в playTrack ---
             playTrack({
                 trackId: finalTrackId,
-                title,
-                artist,
-                cover: cover_url, // Передаємо cover_url
-                audio: audio_url, // Передаємо audio_url
-                // Передаємо оригінальну тривалість з API, якщо вона є, АБО розраховану
+                title: safeTitle,
+                artist: safeArtist,
+                cover: safeCover,
+                audio: audio_url,
                 duration: props.duration || parseDuration(duration_formatted),
                 artistId
             }, tracks);
         }
-        // --- Оновлюємо залежності ---
-    }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId, title, artist, cover_url, audio_url, props.duration, duration_formatted, artistId, tracks]);
-
+    }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId,
+        safeTitle, safeArtist, safeCover, audio_url, props.duration, duration_formatted,
+        artistId, tracks, hasValidAudio]);
 
     const getMenuItems = useCallback(() => createTrackMenuItems({
         t,
@@ -99,17 +155,16 @@ export default function TrackCard(props) {
         volume,
         handlePlayPause,
         isCurrentTrack,
-        // audioRef більше не потрібен тут, прибираємо його
         toggleMute,
         updateVolume,
-        title,
-        artist,
-        audio: audio_url // --- ЗМІНА 4: Передаємо audio_url сюди ---
+        title: safeTitle,
+        artist: safeArtist,
+        audio: audio_url,
+        hasValidAudio // Передаємо для блокування недоступних опцій
     }), [
         t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
-        toggleMute, updateVolume, title, artist, audio_url // Оновлено залежність
+        toggleMute, updateVolume, safeTitle, safeArtist, audio_url, hasValidAudio
     ]);
-
 
     function createRippleEffect(e) {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -117,25 +172,21 @@ export default function TrackCard(props) {
         const x = e.clientX - rect.left - size / 2;
         const y = e.clientY - rect.top - size / 2;
 
-        setRippleStyle({
-            width: size,
-            height: size,
-            left: x,
-            top: y
-        });
-
+        setRippleStyle({ width: size, height: size, left: x, top: y });
         setShowRipple(true);
         setTimeout(() => setShowRipple(false), 600);
     }
 
     function handleCoverClick(e) {
         if (e.button !== 0) return;
+        if (!hasValidAudio) return; // Блокуємо клік якщо немає аудіо
         createRippleEffect(e);
         handlePlayPause();
     }
 
     function handlePlayButtonClick(e) {
         e.stopPropagation();
+        if (!hasValidAudio) return;
         createRippleEffect(e);
         handlePlayPause();
     }
@@ -157,39 +208,36 @@ export default function TrackCard(props) {
 
     function handleDotsClick(e) {
         e.stopPropagation();
-        // Використовуємо Ref для отримання координат кнопки
         if (dotsButtonRef.current) {
             const rect = dotsButtonRef.current.getBoundingClientRect();
-            let x = rect.right; // Починаємо праворуч від кнопки
-            let y = rect.top; // Починаємо зверху кнопки
+            let x = rect.right;
+            let y = rect.top;
 
-            const menuWidth = 200; // Орієнтовна ширина меню
-            const menuHeight = 300; // Орієнтовна висота меню
+            const menuWidth = 200;
+            const menuHeight = 300;
 
-            // Коригуємо позицію, щоб меню не виходило за межі екрану
-            if (x + menuWidth > window.innerWidth - 10) { // 10px відступ
-                x = rect.left - menuWidth; // Переміщаємо вліво від кнопки
+            if (x + menuWidth > window.innerWidth - 10) {
+                x = rect.left - menuWidth;
             }
             if (y + menuHeight > window.innerHeight - 10) {
-                y = window.innerHeight - menuHeight - 10; // Зсуваємо вгору
+                y = window.innerHeight - menuHeight - 10;
             }
-            if (y < 10) { // Перевірка зверху
-                y = 10;
-            }
-            if (x < 10) { // Перевірка зліва
-                x = 10;
-            }
+            if (y < 10) y = 10;
+            if (x < 10) x = 10;
 
             setMenuPosition({ x, y });
-            setShowMenu(prev => !prev); // Перемикаємо видимість
+            setShowMenu(prev => !prev);
         }
     }
 
-
     const handleMenuClose = () => setShowMenu(false);
-
     const shouldShowControls = isTouchDevice ? true : showControls;
 
+    // Обробник помилки завантаження обкладинки
+    const handleCoverError = () => {
+        console.warn('Cover image failed to load for track:', finalTrackId);
+        setCoverError(true);
+    };
 
     return (
         <div
@@ -197,47 +245,115 @@ export default function TrackCard(props) {
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
-            aria-label={t('track_card_aria_label', { title, artist })}
+            aria-label={t('track_card_aria_label', { title: safeTitle, artist: safeArtist })}
         >
             <div
-                className={`track-cover-wrapper ${isPlaying ? 'playing' : ''}`}
+                className={`track-cover-wrapper ${isPlaying ? 'playing' : ''} ${!hasValidAudio ? 'disabled' : ''}`}
                 onClick={handleCoverClick}
-                onMouseEnter={() => !isTouchDevice && setShowControls(true)}
+                onMouseEnter={() => !isTouchDevice && hasValidAudio && setShowControls(true)}
                 onMouseLeave={() => !isTouchDevice && setShowControls(false)}
-                onTouchStart={() => isTouchDevice && setShowControls(true)}
+                onTouchStart={() => isTouchDevice && hasValidAudio && setShowControls(true)}
             >
-                {/* --- ЗМІНА 5: Використовуємо cover_url --- */}
-                <img src={cover_url} alt={title} className="track-cover"/>
+                {/* Обкладинка з fallback */}
+                {coverError ? (
+                    <div className="track-cover-fallback">
+                        <Music size={32} />
+                    </div>
+                ) : (
+                    <img
+                        src={safeCover}
+                        alt={safeTitle}
+                        className="track-cover"
+                        onError={handleCoverError}
+                        loading="lazy"
+                    />
+                )}
 
                 {showRipple && <div className="ripple-effect" style={rippleStyle} />}
 
-                {shouldShowControls && (
-                    <div className="play-icon" onClick={handlePlayButtonClick}>
-                        {!isPlaying ? <div className="triangle"></div> : <div className="pause"><span></span><span></span></div>}
+                {/* Індикатор завантаження */}
+                {showLoadingIndicator && (
+                    <div className="loading-indicator">
+                        <div className="spinner-overlay">
+                            <div className="spinner-small"></div>
+                        </div>
                     </div>
                 )}
-                {isPlaying && !shouldShowControls && ( <div className="bars"><span></span><span></span><span></span></div> )}
-                {isTouchDevice && isPlaying && shouldShowControls && ( <div className="bars mobile-bars"><span></span><span></span><span></span></div> )}
+
+                {/* Індикатор помилки */}
+                {showErrorIndicator && (
+                    <div className="error-indicator">
+                        <div className="error-icon">
+                            <AlertCircle size={20} />
+                        </div>
+                    </div>
+                )}
+
+                {/* Індикатор відсутності аудіо */}
+                {!hasValidAudio && !showErrorIndicator && (
+                    <div className="no-audio-indicator">
+                        <AlertCircle size={20} className="no-audio-icon" />
+                    </div>
+                )}
+
+                {/* Кнопка play/pause */}
+                {shouldShowControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
+                    <div className="play-icon" onClick={handlePlayButtonClick}>
+                        {!isPlaying ? (
+                            <div className="triangle"></div>
+                        ) : (
+                            <div className="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Індикатор програвання (bars) */}
+                {isPlaying && !shouldShowControls && hasValidAudio && !showLoadingIndicator && (
+                    <div className="bars">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                )}
+
+                {isTouchDevice && isPlaying && shouldShowControls && hasValidAudio && (
+                    <div className="bars mobile-bars">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                )}
             </div>
 
             <div className="track-info">
-                <Link to={`/track/${finalTrackId}`} className="track-title" title={title}>
-                    {title}
+                <Link
+                    to={`/track/${finalTrackId}`}
+                    className="track-title"
+                    title={safeTitle}
+                >
+                    {safeTitle}
                 </Link>
-                <div className="track-artist" title={artist}>
-                    {artistId ? ( <Link to={`/artist/${artistId}`} className="track-artist-link">{artist}</Link> ) : ( <span>{artist}</span> )}
+                <div className="track-artist" title={safeArtist}>
+                    {artistId ? (
+                        <Link to={`/artist/${artistId}`} className="track-artist-link">
+                            {safeArtist}
+                        </Link>
+                    ) : (
+                        <span>{safeArtist}</span>
+                    )}
                 </div>
-                {/* --- ЗМІНА 6: Додаємо Ref до кнопки-контейнера --- */}
                 <div
-                    ref={dotsButtonRef} // <--- Додано Ref
+                    ref={dotsButtonRef}
                     className="track-duration"
                     onMouseEnter={() => !isTouchDevice && setDurationHovered(true)}
                     onMouseLeave={() => !isTouchDevice && setDurationHovered(false)}
                     onClick={handleDotsClick}
                 >
-                    {/* --- ЗМІНА 7: Використовуємо duration_formatted --- */}
                     {!durationHovered ? (
-                        <span className="duration-text">{duration_formatted}</span>
+                        <span className="duration-text">{safeDuration}</span>
                     ) : (
                         <span className="duration-dots">...</span>
                     )}

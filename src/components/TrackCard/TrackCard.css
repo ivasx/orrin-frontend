@@ -51,7 +51,106 @@
     align-items: center;
 }
 
+.track-cover-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 5px;
+}
 
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Стилі для недоступних треків */
+.track-cover-wrapper.not-playable {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.track-cover-wrapper.not-playable .track-cover {
+    filter: grayscale(80%);
+}
+
+.track-unavailable-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.unavailable-icon {
+    color: #ff6b6b;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    padding: 8px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* Заглушка для обкладинки */
+.track-cover[src*="orrin-logo.svg"] {
+    padding: 10px;
+    background: #1a1a1a;
+    object-fit: contain;
+}
+
+/* Анімація пульсації для завантаження */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.track-cover-wrapper.loading .track-cover {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Відключаємо hover ефекти для недоступних треків */
+.track-cover-wrapper.not-playable:hover .track-cover {
+    filter: grayscale(80%);
+    transform: none;
+}
+
+.track-cover-wrapper.not-playable .play-icon {
+    display: none;
+}
+
+/* Покращена доступність */
+.track-cover-wrapper.not-playable:focus {
+    outline: 2px solid #ff6b6b;
+    outline-offset: 2px;
+}
+
+/* Темна тема для skeleton */
+@media (prefers-color-scheme: dark) {
+    .track-cover-skeleton {
+        background: linear-gradient(90deg, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%);
+    }
+}
+
+/* Адаптивність для skeleton */
+@media (max-width: 768px) {
+    .track-cover-skeleton {
+        animation-duration: 1.2s;
+    }
+}
 
 /* Error indicator */
 .error-indicator {
