@@ -140,6 +140,7 @@
     "track_unavailable": "Недоступно",
     "track_no_audio": "Аудіо недоступне",
     "track_loading": "Завантаження...",
-    "track_error": "Помилка"
+    "track_error": "Помилка",
+    "retry": "Спробувати ще"
   }
 }

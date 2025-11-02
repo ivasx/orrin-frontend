@@ -122,6 +122,7 @@
       "december": "December"
     },
     "error_loading_tracks": "Error loading tracks",
+    "error_loading_artists": "Error loading artists",
     "player_error_unknown": "Playback error",
     "player_error_network": "Network error",
     "player_error_decode": "Decoding error",
@@ -140,6 +141,7 @@
     "track_unavailable": "Unavailable",
     "track_no_audio": "Audio unavailable",
     "track_loading": "Loading...",
-    "track_error": "Error"
+    "track_error": "Error",
+    "retry": "Try Again"
   }
 }

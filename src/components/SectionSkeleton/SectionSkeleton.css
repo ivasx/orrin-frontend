@@ -6,3 +6,58 @@
     background-color: #1c1c1c;
     border-radius: 8px;
 }
+
+.skeleton-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.error-title {
+    font-size: 1rem;
+    color: #b3b3b3;
+    margin: 0;
+    font-weight: 600;
+}
+
+/*.error-details {*/
+/*    font-size: 0.875rem;*/
+/*    color: #aaa;*/
+/*    background: #0a0a0a;*/
+/*    padding: 12px;*/
+/*    border-radius: 6px;*/
+/*    border: 1px solid #333;*/
+/*    max-width: 400px;*/
+/*    margin: 0;*/
+/*    white-space: pre-wrap;*/
+/*    word-break: break-word;*/
+/*}*/
+
+.error-details {
+    display: none;
+}
+
+.retry-button {
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.retry-button:hover {
+    background: #ffffff;
+    transform: scale(1.05);
+}
+
+.retry-button:active {
+    transform: scale(0.98);
+}

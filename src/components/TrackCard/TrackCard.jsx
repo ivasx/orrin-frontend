@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { AlertCircle, Music } from 'lucide-react';
 
 // Константи для fallback-значень
-const FALLBACK_COVER = '/orrin-logo.svg'; // Логотип Orrin як обкладинка за замовчуванням
+const FALLBACK_COVER = '/orrin-logo.svg';
 const FALLBACK_TITLE = 'Unknown Track';
 const FALLBACK_ARTIST = 'Unknown Artist';
 const FALLBACK_DURATION = '0:00';
@@ -49,9 +49,53 @@ export default function TrackCard(props) {
     const dotsButtonRef = useRef(null);
     const finalTrackId = trackId;
 
+    // Обробка artist - може бути рядком або об'єктом
+    const getArtistName = (artistData) => {
+        if (!artistData) return FALLBACK_ARTIST;
+
+        // Якщо це рядок
+        if (typeof artistData === 'string') {
+            return artistData.trim() || FALLBACK_ARTIST;
+        }
+
+        // Якщо це об'єкт з полем name
+        if (typeof artistData === 'object' && artistData.name) {
+            return artistData.name.trim() || FALLBACK_ARTIST;
+        }
+
+        // Якщо це масив артистів (на випадок множинних артистів)
+        if (Array.isArray(artistData) && artistData.length > 0) {
+            const names = artistData.map(a =>
+                typeof a === 'string' ? a : (a.name || '')
+            ).filter(n => n);
+            return names.join(', ') || FALLBACK_ARTIST;
+        }
+
+        return FALLBACK_ARTIST;
+    };
+
+    // Обробка artistId
+    const getArtistId = (artistData, providedArtistId) => {
+        // Якщо є окремий artistId пропс, використовуємо його
+        if (providedArtistId) return providedArtistId;
+
+        // Якщо artist - об'єкт з id
+        if (typeof artistData === 'object' && artistData?.id) {
+            return artistData.id;
+        }
+
+        // Якщо artist - об'єкт з slug
+        if (typeof artistData === 'object' && artistData?.slug) {
+            return artistData.slug;
+        }
+
+        return null;
+    };
+
     // Безпечні значення з fallback
     const safeTitle = title?.trim() || t('unknown_track', FALLBACK_TITLE);
-    const safeArtist = artist?.trim() || t('unknown_artist', FALLBACK_ARTIST);
+    const safeArtist = getArtistName(artist);
+    const safeArtistId = getArtistId(artist, artistId);
     const safeCover = !coverError && cover_url ? cover_url : FALLBACK_COVER;
     const safeDuration = duration_formatted || FALLBACK_DURATION;
     const hasValidAudio = audio_url && !audioError;
@@ -122,10 +166,8 @@ export default function TrackCard(props) {
             return;
         }
 
-        // Перевірка наявності аудіо
         if (!hasValidAudio) {
             console.warn("TrackCard: Cannot play - no valid audio URL");
-            // Можна показати тост-повідомлення користувачу
             return;
         }
 
@@ -141,12 +183,12 @@ export default function TrackCard(props) {
                 cover: safeCover,
                 audio: audio_url,
                 duration: props.duration || parseDuration(duration_formatted),
-                artistId
+                artistId: safeArtistId
             }, tracks);
         }
     }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, finalTrackId,
         safeTitle, safeArtist, safeCover, audio_url, props.duration, duration_formatted,
-        artistId, tracks, hasValidAudio]);
+        safeArtistId, tracks, hasValidAudio]);
 
     const getMenuItems = useCallback(() => createTrackMenuItems({
         t,
@@ -160,7 +202,7 @@ export default function TrackCard(props) {
         title: safeTitle,
         artist: safeArtist,
         audio: audio_url,
-        hasValidAudio // Передаємо для блокування недоступних опцій
+        hasValidAudio
     }), [
         t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
         toggleMute, updateVolume, safeTitle, safeArtist, audio_url, hasValidAudio
@@ -179,7 +221,7 @@ export default function TrackCard(props) {
 
     function handleCoverClick(e) {
         if (e.button !== 0) return;
-        if (!hasValidAudio) return; // Блокуємо клік якщо немає аудіо
+        if (!hasValidAudio) return;
         createRippleEffect(e);
         handlePlayPause();
     }
@@ -233,7 +275,6 @@ export default function TrackCard(props) {
     const handleMenuClose = () => setShowMenu(false);
     const shouldShowControls = isTouchDevice ? true : showControls;
 
-    // Обробник помилки завантаження обкладинки
     const handleCoverError = () => {
         console.warn('Cover image failed to load for track:', finalTrackId);
         setCoverError(true);
@@ -254,7 +295,6 @@ export default function TrackCard(props) {
                 onMouseLeave={() => !isTouchDevice && setShowControls(false)}
                 onTouchStart={() => isTouchDevice && hasValidAudio && setShowControls(true)}
             >
-                {/* Обкладинка з fallback */}
                 {coverError ? (
                     <div className="track-cover-fallback">
                         <Music size={32} />
@@ -271,7 +311,6 @@ export default function TrackCard(props) {
 
                 {showRipple && <div className="ripple-effect" style={rippleStyle} />}
 
-                {/* Індикатор завантаження */}
                 {showLoadingIndicator && (
                     <div className="loading-indicator">
                         <div className="spinner-overlay">
@@ -280,7 +319,6 @@ export default function TrackCard(props) {
                     </div>
                 )}
 
-                {/* Індикатор помилки */}
                 {showErrorIndicator && (
                     <div className="error-indicator">
                         <div className="error-icon">
@@ -289,14 +327,12 @@ export default function TrackCard(props) {
                     </div>
                 )}
 
-                {/* Індикатор відсутності аудіо */}
                 {!hasValidAudio && !showErrorIndicator && (
                     <div className="no-audio-indicator">
                         <AlertCircle size={20} className="no-audio-icon" />
                     </div>
                 )}
 
-                {/* Кнопка play/pause */}
                 {shouldShowControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
                     <div className="play-icon" onClick={handlePlayButtonClick}>
                         {!isPlaying ? (
@@ -310,7 +346,6 @@ export default function TrackCard(props) {
                     </div>
                 )}
 
-                {/* Індикатор програвання (bars) */}
                 {isPlaying && !shouldShowControls && hasValidAudio && !showLoadingIndicator && (
                     <div className="bars">
                         <span></span>
@@ -337,8 +372,8 @@ export default function TrackCard(props) {
                     {safeTitle}
                 </Link>
                 <div className="track-artist" title={safeArtist}>
-                    {artistId ? (
-                        <Link to={`/artist/${artistId}`} className="track-artist-link">
+                    {safeArtistId ? (
+                        <Link to={`/artist/${safeArtistId}`} className="track-artist-link">
                             {safeArtist}
                         </Link>
                     ) : (

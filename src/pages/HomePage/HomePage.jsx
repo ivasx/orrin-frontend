@@ -1,29 +1,24 @@
 // src/pages/HomePage/HomePage.jsx
 
-import {useState, useEffect} from 'react'; // Залишаємо для інших станів
+import {useState, useEffect} from 'react';
 import { useQuery } from '@tanstack/react-query';
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
 import ArtistSection from '../../components/ArtistSection/ArtistSection.jsx';
 import MusicSectionWrapper from "../../components/MusicSectionWrapper/MusicSectionWrapper.jsx";
-// import { ways, popularArtists as popularArtistsData } from '../../data.js'; // ways більше не потрібен для listenNowTracks
-import {popularArtists as popularArtistsData} from '../../data.js';
 import LoginPromptSection from '../../components/LoginPromptSection/LoginPromptSection.jsx';
 import EmptyStateSection from '../../components/EmptyStateSection/EmptyStateSection.jsx';
 import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
 import {useTranslation} from "react-i18next";
-import {getTracks /*, getArtists */} from '../../services/api';
-
-// const mockRecommendations = ways.slice(0, 4); // Якщо рекомендації теж будуть з API, це можна видалити
+import {getTracks, getArtists} from '../../services/api';
 
 export default function HomePage() {
 
-    const [popularArtists, setPopularArtists] = useState(popularArtistsData); // Артисти поки що з data.js
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [friendsRecommendations, setFriendsRecommendations] = useState([]);
     const [isLoadingFriends, setIsLoadingFriends] = useState(false);
     const {t} = useTranslation();
 
-
+    // Запит для треків
     const {
         data: listenNowTracksData,
         isLoading: isLoadingTracks,
@@ -36,6 +31,18 @@ export default function HomePage() {
         queryFn: getTracks,
     });
 
+    // Запит для артистів
+    const {
+        data: popularArtistsData,
+        isLoading: isLoadingArtists,
+        isFetching: isFetchingArtists,
+        isError: isArtistsError,
+        error: artistsError,
+        refetch: refetchArtists,
+    } = useQuery({
+        queryKey: ['artists', 'list'],
+        queryFn: getArtists,
+    });
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -49,42 +56,56 @@ export default function HomePage() {
         }
     }, [isLoggedIn]);
 
-    useEffect(() => {
-        setPopularArtists(popularArtistsData);
-    }, []);
-
-
     return (
         <>
             <MusicSectionWrapper spacing="top-only">
                 {isLoadingTracks ? (
-                    <SectionSkeleton title={t('listen_now')}/>
+                    <SectionSkeleton title={t('listen_now')} />
                 ) : isTracksError ? (
-                    <div className="error-message">
-                        <p>{t('error_loading_tracks', 'Помилка завантаження треків')}:</p>
-                        <pre>{tracksError?.message || 'Невідома помилка'}</pre>
-                        <button onClick={() => refetchTracks()}>Спробувати ще</button>
-                    </div>
-                ) : (
-                    <TrackSection
+                    <SectionSkeleton
                         title={t('listen_now')}
-                        // Передаємо дані з useQuery, забезпечуючи порожній масив як fallback
-                        tracks={listenNowTracksData || []}
-                        onMoreClick={() => console.log(t('more_pressed'))}
+                        isError={true}
+                        error={tracksError}
+                        onRetry={() => refetchTracks()}
                     />
+                ) : (
+                    <>
+                        <TrackSection
+                            title={t('listen_now')}
+                            tracks={listenNowTracksData || []}
+                            onMoreClick={() => console.log(t('more_pressed'))}
+                        />
+                        {/* Індикатор фонового оновлення */}
+                        {isFetchingTracks && !isLoadingTracks &&
+                            <span style={{marginLeft: '10px', fontSize: '0.8em', color: '#888'}}>🔄 Оновлення...</span>}
+                    </>
                 )}
-                {/* Індикатор фонового оновлення */}
-                {isFetchingTracks && !isLoadingTracks &&
-                    <span style={{marginLeft: '10px', fontSize: '0.8em', color: '#888'}}>🔄 Оновлення...</span>}
             </MusicSectionWrapper>
 
-            {/* --- Секція популярних артистів (поки що статична) --- */}
+            {/* --- Секція популярних артистів --- */}
             <MusicSectionWrapper spacing="default">
-                <ArtistSection
-                    title={t('popular_artists')}
-                    artists={popularArtists} // Зі стану useState
-                    onMoreClick={() => console.log(t('more_pressed'))}
-                />
+                {isLoadingArtists ? (
+                    <SectionSkeleton title={t('popular_artists')} />
+                ) : isArtistsError ? (
+                    <SectionSkeleton
+                        title={t('popular_artists')}
+                        isError={true}
+                        error={artistsError}
+                        onRetry={() => refetchArtists()}
+                        errorMessageKey="error_loading_artists"
+                    />
+                ) : (
+                    <>
+                        <ArtistSection
+                            title={t('popular_artists')}
+                            artists={popularArtistsData || []}
+                            onMoreClick={() => console.log(t('more_pressed'))}
+                        />
+                        {/* Індикатор фонового оновлення */}
+                        {isFetchingArtists && !isLoadingArtists &&
+                            <span style={{marginLeft: '10px', fontSize: '0.8em', color: '#888'}}>🔄 Оновлення...</span>}
+                    </>
+                )}
             </MusicSectionWrapper>
 
             <MusicSectionWrapper spacing="default">
@@ -93,10 +114,10 @@ export default function HomePage() {
                         title={t('from_friends')}
                         promptText={t('login_prompt_text')}
                         buttonText={t('login_prompt_button')}
-                        onLoginClick={() => setIsLoggedIn(true)} // Логіка логіну
+                        onLoginClick={() => setIsLoggedIn(true)}
                         onMoreClick={() => console.log(t('more_from_friends'))}
                     />
-                ) : isLoadingFriends ? ( // Використовуємо isLoadingFriends
+                ) : isLoadingFriends ? (
                     <SectionSkeleton title={t('from_friends')}/>
                 ) : friendsRecommendations.length > 0 ? (
                     <TrackSection
@@ -112,7 +133,6 @@ export default function HomePage() {
                     />
                 )}
             </MusicSectionWrapper>
-
 
             <MusicSectionWrapper spacing="default">
                 <TrackSection
@@ -132,4 +152,3 @@ export default function HomePage() {
         </>
     );
 }
-
