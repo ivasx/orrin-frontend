@@ -59,12 +59,20 @@ export const getTrackBySlug = async (slug) => {
     return fetchJson(`/api/v1/tracks/${slug}/`);
 };
 
-// Приклади інших можливих функцій
-
 /**
- * Отримує список артистів (приклад).
+ * Отримує список артистів.
  * @returns {Promise<Array<object>>} Масив об'єктів артистів
  */
 export const getArtists = async () => {
     return fetchJson('/api/v1/artists/');
+};
+
+/**
+ * Отримує деталі одного артиста за його slug або ID.
+ * @param {string|number} slugOrId - Слаг або ID артиста
+ * @returns {Promise<object>} Об'єкт артиста
+ */
+export const getArtistById = async (slugOrId) => {
+    if (!slugOrId) throw new Error("Slug or ID is required to fetch an artist.");
+    return fetchJson(`/api/v1/artists/${slugOrId}/`);
 };

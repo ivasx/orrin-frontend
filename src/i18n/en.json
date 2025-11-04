@@ -142,6 +142,8 @@
     "track_no_audio": "Audio unavailable",
     "track_loading": "Loading...",
     "track_error": "Error",
-    "retry": "Try Again"
+    "retry": "Try Again",
+    "artist_posts": "Posts",
+    "loading": "Loading..."
   }
 }
