@@ -1,6 +1,15 @@
-// src/context/AudioCoreContext.jsx
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useCallback, useMemo } from 'react';
 import { useQueue } from './QueueContext';
+
+// Імпортуємо всі кастомні хуки
+import { useAudioElement } from '../hooks/audio/useAudioElement';
+import { useAudioPlayback } from '../hooks/audio/useAudioPlayback';
+import { useAudioVolume } from '../hooks/audio/useAudioVolume';
+import { useRepeatMode } from '../hooks/audio/useRepeatMode';
+import { useTrackNavigation } from '../hooks/audio/useTrackNavigation';
+import { useTrackEndHandler } from '../hooks/audio/useTrackEndHandler';
+import { useMediaSession } from '../hooks/audio/useMediaSession';
+import { useMediaSessionPosition } from '../hooks/audio/useMediaSessionPosition';
 
 const AudioCoreContext = createContext();
 
@@ -13,6 +22,7 @@ export const useAudioCore = () => {
 };
 
 export const AudioCoreProvider = ({ children }) => {
+    // ========== QUEUE CONTEXT ==========
     const {
         currentTrack: trackFromQueue,
         queue,
@@ -22,53 +32,45 @@ export const AudioCoreProvider = ({ children }) => {
         initializeQueue
     } = useQueue();
 
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [repeatMode, setRepeatMode] = useState('off');
-    const audioRef = useRef(null);
-    const [volume, setVolume] = useState(1);
-    const [isMuted, setIsMuted] = useState(false);
-    const [hasRepeatedOnce, setHasRepeatedOnce] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
+    // ========== AUDIO ELEMENT ==========
+    // Управління HTML <audio> елементом (src, loop)
+    const { repeatMode, hasRepeatedOnce, setHasRepeatedOnce, toggleRepeat, resetRepeatOnce } = useRepeatMode();
+    const audioRef = useAudioElement(trackFromQueue, repeatMode);
 
-    const prevTrackIdRef = useRef(null);
+    // ========== PLAYBACK ==========
+    // Управління відтворенням (play/pause/stop)
+    const {
+        isPlaying,
+        setIsPlaying,
+        pause: pauseTrack,
+        resume: resumeTrack,
+        stop: stopTrack
+    } = useAudioPlayback(audioRef, trackFromQueue);
 
-    // Функція для перемотування
-    const seek = useCallback((time) => {
-        const audio = audioRef.current;
-        if (audio && isFinite(time)) {
-            audio.currentTime = Math.max(0, Math.min(time, audio.duration || 0));
-            setCurrentTime(audio.currentTime);
-        }
-    }, []);
+    // ========== VOLUME ==========
+    // Управління гучністю
+    const { volume, isMuted, updateVolume, toggleMute } = useAudioVolume(audioRef);
 
-    // Функція для перемотування на відсоток
-    const seekToPercent = useCallback((percent) => {
-        const audio = audioRef.current;
-        if (audio && audio.duration && isFinite(percent)) {
-            const time = (percent / 100) * audio.duration;
-            seek(time);
-        }
-    }, [seek]);
+    // ========== TRACK NAVIGATION ==========
+    // Навігація між треками
+    const { playTrackByIndex, nextTrack, previousTrack } = useTrackNavigation(
+        queue,
+        getNextIndex,
+        getPreviousIndex,
+        setCurrentIndex,
+        setIsPlaying,
+        setHasRepeatedOnce,
+        audioRef
+    );
 
-    const playTrackByIndex = useCallback((index) => {
-        if (index >= 0 && index < queue.length) {
-            setCurrentIndex(index);
-            setIsPlaying(true);
-            setHasRepeatedOnce(false);
-        } else {
-            console.warn(`[AudioCoreContext] Спроба відтворити трек з невалідним індексом: ${index}`);
-            setIsPlaying(false);
-            setCurrentIndex(-1);
-        }
-    }, [queue, setCurrentIndex]);
-
+    // ========== PLAY TRACK FUNCTION ==========
+    // Основна функція для відтворення треку
     const playTrack = useCallback((trackData, trackList = null) => {
         console.log("[AudioCoreContext playTrack] Отримано trackData:", trackData);
         console.log("[AudioCoreContext playTrack] trackData.audio (має бути URL):", trackData?.audio);
 
         if (trackList && Array.isArray(trackList)) {
+            // Форматуємо список треків для черги
             const formattedTrackList = trackList.map(t => {
                 const needsFormatting = t.hasOwnProperty('audio_url') || t.hasOwnProperty('cover_url');
                 return needsFormatting ? {
@@ -80,407 +82,102 @@ export const AudioCoreProvider = ({ children }) => {
             console.log("[AudioCoreContext playTrack] Форматований trackList для черги:", formattedTrackList);
             initializeQueue(formattedTrackList, trackData.trackId);
         } else {
+            // Якщо трек вже в черзі, просто відтворюємо його
             const indexInCurrentQueue = queue.findIndex(t => t.trackId === trackData.trackId);
             if (indexInCurrentQueue !== -1) {
                 playTrackByIndex(indexInCurrentQueue);
             } else {
+                // Додаємо трек до черги
                 const newQueue = [...queue, trackData];
                 initializeQueue(newQueue, trackData.trackId);
             }
         }
         setIsPlaying(true);
         setHasRepeatedOnce(false);
-    }, [initializeQueue, playTrackByIndex, queue]);
+    }, [initializeQueue, playTrackByIndex, queue, setIsPlaying, setHasRepeatedOnce]);
 
-    const pauseTrack = useCallback(() => setIsPlaying(false), []);
-
-    const resumeTrack = useCallback(() => {
-        if (trackFromQueue) setIsPlaying(true);
-    }, [trackFromQueue]);
-
-    const stopTrack = useCallback(() => {
-        setIsPlaying(false);
-        setCurrentIndex(-1);
+    // ========== SEEK FUNCTIONS ==========
+    // Функції для перемотування
+    const seek = useCallback((time) => {
         const audio = audioRef.current;
-        if (audio) {
-            audio.pause();
-            audio.removeAttribute('src');
-            audio.load();
-            audio.currentTime = 0;
+        if (audio && isFinite(time)) {
+            audio.currentTime = Math.max(0, Math.min(time, audio.duration || 0));
         }
-        prevTrackIdRef.current = null;
-        setCurrentTime(0);
-        setDuration(0);
-    }, [setCurrentIndex]);
+    }, [audioRef]);
 
-    const nextTrack = useCallback(() => {
-        const nextIndex = getNextIndex();
-        if (nextIndex !== -1) {
-            playTrackByIndex(nextIndex);
-        } else {
-            setIsPlaying(false);
-        }
-    }, [getNextIndex, playTrackByIndex]);
-
-    const previousTrack = useCallback(() => {
+    const seekToPercent = useCallback((percent) => {
         const audio = audioRef.current;
-        if (audio && audio.currentTime > 3) {
-            audio.currentTime = 0;
-            if (!isPlaying) setIsPlaying(true);
-            return;
+        if (audio && audio.duration && isFinite(percent)) {
+            const time = (percent / 100) * audio.duration;
+            seek(time);
         }
-        const prevIndex = getPreviousIndex();
-        if (prevIndex !== -1) {
-            playTrackByIndex(prevIndex);
-        } else if (audio) {
-            audio.currentTime = 0;
-            if (!isPlaying) setIsPlaying(true);
-        }
-    }, [getPreviousIndex, playTrackByIndex, isPlaying]);
+    }, [audioRef, seek]);
 
-    const toggleRepeat = useCallback(() => {
-        setRepeatMode(prev => {
-            const nextMode = prev === 'off' ? 'all' : prev === 'all' ? 'one' : 'off';
-            if (nextMode !== 'one') {
-                setHasRepeatedOnce(false);
-            }
-            console.log(`[AudioCoreContext] Перемикання режиму повтору: ${prev} -> ${nextMode}`);
-            return nextMode;
-        });
-    }, []);
+    // ========== TRACK END HANDLER ==========
+    // Обробка завершення треку
+    useTrackEndHandler(
+        audioRef,
+        repeatMode,
+        hasRepeatedOnce,
+        setHasRepeatedOnce,
+        nextTrack
+    );
 
-    const updateVolume = useCallback((newVolume) => {
-        const clampedVolume = Math.max(0, Math.min(1, newVolume));
-        setVolume(clampedVolume);
-        const audio = audioRef.current;
-        if (audio) {
-            audio.volume = clampedVolume;
-        }
-        if (clampedVolume > 0 && isMuted) {
-            setIsMuted(false);
-            if (audio) audio.muted = false;
-        }
-    }, [isMuted]);
+    // ========== MEDIA SESSION API ==========
+    // Інтеграція з системним медіа-контролером
+    useMediaSession(
+        trackFromQueue,
+        isPlaying,
+        resumeTrack,
+        pauseTrack,
+        stopTrack,
+        nextTrack,
+        previousTrack
+    );
 
-    const toggleMute = useCallback(() => {
-        setIsMuted(prev => {
-            const newMuted = !prev;
-            const audio = audioRef.current;
-            if (audio) {
-                audio.muted = newMuted;
-            }
-            return newMuted;
-        });
-    }, []);
+    // Оновлення позиції в Media Session
+    useMediaSessionPosition(audioRef, trackFromQueue, isPlaying);
 
-    // Ефект для встановлення src
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        console.log("[AudioCoreContext useEffect src] trackFromQueue з useQueue():", trackFromQueue);
-        const audioSource = trackFromQueue?.audio;
-        console.log("[AudioCoreContext useEffect src] Визначено audioSource:", audioSource);
-
-        const currentTrackId = trackFromQueue?.trackId;
-
-        if (currentTrackId !== prevTrackIdRef.current) {
-            prevTrackIdRef.current = currentTrackId;
-
-            if (trackFromQueue && audioSource) {
-                if (audio.src !== audioSource) {
-                    console.log("[AudioCoreContext useEffect] Встановлення нового src:", audioSource);
-                    setIsLoading(true);
-                    audio.src = audioSource;
-                    audio.currentTime = 0;
-                    audio.load();
-                    setCurrentTime(0);
-                } else {
-                    console.log("[AudioCoreContext useEffect] src той самий, нічого не робимо:", audioSource);
-                }
-            } else if (!trackFromQueue && audio.src) {
-                console.log("[AudioCoreContext useEffect] Очищення src");
-                audio.pause();
-                audio.removeAttribute('src');
-                audio.load();
-                audio.currentTime = 0;
-                setCurrentTime(0);
-                setDuration(0);
-            } else {
-                console.log("[AudioCoreContext useEffect] Немає trackFromQueue або audioSource, src не встановлено.");
-            }
-        } else {
-            console.log("[AudioCoreContext useEffect] trackId не змінився, src не чіпаємо.");
-        }
-    }, [trackFromQueue]);
-
-    // Ефект для loop
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const shouldLoop = repeatMode === 'all';
-        if (audio.loop !== shouldLoop) {
-            console.log(`[AudioCoreContext] Встановлення audio.loop = ${shouldLoop}`);
-            audio.loop = shouldLoop;
-        }
-    }, [repeatMode]);
-
-    // Ефект для play/pause
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio || !audio.src) {
-            if (isPlaying) setIsPlaying(false);
-            return;
-        }
-
-        let playPromise = null;
-
-        if (isPlaying) {
-            if (audio.paused) {
-                console.log("[AudioCoreContext] Спроба відтворити (audio.play)");
-                playPromise = audio.play();
-            }
-        } else {
-            if (!audio.paused) {
-                console.log("[AudioCoreContext] Пауза (audio.pause)");
-                audio.pause();
-            }
-        }
-
-        if (playPromise) {
-            playPromise.catch(error => {
-                console.error("[AudioCoreContext] Помилка відтворення audio.play():", error);
-                setIsPlaying(false);
-            });
-        }
-    }, [isPlaying, trackFromQueue]);
-
-    // Ефект для обробки ended
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const handleTrackEnd = () => {
-            console.log("[AudioCoreContext] Трек завершився. Режим повтору:", repeatMode, "Повторено раз:", hasRepeatedOnce);
-
-            if (repeatMode === 'one') {
-                if (!hasRepeatedOnce) {
-                    setHasRepeatedOnce(true);
-                    console.log("[AudioCoreContext] Повтор 'one': перезапуск треку.");
-                    audio.currentTime = 0;
-                    audio.play().catch(e => console.error("Помилка при повторі 'one':", e));
-                } else {
-                    console.log("[AudioCoreContext] Повтор 'one' завершено. Наступний трек.");
-                    setHasRepeatedOnce(false);
-                    nextTrack();
-                }
-            } else if (repeatMode === 'off') {
-                console.log("[AudioCoreContext] Повтор 'off'. Наступний трек.");
-                nextTrack();
-            }
-        };
-
-        audio.addEventListener('ended', handleTrackEnd);
-        return () => audio.removeEventListener('ended', handleTrackEnd);
-    }, [repeatMode, hasRepeatedOnce, nextTrack]);
-
-    // Ефект для оновлення currentTime та duration
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const handleTimeUpdate = () => {
-            setCurrentTime(audio.currentTime);
-        };
-
-        const handleLoadedMetadata = () => {
-            setDuration(audio.duration);
-            setIsLoading(false);
-        };
-
-        const handleCanPlay = () => {
-            setIsLoading(false);
-        };
-
-        const handleWaiting = () => {
-            setIsLoading(true);
-        };
-
-        const handleLoadStart = () => {
-            setIsLoading(true);
-        };
-
-        audio.addEventListener('timeupdate', handleTimeUpdate);
-        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-        audio.addEventListener('canplay', handleCanPlay);
-        audio.addEventListener('waiting', handleWaiting);
-        audio.addEventListener('loadstart', handleLoadStart);
-
-        return () => {
-            audio.removeEventListener('timeupdate', handleTimeUpdate);
-            audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-            audio.removeEventListener('canplay', handleCanPlay);
-            audio.removeEventListener('waiting', handleWaiting);
-            audio.removeEventListener('loadstart', handleLoadStart);
-        };
-    }, []);
-
-    // Media Session API
-    useEffect(() => {
-        if (!('mediaSession' in navigator)) {
-            console.warn("Media Session API не підтримується.");
-            return;
-        }
-
-        if (!trackFromQueue) {
-            navigator.mediaSession.metadata = null;
-            navigator.mediaSession.playbackState = "none";
-            try {
-                navigator.mediaSession.setActionHandler('play', null);
-                navigator.mediaSession.setActionHandler('pause', null);
-                navigator.mediaSession.setActionHandler('stop', null);
-                navigator.mediaSession.setActionHandler('previoustrack', null);
-                navigator.mediaSession.setActionHandler('nexttrack', null);
-                navigator.mediaSession.setActionHandler('seekbackward', null);
-                navigator.mediaSession.setActionHandler('seekforward', null);
-                navigator.mediaSession.setActionHandler('seekto', null);
-            } catch (error) {
-                console.error("[AudioCoreContext] Помилка очищення Media Session:", error);
-            }
-            return;
-        }
-
-        const { title, artist, cover } = trackFromQueue;
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: title || 'Unknown Title',
-            artist: artist || 'Unknown Artist',
-            album: 'Orrin',
-            artwork: [
-                { src: cover || '/orrin-logo.svg', sizes: '96x96',   type: 'image/png' },
-                { src: cover || '/orrin-logo.svg', sizes: '128x128', type: 'image/png' },
-                { src: cover || '/orrin-logo.svg', sizes: '192x192', type: 'image/png' },
-                { src: cover || '/orrin-logo.svg', sizes: '256x256', type: 'image/png' },
-                { src: cover || '/orrin-logo.svg', sizes: '384x384', type: 'image/png' },
-                { src: cover || '/orrin-logo.svg', sizes: '512x512', type: 'image/png' },
-            ]
-        });
-
-        navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
-
-        try {
-            navigator.mediaSession.setActionHandler('play', () => { console.log("Media Session: Play"); resumeTrack(); });
-            navigator.mediaSession.setActionHandler('pause', () => { console.log("Media Session: Pause"); pauseTrack(); });
-            navigator.mediaSession.setActionHandler('stop', () => { console.log("Media Session: Stop"); stopTrack(); });
-            navigator.mediaSession.setActionHandler('previoustrack', () => { console.log("Media Session: Previous"); previousTrack(); });
-            navigator.mediaSession.setActionHandler('nexttrack', () => { console.log("Media Session: Next"); nextTrack(); });
-
-            // Додаємо підтримку seekto
-            navigator.mediaSession.setActionHandler('seekto', (details) => {
-                if (details.seekTime !== undefined) {
-                    seek(details.seekTime);
-                }
-            });
-
-            // Перемотування назад/вперед на 10 секунд
-            navigator.mediaSession.setActionHandler('seekbackward', (details) => {
-                const audio = audioRef.current;
-                if (audio) {
-                    const skipTime = details.seekOffset || 10;
-                    seek(Math.max(0, audio.currentTime - skipTime));
-                }
-            });
-
-            navigator.mediaSession.setActionHandler('seekforward', (details) => {
-                const audio = audioRef.current;
-                if (audio) {
-                    const skipTime = details.seekOffset || 10;
-                    seek(Math.min(audio.duration, audio.currentTime + skipTime));
-                }
-            });
-        } catch (error) {
-            console.error("[AudioCoreContext] Помилка встановлення обробників Media Session:", error);
-        }
-    }, [trackFromQueue, isPlaying, resumeTrack, pauseTrack, nextTrack, previousTrack, stopTrack, seek]);
-
-    // Position State
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio || !('mediaSession' in navigator) || !('setPositionState' in navigator.mediaSession)) return;
-
-        let intervalId = null;
-
-        const updatePositionState = () => {
-            if (isFinite(audio.duration) && audio.duration > 0 && isFinite(audio.currentTime)) {
-                try {
-                    navigator.mediaSession.setPositionState({
-                        duration: audio.duration,
-                        position: audio.currentTime,
-                        playbackRate: audio.playbackRate,
-                    });
-                } catch (error) {
-                    // Ігноруємо помилки
-                }
-            }
-        };
-
-        const startInterval = () => {
-            clearInterval(intervalId);
-            updatePositionState();
-            intervalId = setInterval(updatePositionState, 1000);
-        };
-
-        audio.addEventListener('loadedmetadata', startInterval);
-        audio.addEventListener('play', startInterval);
-        audio.addEventListener('playing', startInterval);
-        audio.addEventListener('pause', () => clearInterval(intervalId));
-        audio.addEventListener('seeked', updatePositionState);
-
-        if (isPlaying && audio.duration && audio.duration > 0) {
-            startInterval();
-        }
-
-        return () => {
-            clearInterval(intervalId);
-            audio.removeEventListener('loadedmetadata', startInterval);
-            audio.removeEventListener('play', startInterval);
-            audio.removeEventListener('playing', startInterval);
-            audio.removeEventListener('pause', () => clearInterval(intervalId));
-            audio.removeEventListener('seeked', updatePositionState);
-            try {
-                if (navigator.mediaSession?.setPositionState) {
-                    navigator.mediaSession.setPositionState(null);
-                }
-            } catch (error) {}
-        };
-    }, [trackFromQueue, isPlaying]);
-
+    // ========== CONTEXT VALUE ==========
     const value = useMemo(() => ({
+        // Стан
         currentTrack: trackFromQueue,
         isPlaying,
         audioRef,
         repeatMode,
         volume,
         isMuted,
-        currentTime,
-        duration,
-        isLoading,
+        currentTime: audioRef.current?.currentTime || 0,
+        duration: audioRef.current?.duration || 0,
+        isLoading: false, // TODO: Додати стан завантаження з окремого хука, якщо потрібно
+
+        // Функції відтворення
         playTrack,
         pauseTrack,
         resumeTrack,
         stopTrack,
+
+        // Навігація
         nextTrack,
         previousTrack,
+
+        // Режими
         toggleRepeat,
+
+        // Гучність
         updateVolume,
         toggleMute,
+
+        // Перемотування
         seek,
         seekToPercent,
+
+        // Допоміжні функції
         isTrackPlaying: (trackId) => trackFromQueue?.trackId === trackId && isPlaying,
     }), [
-        trackFromQueue, isPlaying, repeatMode, volume, isMuted, currentTime, duration, isLoading,
+        trackFromQueue, isPlaying, repeatMode, volume, isMuted,
         playTrack, pauseTrack, resumeTrack, stopTrack, nextTrack, previousTrack,
-        toggleRepeat, updateVolume, toggleMute, seek, seekToPercent
+        toggleRepeat, updateVolume, toggleMute, seek, seekToPercent, audioRef
     ]);
 
     return (
