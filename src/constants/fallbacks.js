@@ -131,8 +131,16 @@ const extractArtistId = (artistData, providedArtistId) => {
 export const normalizeTrackData = (track) => {
     if (!track) return null;
 
-    // Витягуємо ID треку
-    const trackId = track.trackId || track.id || track.slug || `track-${Date.now()}`;
+    // КРИТИЧНО: trackId має бути стабільним для React keys
+    // Пріоритет: slug (з API) > trackId (фронтенд) > id (фронтенд)
+    // Ніколи не використовуємо Date.now() для генерації ID!
+    const trackId = track.slug || track.trackId || track.id;
+
+    // Якщо немає жодного валідного ID, повертаємо null - краще не рендерити такий трек
+    if (!trackId) {
+        console.error('Track without valid ID detected:', track);
+        return null;
+    }
 
     // Обробляємо артиста
     const artist = track.artist || FALLBACK_ARTIST_NAME;
@@ -152,7 +160,7 @@ export const normalizeTrackData = (track) => {
     const duration = track.duration;
 
     return {
-        trackId,
+        trackId, // Гарантовано стабільний ID
         title: getFallbackValue(track.title, FALLBACK_TRACK_TITLE),
         artist: artistName,
         artistId,
@@ -169,5 +177,5 @@ export const normalizeTrackData = (track) => {
 export const isTrackPlayable = (track) => {
     if (!track) return false;
     const normalized = normalizeTrackData(track);
-    return !!normalized.audio && normalized.audio !== FALLBACK_AUDIO;
+    return !!normalized && !!normalized.audio && normalized.audio !== FALLBACK_AUDIO;
 };

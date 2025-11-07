@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { AlertCircle, Music } from 'lucide-react';
 
 // Імпортуємо утиліти з fallbacks
-import { normalizeTrackData, isTrackPlayable } from '../../constants/fallbacks.js';
+import { isTrackPlayable } from '../../constants/fallbacks.js';
 
 export default function TrackCard(props) {
     const { t } = useTranslation();
@@ -19,21 +19,22 @@ export default function TrackCard(props) {
     } = useAudioCore();
 
     // ========== НОРМАЛІЗАЦІЯ ДАНИХ ==========
-    // Замість власної логіки використовуємо centralізовану функцію
-    // useMemo запобігає повторному створенню об'єкта на кожному рендері
-    const track = useMemo(() => normalizeTrackData(props), [
-        props.trackId,
-        props.id,
-        props.slug,
-        props.title,
-        props.artist,
-        props.cover,
-        props.cover_url,
-        props.audio,
-        props.audio_url,
-        props.duration,
-        props.duration_formatted
-    ]);
+    // props вже нормалізовані в TrackSection, просто використовуємо їх
+    // Але на всяк випадок перевіряємо наявність необхідних полів
+    const track = useMemo(() => {
+        if (!props.trackId) {
+            console.error('TrackCard: Received props without trackId', props);
+            return null;
+        }
+        // Якщо props вже нормалізовані (мають всі необхідні поля), використовуємо їх
+        return props;
+    }, [props]);
+
+    // Якщо track null (немає trackId), не рендеримо картку
+    if (!track) {
+        return null;
+    }
+
     const hasValidAudio = isTrackPlayable(track);
 
     // Стани для обробки помилок
