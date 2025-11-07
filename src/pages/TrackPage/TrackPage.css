@@ -24,4 +24,80 @@
     margin: 5px 0;
     font-size: 1.2em;
     color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.track-page-info a p:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Skeleton стани */
+.track-cover-skeleton {
+    width: 150px;
+    height: 150px;
+    margin-right: 20px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-text {
+    height: 1.5em;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    margin-bottom: 10px;
+}
+
+.skeleton-title {
+    width: 300px;
+    height: 2em;
+}
+
+.skeleton-artist {
+    width: 200px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Стилі помилок */
+.error-container {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.error-container h2 {
+    color: #ff6b6b;
+    margin-bottom: 10px;
+}
+
+.error-container p {
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.back-button:hover {
+    background: #ccc;
 }

@@ -1,29 +1,53 @@
-import {useState, useEffect} from 'react';
+import { useTranslation } from "react-i18next";
+import { useQuery } from '@tanstack/react-query';
+import { getTracks } from '../../services/api';
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
 import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
-import {ways} from '../../data';
-import {useTranslation} from "react-i18next";
+import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
+
 
 export default function FeedPage() {
-    const [tracks, setTracks] = useState([]);
     const {t} = useTranslation();
 
-    // Цей хук імітує завантаження даних при відкритті сторінки
-    useEffect(() => {
-        // Зараз ми просто беремо дані з файлу
-        setTracks(ways);
+    const {
+        data: tracks,
+        isLoading,
+        isError,
+        error,
+        refetch
+    } = useQuery({
+        queryKey: ['tracks', 'feed'],
+        queryFn: getTracks,
+    });
 
-        // В майбутньому, коли буде API:
-        // fetch('https://your-api.com/feed')
-        //   .then(res => res.json())
-        //   .then(data => setTracks(data));
-    }, []); // Пустий масив означає, що це виконається 1 раз
+    // --- ОБРОБКА СТАНІВ ЗАВАНТАЖЕННЯ ---
+    if (isLoading) {
+        return (
+            <MusicSectionWrapper spacing="top-only">
+                <SectionSkeleton title={t('your_feed')} />
+            </MusicSectionWrapper>
+        );
+    }
+
+    if (isError) {
+        return (
+            <MusicSectionWrapper spacing="top-only">
+                <SectionSkeleton
+                    title={t('your_feed')}
+                    isError={true}
+                    error={error}
+                    onRetry={refetch}
+                />
+            </MusicSectionWrapper>
+        );
+    }
+    // --- КІНЕЦЬ ОБРОБКИ СТАНІВ ---
 
     return (
         <MusicSectionWrapper spacing="top-only">
             <TrackSection
                 title={t('your_feed')}
-                tracks={tracks}
+                tracks={tracks || []} // Використовуємо завантажені дані
                 onMoreClick={() => console.log(t('more_pressed'))}
             />
         </MusicSectionWrapper>

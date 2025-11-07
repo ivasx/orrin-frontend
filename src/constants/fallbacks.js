@@ -1,181 +1,153 @@
-/**
- * Константи для заглушок медіа-контенту
- * Використовуються коли дані не приходять з бекенду
- */
+// --- Fallback константи ---
+const FALLBACK_COVER = '/orrin-logo.svg';
+const FALLBACK_AVATAR = '/orrin-logo.svg'; // Можна замінити на /default-avatar.png
+const FALLBACK_AUDIO = null; // null означає, що відтворення неможливе
+const FALLBACK_TRACK_TITLE = 'Unknown Title';
+const FALLBACK_ARTIST_NAME = 'Unknown Artist';
 
-// Заглушка для обкладинки треку/альбому
-export const FALLBACK_COVER = '/orrin-logo.svg';
-
-// Заглушка для аватара артиста
-export const FALLBACK_AVATAR = '/orrin-logo.svg';
-
-// Заглушка для назви треку
-export const FALLBACK_TRACK_TITLE = 'Unknown Track';
-
-// Заглушка для імені артиста
-export const FALLBACK_ARTIST_NAME = 'Unknown Artist';
-
-// Заглушка для тривалості
-export const FALLBACK_DURATION = '0:00';
-
-// Заглушка для аудіо
-export const FALLBACK_AUDIO = null;
+// --- Допоміжні функції ---
 
 /**
- * Утиліта для безпечного отримання значення з fallback
+ * Повертає значення, або fallback, якщо значення "порожнє"
  */
-export const getFallbackValue = (value, fallback) => {
-    if (value === undefined || value === null || value === '') {
+const getFallbackValue = (value, fallback) => {
+    if (value === null || value === undefined || value === '') {
         return fallback;
     }
     return value;
 };
 
 /**
- * Утиліта для форматування тривалості
- */
-export const formatDuration = (duration) => {
-    if (!duration || duration === 0) {
-        return FALLBACK_DURATION;
-    }
-
-    // Якщо прийшла строка
-    if (typeof duration === 'string') {
-        // Якщо вже в форматі M:SS
-        if (duration.includes(':')) {
-            return duration;
-        }
-        // Якщо число у вигляді строки
-        duration = parseInt(duration, 10);
-    }
-
-    // Якщо число (секунди)
-    if (typeof duration === 'number' && !isNaN(duration)) {
-        const minutes = Math.floor(duration / 60);
-        const seconds = Math.floor(duration % 60);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
-
-    return FALLBACK_DURATION;
-};
-
-/**
- * Обробляє дані артиста з бекенду або фронтенду
- * @param {string|number|object|array} artistData - Дані артиста
- * @returns {string} Ім'я артиста
+ * Витягує ім'я артиста.
+ * API (v1) повертає об'єкт: { id, name, slug }
+ * Моки (data.js) повертають рядок: "Artist Name"
  */
 const extractArtistName = (artistData) => {
-    if (!artistData) return FALLBACK_ARTIST_NAME;
-
-    // Якщо це рядок (ім'я артиста)
-    if (typeof artistData === 'string') {
-        return artistData.trim() || FALLBACK_ARTIST_NAME;
+    if (typeof artistData === 'object' && artistData !== null && artistData.name) {
+        return artistData.name; // З API
     }
-
-    // Якщо це число (ID з бекенду) - повертаємо fallback
-    // У майбутньому тут можна буде зробити запит до API
-    if (typeof artistData === 'number') {
-        console.warn(`Artist data is just an ID (${artistData}). Consider fetching full artist details.`);
-        return FALLBACK_ARTIST_NAME;
+    if (typeof artistData === 'string' && artistData) {
+        return artistData; // З моків
     }
-
-    // Якщо це об'єкт з полем name
-    if (typeof artistData === 'object' && artistData.name) {
-        return artistData.name.trim() || FALLBACK_ARTIST_NAME;
-    }
-
-    // Якщо це масив артистів (множинні артисти)
-    if (Array.isArray(artistData) && artistData.length > 0) {
-        const names = artistData.map(a => {
-            if (typeof a === 'string') return a;
-            if (typeof a === 'object' && a.name) return a.name;
-            return '';
-        }).filter(n => n);
-
-        return names.length > 0 ? names.join(', ') : FALLBACK_ARTIST_NAME;
-    }
-
     return FALLBACK_ARTIST_NAME;
 };
 
 /**
- * Витягує ID артиста з різних форматів даних
- * @param {string|number|object} artistData - Дані артиста
- * @param {string|number} providedArtistId - Окремо переданий ID
- * @returns {string|number|null} ID артиста
+ * Витягує ID/Slug артиста.
+ * API (v1) повертає об'єкт: { id, name, slug } (використовуємо id або slug)
+ * Моки (data.js) повертають artistId в самому треку
  */
-const extractArtistId = (artistData, providedArtistId) => {
-    // Якщо є окремий artistId пропс, використовуємо його
-    if (providedArtistId) return providedArtistId;
-
-    // Якщо artist - це число (ID з бекенду)
-    if (typeof artistData === 'number') return artistData;
-
-    // Якщо artist - об'єкт з id
-    if (typeof artistData === 'object' && artistData?.id) {
-        return artistData.id;
+const extractArtistId = (artistData, trackArtistId) => {
+    if (typeof artistData === 'object' && artistData !== null) {
+        return artistData.slug || artistData.id || null; // З API
     }
-
-    // Якщо artist - об'єкт з slug
-    if (typeof artistData === 'object' && artistData?.slug) {
-        return artistData.slug;
-    }
-
-    return null;
+    return trackArtistId || null; // З моків (track.artistId)
 };
 
 /**
- * Нормалізує дані треку з бекенду або фронтенду
- * Підтримує різні формати даних (snake_case з API, camelCase з фронтенду)
+ * Форматує тривалість (яка може бути числом секунд або рядком)
+ */
+const formatDuration = (duration) => {
+    if (typeof duration === 'string' && duration.includes(':')) {
+        return duration; // Вже відформатовано (напр. "3:45")
+    }
+
+    const secondsNum = parseInt(duration, 10);
+    if (isNaN(secondsNum) || secondsNum < 0) {
+        return '0:00';
+    }
+
+    const mins = Math.floor(secondsNum / 60);
+    const secs = secondsNum % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
+
+// --- ОСНОВНІ ФУНКЦІЇ НОРМАЛІЗАЦІЇ ---
+
+/**
+ * Нормалізує дані треку з бекенду (API) або фронтенду (моки/data.js)
  */
 export const normalizeTrackData = (track) => {
     if (!track) return null;
 
-    // КРИТИЧНО: trackId має бути стабільним для React keys
-    // Пріоритет: slug (з API) > trackId (фронтенд) > id (фронтенд)
-    // Ніколи не використовуємо Date.now() для генерації ID!
+    // Пріоритет ID: slug (API) > trackId (моки) > id (моки)
     const trackId = track.slug || track.trackId || track.id;
 
-    // Якщо немає жодного валідного ID, повертаємо null - краще не рендерити такий трек
     if (!trackId) {
         console.error('Track without valid ID detected:', track);
         return null;
     }
 
-    // Обробляємо артиста
-    const artist = track.artist || FALLBACK_ARTIST_NAME;
-    const artistName = extractArtistName(artist);
-    const artistId = extractArtistId(artist, track.artistId || track.artist_id);
+    const artistName = extractArtistName(track.artist);
+    const artistId = extractArtistId(track.artist, track.artistId || track.artist_id);
 
-    // Обробляємо обкладинку (підтримка різних форматів)
+    // Підтримка cover_url (API) та cover (моки)
     const coverUrl = track.cover || track.cover_url || track.coverUrl;
     const cover = getFallbackValue(coverUrl, FALLBACK_COVER);
 
-    // Обробляємо аудіо (підтримка різних форматів)
+    // Підтримка audio_url (API) та audio (моки)
     const audioUrl = track.audio || track.audio_url || track.audioUrl;
     const audio = audioUrl || FALLBACK_AUDIO;
 
-    // Обробляємо тривалість
-    const durationFormatted = track.duration_formatted || track.durationFormatted;
-    const duration = track.duration;
+    // Обробка тривалості
+    const duration = track.duration; // (з API це число, з моків - рядок)
+    const durationFormatted = track.duration_formatted; // (з API)
 
     return {
-        trackId, // Гарантовано стабільний ID
+        trackId,
         title: getFallbackValue(track.title, FALLBACK_TRACK_TITLE),
         artist: artistName,
         artistId,
         cover,
         audio,
-        duration,
+        duration: duration || 0,
         duration_formatted: formatDuration(durationFormatted || duration),
     };
 };
 
 /**
- * Перевіряє чи трек валідний для відтворення
+ * Нормалізує дані артиста з бекенду (API) або фронтенду (моки/data.js)
  */
-export const isTrackPlayable = (track) => {
-    if (!track) return false;
-    const normalized = normalizeTrackData(track);
-    return !!normalized && !!normalized.audio && normalized.audio !== FALLBACK_AUDIO;
+export const normalizeArtistData = (artist) => {
+    if (!artist) return null;
+
+    // Пріоритет ID: slug (API) > id (API/моки)
+    const artistId = artist.slug || artist.id;
+
+    if (!artistId) {
+        console.error('Artist without valid ID detected:', artist);
+        return null;
+    }
+
+    const imageUrl = artist.imageUrl || artist.image_url || artist.cover_url || FALLBACK_AVATAR;
+
+    return {
+        id: artistId,
+        name: getFallbackValue(artist.name, FALLBACK_ARTIST_NAME),
+        slug: artist.slug || '',
+        imageUrl,
+        // Поля, які з'являться в API згодом (згідно моків)
+        genre: artist.genre || null,
+        type: artist.type || null,
+        description: artist.description || null,
+        listenersMonthy: artist.listenersMonthy || artist.listeners_monthly || null,
+        location: artist.location || null,
+        socials: artist.socials || null,
+        // ...інші поля з моків (members, discography, notes...)
+        members: artist.members || [],
+        discography: artist.discography || [],
+        notes: artist.notes || [],
+        popularTracks: artist.popularTracks || [],
+        similarArtists: artist.similarArtists || [],
+    };
+};
+
+/**
+ * Перевіряє, чи має трек валідний URL для відтворення.
+ * @param {object} normalizedTrack - Нормалізований об'єкт треку
+ * @returns {boolean}
+ */
+export const isTrackPlayable = (normalizedTrack) => {
+    // Перевіряємо, що audio не null і не порожній рядок
+    return !!normalizedTrack?.audio;
 };
