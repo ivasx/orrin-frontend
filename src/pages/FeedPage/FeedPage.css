@@ -1,0 +1,88 @@
+/* src/pages/FeedPage/FeedPage.css */
+.feed-posts-container {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+/* Skeleton завантаження */
+.feed-post-skeleton {
+    background: #1c1c1c;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid #272727;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.feed-post-skeleton::before {
+    content: '';
+    display: block;
+    height: 120px;
+    background: linear-gradient(
+            90deg,
+            #1a1a1a 25%,
+            #2a2a2a 50%,
+            #1a1a1a 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Порожній стан */
+.feed-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.feed-empty-state h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #aaa;
+    margin: 0 0 12px 0;
+}
+
+.feed-empty-state p {
+    font-size: 0.95rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .feed-posts-container {
+        padding: 0;
+    }
+
+    .feed-empty-state {
+        padding: 40px 20px;
+    }
+
+    .feed-empty-state h3 {
+        font-size: 1.1rem;
+    }
+
+    .feed-empty-state p {
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,414 @@
+/* src/components/FeedPost/FeedPost.css */
+.feed-post {
+    background: #1c1c1c;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid #272727;
+    transition: background-color 0.2s ease;
+}
+
+.feed-post:hover {
+    background: #1f1f1f;
+}
+
+/* Хедер поста */
+.post-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.post-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.post-avatar:hover {
+    opacity: 0.8;
+}
+
+.post-header-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.post-author-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.post-author-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.post-author-name:hover {
+    text-decoration: underline;
+}
+
+.post-author-badge {
+    width: 16px;
+    height: 16px;
+    color: #af947e;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.post-timestamp {
+    cursor: pointer;
+}
+
+.post-timestamp:hover {
+    text-decoration: underline;
+}
+
+.post-menu-button {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.post-menu-button:hover {
+    background: #272727;
+    color: #fff;
+}
+
+/* Контент поста */
+.post-content {
+    margin-bottom: 16px;
+}
+
+.post-text {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0 0 16px 0;
+}
+
+.post-text.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.post-read-more {
+    color: #888;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    display: inline-block;
+}
+
+.post-read-more:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Прикріплений трек */
+.post-track-attachment {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #272727;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #333;
+}
+
+.post-track-attachment:hover {
+    background: #2a2a2a;
+    border-color: #af947e;
+}
+
+.post-track-cover {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.post-track-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.post-track-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.post-track-artist {
+    font-size: 0.85rem;
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.post-track-play-button {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.post-track-play-button:hover {
+    color: #fff;
+    background: #333;
+}
+
+/* Дії поста */
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-top: 12px;
+    border-top: 1px solid #272727;
+}
+
+.post-action-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.post-action-button:hover {
+    background: #272727;
+    color: #fff;
+}
+
+.post-action-button.liked {
+    color: #ff6b6b;
+}
+
+.post-action-button.liked:hover {
+    color: #ff4444;
+}
+
+.post-action-count {
+    font-size: 0.85rem;
+}
+
+/* Коментарі */
+.post-comments-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #272727;
+}
+
+.post-comments-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.post-comments-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.post-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.post-comment {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.comment-content {
+    flex: 1;
+    background: #272727;
+    padding: 10px 12px;
+    border-radius: 8px;
+}
+
+.comment-author {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.comment-text {
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    line-height: 1.4;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.comment-timestamp,
+.comment-like-button {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.comment-timestamp:hover,
+.comment-like-button:hover {
+    color: #fff;
+}
+
+.show-more-comments {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 0;
+    transition: color 0.2s;
+}
+
+.show-more-comments:hover {
+    color: #fff;
+}
+
+/* Форма нового коментаря */
+.post-comment-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.comment-input {
+    flex: 1;
+    background: #272727;
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 10px 16px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Montserrat', sans-serif;
+    resize: none;
+    min-height: 40px;
+    max-height: 120px;
+    transition: all 0.2s;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: #af947e;
+    background: #2a2a2a;
+}
+
+.comment-input::placeholder {
+    color: #666;
+}
+
+.comment-submit-button {
+    background: #af947e;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    align-self: flex-end;
+}
+
+.comment-submit-button:hover {
+    background: #c3a994;
+}
+
+.comment-submit-button:disabled {
+    background: #555;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .feed-post {
+        padding: 16px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    .post-text {
+        font-size: 0.9rem;
+    }
+
+    .post-actions {
+        gap: 2px;
+    }
+
+    .post-action-button {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+}
