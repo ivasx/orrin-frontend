@@ -1,6 +1,6 @@
 /**
- * Хук для оновлення позиції треку в Media Session
- * Відповідає за: setPositionState в системному віджеті
+ * Hook for updating track position in Media Session
+ * Responsible for: setPositionState in system widget
  */
 import { useEffect } from 'react';
 
@@ -21,9 +21,7 @@ export function useMediaSessionPosition(audioRef, trackFromQueue, isPlaying) {
                         position: audio.currentTime,
                         playbackRate: audio.playbackRate,
                     });
-                } catch (error) {
-                    // Ігноруємо помилки (наприклад, якщо браузер не підтримує)
-                }
+                } catch (error) { /* Ignore errors */ }
             }
         };
 
@@ -37,19 +35,16 @@ export function useMediaSessionPosition(audioRef, trackFromQueue, isPlaying) {
             clearInterval(intervalId);
         };
 
-        // Додаємо слухачів подій
         audio.addEventListener('loadedmetadata', startInterval);
         audio.addEventListener('play', startInterval);
         audio.addEventListener('playing', startInterval);
         audio.addEventListener('pause', stopInterval);
         audio.addEventListener('seeked', updatePositionState);
 
-        // Запускаємо інтервал, якщо вже грає
         if (isPlaying && audio.duration && audio.duration > 0) {
             startInterval();
         }
 
-        // Cleanup
         return () => {
             clearInterval(intervalId);
             audio.removeEventListener('loadedmetadata', startInterval);
@@ -58,13 +53,12 @@ export function useMediaSessionPosition(audioRef, trackFromQueue, isPlaying) {
             audio.removeEventListener('pause', stopInterval);
             audio.removeEventListener('seeked', updatePositionState);
 
-            // Очищаємо position state при розмонтуванні
             try {
                 if (navigator.mediaSession && navigator.mediaSession.setPositionState) {
                     navigator.mediaSession.setPositionState(null);
                 }
             } catch (error) {
-                // Ігноруємо помилки
+                // Ignore errors
             }
         };
     }, [audioRef, trackFromQueue, isPlaying]);

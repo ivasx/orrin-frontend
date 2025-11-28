@@ -1,14 +1,11 @@
-// --- Fallback константи ---
 const FALLBACK_COVER = '/orrin-logo.svg';
-const FALLBACK_AVATAR = '/orrin-logo.svg'; // Можна замінити на /default-avatar.png
-const FALLBACK_AUDIO = null; // null означає, що відтворення неможливе
+const FALLBACK_AVATAR = '/orrin-logo.svg';
+const FALLBACK_AUDIO = null;
 const FALLBACK_TRACK_TITLE = 'Unknown Title';
 const FALLBACK_ARTIST_NAME = 'Unknown Artist';
 
-// --- Допоміжні функції ---
-
 /**
- * Повертає значення, або fallback, якщо значення "порожнє"
+ * Returns the value, or a fallback if the value is "empty"
  */
 const getFallbackValue = (value, fallback) => {
     if (value === null || value === undefined || value === '') {
@@ -18,38 +15,38 @@ const getFallbackValue = (value, fallback) => {
 };
 
 /**
- * Витягує ім'я артиста.
- * API (v1) повертає об'єкт: { id, name, slug }
- * Моки (data.js) повертають рядок: "Artist Name"
+ * Retrieves the artist name.
+ * API (v1) returns an object: { id, name, slug }
+ * Mocks (data.js) return a string: "Artist Name"
  */
 const extractArtistName = (artistData) => {
     if (typeof artistData === 'object' && artistData !== null && artistData.name) {
-        return artistData.name; // З API
+        return artistData.name;
     }
     if (typeof artistData === 'string' && artistData) {
-        return artistData; // З моків
+        return artistData;
     }
     return FALLBACK_ARTIST_NAME;
 };
 
 /**
- * Витягує ID/Slug артиста.
- * API (v1) повертає об'єкт: { id, name, slug } (використовуємо id або slug)
- * Моки (data.js) повертають artistId в самому треку
+ * Retrieves the artist ID/Slug.
+ * API (v1) returns an object: { id, name, slug } (use id or slug)
+ * Mocks (data.js) return the artistId in the track itself
  */
 const extractArtistId = (artistData, trackArtistId) => {
     if (typeof artistData === 'object' && artistData !== null) {
-        return artistData.slug || artistData.id || null; // З API
+        return artistData.slug || artistData.id || null; // from API
     }
-    return trackArtistId || null; // З моків (track.artistId)
+    return trackArtistId || null; // from mock data
 };
 
 /**
- * Форматує тривалість (яка може бути числом секунд або рядком)
+ * Formats the duration (which can be a number of seconds or a string)
  */
 const formatDuration = (duration) => {
     if (typeof duration === 'string' && duration.includes(':')) {
-        return duration; // Вже відформатовано (напр. "3:45")
+        return duration;
     }
 
     const secondsNum = parseInt(duration, 10);
@@ -62,15 +59,14 @@ const formatDuration = (duration) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
-// --- ОСНОВНІ ФУНКЦІЇ НОРМАЛІЗАЦІЇ ---
 
 /**
- * Нормалізує дані треку з бекенду (API) або фронтенду (моки/data.js)
+ * Normalizes track data from the backend (API) or frontend (mock/data.js)
  */
 export const normalizeTrackData = (track) => {
     if (!track) return null;
 
-    // Пріоритет ID: slug (API) > trackId (моки) > id (моки)
+    // ID priority: slug (API) > trackId (mocks) > id (mocks)
     const trackId = track.slug || track.trackId || track.id;
 
     if (!trackId) {
@@ -81,15 +77,12 @@ export const normalizeTrackData = (track) => {
     const artistName = extractArtistName(track.artist);
     const artistId = extractArtistId(track.artist, track.artistId || track.artist_id);
 
-    // Підтримка cover_url (API) та cover (моки)
     const coverUrl = track.cover || track.cover_url || track.coverUrl;
     const cover = getFallbackValue(coverUrl, FALLBACK_COVER);
 
-    // Підтримка audio_url (API) та audio (моки)
     const audioUrl = track.audio || track.audio_url || track.audioUrl;
     const audio = audioUrl || FALLBACK_AUDIO;
 
-    // Обробка тривалості
     const duration = track.duration; // (з API це число, з моків - рядок)
     const durationFormatted = track.duration_formatted; // (з API)
 
@@ -102,16 +95,17 @@ export const normalizeTrackData = (track) => {
         audio,
         duration: duration || 0,
         duration_formatted: formatDuration(durationFormatted || duration),
+        lyrics: track.lyrics || { type: 'none', content: null }
     };
 };
 
 /**
- * Нормалізує дані артиста з бекенду (API) або фронтенду (моки/data.js)
+ * Normalizes artist data from the backend (API) or frontend (mocks/data.js)
  */
 export const normalizeArtistData = (artist) => {
     if (!artist) return null;
 
-    // Пріоритет ID: slug (API) > id (API/моки)
+    // ID priority: slug (API) > id (API/mock)
     const artistId = artist.slug || artist.id;
 
     if (!artistId) {
@@ -126,14 +120,12 @@ export const normalizeArtistData = (artist) => {
         name: getFallbackValue(artist.name, FALLBACK_ARTIST_NAME),
         slug: artist.slug || '',
         imageUrl,
-        // Поля, які з'являться в API згодом (згідно моків)
         genre: artist.genre || null,
         type: artist.type || null,
         description: artist.description || null,
         listenersMonthy: artist.listenersMonthy || artist.listeners_monthly || null,
         location: artist.location || null,
         socials: artist.socials || null,
-        // ...інші поля з моків (members, discography, notes...)
         members: artist.members || [],
         discography: artist.discography || [],
         notes: artist.notes || [],
@@ -143,11 +135,10 @@ export const normalizeArtistData = (artist) => {
 };
 
 /**
- * Перевіряє, чи має трек валідний URL для відтворення.
- * @param {object} normalizedTrack - Нормалізований об'єкт треку
+ * Checks if the track has a valid URL to play.
+ * @param {object} normalizedTrack - Normalized track object
  * @returns {boolean}
  */
 export const isTrackPlayable = (normalizedTrack) => {
-    // Перевіряємо, що audio не null і не порожній рядок
     return !!normalizedTrack?.audio;
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './SearchSuggestions.css';
 
 export default function SearchSuggestions({suggestions, isLoading, onSuggestionClick, onRemoveFromHistory}) {
@@ -31,7 +31,6 @@ export default function SearchSuggestions({suggestions, isLoading, onSuggestionC
                 </svg>
             );
         } else {
-            // Іконка лупи для нових пошуків
             return (
                 <svg className="suggestion-svg-icon" viewBox="0 0 24 24" width="18" height="18">
                     <path
@@ -64,7 +63,6 @@ export default function SearchSuggestions({suggestions, isLoading, onSuggestionC
                         </span>
                         <span className="suggestion-text">{suggestion.text}</span>
 
-                        {/* Показуємо кнопку видалення тільки для елементів з історії при наведенні */}
                         {suggestion.icon === 'history' && hoveredIndex === index && (
                             <button
                                 className="suggestion-remove-btn"

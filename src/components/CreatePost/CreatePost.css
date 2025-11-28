@@ -1,4 +1,3 @@
-/* src/components/CreatePost/CreatePost.css */
 .create-post {
     background: #1c1c1c;
     border-radius: 12px;
@@ -109,7 +108,6 @@
     color: #fff;
 }
 
-/* Дії */
 .create-post-actions {
     display: flex;
     align-items: center;
@@ -168,7 +166,6 @@
     opacity: 0.5;
 }
 
-/* Модальне вікно вибору треку */
 .track-picker-modal-overlay {
     position: fixed;
     top: 0;
@@ -298,7 +295,6 @@
     text-overflow: ellipsis;
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
     .create-post {
         border-radius: 0;

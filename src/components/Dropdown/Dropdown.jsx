@@ -1,15 +1,14 @@
-// src/components/Dropdown/Dropdown.jsx
-import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check } from 'lucide-react';
+import {useState, useRef, useEffect} from 'react';
+import {ChevronDown, Check} from 'lucide-react';
 import './Dropdown.css';
 
 export default function Dropdown({
-                                     trigger, // Текст кнопки або custom trigger
-                                     items = [], // Масив елементів
-                                     selectedValue, // Поточне вибране значення
-                                     onSelect, // Callback при виборі
+                                     trigger,
+                                     items = [],
+                                     selectedValue,
+                                     onSelect,
                                      placeholder = 'Оберіть',
-                                     icon, // Іконка для кнопки
+                                     icon,
                                      className = ''
                                  }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +39,6 @@ export default function Dropdown({
         };
     }, [isOpen]);
 
-    // Keyboard navigation
     useEffect(() => {
         if (!isOpen) return;
 
@@ -120,7 +118,7 @@ export default function Dropdown({
             >
                 {icon && <span className="dropdown-trigger-icon-left">{icon}</span>}
                 <span>{displayLabel}</span>
-                <ChevronDown size={16} className="dropdown-trigger-icon" />
+                <ChevronDown size={16} className="dropdown-trigger-icon"/>
             </button>
 
             {isOpen && (
@@ -163,7 +161,7 @@ export default function Dropdown({
                                 </span>
 
                                 {isSelected && (
-                                    <Check size={16} className="dropdown-item-checkmark" />
+                                    <Check size={16} className="dropdown-item-checkmark"/>
                                 )}
                             </div>
                         );

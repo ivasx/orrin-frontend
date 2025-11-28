@@ -1,72 +1,59 @@
-// src/components/TrackCard/TrackCard.jsx
 import './TrackCard.css';
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import {useState, useEffect, useCallback, useRef, useMemo} from 'react';
 import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
-import { useAudioCore } from '../../context/AudioCoreContext.jsx';
-import { useTranslation } from "react-i18next";
-import { createTrackMenuItems } from './trackMenuItems.jsx';
-import { Link } from 'react-router-dom';
-import { AlertCircle, Music } from 'lucide-react';
-
-// Імпортуємо утиліти з fallbacks
-import { isTrackPlayable } from '../../constants/fallbacks.js';
+import {useAudioCore} from '../../context/AudioCoreContext.jsx';
+import {useTranslation} from "react-i18next";
+import {createTrackMenuItems} from './trackMenuItems.jsx';
+import {Link} from 'react-router-dom';
+import {AlertCircle, Music} from 'lucide-react';
+import {isTrackPlayable} from '../../constants/fallbacks.js';
 
 export default function TrackCard(props) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const {
         currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef,
         isMuted, toggleMute, volume, updateVolume
     } = useAudioCore();
 
-    // ========== НОРМАЛІЗАЦІЯ ДАНИХ ==========
-    // props вже нормалізовані в TrackSection, просто використовуємо їх
-    // Але на всяк випадок перевіряємо наявність необхідних полів
     const track = useMemo(() => {
         if (!props.trackId) {
             console.error('TrackCard: Received props without trackId', props);
             return null;
         }
-        // Якщо props вже нормалізовані (мають всі необхідні поля), використовуємо їх
         return props;
     }, [props]);
 
-    // Якщо track null (немає trackId), не рендеримо картку
     if (!track) {
         return null;
     }
 
     const hasValidAudio = isTrackPlayable(track);
 
-    // Стани для обробки помилок
     const [coverError, setCoverError] = useState(false);
     const [audioError, setAudioError] = useState(false);
     const [isAudioLoading, setIsAudioLoading] = useState(false);
 
-    // Стани для UI
     const [showControls, setShowControls] = useState(false);
     const [durationHovered, setDurationHovered] = useState(false);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
     const [rippleStyle, setRippleStyle] = useState({});
     const [showRipple, setShowRipple] = useState(false);
 
     const dotsButtonRef = useRef(null);
 
-    // Обкладинка з fallback при помилці
     const displayCover = coverError ? '/orrin-logo.svg' : track.cover;
 
     useEffect(() => {
         setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
     }, []);
 
-    // Скидання помилок при зміні треку
     useEffect(() => {
         setCoverError(false);
         setAudioError(false);
     }, [track.trackId]);
 
-    // Перевірка помилок аудіо для поточного треку
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || currentTrack?.trackId !== track.trackId) return;
@@ -115,7 +102,6 @@ export default function TrackCard(props) {
         } else if (isCurrentTrack && !isPlaying) {
             resumeTrack();
         } else {
-            // Передаємо вже нормалізований об'єкт треку
             playTrack(track, props.tracks);
         }
     }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, track, props.tracks, hasValidAudio]);
@@ -144,7 +130,7 @@ export default function TrackCard(props) {
         const x = e.clientX - rect.left - size / 2;
         const y = e.clientY - rect.top - size / 2;
 
-        setRippleStyle({ width: size, height: size, left: x, top: y });
+        setRippleStyle({width: size, height: size, left: x, top: y});
         setShowRipple(true);
         setTimeout(() => setShowRipple(false), 600);
     }
@@ -197,7 +183,7 @@ export default function TrackCard(props) {
             if (y < 10) y = 10;
             if (x < 10) x = 10;
 
-            setMenuPosition({ x, y });
+            setMenuPosition({x, y});
             setShowMenu(prev => !prev);
         }
     }
@@ -216,7 +202,7 @@ export default function TrackCard(props) {
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
-            aria-label={t('track_card_aria_label', { title: track.title, artist: track.artist })}
+            aria-label={t('track_card_aria_label', {title: track.title, artist: track.artist})}
         >
             <div
                 className={`track-cover-wrapper ${isPlaying ? 'playing' : ''} ${!hasValidAudio ? 'disabled' : ''}`}
@@ -227,7 +213,7 @@ export default function TrackCard(props) {
             >
                 {coverError ? (
                     <div className="track-cover-fallback">
-                        <Music size={32} />
+                        <Music size={32}/>
                     </div>
                 ) : (
                     <img
@@ -239,7 +225,7 @@ export default function TrackCard(props) {
                     />
                 )}
 
-                {showRipple && <div className="ripple-effect" style={rippleStyle} />}
+                {showRipple && <div className="ripple-effect" style={rippleStyle}/>}
 
                 {showLoadingIndicator && (
                     <div className="loading-indicator">
@@ -252,14 +238,14 @@ export default function TrackCard(props) {
                 {showErrorIndicator && (
                     <div className="error-indicator">
                         <div className="error-icon">
-                            <AlertCircle size={20} />
+                            <AlertCircle size={20}/>
                         </div>
                     </div>
                 )}
 
                 {!hasValidAudio && !showErrorIndicator && (
                     <div className="no-audio-indicator">
-                        <AlertCircle size={20} className="no-audio-icon" />
+                        <AlertCircle size={20} className="no-audio-icon"/>
                     </div>
                 )}
 

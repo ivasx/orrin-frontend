@@ -1,4 +1,4 @@
-import SectionHeader from '../SectionHeader/SectionHeader.jsx'; // Використовуємо наш універсальний заголовок
+import SectionHeader from '../SectionHeader/SectionHeader.jsx';
 import './LoginPromptSection.css';
 
 export default function LoginPromptSection(

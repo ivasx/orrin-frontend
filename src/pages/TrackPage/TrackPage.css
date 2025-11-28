@@ -1,103 +1,118 @@
+/* src/pages/TrackPage/TrackPage.css */
+
 .track-page {
-    padding: 20px;
+    padding: 40px;
+    color: #fff;
+    min-height: 80vh;
+    box-sizing: border-box; /* Важливо для розрахунку ширини */
 }
 
-.track-page-header {
+/* Обгортка для контенту */
+.track-page-content-wrapper {
     display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+    flex-direction: row;
+    gap: 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: flex-start;
 }
 
-.track-page-cover {
-    width: 150px;
-    height: 150px;
-    margin-right: 20px;
-    border-radius: 10px;
+/* --- ЛІВА КОЛОНКА (Інфо) --- */
+.tp-info-side {
+    flex: 0 0 400px; /* Фіксована ширина */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: sticky; /* Щоб інфо залишалось при скролі тексту */
+    top: 100px;
 }
 
-.track-page-info h1 {
+.tp-cover-container {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.tp-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tp-metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* УНІКАЛЬНИЙ КЛАС, щоб не ламати картки */
+.tp-title {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
     margin: 0;
-    font-size: 2em;
+    letter-spacing: -0.02em;
+    color: #fff;
+    word-wrap: break-word; /* Якщо слово дуже довге */
 }
 
-.track-page-info p {
-    margin: 5px 0;
-    font-size: 1.2em;
-    color: #ccc;
-    cursor: pointer;
+.tp-artist-row {
+    font-size: 1.5rem;
+    color: #b3b3b3;
+    font-weight: 500;
+}
+
+.tp-artist-row a {
+    color: inherit;
+    text-decoration: none;
     transition: color 0.2s;
 }
 
-.track-page-info a p:hover {
+.tp-artist-row a:hover {
     color: #fff;
     text-decoration: underline;
 }
 
-/* Skeleton стани */
-.track-cover-skeleton {
-    width: 150px;
-    height: 150px;
-    margin-right: 20px;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
+.tp-meta-extra {
+    color: #888;
+    font-size: 1rem;
+    margin-top: 5px;
 }
 
-.skeleton-text {
-    height: 1.5em;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
-    margin-bottom: 10px;
+/* --- ПРАВА КОЛОНКА (Лірика) --- */
+.tp-lyrics-side {
+    flex: 1; /* Займає решту місця */
+    min-width: 0; /* Важливо для flexbox, щоб текст переносився */
 }
 
-.skeleton-title {
-    width: 300px;
-    height: 2em;
-}
-
-.skeleton-artist {
-    width: 200px;
-}
-
-@keyframes skeleton-loading {
-    0% {
-        background-position: 200% 0;
+/* --- АДАПТИВНІСТЬ --- */
+@media (max-width: 900px) {
+    .track-page-content-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
     }
-    100% {
-        background-position: -200% 0;
+
+    .tp-info-side {
+        flex: auto;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        position: static;
+    }
+
+    .tp-title {
+        font-size: 2rem;
+    }
+
+    .tp-lyrics-side {
+        width: 100%;
     }
 }
 
-/* Стилі помилок */
 .error-container {
     text-align: center;
-    padding: 40px 20px;
-}
-
-.error-container h2 {
-    color: #ff6b6b;
-    margin-bottom: 10px;
-}
-
-.error-container p {
-    color: #aaa;
-    margin-bottom: 20px;
-}
-
-.back-button {
-    display: inline-block;
-    padding: 10px 24px;
-    background: #fff;
-    color: #000;
-    text-decoration: none;
-    border-radius: 25px;
-    font-weight: 600;
-    transition: background 0.2s;
-}
-
-.back-button:hover {
-    background: #ccc;
+    padding: 100px 20px;
 }

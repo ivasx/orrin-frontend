@@ -1,16 +1,15 @@
-// src/components/Header/SearchForm/SearchForm.jsx
-import { useState, useEffect, useRef, useCallback } from "react";
+import {useState, useEffect, useRef, useCallback} from "react";
 import "./SearchForm.css";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 import SearchSuggestions from './SearchSuggestions';
-import { ways, popularArtists } from '../../../data';
+import {ways, popularArtists} from '../../../data';
 
 const SEARCH_HISTORY_KEY = 'orrin_search_history';
 const MAX_HISTORY_ITEMS = 5;
 
-export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
+export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
     const [query, setQuery] = useState(initialQuery);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [suggestions, setSuggestions] = useState([]);
     const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
     const [isSuggestionsVisible, setIsSuggestionsVisible] = useState(false);
@@ -18,7 +17,6 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
     const searchWrapperRef = useRef(null);
     const searchTimerRef = useRef(null);
 
-    // Завантаження історії пошуку при монтуванні
     useEffect(() => {
         const loadSearchHistory = () => {
             try {
@@ -33,7 +31,6 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
         loadSearchHistory();
     }, []);
 
-    // Збереження в історію пошуку
     const addToSearchHistory = (searchTerm) => {
         const trimmedTerm = searchTerm.trim();
         if (!trimmedTerm) return;
@@ -51,7 +48,6 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
         }
     };
 
-    // Видалення з історії
     const removeFromHistory = (termToRemove) => {
         try {
             const newHistory = searchHistory.filter(
@@ -64,12 +60,10 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
         }
     };
 
-    // Перевірка чиterm є в історії
     const isInHistory = (term) => {
         return searchHistory.some(item => item.toLowerCase() === term.toLowerCase());
     };
 
-    // Хук Debounce
     const useDebounce = (value, delay) => {
         const [debouncedValue, setDebouncedValue] = useState(value);
         useEffect(() => {
@@ -85,12 +79,10 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
 
     const debouncedQuery = useDebounce(query, 300);
 
-    // Ефект для пошуку підказок
     useEffect(() => {
         const searchTerm = debouncedQuery.trim().toLowerCase();
 
         if (searchTerm === '') {
-            // Показуємо історію пошуку, якщо запит порожній
             if (searchHistory.length > 0) {
                 const historySuggestions = searchHistory.map(item => ({
                     type: 'history',
@@ -109,25 +101,20 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
         setIsLoadingSuggestions(true);
         setIsSuggestionsVisible(true);
 
-        // Очищаємо попередній таймер
         if (searchTimerRef.current) {
             clearTimeout(searchTimerRef.current);
         }
 
-        // Імітуємо невелику затримку
         searchTimerRef.current = setTimeout(() => {
-            // Пошук треків
             const filteredTracks = ways.filter(track =>
                 track.title.toLowerCase().includes(searchTerm) ||
                 track.artist.toLowerCase().includes(searchTerm)
             ).slice(0, 5);
 
-            // Пошук артистів
             const filteredArtists = popularArtists.filter(artist =>
                 artist.name.toLowerCase().includes(searchTerm)
             ).slice(0, 3);
 
-            // Формуємо підказки з треків та артистів
             const trackSuggestions = filteredTracks.map(t => {
                 const fullText = `${t.title} - ${t.artist}`;
                 return {
@@ -143,7 +130,6 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
                 icon: isInHistory(a.name) ? 'history' : 'search'
             }));
 
-            // Об'єднуємо
             const combinedSuggestions = [...trackSuggestions, ...artistSuggestions].slice(0, 8);
 
             setSuggestions(combinedSuggestions);
@@ -157,14 +143,12 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
         };
     }, [debouncedQuery, searchHistory]);
 
-    // Обробник вибору підказки
     const handleSuggestionClick = (suggestion) => {
         const cleanText = suggestion.text;
         setQuery(cleanText);
         setSuggestions([]);
         setIsSuggestionsVisible(false);
 
-        // Додаємо в історію
         addToSearchHistory(cleanText);
 
         if (onSubmit) {
@@ -172,13 +156,11 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
         }
     };
 
-    // Видалення з історії
     const handleRemoveFromHistory = (suggestion, e) => {
         e.stopPropagation();
         removeFromHistory(suggestion.text);
     };
 
-    // Закриття підказок при кліку поза компонентом
     const handleClickOutside = useCallback((event) => {
         if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
             setIsSuggestionsVisible(false);
@@ -197,7 +179,6 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
         const trimmedQuery = query.trim();
         setIsSuggestionsVisible(false);
         if (trimmedQuery) {
-            // Додаємо в історію перед сабмітом
             addToSearchHistory(trimmedQuery);
 
             if (onSubmit) {
@@ -220,7 +201,6 @@ export default function SearchForm({ initialQuery = "", onSubmit, onBack }) {
     };
 
     const handleFocus = () => {
-        // Показуємо історію або підказки
         if (query.trim() === '' && searchHistory.length > 0) {
             const historySuggestions = searchHistory.map(item => ({
                 type: 'history',

@@ -1,6 +1,6 @@
 /**
- * Хук для управління режимами повтору
- * Відповідає за: repeatMode (off/all/one), hasRepeatedOnce (для 'one' режиму)
+ * Hook for controlling repeat modes
+ * Responsible for: repeatMode (off/all/one), hasRepeatedOnce (for 'one' mode)
  */
 import { useState, useCallback } from 'react';
 
@@ -12,7 +12,6 @@ export function useRepeatMode() {
         setRepeatMode(prev => {
             const nextMode = prev === 'off' ? 'all' : prev === 'all' ? 'one' : 'off';
 
-            // Скидаємо лічильник, якщо виходимо з режиму 'one'
             if (nextMode !== 'one') {
                 setHasRepeatedOnce(false);
             }

@@ -1,4 +1,3 @@
-// src/components/FeedFilters/FeedFilters.jsx
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter, X, Check, Music, Users, Sparkles } from 'lucide-react';
@@ -88,7 +87,6 @@ export default function FeedFilters({ activeTab, onTabChange, filters, onFilters
     return (
         <div className="feed-filters">
             <div className="feed-filters-wrapper">
-                {/* Додаткові фільтри */}
                 <div className="feed-additional-filters">
                     <div style={{ position: 'relative' }} ref={dropdownRef}>
                         <button
@@ -162,7 +160,6 @@ export default function FeedFilters({ activeTab, onTabChange, filters, onFilters
                                     </div>
                                 </div>
 
-                                {/* Дії */}
                                 <div className="filters-dropdown-actions">
                                     <button
                                         className="filters-clear-button"
@@ -182,7 +179,6 @@ export default function FeedFilters({ activeTab, onTabChange, filters, onFilters
                     </div>
                 </div>
 
-                {/* Dropdown з вкладками */}
                 <Dropdown
                     items={dropdownItems}
                     selectedValue={activeTab}

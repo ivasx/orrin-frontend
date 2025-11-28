@@ -1,4 +1,3 @@
-/* Context Menu Styles */
 .context-menu {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
@@ -15,13 +14,10 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 14px;
     user-select: none;
-
-    /* Animation */
     animation: contextMenuAppear 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     transform-origin: top left;
 }
 
-/* Dark theme support */
 @media (prefers-color-scheme: dark) {
     .context-menu {
         background: rgba(30, 30, 30, 0.95);
@@ -33,7 +29,6 @@
     }
 }
 
-/* Appear animation */
 @keyframes contextMenuAppear {
     0% {
         opacity: 0;
@@ -45,7 +40,6 @@
     }
 }
 
-/* Menu Item Styles */
 .menu-item {
     display: flex;
     align-items: center;
@@ -57,19 +51,15 @@
     transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
     color: #333;
     line-height: 1.4;
-
-    /* Focus outline */
     outline: none;
 }
 
-/* Dark theme menu items */
 @media (prefers-color-scheme: dark) {
     .menu-item {
         color: #e0e0e0;
     }
 }
 
-/* Hover and focus states */
 .menu-item:hover,
 .menu-item:focus {
     background: rgba(138, 111, 81, 0.34);
@@ -85,13 +75,11 @@
     }
 }
 
-/* Active state */
 .menu-item:active {
     transform: translateX(2px) scale(0.98);
     background: rgba(138, 111, 81, 0.34);
 }
 
-/* Disabled state */
 .menu-item.disabled {
     opacity: 0.4;
     cursor: not-allowed;
@@ -105,7 +93,6 @@
     color: inherit;
 }
 
-/* Menu components */
 .menu-icon {
     width: 16px;
     height: 16px;
@@ -155,7 +142,6 @@
     }
 }
 
-/* Menu separator */
 .menu-separator {
     height: 1px;
     background: linear-gradient(90deg,
@@ -178,7 +164,6 @@
     }
 }
 
-/* Special menu item variants */
 .menu-item.danger {
     color: #ff3b30;
 }
@@ -201,7 +186,6 @@
     }
 }
 
-/* Success variant */
 .menu-item.success {
     color: #30d158;
 }
@@ -224,23 +208,21 @@
     }
 }
 
-/* Responsive design */
 @media (max-width: 480px) {
     .context-menu {
         min-width: 160px;
-        font-size: 16px; /* Larger for mobile */
+        font-size: 16px;
     }
 
     .menu-item {
-        padding: 12px 16px; /* Larger touch targets */
+        padding: 12px 16px;
     }
 
     .menu-shortcut {
-        display: none; /* Hide shortcuts on mobile */
+        display: none;
     }
 }
 
-/* Smooth scrolling for long menus */
 .context-menu {
     max-height: 70vh;
     overflow-y: auto;

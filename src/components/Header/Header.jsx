@@ -1,15 +1,14 @@
-// src/components/Header/Header.jsx
 import logo from "/orrin-logo.svg";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // <-- Імпортуємо useNavigate
+import {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import "./Header.css";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 
-export default function Header({ user, onLogout, /* прибираємо onSearch */ onMenuToggle }) {
-    const { t } = useTranslation();
+export default function Header({user, onLogout, onMenuToggle}) {
+    const {t} = useTranslation();
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-    const navigate = useNavigate(); // <-- Ініціалізуємо useNavigate
+    const navigate = useNavigate();
 
     useEffect(() => {
         document.body.style.overflow = mobileSearchOpen ? "hidden" : "auto";
@@ -18,15 +17,11 @@ export default function Header({ user, onLogout, /* прибираємо onSearc
         };
     }, [mobileSearchOpen]);
 
-    // --- Початок змін ---
-    // Функція, яка буде викликатись при сабміті форми пошуку
     const handleSearchSubmit = (query) => {
         console.log("Search submitted with query:", query);
-        setMobileSearchOpen(false); // Закриваємо мобільний пошук, якщо він був відкритий
+        setMobileSearchOpen(false);
 
-        // Переходимо на сторінку результатів пошуку
-        // Вам потрібно буде створити сторінку SearchResultsPage та додати роут для '/search' в App.jsx
-        if (query.trim()) { // Переходимо, тільки якщо запит не порожній
+        if (query.trim()) {
             navigate(`/search?q=${encodeURIComponent(query.trim())}`);
         }
     };

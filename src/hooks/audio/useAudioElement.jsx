@@ -1,6 +1,6 @@
 /**
- * Хук для управління HTML <audio> елементом
- * Відповідає за: оновлення src при зміні треку, оновлення атрибута loop
+ * Hook for controlling HTML <audio> element
+ * Responsible for: updating src when changing track, updating loop attribute
  */
 import { useRef, useEffect } from 'react';
 
@@ -8,14 +8,12 @@ export function useAudioElement(trackFromQueue, repeatMode) {
     const audioRef = useRef(null);
     const prevTrackIdRef = useRef(null);
 
-    // Оновлення src ТІЛЬКИ при зміні треку
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
         const currentTrackId = trackFromQueue?.trackId;
 
-        // Перевіряємо чи реально змінився трек
         if (currentTrackId !== prevTrackIdRef.current) {
             prevTrackIdRef.current = currentTrackId;
 
@@ -33,7 +31,6 @@ export function useAudioElement(trackFromQueue, repeatMode) {
         }
     }, [trackFromQueue]);
 
-    // Окремий useEffect для оновлення loop (БЕЗ зміни src або currentTime)
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;

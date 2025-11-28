@@ -6,7 +6,58 @@ export const ways = [
         artistId: 8,
         duration: '4:04',
         cover: 'https://i.scdn.co/image/ab67616d0000b2735d1a1b0e0f3e0fc586393092',
-        audio: '/songs/Young_the_Giant_Mind_Over_Matter.mp3'
+        audio: '/songs/Young_the_Giant_Mind_Over_Matter.mp3',
+        lyrics: {
+            type: 'static',
+            content: `Mind over matter
+Does it matter to any of us?
+Don't change the subject
+I'm heavy on your love
+I missed that train, New York city, it rains
+Fly to East L.A. in big jet planes
+You know you're on my mind
+
+And if the world don't break
+I'll be shakin' it
+'Cause I'm a young man after all
+And when the seasons change
+Will you stand by me?
+'Cause I'm a young man built to fall
+
+Mind over matter
+I'm in tatters thinkin' 'bout her
+Taste my disaster
+It's heavy on my tongue
+All the lights aglow, Tokyo snows
+Go to watch the show, curtain's closed
+I'm watching you this time
+
+And if the world don't break
+I'll be shakin' it
+'Cause I'm a young man after all
+And when the seasons change
+Will you stand by me?
+'Cause I'm a young man built to fall
+
+I missed that train, New York City it rains
+Fly to East L.A. in big jet planes
+You know you're on my mind
+All the lights aglow, Tokyo snows
+Go to watch the show, curtain's closed
+You know you're on my mind
+
+And if the world don't break
+I'll be shakin' it
+'Cause I'm a young man after all
+And when the seasons change
+Will you stand by me?
+'Cause I'm a young man built to fall
+And if the world don't break
+
+And when the seasons change
+Will you stand by me?
+'Cause I'm a young man built to fall`
+        }
     },
     {
         trackId: 'track-1',
@@ -225,15 +276,30 @@ export const popularArtists = [
         joinDate: '2008',
         history: 'Гурт «Антитіла» утворився 2004 року. У 2007 році гурт взяв участь у телепроєкті "Шанс".',
         members: [
-            { id: 'member-1', name: 'Тарас Тополя', role: 'Вокал, текст', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Тарас_Тополя%2C_гурт_%22Антитіла%22_на_M1_Music_Awards_2019.jpg/440px-Тарас_Тополя%2C_гурт_%22Антитіла%22_на_M1_Music_Awards_2019.jpg' },
-            { id: 'member-2', name: 'Сергій Вусик', role: 'Клавішні', imageUrl: 'https://antytila.com/wp-content/uploads/2019/04/vysuk-e1555512214959.jpg' },
-            { id: 'member-3', name: 'Дмитро Жолудь', role: 'Гітара', imageUrl: 'https://antytila.com/wp-content/uploads/2019/04/jolyd-e1555512165844.jpg' },
+            {
+                id: 'member-1',
+                name: 'Тарас Тополя',
+                role: 'Вокал, текст',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Тарас_Тополя%2C_гурт_%22Антитіла%22_на_M1_Music_Awards_2019.jpg/440px-Тарас_Тополя%2C_гурт_%22Антитіла%22_на_M1_Music_Awards_2019.jpg'
+            },
+            {
+                id: 'member-2',
+                name: 'Сергій Вусик',
+                role: 'Клавішні',
+                imageUrl: 'https://antytila.com/wp-content/uploads/2019/04/vysuk-e1555512214959.jpg'
+            },
+            {
+                id: 'member-3',
+                name: 'Дмитро Жолудь',
+                role: 'Гітара',
+                imageUrl: 'https://antytila.com/wp-content/uploads/2019/04/jolyd-e1555512165844.jpg'
+            },
         ],
         discography: [
-            { id: 'album-1', title: 'Hello', year: 2019, type: 'Альбом', cover: '...', trackIds: ['track-16'] },
-            { id: 'album-2', title: 'Сонце', year: 2016, type: 'Альбом', cover: '...', trackIds: [] },
-            { id: 'album-3', title: 'MLNL', year: 2022, type: 'Альбом', cover: '...', trackIds: [] },
-            { id: 'single-1', title: 'Фортеця Бахмут', year: 2023, type: 'Сингл', cover: '...', trackIds: [] },
+            {id: 'album-1', title: 'Hello', year: 2019, type: 'Альбом', cover: '...', trackIds: ['track-16']},
+            {id: 'album-2', title: 'Сонце', year: 2016, type: 'Альбом', cover: '...', trackIds: []},
+            {id: 'album-3', title: 'MLNL', year: 2022, type: 'Альбом', cover: '...', trackIds: []},
+            {id: 'single-1', title: 'Фортеця Бахмут', year: 2023, type: 'Сингл', cover: '...', trackIds: []},
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -255,8 +321,8 @@ export const popularArtists = [
         history: 'Кар\'єра Оззі почалася в групі Black Sabbath...',
         members: [],
         discography: [
-            { id: 'album-1', title: 'Blizzard of Ozz', year: 1980, type: 'Альбом', cover: '...', trackIds: [] },
-            { id: 'album-2', title: 'No More Tears', year: 1991, type: 'Альбом', cover: '...', trackIds: ['track-1'] }, // Додайте ID треків
+            {id: 'album-1', title: 'Blizzard of Ozz', year: 1980, type: 'Альбом', cover: '...', trackIds: []},
+            {id: 'album-2', title: 'No More Tears', year: 1991, type: 'Альбом', cover: '...', trackIds: ['track-1']}, // Додайте ID треків
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock,
@@ -268,7 +334,7 @@ export const popularArtists = [
                 text: 'No More Tears - це просто класика на всі часи.',
                 type: 'public',
                 timestamp: '1 тиждень тому',
-                trackContext: { trackId: 'track-1', title: 'No more tears' },
+                trackContext: {trackId: 'track-1', title: 'No more tears'},
                 timecode: '4:55'
             }
         ]
@@ -287,13 +353,40 @@ export const popularArtists = [
         joinDate: '1987',
         history: 'Nirvana стала одним з найвпливовіших гуртів 90-х...',
         members: [
-            { id: 'member-kurt', name: 'Курт Кобейн', role: 'Вокал, гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Kurt_Cobain_1993.jpg/440px-Kurt_Cobain_1993.jpg' },
-            { id: 'member-krist', name: 'Кріст Новоселіч', role: 'Бас-гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Krist_Novoselic_2011.jpg/440px-Krist_Novoselic_2011.jpg' },
-            { id: 'member-dave', name: 'Дейв Грол', role: 'Ударні', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Dave_Grohl_reading_his_book_%28cropped%29.jpg/440px-Dave_Grohl_reading_his_book_%28cropped%29.jpg' },
+            {
+                id: 'member-kurt',
+                name: 'Курт Кобейн',
+                role: 'Вокал, гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Kurt_Cobain_1993.jpg/440px-Kurt_Cobain_1993.jpg'
+            },
+            {
+                id: 'member-krist',
+                name: 'Кріст Новоселіч',
+                role: 'Бас-гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Krist_Novoselic_2011.jpg/440px-Krist_Novoselic_2011.jpg'
+            },
+            {
+                id: 'member-dave',
+                name: 'Дейв Грол',
+                role: 'Ударні',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Dave_Grohl_reading_his_book_%28cropped%29.jpg/440px-Dave_Grohl_reading_his_book_%28cropped%29.jpg'
+            },
         ],
         discography: [
-            { id: 'album-n1', title: 'Nevermind', year: 1991, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/b/b7/NirvanaNevermindalbumcover.jpg' },
-            { id: 'album-n2', title: 'In Utero', year: 1993, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/e/e5/NirvanaInUteroalbumcover.jpg' },
+            {
+                id: 'album-n1',
+                title: 'Nevermind',
+                year: 1991,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/b/b7/NirvanaNevermindalbumcover.jpg'
+            },
+            {
+                id: 'album-n2',
+                title: 'In Utero',
+                year: 1993,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/e/e5/NirvanaInUteroalbumcover.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -312,14 +405,46 @@ export const popularArtists = [
         joinDate: '1960',
         history: 'Історія The Beatles почалася в Ліверпулі...',
         members: [
-            { id: 'member-john', name: 'Джон Леннон', role: 'Вокал, гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/John_Lennon_1969_%28cropped%29.jpg/440px-John_Lennon_1969_%28cropped%29.jpg' },
-            { id: 'member-paul', name: 'Пол Маккартні', role: 'Вокал, бас-гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Paul_McCartney_2011.jpg/440px-Paul_McCartney_2011.jpg' },
-            { id: 'member-george', name: 'Джордж Гаррісон', role: 'Гітара, вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/George_Harrison_1974.jpg/440px-George_Harrison_1974.jpg' },
-            { id: 'member-ringo', name: 'Рінго Старр', role: 'Ударні, вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Ringo_Starr_promotional_photo_1973.jpg/440px-Ringo_Starr_promotional_photo_1973.jpg' },
+            {
+                id: 'member-john',
+                name: 'Джон Леннон',
+                role: 'Вокал, гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/John_Lennon_1969_%28cropped%29.jpg/440px-John_Lennon_1969_%28cropped%29.jpg'
+            },
+            {
+                id: 'member-paul',
+                name: 'Пол Маккартні',
+                role: 'Вокал, бас-гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Paul_McCartney_2011.jpg/440px-Paul_McCartney_2011.jpg'
+            },
+            {
+                id: 'member-george',
+                name: 'Джордж Гаррісон',
+                role: 'Гітара, вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/George_Harrison_1974.jpg/440px-George_Harrison_1974.jpg'
+            },
+            {
+                id: 'member-ringo',
+                name: 'Рінго Старр',
+                role: 'Ударні, вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Ringo_Starr_promotional_photo_1973.jpg/440px-Ringo_Starr_promotional_photo_1973.jpg'
+            },
         ],
         discography: [
-            { id: 'album-b1', title: 'Abbey Road', year: 1969, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg' },
-            { id: 'album-b2', title: 'Sgt. Pepper\'s...', year: 1967, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/5/50/Sgt._Pepper%27s_Lonely_Hearts_Club_Band.jpg' },
+            {
+                id: 'album-b1',
+                title: 'Abbey Road',
+                year: 1969,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg'
+            },
+            {
+                id: 'album-b2',
+                title: 'Sgt. Pepper\'s...',
+                year: 1967,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/5/50/Sgt._Pepper%27s_Lonely_Hearts_Club_Band.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -338,11 +463,27 @@ export const popularArtists = [
         joinDate: '1970',
         history: 'Queen здобули світову популярність завдяки хітам...',
         members: [
-            { id: 'member-freddie', name: 'Фредді Мерк\'юрі', role: 'Вокал, піаніно', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg/440px-Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg' },
-            { id: 'member-brian', name: 'Браян Мей', role: 'Гітара, вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Brian_May_Austin_City_Limits.jpg/440px-Brian_May_Austin_City_Limits.jpg' },
+            {
+                id: 'member-freddie',
+                name: 'Фредді Мерк\'юрі',
+                role: 'Вокал, піаніно',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg/440px-Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg'
+            },
+            {
+                id: 'member-brian',
+                name: 'Браян Мей',
+                role: 'Гітара, вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Brian_May_Austin_City_Limits.jpg/440px-Brian_May_Austin_City_Limits.jpg'
+            },
         ],
         discography: [
-            { id: 'album-q1', title: 'A Night at the Opera', year: 1975, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4d/Queen_A_Night_At_The_Opera.png' },
+            {
+                id: 'album-q1',
+                title: 'A Night at the Opera',
+                year: 1975,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/4/4d/Queen_A_Night_At_The_Opera.png'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -361,11 +502,27 @@ export const popularArtists = [
         joinDate: '1968',
         history: 'Сформований у 1968 році... (деталі)',
         members: [
-            { id: 'member-plant', name: 'Роберт Плант', role: 'Вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Robert_Plant_1977.jpg/440px-Robert_Plant_1977.jpg' },
-            { id: 'member-page', name: 'Джиммі Пейдж', role: 'Гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Jimmy_Page_at_the_Echo_conference_2013.jpg/440px-Jimmy_Page_at_the_Echo_conference_2013.jpg' },
+            {
+                id: 'member-plant',
+                name: 'Роберт Плант',
+                role: 'Вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Robert_Plant_1977.jpg/440px-Robert_Plant_1977.jpg'
+            },
+            {
+                id: 'member-page',
+                name: 'Джиммі Пейдж',
+                role: 'Гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Jimmy_Page_at_the_Echo_conference_2013.jpg/440px-Jimmy_Page_at_the_Echo_conference_2013.jpg'
+            },
         ],
         discography: [
-            { id: 'album-lz1', title: 'Led Zeppelin IV', year: 1971, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/2/26/Led_Zeppelin_-_Led_Zeppelin_IV.jpg' },
+            {
+                id: 'album-lz1',
+                title: 'Led Zeppelin IV',
+                year: 1971,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/2/26/Led_Zeppelin_-_Led_Zeppelin_IV.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -384,12 +541,34 @@ export const popularArtists = [
         joinDate: '1965',
         history: 'Один з найвпливовіших гуртів в історії...',
         members: [
-            { id: 'member-waters', name: 'Роджер Вотерс', role: 'Бас-гітара, вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Roger_Waters_18-05-2018.jpg/440px-Roger_Waters_18-05-2018.jpg' },
-            { id: 'member-gilmour', name: 'Девід Гілмор', role: 'Гітара, вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/David_Gilmour_2015.jpg/440px-David_Gilmour_2015.jpg' },
+            {
+                id: 'member-waters',
+                name: 'Роджер Вотерс',
+                role: 'Бас-гітара, вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Roger_Waters_18-05-2018.jpg/440px-Roger_Waters_18-05-2018.jpg'
+            },
+            {
+                id: 'member-gilmour',
+                name: 'Девід Гілмор',
+                role: 'Гітара, вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/David_Gilmour_2015.jpg/440px-David_Gilmour_2015.jpg'
+            },
         ],
         discography: [
-            { id: 'album-pf1', title: 'The Dark Side of the Moon', year: 1973, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png' },
-            { id: 'album-pf2', title: 'The Wall', year: 1979, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/b/bc/Pink_Floyd-The_Wall.jpg' },
+            {
+                id: 'album-pf1',
+                title: 'The Dark Side of the Moon',
+                year: 1973,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png'
+            },
+            {
+                id: 'album-pf2',
+                title: 'The Wall',
+                year: 1979,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/b/bc/Pink_Floyd-The_Wall.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -408,10 +587,21 @@ export const popularArtists = [
         joinDate: '2004',
         history: 'Спочатку гурт називався The Jakes, але у 2009 році змінив назву на Young the Giant.',
         members: [
-            { id: 'member-sameer', name: 'Sameer Gadhia', role: 'Вокал', imageUrl: 'https://media.gettyimages.com/photos/sameer-gadhia-of-young-the-giant-performs-onstage-at-the-greek-picture-id1171815132?s=612x612' },
+            {
+                id: 'member-sameer',
+                name: 'Sameer Gadhia',
+                role: 'Вокал',
+                imageUrl: 'https://media.gettyimages.com/photos/sameer-gadhia-of-young-the-giant-performs-onstage-at-the-greek-picture-id1171815132?s=612x612'
+            },
         ],
         discography: [
-            { id: 'album-ytg1', title: 'Mind Over Matter', year: 2014, type: 'Альбом', cover: 'https://i.scdn.co/image/ab67616d0000b2735d1a1b0e0f3e0fc586393092' },
+            {
+                id: 'album-ytg1',
+                title: 'Mind Over Matter',
+                year: 2014,
+                type: 'Альбом',
+                cover: 'https://i.scdn.co/image/ab67616d0000b2735d1a1b0e0f3e0fc586393092'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -430,11 +620,27 @@ export const popularArtists = [
         joinDate: '1981',
         history: 'Гурт був заснований Ларсом Ульріхом та Джеймсом Гетфілдом.',
         members: [
-            { id: 'member-james', name: 'Джеймс Гетфілд', role: 'Вокал, ритм-гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/James_Hetfield_2017.jpg/440px-James_Hetfield_2017.jpg' },
-            { id: 'member-lars', name: 'Ларс Ульріх', role: 'Ударні', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Lars_Ulrich_2018.jpg/440px-Lars_Ulrich_2018.jpg' },
+            {
+                id: 'member-james',
+                name: 'Джеймс Гетфілд',
+                role: 'Вокал, ритм-гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/James_Hetfield_2017.jpg/440px-James_Hetfield_2017.jpg'
+            },
+            {
+                id: 'member-lars',
+                name: 'Ларс Ульріх',
+                role: 'Ударні',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Lars_Ulrich_2018.jpg/440px-Lars_Ulrich_2018.jpg'
+            },
         ],
         discography: [
-            { id: 'album-m1', title: 'Master of Puppets', year: 1986, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/%D0%9E%D0%B1%D0%BB%D0%BE%D0%B6%D0%BA%D0%B0_%D1%82%D1%80%D0%B5%D1%82%D1%8C%D0%B5%D0%B3%D0%BE_%D1%81%D1%82%D1%83%D0%B4%D0%B8%D0%B9%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B0%D0%BB%D1%8C%D0%B1%D0%BE%D0%BC%D0%B0_Metallica.jpg' },
+            {
+                id: 'album-m1',
+                title: 'Master of Puppets',
+                year: 1986,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/%D0%9E%D0%B1%D0%BB%D0%BE%D0%B6%D0%BA%D0%B0_%D1%82%D1%80%D0%B5%D1%82%D1%8C%D0%B5%D0%B3%D0%BE_%D1%81%D1%82%D1%83%D0%B4%D0%B8%D0%B9%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B0%D0%BB%D1%8C%D0%B1%D0%BE%D0%BC%D0%B0_Metallica.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -454,7 +660,13 @@ export const popularArtists = [
         history: 'Його найвідоміший хіт "Wicked Game" вийшов у 1989 році.',
         members: [],
         discography: [
-            { id: 'album-ci1', title: 'Heart Shaped World', year: 1989, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/a/a3/Chris_Isaak-Heart_Shaped_World.jpg' },
+            {
+                id: 'album-ci1',
+                title: 'Heart Shaped World',
+                year: 1989,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/a/a3/Chris_Isaak-Heart_Shaped_World.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -474,7 +686,13 @@ export const popularArtists = [
         history: 'Гурт складається з чотирьох анімаційних учасників: 2-D, Мердок Ніккалс, Нудл та Рассел Гоббс.',
         members: [], // Це віртуальний гурт, можна залишити порожнім
         discography: [
-            { id: 'album-g1', title: 'Demon Days', year: 2005, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/d/df/Gorillaz_Demon_Days.jpg' },
+            {
+                id: 'album-g1',
+                title: 'Demon Days',
+                year: 2005,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/d/df/Gorillaz_Demon_Days.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -493,11 +711,28 @@ export const popularArtists = [
         joinDate: '2002',
         history: 'Здобули популярність через Інтернет ще до підписання контракту.',
         members: [
-            { id: 'member-alex', name: 'Alex Turner', role: 'Вокал, гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Alex_Turner_-_Rock_Werchter_2018.jpg/440px-Alex_Turner_-_Rock_Werchter_2018.jpg' },
+            {
+                id: 'member-alex',
+                name: 'Alex Turner',
+                role: 'Вокал, гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Alex_Turner_-_Rock_Werchter_2018.jpg/440px-Alex_Turner_-_Rock_Werchter_2018.jpg'
+            },
         ],
         discography: [
-            { id: 'album-am1', title: 'AM', year: 2013, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png' },
-            { id: 'album-am2', title: 'Favourite Worst Nightmare', year: 2007, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Favourite_Worst_Nightmare.jpg' },
+            {
+                id: 'album-am1',
+                title: 'AM',
+                year: 2013,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png'
+            },
+            {
+                id: 'album-am2',
+                title: 'Favourite Worst Nightmare',
+                year: 2007,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Favourite_Worst_Nightmare.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -517,7 +752,13 @@ export const popularArtists = [
         history: 'Найбільш відомі завдяки хіту "House of the Rising Sun".',
         members: [],
         discography: [
-            { id: 'album-a1', title: 'The Animals', year: 1964, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/commons/8/87/The_Animals_-_The_Animals_%28UK%29.jpg' },
+            {
+                id: 'album-a1',
+                title: 'The Animals',
+                year: 1964,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/commons/8/87/The_Animals_-_The_Animals_%28UK%29.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -536,11 +777,27 @@ export const popularArtists = [
         joinDate: '1968',
         history: 'Їх альбом "Paranoid" (1970) є класикою жанру.',
         members: [
-            { id: 'member-ozzy', name: 'Ozzy Osbourne', role: 'Вокал', imageUrl: 'https://cdn4.suspilne.media/images/resize/720x0.1/bee4b3195e496b7f.jpg' },
-            { id: 'member-iommi', name: 'Tony Iommi', role: 'Гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Tony_Iommi_2017.jpg/440px-Tony_Iommi_2017.jpg' },
+            {
+                id: 'member-ozzy',
+                name: 'Ozzy Osbourne',
+                role: 'Вокал',
+                imageUrl: 'https://cdn4.suspilne.media/images/resize/720x0.1/bee4b3195e496b7f.jpg'
+            },
+            {
+                id: 'member-iommi',
+                name: 'Tony Iommi',
+                role: 'Гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Tony_Iommi_2017.jpg/440px-Tony_Iommi_2017.jpg'
+            },
         ],
         discography: [
-            { id: 'album-bs1', title: 'Paranoid', year: 1970, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/ru/d/da/Black_Sabbath_Paranoid_Cover_Art.png' },
+            {
+                id: 'album-bs1',
+                title: 'Paranoid',
+                year: 1970,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/ru/d/da/Black_Sabbath_Paranoid_Cover_Art.png'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -560,7 +817,13 @@ export const popularArtists = [
         history: 'Лауреат Нобелівської премії з літератури 2016 року.',
         members: [],
         discography: [
-            { id: 'album-bd1', title: 'The Freewheelin\' Bob Dylan', year: 1963, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/2/28/The_Freewheelin%27_Bob_Dylan.jpg' },
+            {
+                id: 'album-bd1',
+                title: 'The Freewheelin\' Bob Dylan',
+                year: 1963,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/2/28/The_Freewheelin%27_Bob_Dylan.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -579,11 +842,27 @@ export const popularArtists = [
         joinDate: '1985',
         history: 'Їхній дебютний альбом "Appetite for Destruction" (1987) є одним з найбільш продаваних в історії.',
         members: [
-            { id: 'member-axl', name: 'Axl Rose', role: 'Вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Axl_Rose_2018.jpg/440px-Axl_Rose_2018.jpg' },
-            { id: 'member-slash', name: 'Slash', role: 'Гітара', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Slash_at_the_Super_Bowl_XLV_halftime_show.jpg/440px-Slash_at_the_Super_Bowl_XLV_halftime_show.jpg' },
+            {
+                id: 'member-axl',
+                name: 'Axl Rose',
+                role: 'Вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Axl_Rose_2018.jpg/440px-Axl_Rose_2018.jpg'
+            },
+            {
+                id: 'member-slash',
+                name: 'Slash',
+                role: 'Гітара',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Slash_at_the_Super_Bowl_XLV_halftime_show.jpg/440px-Slash_at_the_Super_Bowl_XLV_halftime_show.jpg'
+            },
         ],
         discography: [
-            { id: 'album-gnr1', title: 'Use Your Illusion II', year: 1991, type: 'Альбом', cover: 'https://img.pop-music.cz/lyrics/albums/1/guns-n-roses-use-your-illusion-ii.jpg' },
+            {
+                id: 'album-gnr1',
+                title: 'Use Your Illusion II',
+                year: 1991,
+                type: 'Альбом',
+                cover: 'https://img.pop-music.cz/lyrics/albums/1/guns-n-roses-use-your-illusion-ii.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -603,7 +882,13 @@ export const popularArtists = [
         history: 'Складається з трьох учасників: Mitchel Cave, Clinton Cave, та Christian Anthony.',
         members: [],
         discography: [
-            { id: 'album-ca1', title: 'Chase Atlantic', year: 2017, type: 'Альбом', cover: 'https://i.scdn.co/image/ab67616d0000b2735a0c2870f4f309e382d1fad6' },
+            {
+                id: 'album-ca1',
+                title: 'Chase Atlantic',
+                year: 2017,
+                type: 'Альбом',
+                cover: 'https://i.scdn.co/image/ab67616d0000b2735a0c2870f4f309e382d1fad6'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -622,10 +907,21 @@ export const popularArtists = [
         joinDate: '1967',
         history: 'Один з найбільш комерційно успішних гуртів в історії.',
         members: [
-            { id: 'member-stevie', name: 'Stevie Nicks', role: 'Вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Stevie_Nicks_in_1977.jpg/440px-Stevie_Nicks_in_1977.jpg' },
+            {
+                id: 'member-stevie',
+                name: 'Stevie Nicks',
+                role: 'Вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Stevie_Nicks_in_1977.jpg/440px-Stevie_Nicks_in_1977.jpg'
+            },
         ],
         discography: [
-            { id: 'album-fm1', title: 'Rumours', year: 1977, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.png' },
+            {
+                id: 'album-fm1',
+                title: 'Rumours',
+                year: 1977,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.png'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -645,7 +941,13 @@ export const popularArtists = [
         history: 'Після перерви гурт повернувся у 2022 році з новим успіхом.',
         members: [],
         discography: [
-            { id: 'album-bw1', title: 'Chit Chat', year: 2016, type: 'EP', cover: 'https://i1.sndcdn.com/artworks-ZSzu8Cw94jub-0-t500x500.jpg' },
+            {
+                id: 'album-bw1',
+                title: 'Chit Chat',
+                year: 2016,
+                type: 'EP',
+                cover: 'https://i1.sndcdn.com/artworks-ZSzu8Cw94jub-0-t500x500.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -664,10 +966,21 @@ export const popularArtists = [
         joinDate: '1996',
         history: 'Відомі своїми альбомами "Comatose" та "Awake".',
         members: [
-            { id: 'member-johnc', name: 'John Cooper', role: 'Вокал, бас', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/John_Cooper_-_Rock_im_Park_2019.jpg/440px-John_Cooper_-_Rock_im_Park_2019.jpg' },
+            {
+                id: 'member-johnc',
+                name: 'John Cooper',
+                role: 'Вокал, бас',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/John_Cooper_-_Rock_im_Park_2019.jpg/440px-John_Cooper_-_Rock_im_Park_2019.jpg'
+            },
         ],
         discography: [
-            { id: 'album-s1', title: 'Awake', year: 2009, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/en/0/05/Skillet_-_Awake.jpg' },
+            {
+                id: 'album-s1',
+                title: 'Awake',
+                year: 2009,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/0/05/Skillet_-_Awake.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -686,10 +999,21 @@ export const popularArtists = [
         joinDate: '1962',
         history: 'Відомі своїм бунтарським іміджем у 1960-х.',
         members: [
-            { id: 'member-mick', name: 'Mick Jagger', role: 'Вокал', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mick_Jagger_2012.jpg/440px-Mick_Jagger_2012.jpg' },
+            {
+                id: 'member-mick',
+                name: 'Mick Jagger',
+                role: 'Вокал',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mick_Jagger_2012.jpg/440px-Mick_Jagger_2012.jpg'
+            },
         ],
         discography: [
-            { id: 'album-rs1', title: 'Aftermath', year: 1966, type: 'Альбом', cover: 'https://i.scdn.co/image/ab67616d0000b273bad7062c3fd2f2d037989694' },
+            {
+                id: 'album-rs1',
+                title: 'Aftermath',
+                year: 1966,
+                type: 'Альбом',
+                cover: 'https://i.scdn.co/image/ab67616d0000b273bad7062c3fd2f2d037989694'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -709,7 +1033,13 @@ export const popularArtists = [
         history: 'Здобув популярність у TikTok та YouTube.',
         members: [],
         discography: [
-            { id: 'album-sp1', title: 'В этой траве', year: 2021, type: 'Сингл', cover: 'https://images.genius.com/a61aa24a3ff5f7c19b2b378dabb53300.1000x1000x1.png' },
+            {
+                id: 'album-sp1',
+                title: 'В этой траве',
+                year: 2021,
+                type: 'Сингл',
+                cover: 'https://images.genius.com/a61aa24a3ff5f7c19b2b378dabb53300.1000x1000x1.png'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock
@@ -728,10 +1058,21 @@ export const popularArtists = [
         joinDate: '1989',
         history: 'Гурт пройшов довгий шлях від синті-попу до потужного поп-року.',
         members: [
-            { id: 'member-kuzma', name: 'Андрій Кузьменко', role: 'Вокал, автор', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Kuzma_Skryabin_2014.jpg/440px-Kuzma_Skryabin_2014.jpg' },
+            {
+                id: 'member-kuzma',
+                name: 'Андрій Кузьменко',
+                role: 'Вокал, автор',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Kuzma_Skryabin_2014.jpg/440px-Kuzma_Skryabin_2014.jpg'
+            },
         ],
         discography: [
-            { id: 'album-sk1', title: 'Натура', year: 2003, type: 'Альбом', cover: 'https://upload.wikimedia.org/wikipedia/uk/4/4e/Skryabin_Natura.jpg' },
+            {
+                id: 'album-sk1',
+                title: 'Натура',
+                year: 2003,
+                type: 'Альбом',
+                cover: 'https://upload.wikimedia.org/wikipedia/uk/4/4e/Skryabin_Natura.jpg'
+            },
         ],
         popularTracks: popularTracks,
         similarArtists: similarArtistsMock

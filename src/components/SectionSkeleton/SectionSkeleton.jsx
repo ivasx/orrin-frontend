@@ -1,21 +1,20 @@
-// src/components/SectionSkeleton/SectionSkeleton.jsx
 import SectionHeader from '../SectionHeader/SectionHeader.jsx';
 import Spinner from '../Spinner/Spinner.jsx';
 import './SectionSkeleton.css';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export default function SectionSkeleton({
                                             title,
                                             isError = false,
                                             error = null,
                                             onRetry = null,
-                                            errorMessageKey = 'error_loading_tracks' // Додано новий пропс для кастомізації повідомлення
+                                            errorMessageKey = 'error_loading_tracks'
                                         }) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     return (
         <section>
-            <SectionHeader title={title} onMoreClick={() => console.log('More clicked on skeleton')} />
+            <SectionHeader title={title} onMoreClick={() => console.log('More clicked on skeleton')}/>
             <div className="skeleton-container">
                 {isError ? (
                     <div className="skeleton-error">
@@ -28,7 +27,7 @@ export default function SectionSkeleton({
                         )}
                     </div>
                 ) : (
-                    <Spinner />
+                    <Spinner/>
                 )}
             </div>
         </section>

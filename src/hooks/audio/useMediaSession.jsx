@@ -1,6 +1,6 @@
 /**
- * Хук для інтеграції з Media Session API
- * Відповідає за: metadata, playbackState, action handlers
+ * Hook for integration with Media Session API
+ * Responsible for: metadata, playbackState, action handlers
  */
 import { useEffect } from 'react';
 
@@ -16,7 +16,6 @@ export function useMediaSession(
     useEffect(() => {
         if (!('mediaSession' in navigator)) return;
 
-        // Якщо немає треку, очищаємо metadata та handlers
         if (!trackFromQueue) {
             navigator.mediaSession.metadata = null;
             navigator.mediaSession.playbackState = "none";
@@ -32,7 +31,6 @@ export function useMediaSession(
             return;
         }
 
-        // Встановлюємо metadata
         const { title, artist, cover } = trackFromQueue;
         navigator.mediaSession.metadata = new MediaMetadata({
             title: title || 'Unknown Title',
@@ -48,10 +46,8 @@ export function useMediaSession(
             ]
         });
 
-        // Встановлюємо playback state
         navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
 
-        // Встановлюємо action handlers
         try {
             navigator.mediaSession.setActionHandler('play', () => {
                 console.log("Media Session: Play");
@@ -73,7 +69,6 @@ export function useMediaSession(
                 console.log("Media Session: Next");
                 nextTrack();
             });
-            // Вимикаємо seek handlers (можна додати пізніше)
             navigator.mediaSession.setActionHandler('seekbackward', null);
             navigator.mediaSession.setActionHandler('seekforward', null);
             navigator.mediaSession.setActionHandler('seekto', null);

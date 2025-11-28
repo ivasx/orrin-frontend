@@ -1,11 +1,9 @@
-/* src/components/ArtistNotesTab/ArtistNotesTab.css */
 .artist-notes-tab {
     display: flex;
     flex-direction: column;
     gap: 30px;
 }
 
-/* --- Кнопка "Додати нотатку" (без змін) --- */
 .show-add-note-form-button {
     padding: 10px 24px;
     align-self: flex-start;
@@ -24,28 +22,26 @@
     border-color: #fff;
 }
 
-/* --- Нова модернізована форма --- */
 .add-note-form.modern {
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Менший gap */
+    gap: 12px;
     background: #1c1c1c;
-    padding: 16px; /* Менший padding */
+    padding: 16px;
     border-radius: 8px;
 }
 
-/* Textarea */
 .note-textarea-modern {
     width: 100%;
     padding: 10px 14px;
     background: #282828;
     border: 1px solid #333;
-    border-radius: 6px; /* Трохи менше заокруглення */
+    border-radius: 6px;
     color: #ffffff;
-    font-size: 0.9rem; /* Трохи менший шрифт */
+    font-size: 0.9rem;
     font-family: 'Montserrat', sans-serif;
     resize: vertical;
-    min-height: 60px; /* Менша мінімальна висота */
+    min-height: 60px;
     line-height: 1.4;
 }
 .note-textarea-modern::placeholder {
@@ -57,31 +53,27 @@
     background: #333;
 }
 
-/* --- Рядок з опціями та кнопками --- */
 .note-options-row {
     display: flex;
-    justify-content: space-between; /* Розносимо контролси і кнопки */
-    align-items: center; /* Вирівнюємо по центру вертикально */
-    flex-wrap: wrap; /* Дозволяємо перенос на малих екранах */
-    gap: 10px; /* Відступ між групами контролсів та кнопками */
-    margin-top: 4px; /* Невеликий відступ від textarea */
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
 }
 
-/* Контейнер для контролсів (іконки, селекти, інпути) */
 .note-options-controls {
     display: flex;
     align-items: center;
-    flex-wrap: wrap; /* Дозволяємо перенос контролсів */
-    gap: 12px; /* Відступ між контролсами */
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-/* Загальний стиль для групи контролсів */
 .form-group-inline {
     display: flex;
     align-items: center;
 }
 
-/* Контейнер для іконки + select/input */
 .select-with-icon,
 .input-with-icon {
     display: flex;
@@ -89,8 +81,8 @@
     background: #282828;
     border: 1px solid #333;
     border-radius: 6px;
-    padding: 0 8px; /* Відступ зліва/справа */
-    color: #aaa; /* Колір іконок */
+    padding: 0 8px;
+    color: #aaa;
     transition: border-color 0.2s, background-color 0.2s;
 }
 .select-with-icon:focus-within,
@@ -99,13 +91,12 @@
     background: #333;
 }
 
-/* Select */
 .form-select-modern {
     background: transparent;
     border: none;
     color: #ffffff;
     font-size: 0.85rem;
-    padding: 8px 24px 8px 8px; /* Відступи (праворуч для стрілки) */
+    padding: 8px 24px 8px 8px;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
@@ -121,7 +112,6 @@
     color: #fff;
 }
 
-/* Input (timecode) */
 .form-input-modern {
     background: transparent;
     border: none;
@@ -129,36 +119,33 @@
     font-size: 0.85rem;
     padding: 8px 8px 8px 8px;
     outline: none;
-    width: 60px; /* Фіксована ширина для тайм-коду */
+    width: 60px;
     font-family: monospace;
 }
 .form-input-modern::placeholder {
     color: #888;
 }
 
-/* --- Кнопки форми (модернізовані) --- */
 .add-note-form-actions-modern {
     display: flex;
-    gap: 8px; /* Менший відступ */
-    margin-left: auto; /* Притискаємо кнопки до правого краю */
+    gap: 8px;
+    margin-left: auto;
 }
 
-/* Загальний стиль для модерн-кнопок */
 .btn-primary-modern,
 .btn-secondary-modern {
-    border-radius: 6px; /* Менш круглі */
-    padding: 8px 16px; /* Компактніші */
+    border-radius: 6px;
+    padding: 8px 16px;
     font-weight: 600;
-    font-size: 0.8rem; /* Трохи менший шрифт */
+    font-size: 0.8rem;
     cursor: pointer;
     transition: background-color 0.2s, opacity 0.2s;
     font-family: 'Montserrat', sans-serif;
     border: none;
 }
 
-/* Основна кнопка */
 .btn-primary-modern {
-    background: #af947e; /* Ваш акцентний колір */
+    background: #af947e;
     color: #fff;
 }
 .btn-primary-modern:hover {
@@ -171,7 +158,6 @@
     opacity: 0.7;
 }
 
-/* Другорядна кнопка (Скасувати) */
 .btn-secondary-modern {
     background: #333;
     color: #ccc;
@@ -181,7 +167,6 @@
     color: #fff;
 }
 
-/* --- Клас для візуального приховування --- */
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -193,8 +178,6 @@
     border: 0;
 }
 
-
-/* --- Розділювач та списки нотаток (без змін) --- */
 .notes-divider {
     height: 1px;
     background: #333;
@@ -205,11 +188,11 @@
     flex-direction: column;
     gap: 15px;
 }
-.notes-section-title { /* Стиль для заголовків "Мої нотатки" та "Публічні нотатки" */
+.notes-section-title {
     font-size: 1.1rem;
     font-weight: 600;
     color: #e0e0e0;
-    margin-bottom: 5px; /* Невеликий відступ знизу */
+    margin-bottom: 5px;
     padding-bottom: 5px;
     border-bottom: 1px solid #333;
 }
@@ -224,18 +207,17 @@
     padding: 20px;
 }
 
-/* --- Адаптивність для рядка опцій --- */
 @media (max-width: 600px) {
     .note-options-row {
-        flex-direction: column; /* Ставимо опції над кнопками */
-        align-items: stretch; /* Розтягуємо контейнер контролсів */
+        flex-direction: column;
+        align-items: stretch;
     }
     .note-options-controls {
-        justify-content: flex-start; /* Вирівнюємо контролси по лівому краю */
+        justify-content: flex-start;
     }
     .add-note-form-actions-modern {
-        margin-left: 0; /* Прибираємо відступ зліва */
-        justify-content: flex-end; /* Залишаємо кнопки справа */
-        margin-top: 10px; /* Додаємо відступ зверху */
+        margin-left: 0;
+        justify-content: flex-end;
+        margin-top: 10px;
     }
 }

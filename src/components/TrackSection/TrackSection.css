@@ -16,7 +16,6 @@
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
-/* Webkit */
 .track-section-grid::-webkit-scrollbar {
     height: 10px;
 }

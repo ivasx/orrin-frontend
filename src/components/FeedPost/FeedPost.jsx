@@ -1,4 +1,3 @@
-// src/components/FeedPost/FeedPost.jsx
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -110,7 +109,6 @@ export default function FeedPost({ post }) {
 
     return (
         <article className="feed-post">
-            {/* Хедер */}
             <div className="post-header">
                 <Link to={`/user/${post.author.id}`}>
                     <img
@@ -162,7 +160,6 @@ export default function FeedPost({ post }) {
                 </button>
             </div>
 
-            {/* Контент */}
             <div className="post-content">
                 {post.text && (
                     <>
@@ -183,7 +180,6 @@ export default function FeedPost({ post }) {
                     </>
                 )}
 
-                {/* Прикріплений трек */}
                 {post.attachedTrack && (
                     <div
                         className="post-track-attachment"
@@ -213,7 +209,6 @@ export default function FeedPost({ post }) {
                 )}
             </div>
 
-            {/* Дії */}
             <div className="post-actions">
                 <button
                     className={`post-action-button ${isLiked ? 'liked' : ''}`}
@@ -260,7 +255,6 @@ export default function FeedPost({ post }) {
                 </button>
             </div>
 
-            {/* Коментарі */}
             {showComments && (
                 <div className="post-comments-section">
                     <div className="post-comments-header">

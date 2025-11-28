@@ -31,7 +31,6 @@
     transition: filter 0.2s;
 }
 
-/* Затемнення картинки при hover */
 .track-cover-wrapper:hover .track-cover {
     filter: brightness(0.4);
 }
@@ -40,7 +39,6 @@
     filter: brightness(0.6);
 }
 
-/* Loading indicator */
 .loading-indicator {
     position: absolute;
     top: 50%;
@@ -72,7 +70,6 @@
     }
 }
 
-/* Стилі для недоступних треків */
 .track-cover-wrapper.not-playable {
     opacity: 0.5;
     cursor: not-allowed;
@@ -101,14 +98,12 @@
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
-/* Заглушка для обкладинки */
 .track-cover[src*="orrin-logo.svg"] {
     padding: 10px;
     background: #1a1a1a;
     object-fit: contain;
 }
 
-/* Анімація пульсації для завантаження */
 @keyframes pulse {
     0%, 100% {
         opacity: 1;
@@ -122,7 +117,6 @@
     animation: pulse 1.5s ease-in-out infinite;
 }
 
-/* Відключаємо hover ефекти для недоступних треків */
 .track-cover-wrapper.not-playable:hover .track-cover {
     filter: grayscale(80%);
     transform: none;
@@ -132,27 +126,23 @@
     display: none;
 }
 
-/* Покращена доступність */
 .track-cover-wrapper.not-playable:focus {
     outline: 2px solid #ff6b6b;
     outline-offset: 2px;
 }
 
-/* Темна тема для skeleton */
 @media (prefers-color-scheme: dark) {
     .track-cover-skeleton {
         background: linear-gradient(90deg, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%);
     }
 }
 
-/* Адаптивність для skeleton */
 @media (max-width: 768px) {
     .track-cover-skeleton {
         animation-duration: 1.2s;
     }
 }
 
-/* Error indicator */
 .error-indicator {
     position: absolute;
     top: 50%;
@@ -175,7 +165,6 @@
     justify-content: center;
 }
 
-/* Progress indicator */
 .progress-indicator {
     position: absolute;
     bottom: 0;
@@ -188,7 +177,6 @@
 }
 
 
-/* Ripple effect */
 .ripple-effect {
     position: absolute;
     border-radius: 50%;
@@ -205,7 +193,6 @@
     }
 }
 
-/* Play/Pause іконка */
 .play-icon {
     position: absolute;
     top: 50%;
@@ -221,12 +208,10 @@
     z-index: 2;
 }
 
-/* показуємо іконку при hover */
 .track-cover-wrapper:hover .play-icon {
     opacity: 0.9;
 }
 
-/* triangle для Play */
 .play-icon .triangle {
     width: 0;
     height: 0;
@@ -236,7 +221,6 @@
     filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
-/* pause */
 .play-icon .pause {
     display: flex;
     gap: 4px;
@@ -249,7 +233,6 @@
     filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
-/* Track info */
 .track-info {
     display: flex;
     flex-direction: column;
@@ -261,7 +244,7 @@
     overflow: hidden;
     min-width: 0;
     padding-right: 75px;
-    width: calc(100% - 70px); /* обмежуємо ширину, враховуючи обкладинку та відступи */
+    width: calc(100% - 70px);
 }
 
 .track-title,
@@ -309,7 +292,7 @@
     color: #fff;
     text-decoration: underline;
 }
-/* Контейнер для тривалості */
+
 .track-duration {
     position: absolute;
     right: 0;
@@ -334,32 +317,28 @@
     border-radius: 4px;
 }
 
-/* Стилі для тексту тривалості */
 .duration-text {
     font-family: 'Montserrat', sans-serif;
-    font-size: 14px; /* Повертаємо оригінальний розмір */
+    font-size: 14px;
     font-weight: 500;
     color: #aaa;
     white-space: nowrap;
 }
 
-/* Стилі для крапок */
 .duration-dots {
     font-family: 'Montserrat', sans-serif;
-    font-size: 20px; /* Повертаємо оригінальний розмір */
+    font-size: 20px;
     font-weight: 500;
     color: #aaa;
     white-space: nowrap;
     transform: translateY(-0.3em) translateX(-0.25em);
 }
 
-/* При hover на контейнері - текст/крапки стають білими */
 .track-duration:hover .duration-text,
 .track-duration:hover .duration-dots {
     color: #fff;
 }
 
-/* індикатор програвання */
 .bars {
     position: absolute;
     bottom: 5px;
@@ -401,7 +380,6 @@
     }
 }
 
-/* Адаптивна ширина карток на мобільних */
 @media (max-width: 768px) {
     .card-track {
         width: 280px;
@@ -442,7 +420,6 @@
     }
 }
 
-/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
     .track-cover,
     .play-icon,

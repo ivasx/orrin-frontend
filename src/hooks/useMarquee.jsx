@@ -6,7 +6,6 @@ export function useMarquee(dependency) {
     const contentRef = useRef(null);
 
     useEffect(() => {
-        // Скидаємо скролінг при зміні треку
         setIsScrolling(false);
 
         const checkScrolling = () => {
@@ -17,11 +16,10 @@ export function useMarquee(dependency) {
             }
         };
 
-        // Невелика затримка, щоб DOM встиг оновитися
         const timeoutId = setTimeout(checkScrolling, 150);
 
         return () => clearTimeout(timeoutId);
-    }, [dependency]); // Залежність від ID треку або іншого унікального значення
+    }, [dependency]);
 
     return { isScrolling, containerRef, contentRef };
 }

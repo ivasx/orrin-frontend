@@ -1,6 +1,6 @@
 import "./OptionsMenu.css";
-import { useEffect, useRef, useCallback, useLayoutEffect } from "react";
-import { useTranslation } from "react-i18next";
+import {useEffect, useRef, useCallback, useLayoutEffect} from "react";
+import {useTranslation} from "react-i18next";
 
 export default function ContextMenu({
                                         isVisible,
@@ -11,7 +11,7 @@ export default function ContextMenu({
                                         openDirection = "down"
                                     }) {
     const menuRef = useRef(null);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
 
     useLayoutEffect(() => {
@@ -71,10 +71,8 @@ export default function ContextMenu({
         onClose();
     }, [onClose]);
 
-    // useEffect для обробки кліків поза меню та Escape - залишається без змін
     useEffect(() => {
         if (!isVisible) return;
-        // ... (решта коду цього useEffect без змін) ...
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 handleClose();
@@ -103,22 +101,14 @@ export default function ContextMenu({
     }, [isVisible, handleClose]);
 
 
-    // useEffect для фокусування на першому елементі перенесено в useLayoutEffect
-
-    // useEffect для навігації клавішами - залишається без змін
     useEffect(() => {
         if (!isVisible) return;
-        // ... (решта коду цього useEffect без змін) ...
         const handleKeyDown = (event) => {
-            const menuItemsElements = Array.from(
-                menuRef.current?.querySelectorAll('.menu-item:not([disabled])') || []
-            );
+            const menuItemsElements = Array.from(menuRef.current?.querySelectorAll('.menu-item:not([disabled])') || []);
 
             if (menuItemsElements.length === 0) return;
 
-            const currentIndex = menuItemsElements.findIndex(
-                item => item === document.activeElement
-            );
+            const currentIndex = menuItemsElements.findIndex(item => item === document.activeElement);
 
             switch (event.key) {
                 case 'ArrowDown':
@@ -129,9 +119,7 @@ export default function ContextMenu({
 
                 case 'ArrowUp':
                     event.preventDefault();
-                    const prevIndex = currentIndex <= 0
-                        ? menuItemsElements.length - 1
-                        : currentIndex - 1;
+                    const prevIndex = currentIndex <= 0 ? menuItemsElements.length - 1 : currentIndex - 1;
                     menuItemsElements[prevIndex]?.focus();
                     break;
 
@@ -158,7 +146,7 @@ export default function ContextMenu({
     }, [isVisible]);
 
 
-    if (!isVisible) return null; // Залишаємо це, щоб компонент не рендерився взагалі, коли невидимий
+    if (!isVisible) return null;
 
     const handleMenuItemClick = (item, event) => {
         event.stopPropagation();
@@ -167,73 +155,58 @@ export default function ContextMenu({
         if (item.disabled) return;
 
         if (item.action) {
-            setTimeout(() => item.action(), 50); // Невелика затримка перед закриттям
+            setTimeout(() => item.action(), 50);
         }
 
         handleClose();
     };
 
 
-    return (
-        <div
-            ref={menuRef}
-            className={`context-menu ${className}`}
-            style={{
-                position: 'fixed',
-                zIndex: 1000,
-                left: '-9999px',
-                top: '-9999px',
-                visibility: 'hidden',
-            }}
-            role="menu"
-            aria-label={t('context_menu_label')}
-        >
-            {menuItems.map((item, index) => {
-                if (item.type === 'separator') {
-                    return (
-                        <div
-                            key={`separator-${index}`}
-                            className="menu-separator"
-                            role="separator"
-                            aria-hidden="true"
-                        />
-                    );
-                }
+    return (<div
+        ref={menuRef}
+        className={`context-menu ${className}`}
+        style={{
+            position: 'fixed', zIndex: 1000, left: '-9999px', top: '-9999px', visibility: 'hidden',
+        }}
+        role="menu"
+        aria-label={t('context_menu_label')}
+    >
+        {menuItems.map((item, index) => {
+            if (item.type === 'separator') {
+                return (<div
+                    key={`separator-${index}`}
+                    className="menu-separator"
+                    role="separator"
+                    aria-hidden="true"
+                />);
+            }
 
-                return (
-                    <div
-                        key={item.id || `item-${index}`}
-                        className={`menu-item ${item.disabled ? 'disabled' : ''} ${item.variant || ''} ${item.className || ''}`}
-                        onClick={(e) => handleMenuItemClick(item, e)}
-                        role="menuitem"
-                        tabIndex={item.disabled ? -1 : 0}
-                        aria-disabled={item.disabled}
-                        title={item.tooltip}
-                    >
-                        {item.icon && (
-                            <span className="menu-icon" aria-hidden="true">
+            return (<div
+                key={item.id || `item-${index}`}
+                className={`menu-item ${item.disabled ? 'disabled' : ''} ${item.variant || ''} ${item.className || ''}`}
+                onClick={(e) => handleMenuItemClick(item, e)}
+                role="menuitem"
+                tabIndex={item.disabled ? -1 : 0}
+                aria-disabled={item.disabled}
+                title={item.tooltip}
+            >
+                {item.icon && (<span className="menu-icon" aria-hidden="true">
                                 {item.icon}
-                            </span>
-                        )}
+                            </span>)}
 
-                        <span className="menu-label">
+                <span className="menu-label">
                             {item.label}
                         </span>
 
-                        {item.shortcut && (
-                            <span className="menu-shortcut" aria-label={t('shortcut_label', {shortcut: item.shortcut})}>
+                {item.shortcut && (
+                    <span className="menu-shortcut" aria-label={t('shortcut_label', {shortcut: item.shortcut})}>
                                 {item.shortcut}
-                            </span>
-                        )}
+                            </span>)}
 
-                        {item.badge && (
-                            <span className="menu-badge" aria-label={t('badge_label', {badge: item.badge})}>
+                {item.badge && (<span className="menu-badge" aria-label={t('badge_label', {badge: item.badge})}>
                                 {item.badge}
-                            </span>
-                        )}
-                    </div>
-                );
-            })}
-        </div>
-    );
+                            </span>)}
+            </div>);
+        })}
+    </div>);
 }

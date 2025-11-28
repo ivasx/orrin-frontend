@@ -12,7 +12,7 @@ export default function TimeControls({
             <div
                 className="progress-container"
                 onMouseDown={onMouseDown}
-                onTouchStart={onMouseDown} // для мобільних
+                onTouchStart={onMouseDown} // for touch devices
                 ref={progressBarRef}
             >
                 <div className="progress-track">

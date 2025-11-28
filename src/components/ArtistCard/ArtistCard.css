@@ -2,15 +2,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 180px; /* Ширина картки */
+    width: 180px;
     cursor: pointer;
     text-align: center;
-    gap: 12px; /* Відстань між фото та текстом */
+    gap: 12px;
     font-family: 'Montserrat', sans-serif;
 }
 
 .artist-card-image-wrapper {
-    width: 150px; /* Розмір контейнера для фото */
+    width: 150px;
     height: 150px;
     flex-shrink: 0;
 }
@@ -18,14 +18,14 @@
 .artist-card-image {
     width: 100%;
     height: 100%;
-    border-radius: 50%; /* Робить зображення круглим */
-    object-fit: cover; /* Запобігає деформації зображення */
+    border-radius: 50%;
+    object-fit: cover;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .artist-card:hover .artist-card-image {
-    transform: scale(1.05); /* Легке збільшення при наведенні */
+    transform: scale(1.05);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
@@ -52,18 +52,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-/* Додайте цей клас на початок файлу або в кінець */
+
 .artist-card-link {
     text-decoration: none;
     color: inherit;
-    display: block; /* Важливо, щоб Link займав простір картки */
+    display: block;
     outline: none;
 }
 
 .artist-card-link:focus-visible .artist-card {
-    /* Додаємо контур для доступності при фокусі */
     outline: 2px solid #fff;
     outline-offset: 2px;
-    border-radius: 5px; /* (допоміжний, щоб контур був гарним) */
+    border-radius: 5px;
 }
 

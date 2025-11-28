@@ -1,21 +1,19 @@
-// src/components/CreatePost/CreatePost.jsx
-import { useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Music, X, Image, Smile } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { getTracks } from '../../services/api';
+import {useState, useRef} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Music, X, Image, Smile} from 'lucide-react';
+import {useQuery} from '@tanstack/react-query';
+import {getTracks} from '../../services/api';
 import './CreatePost.css';
 
-export default function CreatePost({ onPostCreated }) {
-    const { t } = useTranslation();
+export default function CreatePost({onPostCreated}) {
+    const {t} = useTranslation();
     const [postText, setPostText] = useState('');
     const [attachedTrack, setAttachedTrack] = useState(null);
     const [showTrackPicker, setShowTrackPicker] = useState(false);
     const [trackSearchQuery, setTrackSearchQuery] = useState('');
     const textareaRef = useRef(null);
 
-    // Завантаження треків для вибору
-    const { data: availableTracks = [] } = useQuery({
+    const {data: availableTracks = []} = useQuery({
         queryKey: ['tracks'],
         queryFn: getTracks,
         enabled: showTrackPicker
@@ -24,7 +22,6 @@ export default function CreatePost({ onPostCreated }) {
     const handleTextareaChange = (e) => {
         setPostText(e.target.value);
 
-        // Автоматичне розширення textarea
         const textarea = textareaRef.current;
         if (textarea) {
             textarea.style.height = 'auto';
@@ -77,7 +74,6 @@ export default function CreatePost({ onPostCreated }) {
 
         onPostCreated(newPost);
 
-        // Очистити форму
         setPostText('');
         setAttachedTrack(null);
         if (textareaRef.current) {
@@ -132,7 +128,7 @@ export default function CreatePost({ onPostCreated }) {
                                     onClick={handleRemoveTrack}
                                     aria-label={t('remove_track', 'Видалити трек')}
                                 >
-                                    <X size={20} />
+                                    <X size={20}/>
                                 </button>
                             </div>
                         )}
@@ -145,21 +141,21 @@ export default function CreatePost({ onPostCreated }) {
                                     aria-label={t('attach_music', 'Прикріпити музику')}
                                     disabled={!!attachedTrack}
                                 >
-                                    <Music size={20} />
+                                    <Music size={20}/>
                                 </button>
                                 <button
                                     className="create-post-tool-button"
                                     disabled
                                     aria-label={t('attach_image', 'Прикріпити зображення')}
                                 >
-                                    <Image size={20} />
+                                    <Image size={20}/>
                                 </button>
                                 <button
                                     className="create-post-tool-button"
                                     disabled
                                     aria-label={t('add_emoji', 'Додати емодзі')}
                                 >
-                                    <Smile size={20} />
+                                    <Smile size={20}/>
                                 </button>
                             </div>
 
@@ -175,7 +171,6 @@ export default function CreatePost({ onPostCreated }) {
                 </div>
             </div>
 
-            {/* Модальне вікно вибору треку */}
             {showTrackPicker && (
                 <div
                     className="track-picker-modal-overlay"
@@ -193,7 +188,7 @@ export default function CreatePost({ onPostCreated }) {
                                 className="track-picker-close"
                                 onClick={() => setShowTrackPicker(false)}
                             >
-                                <X size={24} />
+                                <X size={24}/>
                             </button>
                         </div>
 

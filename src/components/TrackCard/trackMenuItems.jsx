@@ -1,4 +1,3 @@
-// src/components/TrackCard/trackMenuItems.jsx
 import {
     Play,
     Pause,
@@ -14,7 +13,6 @@ export const createTrackMenuItems = ({
                                          t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
                                          toggleMute, updateVolume, title, artist, audio, isPlayable = true
                                      }) => {
-    // Базові пункти меню
     const menuItems = [
         {
             id: 'play',
@@ -37,7 +35,6 @@ export const createTrackMenuItems = ({
         {type: 'separator'},
     ];
 
-    // Додаємо контроли гучності тільки якщо трек доступний та є поточним
     if (isPlayable && isCurrentTrack) {
         menuItems.push(
             {
@@ -81,7 +78,6 @@ export const createTrackMenuItems = ({
         );
     }
 
-    // Додаємо пункти поширення та завантаження
     menuItems.push(
         {
             id: 'share',
@@ -102,11 +98,9 @@ export const createTrackMenuItems = ({
                         }
                     });
                 } else {
-                    // Fallback: копіюємо в буфер обміну
                     navigator.clipboard.writeText(
                         `${title} by ${artist} - ${window.location.href}`
                     ).then(() => {
-                        // Можна показати toast повідомлення
                         console.log('Link copied to clipboard');
                     }).catch(err => {
                         console.error('Copy error:', err);
@@ -131,7 +125,6 @@ export const createTrackMenuItems = ({
         }
     );
 
-    // Якщо трек недоступний, додаємо інформаційний пункт
     if (!isPlayable) {
         menuItems.unshift(
             {

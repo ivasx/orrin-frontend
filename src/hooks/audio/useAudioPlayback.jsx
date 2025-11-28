@@ -1,13 +1,12 @@
 /**
- * Хук для управління відтворенням
- * Відповідає за: isPlaying стан, play/pause логіка
+ * Hook for controlling playback
+ * Responsible for: isPlaying state, play/pause logic
  */
 import { useState, useCallback, useEffect } from 'react';
 
 export function useAudioPlayback(audioRef, trackFromQueue) {
     const [isPlaying, setIsPlaying] = useState(false);
 
-    // Керування play/pause на основі стану isPlaying
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !audio.src) {

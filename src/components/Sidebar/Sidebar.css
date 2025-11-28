@@ -12,17 +12,14 @@
     overflow: hidden;
 }
 
-/* Стан згорнутого сайдбара */
 .sidebar--collapsed {
     width: 72px;
 }
 
-/* Стан розгорнутого сайдбара */
 .sidebar--open {
     width: 240px;
 }
 
-/* Навігація */
 .sidebar__nav {
     flex: 1;
     padding: 80px 0 20px;
@@ -30,7 +27,6 @@
     overflow-x: hidden;
 }
 
-/* Прибираємо скролбар */
 .sidebar__nav::-webkit-scrollbar {
     width: 6px;
 }
@@ -48,7 +44,6 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Меню */
 .sidebar__menu {
     list-style: none;
     padding: 0;
@@ -59,7 +54,6 @@
     margin: 0;
 }
 
-/* Посилання */
 .sidebar__link {
     display: flex;
     align-items: center;
@@ -80,7 +74,6 @@
     color: #636363;
 }
 
-/* Іконки */
 .sidebar__icon {
     width: 24px;
     height: 24px;
@@ -92,7 +85,6 @@
     transform: scale(1.1);
 }
 
-/* Підписи */
 .sidebar__label {
     margin-left: 16px;
     font-size: 14px;
@@ -101,20 +93,17 @@
     transition: opacity 0.2s ease;
 }
 
-/* Ховаємо підписи в згорнутому стані */
 .sidebar--collapsed .sidebar__label {
     opacity: 0;
     pointer-events: none;
 }
 
-/* Розділювач */
 .sidebar__divider {
     height: 1px;
     background: rgba(255, 255, 255, 0.1);
     margin: 16px 12px;
 }
 
-/* Секція */
 .sidebar__section {
     margin-top: 24px;
 }
@@ -140,8 +129,6 @@
     padding-bottom: 0;
     margin-bottom: 0;
 }
-
-/* Футер */
 .sidebar__footer {
     padding: 10px 0 20px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -152,8 +139,6 @@
     padding-bottom: 33px;
 }
 
-
-/* Backdrop для мобільних */
 .sidebar-backdrop {
     display: none;
 }
@@ -167,12 +152,10 @@
     transform: scale(1.1);
 }
 
-/* Ховер для активного посилання */
 .sidebar__link--active:hover {
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* Індикатор активної сторінки (лівий бордер) */
 .sidebar__link--active::before {
     content: '';
     position: absolute;
@@ -183,12 +166,10 @@
     background: #ffffff;
 }
 
-/* В згорнутому стані індикатор залишається видимим */
 .sidebar--collapsed .sidebar__link--active::before {
     width: 4px;
 }
 
-/* Мобільна версія */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);

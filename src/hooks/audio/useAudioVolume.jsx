@@ -1,6 +1,6 @@
 /**
- * Хук для управління гучністю аудіо
- * Відповідає за: volume, mute, синхронізацію з audio елементом
+ * Hook for controlling audio volume
+ * Responsible for: volume, mute, synchronization with audio element
  */
 import { useState, useCallback, useEffect } from 'react';
 
@@ -8,7 +8,6 @@ export function useAudioVolume(audioRef) {
     const [volume, setVolume] = useState(1);
     const [isMuted, setIsMuted] = useState(false);
 
-    // Синхронізація volume та muted з audio елементом
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -21,7 +20,6 @@ export function useAudioVolume(audioRef) {
         const clampedVolume = Math.max(0, Math.min(1, newVolume));
         setVolume(clampedVolume);
 
-        // Автоматично вимикаємо mute, якщо збільшуємо гучність
         if (clampedVolume > 0 && isMuted) {
             setIsMuted(false);
         }

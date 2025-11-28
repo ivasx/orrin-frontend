@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useCallback, useMemo } from 'react';
 import { useQueue } from './QueueContext';
 
-// Імпортуємо всі кастомні хуки
 import { useAudioElement } from '../hooks/audio/useAudioElement';
 import { useAudioPlayback } from '../hooks/audio/useAudioPlayback';
 import { useAudioVolume } from '../hooks/audio/useAudioVolume';
@@ -22,7 +21,6 @@ export const useAudioCore = () => {
 };
 
 export const AudioCoreProvider = ({ children }) => {
-    // ========== QUEUE CONTEXT ==========
     const {
         currentTrack: trackFromQueue,
         queue,
@@ -32,13 +30,9 @@ export const AudioCoreProvider = ({ children }) => {
         initializeQueue
     } = useQueue();
 
-    // ========== AUDIO ELEMENT ==========
-    // Управління HTML <audio> елементом (src, loop)
     const { repeatMode, hasRepeatedOnce, setHasRepeatedOnce, toggleRepeat, resetRepeatOnce } = useRepeatMode();
     const audioRef = useAudioElement(trackFromQueue, repeatMode);
 
-    // ========== PLAYBACK ==========
-    // Управління відтворенням (play/pause/stop)
     const {
         isPlaying,
         setIsPlaying,
@@ -47,12 +41,8 @@ export const AudioCoreProvider = ({ children }) => {
         stop: stopTrack
     } = useAudioPlayback(audioRef, trackFromQueue);
 
-    // ========== VOLUME ==========
-    // Управління гучністю
     const { volume, isMuted, updateVolume, toggleMute } = useAudioVolume(audioRef);
 
-    // ========== TRACK NAVIGATION ==========
-    // Навігація між треками
     const { playTrackByIndex, nextTrack, previousTrack } = useTrackNavigation(
         queue,
         getNextIndex,
@@ -63,14 +53,11 @@ export const AudioCoreProvider = ({ children }) => {
         audioRef
     );
 
-    // ========== PLAY TRACK FUNCTION ==========
-    // Основна функція для відтворення треку
     const playTrack = useCallback((trackData, trackList = null) => {
         console.log("[AudioCoreContext playTrack] Отримано trackData:", trackData);
         console.log("[AudioCoreContext playTrack] trackData.audio (має бути URL):", trackData?.audio);
 
         if (trackList && Array.isArray(trackList)) {
-            // Форматуємо список треків для черги
             const formattedTrackList = trackList.map(t => {
                 const needsFormatting = t.hasOwnProperty('audio_url') || t.hasOwnProperty('cover_url');
                 return needsFormatting ? {
@@ -82,12 +69,10 @@ export const AudioCoreProvider = ({ children }) => {
             console.log("[AudioCoreContext playTrack] Форматований trackList для черги:", formattedTrackList);
             initializeQueue(formattedTrackList, trackData.trackId);
         } else {
-            // Якщо трек вже в черзі, просто відтворюємо його
             const indexInCurrentQueue = queue.findIndex(t => t.trackId === trackData.trackId);
             if (indexInCurrentQueue !== -1) {
                 playTrackByIndex(indexInCurrentQueue);
             } else {
-                // Додаємо трек до черги
                 const newQueue = [...queue, trackData];
                 initializeQueue(newQueue, trackData.trackId);
             }
@@ -96,8 +81,6 @@ export const AudioCoreProvider = ({ children }) => {
         setHasRepeatedOnce(false);
     }, [initializeQueue, playTrackByIndex, queue, setIsPlaying, setHasRepeatedOnce]);
 
-    // ========== SEEK FUNCTIONS ==========
-    // Функції для перемотування
     const seek = useCallback((time) => {
         const audio = audioRef.current;
         if (audio && isFinite(time)) {
@@ -113,8 +96,7 @@ export const AudioCoreProvider = ({ children }) => {
         }
     }, [audioRef, seek]);
 
-    // ========== TRACK END HANDLER ==========
-    // Обробка завершення треку
+
     useTrackEndHandler(
         audioRef,
         repeatMode,
@@ -123,8 +105,6 @@ export const AudioCoreProvider = ({ children }) => {
         nextTrack
     );
 
-    // ========== MEDIA SESSION API ==========
-    // Інтеграція з системним медіа-контролером
     useMediaSession(
         trackFromQueue,
         isPlaying,
@@ -135,12 +115,9 @@ export const AudioCoreProvider = ({ children }) => {
         previousTrack
     );
 
-    // Оновлення позиції в Media Session
     useMediaSessionPosition(audioRef, trackFromQueue, isPlaying);
 
-    // ========== CONTEXT VALUE ==========
     const value = useMemo(() => ({
-        // Стан
         currentTrack: trackFromQueue,
         isPlaying,
         audioRef,
@@ -150,29 +127,18 @@ export const AudioCoreProvider = ({ children }) => {
         currentTime: audioRef.current?.currentTime || 0,
         duration: audioRef.current?.duration || 0,
         isLoading: false, // TODO: Додати стан завантаження з окремого хука, якщо потрібно
-
-        // Функції відтворення
         playTrack,
         pauseTrack,
         resumeTrack,
         stopTrack,
-
-        // Навігація
         nextTrack,
         previousTrack,
-
-        // Режими
         toggleRepeat,
-
-        // Гучність
         updateVolume,
         toggleMute,
-
-        // Перемотування
         seek,
         seekToPercent,
 
-        // Допоміжні функції
         isTrackPlaying: (trackId) => trackFromQueue?.trackId === trackId && isPlaying,
     }), [
         trackFromQueue, isPlaying, repeatMode, volume, isMuted,

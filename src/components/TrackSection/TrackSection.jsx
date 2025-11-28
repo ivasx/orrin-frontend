@@ -1,7 +1,7 @@
 import './TrackSection.css';
 import TrackCard from '../TrackCard/TrackCard.jsx';
 import SectionHeader from '../SectionHeader/SectionHeader.jsx';
-import { normalizeTrackData } from '../../constants/fallbacks.js';
+import {normalizeTrackData} from '../../constants/fallbacks.js';
 
 export default function TrackSection({title, tracks, onMoreClick}) {
     const validTracks = tracks

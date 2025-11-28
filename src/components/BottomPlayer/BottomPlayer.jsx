@@ -1,19 +1,18 @@
-import { useAudioCore } from '../../context/AudioCoreContext.jsx';
-import { useQueue } from '../../context/QueueContext.jsx';
-import { usePlayerUI } from '../../context/PlayerUIContext.jsx';
-import { useEffect, useState, forwardRef, useRef, useCallback, useMemo } from 'react';
-import { AlertCircle, WifiOff } from 'lucide-react';
+import {useAudioCore} from '../../context/AudioCoreContext.jsx';
+import {useQueue} from '../../context/QueueContext.jsx';
+import {usePlayerUI} from '../../context/PlayerUIContext.jsx';
+import {useEffect, useState, forwardRef, useRef, useCallback, useMemo} from 'react';
 import './BottomPlayer.css';
 
 import TrackInfo from './TrackInfo';
 import PlayerControls from './PlayerControls';
 import TimeControls from './TimeControls';
-import { useProgressBar } from '../../hooks/useProgressBar';
+import {useProgressBar} from '../../hooks/useProgressBar';
 import VolumeControls from './VolumeControls';
-import { MoreHorizontal } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {MoreHorizontal} from 'lucide-react';
+import {useTranslation} from 'react-i18next';
 import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
-import { normalizeTrackData, isTrackPlayable } from '../../constants/fallbacks.js';
+import {normalizeTrackData, isTrackPlayable} from '../../constants/fallbacks.js';
 
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const {
@@ -22,9 +21,9 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         repeatMode, toggleRepeat,
     } = useAudioCore();
 
-    const { isShuffled, toggleShuffle } = useQueue();
-    const { isExpanded } = usePlayerUI();
-    const { t } = useTranslation();
+    const {isShuffled, toggleShuffle} = useQueue();
+    const {isExpanded} = usePlayerUI();
+    const {t} = useTranslation();
 
     const currentTrack = rawCurrentTrack ? normalizeTrackData(rawCurrentTrack) : null;
     const isPlayable = currentTrack ? isTrackPlayable(currentTrack) : false;
@@ -35,7 +34,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const MAX_RETRY_ATTEMPTS = 3;
 
     const [isPlayerMenuOpen, setIsPlayerMenuOpen] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
     const optionsMenuBtnRef = useRef(null);
 
     const {
@@ -66,7 +65,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
             let errorType = 'unknown';
 
             if (audio.error) {
-                switch(audio.error.code) {
+                switch (audio.error.code) {
                     case MediaError.MEDIA_ERR_NETWORK:
                         errorMessage = t('player_error_network', 'Помилка мережі');
                         errorType = 'network';
@@ -86,7 +85,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                 }
             }
 
-            setLoadError({ message: errorMessage, type: errorType });
+            setLoadError({message: errorMessage, type: errorType});
         };
 
         const handleStalled = () => setIsLoading(true);
@@ -138,15 +137,25 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const handleOptionsMenuClick = useCallback(() => {
         if (optionsMenuBtnRef.current) {
             const rect = optionsMenuBtnRef.current.getBoundingClientRect();
-            setMenuPosition({ x: rect.left, y: rect.top });
+            setMenuPosition({x: rect.left, y: rect.top});
         }
         setIsPlayerMenuOpen(prev => !prev);
     }, []);
 
     const playerMenuItems = useMemo(() => [
-        { id: 'player_add_to_queue', label: t('player_menu_add_to_queue'), action: () => console.log('TBD: Add to queue'), disabled: true },
-        { id: 'player_share', label: t('player_menu_share'), action: () => console.log('TBD: Share'), disabled: true },
-        { id: 'player_go_to_artist', label: t('player_menu_go_to_artist'), action: () => console.log('TBD: Go to artist'), disabled: true },
+        {
+            id: 'player_add_to_queue',
+            label: t('player_menu_add_to_queue'),
+            action: () => console.log('TBD: Add to queue'),
+            disabled: true
+        },
+        {id: 'player_share', label: t('player_menu_share'), action: () => console.log('TBD: Share'), disabled: true},
+        {
+            id: 'player_go_to_artist',
+            label: t('player_menu_go_to_artist'),
+            action: () => console.log('TBD: Go to artist'),
+            disabled: true
+        },
     ], [t]);
 
 
@@ -158,21 +167,21 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     return (
         <>
             <div className={playerClassName} ref={ref}>
-                <div className="top-progress-bar" style={{ width: `${progressPercent}%` }}></div>
+                <div className="top-progress-bar" style={{width: `${progressPercent}%`}}></div>
 
-                <TrackInfo track={currentTrack} />
+                <TrackInfo track={currentTrack}/>
 
                 <div className="player-center">
                     <PlayerControls
                         isPlaying={isPlaying}
-                        isLoading={isLoading} // Використовуємо локальний isLoading
-                        isShuffled={isShuffled} // З QueueContext
-                        repeatMode={repeatMode} // З AudioCoreContext
+                        isLoading={isLoading}
+                        isShuffled={isShuffled}
+                        repeatMode={repeatMode}
                         onPlayPause={handlePlayPause}
-                        onNext={nextTrack} // З AudioCoreContext
-                        onPrevious={previousTrack} // З AudioCoreContext
-                        onToggleShuffle={toggleShuffle} // З QueueContext
-                        onToggleRepeat={toggleRepeat} // З AudioCoreContext
+                        onNext={nextTrack}
+                        onPrevious={previousTrack}
+                        onToggleShuffle={toggleShuffle}
+                        onToggleRepeat={toggleRepeat}
                     />
                     <TimeControls
                         progressBarRef={progressBarRef}
@@ -185,14 +194,14 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                 </div>
 
                 <div className="player-right">
-                    <VolumeControls /> {/* VolumeControls використовує useAudioCore всередині себе */}
+                    <VolumeControls/>
                     <button
                         ref={optionsMenuBtnRef}
                         className="control-btn"
                         onClick={handleOptionsMenuClick}
                         aria-label={t('player_menu_options_aria')}
                     >
-                        <MoreHorizontal size={20} />
+                        <MoreHorizontal size={20}/>
                     </button>
                 </div>
             </div>

@@ -7,7 +7,6 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
     const progressBarRef = useRef(null);
     const wasPlayingBeforeDrag = useRef(false);
 
-    // Форматування часу
     const formatTime = useCallback((seconds) => {
         if (!isFinite(seconds) || seconds < 0) return '0:00';
         const mins = Math.floor(seconds / 60);
@@ -15,10 +14,8 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }, []);
 
-    // Обчислення прогресу
     const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-    // Оновлення currentTime та duration з audio елемента
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -42,7 +39,6 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
         audio.addEventListener('durationchange', handleDurationChange);
 
-        // Ініціалізація, якщо дані вже завантажені
         if (audio.duration) {
             setDuration(audio.duration);
             setCurrentTime(audio.currentTime);
@@ -55,7 +51,6 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         };
     }, [audioRef, isDragging]);
 
-    // Функція для обчислення нового часу на основі позиції кліку
     const calculateTimeFromPosition = useCallback((clientX) => {
         if (!progressBarRef.current || !duration) return null;
 
@@ -66,7 +61,6 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         return percent * duration;
     }, [duration]);
 
-    // Функція перемотування
     const seekToTime = useCallback((time) => {
         const audio = audioRef.current;
         if (!audio || !isFinite(time)) return;
@@ -75,18 +69,15 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         setCurrentTime(audio.currentTime);
     }, [audioRef, duration]);
 
-    // Обробник початку перетягування
     const handleMouseDown = useCallback((e) => {
         e.preventDefault();
         setIsDragging(true);
         wasPlayingBeforeDrag.current = isPlaying;
 
-        // Паузимо відтворення під час перетягування для плавності
         if (isPlaying) {
             pauseTrack();
         }
 
-        // Одразу перемотуємо на позицію кліку
         const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
         const newTime = calculateTimeFromPosition(clientX);
         if (newTime !== null) {
@@ -94,7 +85,6 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         }
     }, [isPlaying, pauseTrack, calculateTimeFromPosition, seekToTime]);
 
-    // Обробник руху під час перетягування
     const handleMouseMove = useCallback((e) => {
         if (!isDragging) return;
         e.preventDefault();
@@ -102,11 +92,10 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
         const newTime = calculateTimeFromPosition(clientX);
         if (newTime !== null) {
-            setCurrentTime(newTime); // Оновлюємо UI
+            setCurrentTime(newTime);
         }
     }, [isDragging, calculateTimeFromPosition]);
 
-    // Обробник завершення перетягування
     const handleMouseUp = useCallback((e) => {
         if (!isDragging) return;
 
@@ -116,19 +105,17 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
 
         const newTime = calculateTimeFromPosition(clientX);
         if (newTime !== null) {
-            seekToTime(newTime); // Встановлюємо фінальну позицію
+            seekToTime(newTime);
         }
 
         setIsDragging(false);
 
-        // Відновлюємо відтворення, якщо воно було активне
         if (wasPlayingBeforeDrag.current) {
             resumeTrack();
         }
         wasPlayingBeforeDrag.current = false;
     }, [isDragging, calculateTimeFromPosition, seekToTime, resumeTrack, currentTime, duration]);
 
-    // Глобальні слухачі для перетягування
     useEffect(() => {
         if (!isDragging) return;
 
@@ -156,6 +143,6 @@ export const useProgressBar = (audioRef, isPlaying, resumeTrack, pauseTrack) => 
         handleMouseDown,
         formatTime,
         isDragging,
-        seekToTime, // Експортуємо для можливості програмного перемотування
+        seekToTime,
     };
 };

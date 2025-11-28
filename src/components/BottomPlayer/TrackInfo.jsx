@@ -1,11 +1,18 @@
-import { Link } from 'react-router-dom';
-import { useMarquee } from '../../hooks/useMarquee';
+import {Link} from 'react-router-dom';
+import {useMarquee} from '../../hooks/useMarquee';
 
-export default function TrackInfo({ track }) {
-    const { isScrolling: isTitleScrolling, containerRef: titleContainerRef, contentRef: titleContentRef } = useMarquee(track.trackId);
-    const { isScrolling: isArtistScrolling, containerRef: artistContainerRef, contentRef: artistContentRef } = useMarquee(track.trackId);
+export default function TrackInfo({track}) {
+    const {
+        isScrolling: isTitleScrolling,
+        containerRef: titleContainerRef,
+        contentRef: titleContentRef
+    } = useMarquee(track.trackId);
+    const {
+        isScrolling: isArtistScrolling,
+        containerRef: artistContainerRef,
+        contentRef: artistContentRef
+    } = useMarquee(track.trackId);
 
-    // Виносимо вміст, що повторюється, в окрему змінну
     const artistContent = (
         <div className="marquee__content" ref={artistContentRef}>
             <span>{track.artist}</span>

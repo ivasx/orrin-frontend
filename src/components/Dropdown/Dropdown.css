@@ -1,6 +1,3 @@
-/* src/components/Dropdown/Dropdown.css */
-
-/* Тригер кнопка */
 .dropdown-trigger {
     display: flex;
     align-items: center;
@@ -38,7 +35,6 @@
     transform: rotate(180deg);
 }
 
-/* Dropdown меню - використовує стилі context menu */
 .dropdown-menu {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
@@ -83,7 +79,6 @@
     }
 }
 
-/* Dropdown item - той самий стиль що menu-item */
 .dropdown-item {
     display: flex;
     align-items: center;
@@ -138,7 +133,6 @@
     pointer-events: none;
 }
 
-/* Іконка в dropdown item */
 .dropdown-item-icon {
     width: 16px;
     height: 16px;
@@ -162,7 +156,6 @@
     text-overflow: ellipsis;
 }
 
-/* Checkmark для вибраних елементів */
 .dropdown-item-checkmark {
     width: 16px;
     height: 16px;
@@ -170,7 +163,6 @@
     color: #AF947EFF;
 }
 
-/* Separator */
 .dropdown-separator {
     height: 1px;
     background: linear-gradient(90deg,
@@ -193,7 +185,6 @@
     }
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
     .dropdown-trigger {
         padding: 8px 16px;

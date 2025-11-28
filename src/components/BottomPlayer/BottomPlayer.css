@@ -14,7 +14,6 @@
     border-top: 1px solid #333;
 }
 
-/* --- ВЕРХНІЙ ПРОГРЕС-БАР --- */
 .top-progress-bar {
     position: absolute;
     top: -1px;
@@ -81,7 +80,6 @@
     overflow: visible;
 }
 
-/* Контейнер для marquee */
 .marquee__content {
     display: inline-block;
     white-space: nowrap;
@@ -112,20 +110,16 @@
         transform: translateX(0);
     }
     3.125% {
-        /* Пауза 0.5с на початку */
         transform: translateX(0);
     }
     96.875% {
-        /* Рух завершується */
         transform: translateX(-50%);
     }
     100% {
-        /* Пауза 0.5с в кінці */
         transform: translateX(-50%);
     }
 }
 
-/* --- РЕШТА СТИЛІВ --- */
 .player-center {
     flex: 2;
     display: flex;
@@ -322,20 +316,17 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Заглушка для обкладинки */
 .player-cover[src*="orrin-logo.svg"] {
     padding: 8px;
     background: #1a1a1a;
     object-fit: contain;
 }
 
-/* Анімація пульсації для помилки обкладинки */
 .player-cover.error {
     filter: grayscale(100%);
     opacity: 0.6;
 }
 
-/* Стилі для placeholder тексту */
 .player-title.loading,
 .player-artist.loading {
     background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
@@ -353,7 +344,6 @@
     height: 0.9em;
 }
 
-/* Skeleton для контролів */
 .player-controls.loading .control-btn,
 .player-controls.loading .play-pause-btn {
     background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
@@ -363,7 +353,6 @@
     pointer-events: none;
 }
 
-/* Skeleton для прогрес-бару */
 .progress-wrapper.loading .progress-track {
     background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
     background-size: 200% 100%;
@@ -379,7 +368,6 @@
     min-width: 35px;
 }
 
-/* Стан "не готовий" для плеєра */
 .bottom-player.not-ready {
     opacity: 0.7;
     pointer-events: none;
@@ -389,7 +377,6 @@
     filter: grayscale(80%);
 }
 
-/* Індикатор буферизації */
 .buffering-indicator {
     position: absolute;
     bottom: 0;

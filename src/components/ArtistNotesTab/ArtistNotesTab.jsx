@@ -1,13 +1,11 @@
-// src/components/ArtistNotesTab/ArtistNotesTab.jsx
-import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-// Link видалено, оскільки він не використовувався тут
-import { Music, Clock, Users, Globe, Lock } from 'lucide-react';
+import {useState, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Music, Clock, Users, Globe, Lock} from 'lucide-react';
 import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './ArtistNotesTab.css';
 
-export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }) {
-    const { t } = useTranslation();
+export default function ArtistNotesTab({initialNotes = [], popularTracks = []}) {
+    const {t} = useTranslation();
     const [notes, setNotes] = useState(initialNotes);
     const [newNoteText, setNewNoteText] = useState('');
     const [noteType, setNoteType] = useState('private');
@@ -25,11 +23,11 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
             id: `note-new-${Date.now()}`,
             author: t('notes_you', 'Ви (Me)'),
             // TODO: Замінити на реальний аватар користувача з системи аутентифікації
-            avatar: '/path/to/default/user/avatar.png', // Замінено жорстко закодований URL
+            avatar: '/path/to/default/user/avatar.png',
             text: newNoteText,
             type: noteType,
             timestamp: t('notes_just_now', 'щойно'),
-            trackContext: selectedTrack ? { trackId: selectedTrack.trackId, title: selectedTrack.title } : undefined,
+            trackContext: selectedTrack ? {trackId: selectedTrack.trackId, title: selectedTrack.title} : undefined,
             timecode: selectedTrack && timecode.trim() ? timecode.trim() : undefined
         };
 
@@ -49,28 +47,25 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
         setIsAddingNote(false);
     };
 
-    // Іконки для типів нотаток
     const noteTypeIcons = {
-        private: <Lock size={16} />,
-        friends: <Users size={16} />,
-        public: <Globe size={16} />
+        private: <Lock size={16}/>,
+        friends: <Users size={16}/>,
+        public: <Globe size={16}/>
     };
 
-    const { myNotes, publicNotes } = useMemo(() => {
+    const {myNotes, publicNotes} = useMemo(() => {
         return notes.reduce((acc, note) => {
-            // Перевіряємо, чи автор "Ви (Me)" або тип "private"
             if (note.type === 'private' || note.author === t('notes_you', 'Ви (Me)')) {
                 acc.myNotes.push(note);
             } else {
                 acc.publicNotes.push(note);
             }
             return acc;
-        }, { myNotes: [], publicNotes: [] });
-    }, [notes, t]); // Додано t до залежностей useMemo
+        }, {myNotes: [], publicNotes: []});
+    }, [notes, t]);
 
     return (
         <div className="artist-notes-tab">
-            {/* --- Блок додавання нотатки --- */}
             <div className="add-note-section">
                 {!isAddingNote ? (
                     <button
@@ -92,7 +87,6 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                         />
                         <div className="note-options-row">
                             <div className="note-options-controls">
-                                {/* Вибір типу (з іконкою) */}
                                 <div className="form-group-inline">
                                     <label htmlFor="note-type-select" className="visually-hidden">
                                         {t('notes_type_label', 'Тип нотатки:')}
@@ -112,20 +106,20 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                                     </div>
                                 </div>
 
-                                {/* Вибір треку (з іконкою) */}
                                 <div className="form-group-inline">
                                     <label htmlFor="note-track-select" className="visually-hidden">
                                         {t('notes_track_label', 'Прив\'язати до треку (необов\'язково):')}
                                     </label>
                                     <div className="select-with-icon">
-                                        <Music size={16} />
+                                        <Music size={16}/>
                                         <select
                                             id="note-track-select"
                                             className="form-select-modern"
                                             value={selectedTrackId}
                                             onChange={(e) => setSelectedTrackId(e.target.value)}
                                         >
-                                            <option value="">{t('notes_track_select_placeholder', '-- Виберіть трек --')}</option>
+                                            <option
+                                                value="">{t('notes_track_select_placeholder', '-- Виберіть трек --')}</option>
                                             {Array.isArray(popularTracks) && popularTracks.map(track => (
                                                 <option key={track.trackId} value={track.trackId}>{track.title}</option>
                                             ))}
@@ -133,14 +127,13 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                                     </div>
                                 </div>
 
-                                {/* Тайм-код (з іконкою, якщо трек вибрано) */}
                                 {selectedTrackId && (
                                     <div className="form-group-inline timecode-group-inline">
                                         <label htmlFor="note-timecode" className="visually-hidden">
                                             {t('notes_timecode_label', 'Тайм-код (напр., 1:23):')}
                                         </label>
                                         <div className="input-with-icon">
-                                            <Clock size={16} />
+                                            <Clock size={16}/>
                                             <input
                                                 type="text"
                                                 id="note-timecode"
@@ -156,7 +149,6 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                                 )}
                             </div>
 
-                            {/* --- Кнопки форми --- */}
                             <div className="add-note-form-actions-modern">
                                 <button type="button" className="btn-secondary-modern" onClick={handleCancelAddNote}>
                                     {t('cancel', 'Скасувати')}
@@ -170,13 +162,12 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                 )}
             </div>
 
-            {/* --- Списки нотаток --- */}
-            <div className="notes-divider" />
+            <div className="notes-divider"/>
             {myNotes.length > 0 && (
                 <div className="notes-list-section">
                     <h3 className="notes-section-title">{t('notes_my_notes', 'Мої нотатки')}</h3>
                     <div className="notes-list">
-                        {myNotes.map(note => <NoteCard key={note.id} note={note} />)}
+                        {myNotes.map(note => <NoteCard key={note.id} note={note}/>)}
                     </div>
                 </div>
             )}
@@ -184,11 +175,11 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
                 <div className="notes-list-section">
                     <h3 className="notes-section-title">{t('notes_public_notes', 'Публічні нотатки')}</h3>
                     <div className="notes-list">
-                        {publicNotes.map(note => <NoteCard key={note.id} note={note} />)}
+                        {publicNotes.map(note => <NoteCard key={note.id} note={note}/>)}
                     </div>
                 </div>
             )}
-            {myNotes.length === 0 && publicNotes.length === 0 && !isAddingNote && ( // Додано !isAddingNote, щоб не показувати, коли форма відкрита
+            {myNotes.length === 0 && publicNotes.length === 0 && !isAddingNote && (
                 <p className="no-notes-message">{t('notes_empty', 'Поки що немає жодної нотатки.')}</p>
             )}
         </div>
