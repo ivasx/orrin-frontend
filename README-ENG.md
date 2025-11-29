@@ -4,8 +4,9 @@
 
 Frontend part of **Orrin** web application — a music service with social network elements.
 
-[![React](https://img.shields.io/badge/React-19.2.0-61dafb?logo=react)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-19.1.1-61dafb?logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.7-646cff?logo=vite)](https://vitejs.dev/)
+[![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.90.5-ff4154?logo=react-query)](https://tanstack.com/query)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ## 📋 Project Description
@@ -32,16 +33,17 @@ Orrin is an innovative web application that combines the functionality of a musi
 The project is built on a modern technology stack:
 
 ### Core
-- **React 19.2.0** — library for building user interfaces
+- **React 19.1.1** — library for building user interfaces
 - **Vite 7.1.7** — fast development and build tool
 - **React Router DOM 7.9.3** — client-side routing
 
-### State Management & Context
+### State Management & Data Fetching
 - **Context API** — global state management
     - `AudioCoreContext` — audio player management
     - `QueueContext` — playback queue management
     - `PlayerUIContext` — player UI management
     - `SettingsContext` — app settings
+- **TanStack Query 5.90.5** — server state management, caching and data synchronization
 
 ### Forms & Validation
 - **React Hook Form 7.65.0** — form management
@@ -65,6 +67,7 @@ The project is built on a modern technology stack:
 ### Development Tools
 - **ESLint 9.36.0** — code linting
 - **Docker** — application containerization
+- **TanStack Query DevTools** — developer tools for Query
 
 ## 📁 Project Structure
 
@@ -72,28 +75,22 @@ The project is built on a modern technology stack:
 orrin-frontend/
 ├── public/                          # Public static files
 │   ├── orrin-logo.svg              # App logo
-│   ├── googled4856e4d8b9972f2.html # Google verification
 │   └── songs/                       # Audio files (demo)
 ├── src/
 │   ├── assets/                      # Resources (images, audio)
-│   │   ├── orrin-404.png           # 404 page image
-│   │   └── song404.mp3             # 404 page music
 │   ├── components/                  # Reusable UI components
 │   │   ├── ArtistCard/             # Artist card
 │   │   ├── ArtistNotesTab/         # Artist notes tab
 │   │   ├── ArtistSection/          # Artists section
 │   │   ├── BottomPlayer/           # Bottom player
-│   │   │   ├── BottomPlayer.jsx
-│   │   │   ├── PlayerControls.jsx  # Player controls
-│   │   │   ├── TimeControls.jsx    # Time controls
-│   │   │   ├── TrackInfo.jsx       # Track information
-│   │   │   └── VolumeControls.jsx  # Volume controls
+│   │   ├── CreatePost/             # Create post
+│   │   ├── Dropdown/               # Dropdown menu
 │   │   ├── EmptyStateSection/      # Empty state
-│   │   ├── Header/                  # Site header
-│   │   │   └── SearchForm/         # Search form
-│   │   │       ├── SearchForm.jsx
-│   │   │       └── SearchSuggestions.jsx # Search suggestions
+│   │   ├── FeedFilters/            # Feed filters
+│   │   ├── FeedPost/               # Feed post
+│   │   ├── Header/                 # Site header
 │   │   ├── LoginPromptSection/     # Login prompt
+│   │   ├── MusicLyrics/            # Music lyrics
 │   │   ├── MusicSectionWrapper/    # Music section wrapper
 │   │   ├── NoteCard/               # Note card
 │   │   ├── OptionsMenu/            # Context menu
@@ -102,24 +99,18 @@ orrin-frontend/
 │   │   ├── Sidebar/                # Sidebar
 │   │   ├── Spinner/                # Loading indicator
 │   │   ├── TrackCard/              # Track card
-│   │   │   ├── TrackCard.jsx
-│   │   │   └── trackMenuItems.jsx  # Track menu items
 │   │   └── TrackSection/           # Tracks section
+│   ├── constants/                   # Constants and fallback values
+│   │   └── fallbacks.js            # Data normalization
 │   ├── context/                     # React Contexts
 │   │   ├── AudioCoreContext.jsx    # Audio system core
 │   │   ├── PlayerUIContext.jsx     # Player UI state
 │   │   ├── QueueContext.jsx        # Playback queue
 │   │   └── SettingsContext.jsx     # Settings
+│   ├── data/                        # Mock data
+│   │   └── mockData.js             # Development data
 │   ├── hooks/                       # Custom React Hooks
 │   │   ├── audio/                   # Audio hooks
-│   │   │   ├── useAudioElement.jsx
-│   │   │   ├── useAudioPlayback.jsx
-│   │   │   ├── useAudioVolume.jsx
-│   │   │   ├── useMediaSession.jsx
-│   │   │   ├── useMediaSessionPosition.jsx
-│   │   │   ├── useRepeatMode.jsx
-│   │   │   ├── useTrackEndHandler.jsx
-│   │   │   └── useTrackNavigation.jsx
 │   │   ├── useMarquee.jsx          # Text scroll animation
 │   │   └── useProgressBar.jsx      # Progress bar
 │   ├── i18n/                        # Localization
@@ -132,8 +123,6 @@ orrin-frontend/
 │   ├── pages/                       # Page components
 │   │   ├── ArtistPage/             # Artist page
 │   │   ├── Auth/                    # Authentication
-│   │   │   ├── Login.jsx           # Login
-│   │   │   └── Register.jsx        # Registration
 │   │   ├── FavoritesPage/          # Favorites
 │   │   ├── FeedPage/               # Feed
 │   │   ├── HistoryPage/            # History
@@ -146,6 +135,8 @@ orrin-frontend/
 │   │   ├── SettingsPage/           # Settings
 │   │   ├── TopTracksPage/          # Top tracks
 │   │   └── TrackPage/              # Track page
+│   ├── services/                    # API services
+│   │   └── api.js                  # HTTP requests to backend
 │   ├── App.jsx                      # Main component
 │   ├── App.css                      # App styles
 │   ├── data.js                      # Test data (mock)
@@ -168,6 +159,18 @@ orrin-frontend/
 - Node.js (version 20 or higher)
 - npm (version 8 or higher)
 
+### ⚠️ Important: Backend API
+
+**For correct operation of the application, you need to run the backend server!**
+
+The backend is located in a separate repository: [orrin-backend](https://github.com/ivasx/orrin-backend)
+
+Make sure the backend is running at `http://127.0.0.1:8000` or update the `VITE_API_BASE_URL` environment variable in the `.env` file:
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
 ### Installation
 
 1. **Clone the repository:**
@@ -181,25 +184,30 @@ cd orrin-frontend
 npm install
 ```
 
-3. **Run the project in development mode:**
+3. **Create `.env` file (optional):**
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
+4. **Run the project in development mode:**
 ```bash
 npm run dev
 ```
 
-4. **Open browser at:**
+5. **Open browser at:**
 ```
 http://localhost:5173
 ```
 
-### Production kit
+### Production Build
 
 ```bash
 npm run build
 ```
 
-The finished files will be in the folder `dist/`.
+The finished files will be in the `dist/` folder.
 
-### Review of production assembly
+### Preview Production Build
 
 ```bash
 npm run preview
@@ -210,24 +218,24 @@ npm run preview
 ### Development
 
 ```bash
-# Dev image compilation
+# Build dev image
 docker build -f Dockerfile.dev -t orrin-frontend-dev .
 
-# Running dev container
+# Run dev container
 docker run -p 5173:5173 -v $(pwd):/app orrin-frontend-dev
 ```
 
 ### Production
 
 ```bash
-# Production image compilation
+# Build production image
 docker build -t orrin-frontend .
 
-# Running production container
+# Run production container
 docker run -p 80:80 orrin-frontend
 ```
 
-## 🎯 Main components
+## 🎯 Main Components
 
 ### Header
 Website header with logo, smart search, and navigation. Supports:
@@ -251,45 +259,30 @@ Global context for music playback management:
 - Repeat modes (off, all, one)
 - Integration with Media Session API
 
-### QueueContext
-Playback queue management:
-- Add/remove tracks
-- Shuffle mode with original order preserved
-- Queue navigation
+### TanStack Query Integration
+Server state management:
+- Automatic request caching
+- Background data updates
+- Optimistic updates
+- Error handling and retry logic
+- DevTools for debugging
 
-### PlayerUIContext
-Player interface status control:
-- Expand/collapse player
-- Queue, track info, volume panels
+## 💡 Implementation Features
 
-### Sidebar
-Side navigation panel with the following options:
-- Collapse/expand
-- Adaptation to different screen sizes
-- Active indicators of the current page
-
-### ArtistPage
-A full-fledged artist page with:
-- Hero section with background image
-- Tabs (About the artist, History, Lineup, Discography, Notes)
-- Sections for popular tracks and similar artists
-- Ability to add notes linked to tracks and timecodes
-
-### SearchResultsPage
-Search results page with:
-- Filtering by tracks and artists
-- Display of all results (without restrictions)
-- Support for multi-word searches
-
-## 💡 Implementation features
-
-### State management
-- Using React Context API for global state
+### State Management
+- Using React Context API for global UI state
+- TanStack Query for server state and caching
 - Separating logic into separate contexts (Audio, Queue, UI, Settings)
 - Local component state via useState and useEffect
 - Memoization of callback functions via useCallback and useMemo
 
-### Adaptability
+### API Integration
+- Centralized API requests through `src/services/api.js`
+- Data normalization through `src/constants/fallbacks.js`
+- Fallback to mock data when API is unavailable
+- Automatic loading error handling
+
+### Responsiveness
 - Mobile-first approach
 - Touch gesture support
 - Optimization for different screen sizes
@@ -307,6 +300,7 @@ Search results page with:
 - Efficient event management
 - Throttling for drag operations
 - Debouncing for search
+- Request caching via TanStack Query
 
 ### Internationalization
 - Support for Ukrainian and English languages
@@ -338,19 +332,18 @@ To add a new language:
 
 ## 🔧 API Integration
 
-> **Note:** The current version uses mock data from the file `src/data.js`. Integration with the backend API will be added in future versions.
+The application integrates with the backend API through `src/services/api.js`.
 
-Expected endpoints:
-- `GET /api/tracks` — get a list of tracks
-- `GET /api/tracks/:id` — track details
-- `POST /api/tracks/:id/play` — mark as listened
-- `GET /api/artists` — list of artists
-- `GET /api/artists/:id` — artist details
-- `GET /api/user/friends` — list of friends
-- `POST /api/tracks/:id/comments` — add a comment
-- `GET /api/search?q={query}` — search for tracks and artists
+### Main endpoints:
+- `GET /api/v1/tracks/` — get list of tracks
+- `GET /api/v1/tracks/{slug}/` — track details
+- `GET /api/v1/artists/` — list of artists
+- `GET /api/v1/artists/{slug}/` — artist details
 
-## 🤝 Contribute to the project
+### Fallback Mechanism
+When the API is unavailable, the application automatically uses mock data from `src/data.js` and `src/data/mockData.js`.
+
+## 🤝 Contributing
 
 We are open to contributions! If you want to help:
 
@@ -363,7 +356,7 @@ We are open to contributions! If you want to help:
    ```bash
    git commit -m 'Add some AmazingFeature'
    ```
-4.  Push the changes:
+4. Push the changes:
    ```bash
    git push origin feature/AmazingFeature
    ```
@@ -375,6 +368,7 @@ We are open to contributions! If you want to help:
 - Add comments for complex logic
 - Create separate CSS files for component styles
 - Use functional components and hooks
+- Use TanStack Query for API requests
 
 ## 📝 License
 
@@ -394,6 +388,7 @@ If you have any questions or suggestions, please contact us:
 
 - [React](https://reactjs.org/) for the excellent library
 - [Vite](https://vitejs.dev/) for the fast dev server
+- [TanStack Query](https://tanstack.com/query) for server state management
 - [Lucide](https://lucide.dev/) for the beautiful icons
 - [i18next](https://www.i18next.com/) for internationalization
 
