@@ -1,9 +1,9 @@
 import './ArtistCard.css';
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
+import { memo } from 'react';
 
-
-export default function ArtistCard({ id, name, genre, role, imageUrl }) {
+function ArtistCard({ id, name, genre, role, imageUrl }) {
     const { t } = useTranslation();
 
     return (
@@ -20,3 +20,5 @@ export default function ArtistCard({ id, name, genre, role, imageUrl }) {
         </Link>
     );
 }
+
+export default memo(ArtistCard);

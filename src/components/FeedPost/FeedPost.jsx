@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,7 +15,7 @@ import { useAudioCore } from '../../context/AudioCoreContext';
 import ContextMenu from '../OptionsMenu/OptionsMenu';
 import './FeedPost.css';
 
-export default function FeedPost({ post }) {
+function FeedPost({ post }) {
     const { t } = useTranslation();
     const { playTrack } = useAudioCore();
 
@@ -335,3 +335,5 @@ export default function FeedPost({ post }) {
         </article>
     );
 }
+
+export default memo(FeedPost);

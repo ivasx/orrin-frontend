@@ -2,7 +2,9 @@
  * Hook for navigating between tracks
  * Responsible for: next, previous, playTrackByIndex
  */
-import { useCallback } from 'react';
+import {useCallback} from 'react';
+
+const REWIND_THRESHOLD_SECONDS = 3;
 
 export function useTrackNavigation(
     queue,
@@ -35,7 +37,7 @@ export function useTrackNavigation(
     }, [getNextIndex, playTrackByIndex, setIsPlaying]);
 
     const previousTrack = useCallback(() => {
-        if (audioRef.current && audioRef.current.currentTime > 3) {
+        if (audioRef.current && audioRef.current.currentTime > REWIND_THRESHOLD_SECONDS) {
             audioRef.current.currentTime = 0;
             setIsPlaying(true);
             return;

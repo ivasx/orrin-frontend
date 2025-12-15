@@ -1,10 +1,8 @@
-/* src/services/api.js */
-import { ways, popularArtists } from '../data.js'; // Імпортуємо мок-дані
+import { ways, popularArtists } from '../data.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 async function fetchJson(endpoint, options = {}) {
-    // ... старий код fetchJson залишаємо або замінюємо логікою нижче
     const url = `${API_BASE_URL}${endpoint}`;
     try {
         const response = await fetch(url, options);
@@ -13,52 +11,61 @@ async function fetchJson(endpoint, options = {}) {
         return data.results || data;
     } catch (error) {
         console.warn(`API fetch failed for ${endpoint}, falling back to mock data.`);
-        return null; // Повертаємо null, щоб функції нижче використали мок-дані
+        return null;
     }
 }
 
 /**
- * Отримує список треків (з API або мок-даних)
+ * Gets a list of tracks (from API or mock data)
  */
 export const getTracks = async () => {
-    // Спробуємо отримати з API, якщо не вийде - повернемо ways
     try {
-        // Якщо ви розробляєте без бекенду, можна одразу повертати ways:
         return Promise.resolve(ways);
-
-        // const data = await fetchJson('/api/v1/tracks/');
-        // return data || ways;
     } catch (e) {
         return ways;
     }
 };
 
 /**
- * Отримує один трек за slug/id
+ * Gets list of tracks per slug
+ * GET /api/v1/tracks/?ids=id1,id2,id3
+ */
+export const getTracksByIds = async (trackIds = []) => {
+    if (trackIds.length === 0) return [];
+
+    const foundTracks = ways.filter(track => trackIds.includes(track.trackId));
+
+    /*
+    const data = await fetchJson(`/api/v1/tracks/?ids=${trackIds.join(',')}`);
+    return data || foundTracks;
+    */
+
+    return Promise.resolve(foundTracks);
+};
+
+/**
+ * Gets one track by slug
  */
 export const getTrackBySlug = async (slug) => {
-    // Шукаємо в мок-даних
     const mockTrack = ways.find(t => t.trackId === slug || String(t.id) === slug);
 
     if (mockTrack) {
-        // Емулюємо затримку мережі для реалістичності (опціонально)
-        // await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 300));
         return Promise.resolve(mockTrack);
     }
 
-    // Якщо в моках немає, можна спробувати API
     return fetchJson(`/api/v1/tracks/${slug}/`);
 };
 
 /**
- * Отримує список артистів
+ * Gets artists list
  */
 export const getArtists = async () => {
     return Promise.resolve(popularArtists);
 };
 
 /**
- * Отримує артиста за ID
+ * Gets one artist per ID
  */
 export const getArtistById = async (slugOrId) => {
     const artist = popularArtists.find(a =>

@@ -1,5 +1,5 @@
 import './TrackCard.css';
-import {useState, useEffect, useCallback, useRef, useMemo} from 'react';
+import {useState, useEffect, useCallback, useRef, useMemo, memo} from 'react';
 import ContextMenu from '../OptionsMenu/OptionsMenu.jsx';
 import {useAudioCore} from '../../context/AudioCoreContext.jsx';
 import {useTranslation} from "react-i18next";
@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom';
 import {AlertCircle, Music} from 'lucide-react';
 import {isTrackPlayable} from '../../constants/fallbacks.js';
 
-export default function TrackCard(props) {
+function TrackCard(props) {
     const {t} = useTranslation();
     const {
         currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef,
@@ -46,7 +46,19 @@ export default function TrackCard(props) {
     const displayCover = coverError ? '/orrin-logo.svg' : track.cover;
 
     useEffect(() => {
-        setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+        const mediaQuery = window.matchMedia('(pointer: coarse)');
+
+        const handleDeviceChange = (e) => {
+            setIsTouchDevice(e.matches);
+        };
+
+        setIsTouchDevice(mediaQuery.matches);
+
+        mediaQuery.addEventListener('change', handleDeviceChange);
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleDeviceChange);
+        }
     }, []);
 
     useEffect(() => {
@@ -320,3 +332,5 @@ export default function TrackCard(props) {
         </div>
     );
 }
+
+export default memo(TrackCard);
