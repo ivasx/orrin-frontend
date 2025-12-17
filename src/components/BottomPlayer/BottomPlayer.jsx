@@ -108,14 +108,6 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         };
     }, [audioRef, t]);
 
-    const handlePlayPause = () => {
-        if (loadError && retryCount < MAX_RETRY_ATTEMPTS) {
-            handleRetry();
-        } else if (!loadError || retryCount >= MAX_RETRY_ATTEMPTS) {
-            isPlaying ? pauseTrack() : resumeTrack();
-        }
-    };
-
     const handleRetry = useCallback(() => {
         if (!currentTrack || !isPlayable) return;
 
@@ -131,6 +123,17 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
             });
         }
     }, [currentTrack, isPlayable, audioRef]);
+
+    const handlePlayPause = () => {
+        if (loadError) {
+            if (retryCount < MAX_RETRY_ATTEMPTS) {
+                handleRetry();
+            }
+            return;
+        }
+
+        isPlaying ? pauseTrack() : resumeTrack();
+    };
 
     const handleMenuClose = useCallback(() => setIsPlayerMenuOpen(false), []);
 

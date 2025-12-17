@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ways, popularArtists } from '../../data'; // Імпортуємо дані
+import { ways, popularArtists } from '../../data';
 import TrackSection from '../../components/TrackSection/TrackSection';
 import ArtistSection from '../../components/ArtistSection/ArtistSection';
 import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper';
@@ -27,28 +27,22 @@ export default function SearchResultsPage() {
             return;
         }
 
-        // Розбиваємо на слова, як і раніше
         const searchWords = searchTerm.split(/\s+/).filter(word => word.length > 0);
 
-        // Імітуємо затримку
         const searchTimer = setTimeout(() => {
 
-            // --- Початок змін: Фільтрація за допомогою .some() ---
-            const tracks = ways.filter(track => { //
+            const tracks = ways.filter(track => {
                 const titleLower = track.title.toLowerCase();
                 const artistLower = track.artist.toLowerCase();
-                // Перевіряємо, чи ХОЧА Б ОДНЕ слово запиту є в назві АБО в імені виконавця
-                return searchWords.some(word => // <-- Змінено .every на .some
+                return searchWords.some(word =>
                     titleLower.includes(word) || artistLower.includes(word)
                 );
             });
 
-            const artists = popularArtists.filter(artist => { //
+            const artists = popularArtists.filter(artist => {
                 const nameLower = artist.name.toLowerCase();
-                // Перевіряємо, чи ХОЧА Б ОДНЕ слово запиту є в імені виконавця
-                return searchWords.some(word => nameLower.includes(word)); // <-- Змінено .every на .some
+                return searchWords.some(word => nameLower.includes(word));
             });
-            // --- Кінець змін ---
 
             setFoundTracks(tracks);
             setFoundArtists(artists);
@@ -63,20 +57,19 @@ export default function SearchResultsPage() {
         <MusicSectionWrapper spacing="top-only">
             <div className="search-results-page">
                 {query && (
-                    // TODO: Replace with translated string
-                    <h1 className="search-results-title">Результати пошуку для "{query}"</h1>
+                    <h1 className="search-results-title">
+                        {t('search_results_for')} "{query}"
+                    </h1>
                 )}
 
                 {isLoading ? (
-                    // TODO: Replace with translated string
-                    <p>Шукаємо...</p> // Або компонент-скелетон
+                    <p> {t('searching')}</p>
                 ) : (
                     <>
                         {foundArtists.length > 0 && (
                             <MusicSectionWrapper spacing="default">
                                 <ArtistSection
-                                    // TODO: Replace with translated string
-                                    title="Знайдені виконавці"
+                                    title={t('found_artists')}
                                     artists={foundArtists}
                                     onMoreClick={() => console.log('More artists clicked')}
                                 />
@@ -86,8 +79,7 @@ export default function SearchResultsPage() {
                         {foundTracks.length > 0 && (
                             <MusicSectionWrapper spacing="default">
                                 <TrackSection
-                                    // TODO: Replace with translated string
-                                    title="Знайдені треки"
+                                    title={t('found_tracks')}
                                     tracks={foundTracks}
                                     onMoreClick={() => console.log('More tracks clicked')}
                                 />
@@ -95,12 +87,14 @@ export default function SearchResultsPage() {
                         )}
 
                         {foundTracks.length === 0 && foundArtists.length === 0 && !isLoading && query && (
-                            // TODO: Replace with translated string
-                            <p className="no-results-message">Нічого не знайдено за запитом "{query}".</p>
+                            <p className="no-results-message">
+                                {t('no_results_found_for_request')} "{query}"
+                            </p>
                         )}
                         {!query && (
-                            // TODO: Replace with translated string
-                            <p>Введіть щось у поле пошуку.</p>
+                            <p>
+                                {t('type_something_in_search_field')}
+                            </p>
                         )}
                     </>
                 )}

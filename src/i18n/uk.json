@@ -143,6 +143,15 @@
     "track_error": "Помилка",
     "retry": "Спробувати ще",
     "artist_posts": "Пости",
-    "loading": "Завантаження..."
+    "loading": "Завантаження...",
+    "search_results_for": "Результати пошуку для",
+    "found_artists": "Знайдені виконавці",
+    "found_tracks": "Знайдені треки",
+    "no_results_found": "Нічого не знайдено",
+    "no_results_found_for_request": "Нічого не знайдено за запитом",
+    "error_loading_track": "Помилка завантаження треку",
+    "track_not_found": "Трек не знайдено",
+    "searching": "Шукаємо...",
+    "type_something_in_search_field": "Введіть щось у поле пошуку."
   }
 }

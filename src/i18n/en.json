@@ -144,6 +144,15 @@
     "track_error": "Error",
     "retry": "Try Again",
     "artist_posts": "Posts",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "search_results_for": "Search results for",
+    "found_artists": "Found artists",
+    "found_tracks": "Found tracks",
+    "no_results_found": "No results found",
+    "no_results_found_for_request": "No results found for",
+    "error_loading_track": "Error loading track",
+    "track_not_found": "Track not found",
+    "searching": "Searching...",
+    "type_something_in_search_field": "Type something in the search field."
   }
 }
