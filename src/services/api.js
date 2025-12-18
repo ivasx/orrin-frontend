@@ -2,27 +2,93 @@ import { ways, popularArtists } from '../data.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
+/**
+ * Custom error class for API errors
+ */
+export class ApiError extends Error {
+    constructor(message, status = null, endpoint = null) {
+        super(message);
+        this.name = 'ApiError';
+        this.status = status;
+        this.endpoint = endpoint;
+    }
+}
+
+/**
+ * Fetches JSON data from API endpoint
+ * @param {string} endpoint - API endpoint path
+ * @param {Object} options - Fetch options
+ * @returns {Promise<any>} - Parsed JSON data
+ * @throws {ApiError} - If request fails
+ */
 async function fetchJson(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
     try {
         const response = await fetch(url, options);
-        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new ApiError(
+                errorData.message || `HTTP error ${response.status}`,
+                response.status,
+                endpoint
+            );
+        }
+        
         const data = await response.json();
         return data.results || data;
     } catch (error) {
-        console.warn(`API fetch failed for ${endpoint}, falling back to mock data.`);
-        return null;
+        // If it's already an ApiError, re-throw it
+        if (error instanceof ApiError) {
+            throw error;
+        }
+        
+        // Network errors
+        if (error instanceof TypeError && error.message.includes('fetch')) {
+            throw new ApiError('Network error', 0, endpoint);
+        }
+        
+        // Other errors
+        throw new ApiError(error.message || 'Unknown error', 0, endpoint);
     }
 }
 
 /**
  * Gets a list of tracks (from API or mock data)
+ * First tries to fetch from API, falls back to mock data in dev mode
  */
 export const getTracks = async () => {
     try {
-        return Promise.resolve(ways);
-    } catch (e) {
-        return ways;
+        // First, try to fetch from API
+        const apiData = await fetchJson('/api/v1/tracks/');
+        
+        // If API returns null or empty, handle it
+        if (apiData === null || (Array.isArray(apiData) && apiData.length === 0)) {
+            if (import.meta.env.DEV) {
+                console.warn('API returned null or empty result, mock data is used.');
+                return ways;
+            }
+            throw new ApiError('API returned empty result', null, '/api/v1/tracks/');
+        }
+        
+        return apiData;
+    } catch (error) {
+        // If API error occurred
+        if (error instanceof ApiError) {
+            if (import.meta.env.DEV) {
+                console.warn(`API not available for ${error.endpoint || '/api/v1/tracks/'}, mock data is used. Error:`, error.message);
+                return ways;
+            }
+            // In production, throw the error
+            throw error;
+        }
+        
+        // Other unexpected errors
+        if (import.meta.env.DEV) {
+            console.warn('Unexpected error when loading tracks, mock data is used:', error);
+            return ways;
+        }
+        throw error;
     }
 };
 
@@ -58,10 +124,42 @@ export const getTrackBySlug = async (slug) => {
 };
 
 /**
- * Gets artists list
+ * Gets artists list (from API or mock data)
+ * First tries to fetch from API, falls back to mock data in dev mode
  */
 export const getArtists = async () => {
-    return Promise.resolve(popularArtists);
+    try {
+        // First, try to fetch from API
+        const apiData = await fetchJson('/api/v1/artists/');
+        
+        // If API returns null or empty, handle it
+        if (apiData === null || (Array.isArray(apiData) && apiData.length === 0)) {
+            if (import.meta.env.DEV) {
+                console.warn('API returned null or empty result, mock data is being used');
+                return popularArtists;
+            }
+            throw new ApiError('API returned empty result', null, '/api/v1/artists/');
+        }
+        
+        return apiData;
+    } catch (error) {
+        // If API error occurred
+        if (error instanceof ApiError) {
+            if (import.meta.env.DEV) {
+                console.warn(`API is not available for ${error.endpoint || '/api/v1/artists/'}, mock data is used. Error:`, error.message);
+                return popularArtists;
+            }
+            // In production, throw the error
+            throw error;
+        }
+        
+        // Other unexpected errors
+        if (import.meta.env.DEV) {
+            console.warn('Unexpected error loading artists, using mock data:', error);
+            return popularArtists;
+        }
+        throw error;
+    }
 };
 
 /**
