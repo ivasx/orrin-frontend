@@ -39,7 +39,9 @@ export default function FavoritesPage() {
                 <TrackSection
                     title={t('favorites_tracks')}
                     tracks={tracks || []}
-                    onMoreClick={() => console.log(t('more_pressed'))}
+                    onMoreClick={() => {
+                        // TODO: Implement "More" functionality for favorites
+                    }}
                 />
             )}
         </MusicSectionWrapper>

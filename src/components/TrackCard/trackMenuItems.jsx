@@ -8,6 +8,7 @@ import {
     Download,
     AlertCircle
 } from 'lucide-react';
+import { logger } from '../../utils/logger';
 
 export const createTrackMenuItems = ({
                                          t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
@@ -94,16 +95,16 @@ export const createTrackMenuItems = ({
                         url: window.location.href
                     }).catch(err => {
                         if (err.name !== 'AbortError') {
-                            console.error('Share error:', err);
+                            logger.error('Share error:', err);
                         }
                     });
                 } else {
                     navigator.clipboard.writeText(
                         `${title} by ${artist} - ${window.location.href}`
                     ).then(() => {
-                        console.log('Link copied to clipboard');
+                        logger.log('Link copied to clipboard');
                     }).catch(err => {
-                        console.error('Copy error:', err);
+                        logger.error('Copy error:', err);
                     });
                 }
             }

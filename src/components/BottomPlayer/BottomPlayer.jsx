@@ -3,6 +3,7 @@ import {useQueue} from '../../context/QueueContext.jsx';
 import {usePlayerUI} from '../../context/PlayerUIContext.jsx';
 import {useEffect, useState, forwardRef, useRef, useCallback, useMemo} from 'react';
 import './BottomPlayer.css';
+import { logger } from '../../utils/logger';
 
 import TrackInfo from './TrackInfo';
 import PlayerControls from './PlayerControls';
@@ -58,7 +59,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         };
 
         const handleError = (e) => {
-            console.error("Audio Error:", e, audio.error);
+            logger.error("Audio Error:", e, audio.error);
             setIsLoading(false);
 
             let errorMessage = t('player_error_unknown', 'Помилка відтворення');
@@ -119,7 +120,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         if (audio) {
             audio.load();
             audio.play().catch(err => {
-                console.error("Retry play failed:", err);
+                logger.error("Retry play failed:", err);
             });
         }
     }, [currentTrack, isPlayable, audioRef]);
@@ -149,14 +150,20 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         {
             id: 'player_add_to_queue',
             label: t('player_menu_add_to_queue'),
-            action: () => console.log('TBD: Add to queue'),
+            action: () => {
+                // TODO: Implement add to queue functionality
+            },
             disabled: true
         },
-        {id: 'player_share', label: t('player_menu_share'), action: () => console.log('TBD: Share'), disabled: true},
+        {id: 'player_share', label: t('player_menu_share'), action: () => {
+            // TODO: Implement share functionality
+        }, disabled: true},
         {
             id: 'player_go_to_artist',
             label: t('player_menu_go_to_artist'),
-            action: () => console.log('TBD: Go to artist'),
+            action: () => {
+                // TODO: Implement go to artist functionality
+            },
             disabled: true
         },
     ], [t]);

@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import "./Header.css";
 import {useTranslation} from "react-i18next";
+import { logger } from '../../utils/logger';
 
 export default function Header({user, onLogout, onMenuToggle}) {
     const {t} = useTranslation();
@@ -18,7 +19,7 @@ export default function Header({user, onLogout, onMenuToggle}) {
     }, [mobileSearchOpen]);
 
     const handleSearchSubmit = (query) => {
-        console.log("Search submitted with query:", query);
+        logger.log("Search submitted with query:", query);
         setMobileSearchOpen(false);
 
         if (query.trim()) {

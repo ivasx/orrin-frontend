@@ -1,3 +1,5 @@
+import { logger } from '../utils/logger';
+
 const FALLBACK_COVER = '/orrin-logo.svg';
 const FALLBACK_AVATAR = '/orrin-logo.svg';
 const FALLBACK_AUDIO = null;
@@ -70,7 +72,7 @@ export const normalizeTrackData = (track) => {
     const trackId = track.slug || track.trackId || track.id;
 
     if (!trackId) {
-        console.error('Track without valid ID detected:', track);
+        logger.error('Track without valid ID detected:', track);
         return null;
     }
 
@@ -109,7 +111,7 @@ export const normalizeArtistData = (artist) => {
     const artistId = artist.slug || artist.id;
 
     if (!artistId) {
-        console.error('Artist without valid ID detected:', artist);
+        logger.error('Artist without valid ID detected:', artist);
         return null;
     }
 

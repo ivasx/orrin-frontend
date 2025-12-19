@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {FaInstagram, FaYoutube, FaSpotify, FaShareAlt, FaPen} from 'react-icons/fa';
 import {Play, MoreVertical} from 'lucide-react';
 import './ArtistPage.css';
+import { logger } from '../../utils/logger';
 
 import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
@@ -78,7 +79,7 @@ function DiscographyTab({albums, onPlayAlbum}) {
     const handleMoreOptionsClick = (event, albumId) => {
         event.preventDefault();
         event.stopPropagation();
-        console.log(`More options for album ${albumId} clicked`);
+        // TODO: Implement more options menu for album
     };
 
     return (
@@ -156,7 +157,7 @@ export default function ArtistPage() {
 
     const handlePlayAlbum = async (album) => {
         if (!album.trackIds || album.trackIds.length === 0) {
-            console.log(`Album "${album.title}" has no tracks listed.`);
+            logger.warn(`Album "${album.title}" has no tracks listed.`);
             return;
         }
 
@@ -172,10 +173,10 @@ export default function ArtistPage() {
                 playTrack(firstTrack, albumTracks);
                 navigate(`track/${firstTrack.trackId}`);
             } else {
-                console.log(`No tracks found for album "${album.title}"`)
+                logger.warn(`No tracks found for album "${album.title}"`)
             }
         } catch (error) {
-            console.error(`Error fetching album tracks: ${error.message}`);
+            logger.error(`Error fetching album tracks: ${error.message}`);
         }
     };
 
@@ -271,7 +272,9 @@ export default function ArtistPage() {
                     <TrackSection
                         title={t('artist_popular_tracks', 'Популярні треки')}   // TODO: Add translation for 'Popular tracks'
                         tracks={artist.popularTracks}
-                        onMoreClick={() => console.log('More popular tracks clicked')}
+                        onMoreClick={() => {
+                            // TODO: Implement "More" functionality for popular tracks
+                        }}
                     />
                 </MusicSectionWrapper>
             )}
@@ -281,7 +284,9 @@ export default function ArtistPage() {
                     <ArtistSection
                         title={t('artist_similar', 'Схожі артисти')}    // TODO: Add translation for 'Similar artists'
                         artists={artist.similarArtists}
-                        onMoreClick={() => console.log('More similar artists clicked')}
+                        onMoreClick={() => {
+                            // TODO: Implement "More" functionality for similar artists
+                        }}
                     />
                 </MusicSectionWrapper>
             )}

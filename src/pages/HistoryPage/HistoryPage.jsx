@@ -11,7 +11,9 @@ export default function HistoryPage() {
             <TrackSection
                 title={t('listening_history')}
                 tracks={ways}
-                onMoreClick={() => console.log(t('more_pressed'))}
+                onMoreClick={() => {
+                    // TODO: Implement "More" functionality for history
+                }}
             />
         </MusicSectionWrapper>
     );

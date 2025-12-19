@@ -3,6 +3,7 @@
  * Responsible for: isPlaying state, play/pause logic
  */
 import { useState, useCallback, useEffect } from 'react';
+import { logger } from '../../utils/logger';
 
 export function useAudioPlayback(audioRef, trackFromQueue) {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -18,19 +19,19 @@ export function useAudioPlayback(audioRef, trackFromQueue) {
 
         if (isPlaying) {
             if (audio.paused) {
-                console.log("AudioCore: Attempting to play");
+                logger.log("AudioCore: Attempting to play");
                 playPromise = audio.play();
             }
         } else {
             if (!audio.paused) {
-                console.log("AudioCore: Pausing");
+                logger.log("AudioCore: Pausing");
                 audio.pause();
             }
         }
 
         if (playPromise) {
             playPromise.catch(error => {
-                console.error("Audio play error:", error);
+                logger.error("Audio play error:", error);
                 setIsPlaying(false);
             });
         }

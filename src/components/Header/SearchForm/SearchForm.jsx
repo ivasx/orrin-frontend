@@ -3,6 +3,7 @@ import "./SearchForm.css";
 import {useTranslation} from "react-i18next";
 import SearchSuggestions from './SearchSuggestions';
 import {ways, popularArtists} from '../../../data';
+import { logger } from '../../../utils/logger';
 
 const SEARCH_HISTORY_KEY = 'orrin_search_history';
 const MAX_HISTORY_ITEMS = 5;
@@ -25,7 +26,7 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
                     setSearchHistory(JSON.parse(history));
                 }
             } catch (error) {
-                console.error('Error loading search history:', error);
+                logger.error('Error loading search history:', error);
             }
         };
         loadSearchHistory();
@@ -44,7 +45,7 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
             setSearchHistory(newHistory);
             localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
         } catch (error) {
-            console.error('Error saving search history:', error);
+            logger.error('Error saving search history:', error);
         }
     };
 
@@ -56,7 +57,7 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
             setSearchHistory(newHistory);
             localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
         } catch (error) {
-            console.error('Error removing from search history:', error);
+            logger.error('Error removing from search history:', error);
         }
     };
 

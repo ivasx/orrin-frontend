@@ -3,6 +3,7 @@
  * Responsible for: updating src when changing track, updating loop attribute
  */
 import { useRef, useEffect } from 'react';
+import { logger } from '../../utils/logger';
 
 export function useAudioElement(trackFromQueue, repeatMode) {
     const audioRef = useRef(null);
@@ -18,11 +19,11 @@ export function useAudioElement(trackFromQueue, repeatMode) {
             prevTrackIdRef.current = currentTrackId;
 
             if (trackFromQueue && audio.src !== trackFromQueue.audio) {
-                console.log("Setting new src:", trackFromQueue.audio);
+                logger.log("Setting new src:", trackFromQueue.audio);
                 audio.src = trackFromQueue.audio;
                 audio.currentTime = 0;
             } else if (!trackFromQueue && audio.src) {
-                console.log("Clearing src");
+                logger.log("Clearing src");
                 audio.pause();
                 audio.removeAttribute('src');
                 audio.load();
@@ -37,7 +38,7 @@ export function useAudioElement(trackFromQueue, repeatMode) {
 
         const shouldLoop = repeatMode === 'all';
         if (audio.loop !== shouldLoop) {
-            console.log(`Setting audio loop attribute to: ${shouldLoop}`);
+            logger.log(`Setting audio loop attribute to: ${shouldLoop}`);
             audio.loop = shouldLoop;
         }
     }, [repeatMode]);

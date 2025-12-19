@@ -39,7 +39,9 @@ export default function LibraryPage() {
             <TrackSection
                 title={t('your_library')}
                 tracks={ways}
-                onMoreClick={() => console.log(t('more_pressed'))}
+                onMoreClick={() => {
+                    // TODO: Implement "More" functionality for library
+                }}
             />
         </MusicSectionWrapper>
     );

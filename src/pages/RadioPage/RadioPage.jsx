@@ -11,7 +11,9 @@ export default function RadioPage() {
             <TrackSection
                 title={t('radio')}
                 tracks={ways}
-                onMoreClick={() => console.log(t('more_pressed'))}
+                onMoreClick={() => {
+                    // TODO: Implement "More" functionality for radio
+                }}
             />
         </MusicSectionWrapper>
     );

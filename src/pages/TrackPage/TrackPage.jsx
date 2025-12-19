@@ -25,7 +25,7 @@ export default function TrackPage() {
 
     // --- Функція кліку по рядку (заготовка) ---
     const handleLineClick = (time) => {
-        console.log("Seek to:", time);
+        // TODO: Implement seek functionality
     };
 
     if (isLoading) {

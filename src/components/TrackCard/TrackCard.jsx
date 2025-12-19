@@ -7,6 +7,7 @@ import {createTrackMenuItems} from './trackMenuItems.jsx';
 import {Link} from 'react-router-dom';
 import {AlertCircle, Music} from 'lucide-react';
 import {isTrackPlayable} from '../../constants/fallbacks.js';
+import { logger } from '../../utils/logger';
 
 function TrackCard(props) {
     const {t} = useTranslation();
@@ -17,7 +18,7 @@ function TrackCard(props) {
 
     const track = useMemo(() => {
         if (!props.trackId) {
-            console.error('TrackCard: Received props without trackId', props);
+            logger.error('TrackCard: Received props without trackId', props);
             return null;
         }
         return props;
@@ -71,7 +72,7 @@ function TrackCard(props) {
         if (!audio || currentTrack?.trackId !== track.trackId) return;
 
         const handleAudioError = (e) => {
-            console.error('Audio error for track:', track.trackId, e);
+            logger.error('Audio error for track:', track.trackId, e);
             setAudioError(true);
             setIsAudioLoading(false);
         };
@@ -100,12 +101,12 @@ function TrackCard(props) {
 
     const handlePlayPause = useCallback(() => {
         if (!track.trackId) {
-            console.error("TrackCard: trackId is missing!");
+            logger.error("TrackCard: trackId is missing!");
             return;
         }
 
         if (!hasValidAudio) {
-            console.warn("TrackCard: Cannot play - no valid audio URL");
+            logger.warn("TrackCard: Cannot play - no valid audio URL");
             return;
         }
 
@@ -204,7 +205,7 @@ function TrackCard(props) {
     const shouldShowControls = isTouchDevice ? true : showControls;
 
     const handleCoverError = () => {
-        console.warn('Cover image failed to load for track:', track.trackId);
+        logger.warn('Cover image failed to load for track:', track.trackId);
         setCoverError(true);
     };
 

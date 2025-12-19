@@ -11,7 +11,9 @@ export default function PlaylistsPage() {
             <TrackSection
                 title={t('my_playlists')}
                 tracks={ways}
-                onMoreClick={() => console.log(t('more_pressed'))}
+                onMoreClick={() => {
+                    // TODO: Implement "More" functionality for playlists
+                }}
             />
         </MusicSectionWrapper>
     );

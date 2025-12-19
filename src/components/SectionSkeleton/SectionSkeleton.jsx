@@ -14,7 +14,9 @@ export default function SectionSkeleton({
 
     return (
         <section>
-            <SectionHeader title={title} onMoreClick={() => console.log('More clicked on skeleton')}/>
+            <SectionHeader title={title} onMoreClick={() => {
+                // Skeleton section - no action needed
+            }}/>
             <div className="skeleton-container">
                 {isError ? (
                     <div className="skeleton-error">

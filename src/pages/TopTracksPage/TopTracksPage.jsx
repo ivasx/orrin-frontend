@@ -11,7 +11,9 @@ export default function TopTracksPage() {
             <TrackSection
                 title={t('top_tracks')}
                 tracks={ways}
-                onMoreClick={() => console.log(t('more_pressed'))}
+                onMoreClick={() => {
+                    // TODO: Implement "More" functionality for top tracks
+                }}
             />
         </MusicSectionWrapper>
     );

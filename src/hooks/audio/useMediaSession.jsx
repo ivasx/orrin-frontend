@@ -3,6 +3,7 @@
  * Responsible for: metadata, playbackState, action handlers
  */
 import { useEffect } from 'react';
+import { logger } from '../../utils/logger';
 
 export function useMediaSession(
     trackFromQueue,
@@ -26,7 +27,7 @@ export function useMediaSession(
                 navigator.mediaSession.setActionHandler('previoustrack', null);
                 navigator.mediaSession.setActionHandler('nexttrack', null);
             } catch (error) {
-                console.error("Media Session clear error:", error);
+                logger.error("Media Session clear error:", error);
             }
             return;
         }
@@ -50,30 +51,30 @@ export function useMediaSession(
 
         try {
             navigator.mediaSession.setActionHandler('play', () => {
-                console.log("Media Session: Play");
+                logger.log("Media Session: Play");
                 resumeTrack();
             });
             navigator.mediaSession.setActionHandler('pause', () => {
-                console.log("Media Session: Pause");
+                logger.log("Media Session: Pause");
                 pauseTrack();
             });
             navigator.mediaSession.setActionHandler('stop', () => {
-                console.log("Media Session: Stop");
+                logger.log("Media Session: Stop");
                 stopTrack();
             });
             navigator.mediaSession.setActionHandler('previoustrack', () => {
-                console.log("Media Session: Previous");
+                logger.log("Media Session: Previous");
                 previousTrack();
             });
             navigator.mediaSession.setActionHandler('nexttrack', () => {
-                console.log("Media Session: Next");
+                logger.log("Media Session: Next");
                 nextTrack();
             });
             navigator.mediaSession.setActionHandler('seekbackward', null);
             navigator.mediaSession.setActionHandler('seekforward', null);
             navigator.mediaSession.setActionHandler('seekto', null);
         } catch (error) {
-            console.error("Media Session handler error:", error);
+            logger.error("Media Session handler error:", error);
         }
 
     }, [trackFromQueue, isPlaying, resumeTrack, pauseTrack, stopTrack, nextTrack, previousTrack]);

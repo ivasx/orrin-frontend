@@ -1,6 +1,7 @@
 import { useState, useRef, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { logger } from '../../utils/logger';
 import {
     Heart,
     MessageCircle,
@@ -41,12 +42,10 @@ function FeedPost({ post }) {
     };
 
     const handleRepost = () => {
-        console.log('Repost:', post.id);
         // TODO: Implement repost logic
     };
 
     const handleShare = () => {
-        console.log('Share:', post.id);
         // TODO: Implement share logic
     };
 
@@ -89,19 +88,25 @@ function FeedPost({ post }) {
         {
             id: 'save',
             label: t('post_save', 'Зберегти'),
-            action: () => console.log('Save post')
+            action: () => {
+                // TODO: Implement save post functionality
+            }
         },
         {
             id: 'copy-link',
             label: t('post_copy_link', 'Копіювати посилання'),
-            action: () => console.log('Copy link')
+            action: () => {
+                // TODO: Implement copy link functionality
+            }
         },
         { type: 'separator' },
         {
             id: 'report',
             label: t('post_report', 'Поскаржитись'),
             variant: 'danger',
-            action: () => console.log('Report post')
+            action: () => {
+                // TODO: Implement report post functionality
+            }
         }
     ];
 

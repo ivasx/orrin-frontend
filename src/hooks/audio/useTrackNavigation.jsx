@@ -3,6 +3,7 @@
  * Responsible for: next, previous, playTrackByIndex
  */
 import {useCallback} from 'react';
+import { logger } from '../../utils/logger';
 
 const REWIND_THRESHOLD_SECONDS = 3;
 
@@ -21,7 +22,7 @@ export function useTrackNavigation(
             setIsPlaying(true);
             setHasRepeatedOnce(false);
         } else {
-            console.warn(`Attempted to play track with invalid index: ${index}`);
+            logger.warn(`Attempted to play track with invalid index: ${index}`);
             setIsPlaying(false);
             setCurrentIndex(-1);
         }

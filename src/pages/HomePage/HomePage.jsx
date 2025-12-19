@@ -10,6 +10,7 @@ import EmptyStateSection from '../../components/EmptyStateSection/EmptyStateSect
 import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
 import {useTranslation} from "react-i18next";
 import {getTracks, getArtists} from '../../services/api';
+import { logger } from '../../utils/logger';
 
 export default function HomePage() {
 
@@ -73,7 +74,9 @@ export default function HomePage() {
                         <TrackSection
                             title={t('listen_now')}
                             tracks={listenNowTracksData || []}
-                            onMoreClick={() => console.log(t('more_pressed'))}
+                            onMoreClick={() => {
+                                // TODO: Implement "More" functionality for Listen Now section
+                            }}
                         />
                         {/* Індикатор фонового оновлення */}
                         {isFetchingTracks && !isLoadingTracks &&
@@ -99,7 +102,9 @@ export default function HomePage() {
                         <ArtistSection
                             title={t('popular_artists')}
                             artists={popularArtistsData || []}
-                            onMoreClick={() => console.log(t('more_pressed'))}
+                            onMoreClick={() => {
+                                // TODO: Implement "More" functionality for Popular Artists section
+                            }}
                         />
                         {/* Індикатор фонового оновлення */}
                         {isFetchingArtists && !isLoadingArtists &&
@@ -115,7 +120,9 @@ export default function HomePage() {
                         promptText={t('login_prompt_text')}
                         buttonText={t('login_prompt_button')}
                         onLoginClick={() => setIsLoggedIn(true)}
-                        onMoreClick={() => console.log(t('more_from_friends'))}
+                        onMoreClick={() => {
+                            // TODO: Implement "More" functionality for From Friends section
+                        }}
                     />
                 ) : isLoadingFriends ? (
                     <SectionSkeleton title={t('from_friends')}/>
@@ -123,32 +130,21 @@ export default function HomePage() {
                     <TrackSection
                         title={t('from_friends')}
                         tracks={friendsRecommendations}
-                        onMoreClick={() => console.log(t('more_from_friends'))}
+                        onMoreClick={() => {
+                            // TODO: Implement "More" functionality for From Friends section
+                        }}
                     />
                 ) : (
                     <EmptyStateSection
                         title={t('from_friends')}
                         message={t('empty_state_message')}
-                        onMoreClick={() => console.log(t('more_from_friends'))}
+                        onMoreClick={() => {
+                            // TODO: Implement "More" functionality for From Friends section
+                        }}
                     />
                 )}
             </MusicSectionWrapper>
 
-            <MusicSectionWrapper spacing="default">
-                <TrackSection
-                    title={t('listen_now')}
-                    tracks={listenNowTracksData || []}
-                    onMoreClick={() => console.log(t('more_pressed'))}
-                />
-            </MusicSectionWrapper>
-
-            <MusicSectionWrapper spacing="default">
-                <TrackSection
-                    title={t('listen_now')}
-                    tracks={listenNowTracksData || []}
-                    onMoreClick={() => console.log(t('more_pressed'))}
-                />
-            </MusicSectionWrapper>
         </>
     );
 }

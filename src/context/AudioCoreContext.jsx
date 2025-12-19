@@ -9,6 +9,7 @@ import { useTrackNavigation } from '../hooks/audio/useTrackNavigation';
 import { useTrackEndHandler } from '../hooks/audio/useTrackEndHandler';
 import { useMediaSession } from '../hooks/audio/useMediaSession';
 import { useMediaSessionPosition } from '../hooks/audio/useMediaSessionPosition';
+import { logger } from '../utils/logger';
 
 const AudioCoreContext = createContext();
 
@@ -54,8 +55,8 @@ export const AudioCoreProvider = ({ children }) => {
     );
 
     const playTrack = useCallback((trackData, trackList = null) => {
-        console.log("[AudioCoreContext playTrack] Отримано trackData:", trackData);
-        console.log("[AudioCoreContext playTrack] trackData.audio (має бути URL):", trackData?.audio);
+        logger.log("[AudioCoreContext playTrack] Отримано trackData:", trackData);
+        logger.log("[AudioCoreContext playTrack] trackData.audio (має бути URL):", trackData?.audio);
 
         if (trackList && Array.isArray(trackList)) {
             const formattedTrackList = trackList.map(t => {
@@ -66,7 +67,7 @@ export const AudioCoreProvider = ({ children }) => {
                     cover: t.cover_url,
                 } : t;
             });
-            console.log("[AudioCoreContext playTrack] Форматований trackList для черги:", formattedTrackList);
+            logger.log("[AudioCoreContext playTrack] Форматований trackList для черги:", formattedTrackList);
             initializeQueue(formattedTrackList, trackData.trackId);
         } else {
             const indexInCurrentQueue = queue.findIndex(t => t.trackId === trackData.trackId);

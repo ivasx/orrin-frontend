@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './Auth.css';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
+import { logger } from '../../utils/logger';
 
 export default function Register() {
     const { t } = useTranslation();
@@ -74,7 +75,8 @@ export default function Register() {
     }, [birthDay, birthMonth, birthYear, trigger, touchedFields]);
 
     const onSubmit = (data) => {
-        console.log("Data for submission:", data);
+        // TODO: Implement registration functionality
+        logger.log("Data for submission:", data);
     };
 
     const months = useMemo(() => ([

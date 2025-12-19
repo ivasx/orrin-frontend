@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
 import './Auth.css';
+import { logger } from '../../utils/logger';
 
 export default function Login() {
     const { t } = useTranslation();
@@ -14,11 +15,13 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login attempt with:', formData);
+        // TODO: Implement login functionality
+        logger.log('Login attempt with:', formData);
     };
 
     const handleSocialLogin = (provider) => {
-        console.log(`Login with ${provider}`);
+        // TODO: Implement social login functionality
+        logger.log(`Login with ${provider}`);
     };
 
     const handleChange = (e) => {

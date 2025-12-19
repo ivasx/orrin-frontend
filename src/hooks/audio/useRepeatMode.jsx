@@ -3,6 +3,7 @@
  * Responsible for: repeatMode (off/all/one), hasRepeatedOnce (for 'one' mode)
  */
 import { useState, useCallback } from 'react';
+import { logger } from '../../utils/logger';
 
 export function useRepeatMode() {
     const [repeatMode, setRepeatMode] = useState('off'); // 'off', 'all', 'one'
@@ -16,7 +17,7 @@ export function useRepeatMode() {
                 setHasRepeatedOnce(false);
             }
 
-            console.log(`Toggling repeat mode from ${prev} to ${nextMode}`);
+            logger.log(`Toggling repeat mode from ${prev} to ${nextMode}`);
             return nextMode;
         });
     }, []);

@@ -71,7 +71,9 @@ export default function SearchResultsPage() {
                                 <ArtistSection
                                     title={t('found_artists')}
                                     artists={foundArtists}
-                                    onMoreClick={() => console.log('More artists clicked')}
+                                    onMoreClick={() => {
+                                        // TODO: Implement "More" functionality for artists
+                                    }}
                                 />
                             </MusicSectionWrapper>
                         )}
@@ -81,7 +83,9 @@ export default function SearchResultsPage() {
                                 <TrackSection
                                     title={t('found_tracks')}
                                     tracks={foundTracks}
-                                    onMoreClick={() => console.log('More tracks clicked')}
+                                    onMoreClick={() => {
+                                        // TODO: Implement "More" functionality for tracks
+                                    }}
                                 />
                             </MusicSectionWrapper>
                         )}
