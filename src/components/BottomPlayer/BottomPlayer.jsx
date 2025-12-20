@@ -20,6 +20,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         currentTrack: rawCurrentTrack, isPlaying, pauseTrack, resumeTrack,
         nextTrack, previousTrack, audioRef,
         repeatMode, toggleRepeat,
+        isLoading: contextIsLoading, loadError: contextLoadError,
     } = useAudioCore();
 
     const {isShuffled, toggleShuffle} = useQueue();
@@ -29,8 +30,9 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const currentTrack = rawCurrentTrack ? normalizeTrackData(rawCurrentTrack) : null;
     const isPlayable = currentTrack ? isTrackPlayable(currentTrack) : false;
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [loadError, setLoadError] = useState(null);
+    // Use loading state from context, but keep local state for retry logic
+    const isLoading = contextIsLoading;
+    const loadError = contextLoadError;
     const [retryCount, setRetryCount] = useState(0);
     const MAX_RETRY_ATTEMPTS = 3;
 
@@ -43,81 +45,45 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         handleMouseDown, formatTime
     } = useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack);
 
+    // Reset retry count when track changes or error is cleared
     useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const handleLoadStart = () => {
-            setIsLoading(true);
-            setLoadError(null);
-        };
-
-        const handleCanPlay = () => {
-            setIsLoading(false);
-            setLoadError(null);
+        if (!loadError) {
             setRetryCount(0);
+        }
+    }, [loadError, currentTrack?.trackId]);
+
+    // Format error message for display (using translation)
+    const getErrorMessage = (error) => {
+        if (!error) return null;
+        
+        if (typeof error === 'string') {
+            return error;
+        }
+        
+        if (error.message) {
+            return error.message;
+        }
+        
+        // Map error types to translated messages
+        const errorMessages = {
+            network: t('player_error_network', 'Помилка мережі'),
+            decode: t('player_error_decode', 'Помилка декодування'),
+            format: t('player_error_format', 'Формат не підтримується'),
+            aborted: t('player_error_aborted', 'Завантаження перервано'),
+            unknown: t('player_error_unknown', 'Помилка відтворення'),
         };
-
-        const handleError = (e) => {
-            logger.error("Audio Error:", e, audio.error);
-            setIsLoading(false);
-
-            let errorMessage = t('player_error_unknown', 'Помилка відтворення');
-            let errorType = 'unknown';
-
-            if (audio.error) {
-                switch (audio.error.code) {
-                    case MediaError.MEDIA_ERR_NETWORK:
-                        errorMessage = t('player_error_network', 'Помилка мережі');
-                        errorType = 'network';
-                        break;
-                    case MediaError.MEDIA_ERR_DECODE:
-                        errorMessage = t('player_error_decode', 'Помилка декодування');
-                        errorType = 'decode';
-                        break;
-                    case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                        errorMessage = t('player_error_format', 'Формат не підтримується');
-                        errorType = 'format';
-                        break;
-                    case MediaError.MEDIA_ERR_ABORTED:
-                        errorMessage = t('player_error_aborted', 'Завантаження перервано');
-                        errorType = 'aborted';
-                        break;
-                }
-            }
-
-            setLoadError({message: errorMessage, type: errorType});
-        };
-
-        const handleStalled = () => setIsLoading(true);
-        const handleWaiting = () => setIsLoading(true);
-
-        audio.addEventListener('loadstart', handleLoadStart);
-        audio.addEventListener('canplay', handleCanPlay);
-        audio.addEventListener('canplaythrough', handleCanPlay);
-        audio.addEventListener('error', handleError);
-        audio.addEventListener('stalled', handleStalled);
-        audio.addEventListener('waiting', handleWaiting);
-
-        return () => {
-            audio.removeEventListener('loadstart', handleLoadStart);
-            audio.removeEventListener('canplay', handleCanPlay);
-            audio.removeEventListener('canplaythrough', handleCanPlay);
-            audio.removeEventListener('error', handleError);
-            audio.removeEventListener('stalled', handleStalled);
-            audio.removeEventListener('waiting', handleWaiting);
-        };
-    }, [audioRef, t]);
+        
+        return errorMessages[error.type] || errorMessages.unknown;
+    };
 
     const handleRetry = useCallback(() => {
         if (!currentTrack || !isPlayable) return;
 
-        setLoadError(null);
-        setIsLoading(true);
         setRetryCount(prev => prev + 1);
 
         const audio = audioRef.current;
         if (audio) {
+            // Reload and retry playback
             audio.load();
             audio.play().catch(err => {
                 logger.error("Retry play failed:", err);

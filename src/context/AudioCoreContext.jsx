@@ -4,6 +4,7 @@ import { useQueue } from './QueueContext';
 import { useAudioElement } from '../hooks/audio/useAudioElement';
 import { useAudioPlayback } from '../hooks/audio/useAudioPlayback';
 import { useAudioVolume } from '../hooks/audio/useAudioVolume';
+import { useAudioLoading } from '../hooks/audio/useAudioLoading';
 import { useRepeatMode } from '../hooks/audio/useRepeatMode';
 import { useTrackNavigation } from '../hooks/audio/useTrackNavigation';
 import { useTrackEndHandler } from '../hooks/audio/useTrackEndHandler';
@@ -43,6 +44,7 @@ export const AudioCoreProvider = ({ children }) => {
     } = useAudioPlayback(audioRef, trackFromQueue);
 
     const { volume, isMuted, updateVolume, toggleMute } = useAudioVolume(audioRef);
+    const { isLoading, loadError } = useAudioLoading(audioRef);
 
     const { playTrackByIndex, nextTrack, previousTrack } = useTrackNavigation(
         queue,
@@ -127,7 +129,8 @@ export const AudioCoreProvider = ({ children }) => {
         isMuted,
         currentTime: audioRef.current?.currentTime || 0,
         duration: audioRef.current?.duration || 0,
-        isLoading: false, // TODO: Додати стан завантаження з окремого хука, якщо потрібно
+        isLoading,
+        loadError,
         playTrack,
         pauseTrack,
         resumeTrack,
@@ -142,7 +145,7 @@ export const AudioCoreProvider = ({ children }) => {
 
         isTrackPlaying: (trackId) => trackFromQueue?.trackId === trackId && isPlaying,
     }), [
-        trackFromQueue, isPlaying, repeatMode, volume, isMuted,
+        trackFromQueue, isPlaying, repeatMode, volume, isMuted, isLoading, loadError,
         playTrack, pauseTrack, resumeTrack, stopTrack, nextTrack, previousTrack,
         toggleRepeat, updateVolume, toggleMute, seek, seekToPercent, audioRef
     ]);
