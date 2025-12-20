@@ -10,6 +10,7 @@ import { SettingsProvider } from './context/SettingsContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 import HeaderOnlyLayout from './layouts/HeaderOnlyLayout.jsx';
 import BottomPlayer from './components/BottomPlayer/BottomPlayer.jsx';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.jsx';
 
 import HomePage from './pages/HomePage/HomePage.jsx';
 import FeedPage from './pages/FeedPage/FeedPage.jsx';
@@ -78,7 +79,9 @@ function AppContent() {
                 <Route path="/login" element={<LoginPage />} />
             </Routes>
 
-            <BottomPlayer ref={playerRef} />
+            <ErrorBoundary>
+                <BottomPlayer ref={playerRef} />
+            </ErrorBoundary>
         </div>
     );
 }
@@ -86,15 +89,17 @@ function AppContent() {
 export default function App() {
     return (
         <Router>
-            <SettingsProvider>
-                <QueueProvider>
-                    <PlayerUIProvider>
-                        <AudioCoreProvider>
-                            <AppContent />
-                        </AudioCoreProvider>
-                    </PlayerUIProvider>
-                </QueueProvider>
-            </SettingsProvider>
+            <ErrorBoundary>
+                <SettingsProvider>
+                    <QueueProvider>
+                        <PlayerUIProvider>
+                            <AudioCoreProvider>
+                                <AppContent />
+                            </AudioCoreProvider>
+                        </PlayerUIProvider>
+                    </QueueProvider>
+                </SettingsProvider>
+            </ErrorBoundary>
         </Router>
     );
 }

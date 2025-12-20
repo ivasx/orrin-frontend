@@ -153,6 +153,11 @@
     "error_loading_track": "Error loading track",
     "track_not_found": "Track not found",
     "searching": "Searching...",
-    "type_something_in_search_field": "Type something in the search field."
+    "type_something_in_search_field": "Type something in the search field.",
+    "error_occurred": "Something went wrong",
+    "error_unknown": "Unknown error",
+    "error_details": "Error details",
+    "reload_page": "Reload page",
+    "try_again": "Try again"
   }
 }
