@@ -1,61 +1,67 @@
-// src/pages/HomePage/HomePage.jsx
-
-import {useState, useEffect} from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from "react-i18next";
 import TrackSection from '../../components/TrackSection/TrackSection.jsx';
 import ArtistSection from '../../components/ArtistSection/ArtistSection.jsx';
 import MusicSectionWrapper from "../../components/MusicSectionWrapper/MusicSectionWrapper.jsx";
 import LoginPromptSection from '../../components/LoginPromptSection/LoginPromptSection.jsx';
 import EmptyStateSection from '../../components/EmptyStateSection/EmptyStateSection.jsx';
 import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
-import {useTranslation} from "react-i18next";
-import {getTracks, getArtists} from '../../services/api';
-import { logger } from '../../utils/logger';
+import Spinner from '../../components/Spinner/Spinner.jsx';
+import { getTracks, getArtists, getFriendsActivity } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+
+// Helper component for background updates
+const UpdatingIndicator = () => (
+    <div style={{ display: 'flex', alignItems: 'center', marginLeft: '12px', opacity: 0.7 }}>
+        <div style={{ transform: 'scale(0.6)' }}>
+            <Spinner />
+        </div>
+    </div>
+);
 
 export default function HomePage() {
+    const { t } = useTranslation();
+    const { isLoggedIn, login } = useAuth();
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [friendsRecommendations, setFriendsRecommendations] = useState([]);
-    const [isLoadingFriends, setIsLoadingFriends] = useState(false);
-    const {t} = useTranslation();
-
-    // Запит для треків
+    // 1. Tracks Query
     const {
-        data: listenNowTracksData,
+        data: tracks = [],
         isLoading: isLoadingTracks,
         isFetching: isFetchingTracks,
         isError: isTracksError,
         error: tracksError,
         refetch: refetchTracks,
     } = useQuery({
-        queryKey: ['tracks', 'list'],
+        queryKey: ['tracks', 'listen-now'],
         queryFn: getTracks,
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 
-    // Запит для артистів
+    // 2. Artists Query
     const {
-        data: popularArtistsData,
+        data: artists = [],
         isLoading: isLoadingArtists,
         isFetching: isFetchingArtists,
         isError: isArtistsError,
         error: artistsError,
         refetch: refetchArtists,
     } = useQuery({
-        queryKey: ['artists', 'list'],
+        queryKey: ['artists', 'popular'],
         queryFn: getArtists,
+        staleTime: 1000 * 60 * 10, // 10 minutes
     });
 
-    useEffect(() => {
-        if (isLoggedIn) {
-            setIsLoadingFriends(true);
-            setTimeout(() => {
-                setFriendsRecommendations([]);
-                setIsLoadingFriends(false);
-            }, 1500);
-        } else {
-            setFriendsRecommendations([]);
-        }
-    }, [isLoggedIn]);
+    // 3. Friends Query
+    const {
+        data: friendsActivity = [],
+        isLoading: isLoadingFriends,
+        isError: isFriendsError,
+    } = useQuery({
+        queryKey: ['friends', 'activity'],
+        queryFn: getFriendsActivity,
+        enabled: isLoggedIn,
+        retry: 1,
+    });
 
     return (
         <>
@@ -67,25 +73,20 @@ export default function HomePage() {
                         title={t('listen_now')}
                         isError={true}
                         error={tracksError}
-                        onRetry={() => refetchTracks()}
+                        onRetry={refetchTracks}
                     />
                 ) : (
-                    <>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <TrackSection
                             title={t('listen_now')}
-                            tracks={listenNowTracksData || []}
-                            onMoreClick={() => {
-                                // TODO: Implement "More" functionality for Listen Now section
-                            }}
+                            tracks={tracks}
+                            onMoreClick={() => { /* TODO: Navigate to full list */ }}
                         />
-                        {/* Індикатор фонового оновлення */}
-                        {isFetchingTracks && !isLoadingTracks &&
-                            <span style={{marginLeft: '10px', fontSize: '0.8em', color: '#888'}}>🔄 Оновлення...</span>}
-                    </>
+                        {isFetchingTracks && !isLoadingTracks && <UpdatingIndicator />}
+                    </div>
                 )}
             </MusicSectionWrapper>
 
-            {/* --- Секція популярних артистів --- */}
             <MusicSectionWrapper spacing="default">
                 {isLoadingArtists ? (
                     <SectionSkeleton title={t('popular_artists')} />
@@ -94,22 +95,17 @@ export default function HomePage() {
                         title={t('popular_artists')}
                         isError={true}
                         error={artistsError}
-                        onRetry={() => refetchArtists()}
-                        errorMessageKey="error_loading_artists"
+                        onRetry={refetchArtists}
                     />
                 ) : (
-                    <>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <ArtistSection
                             title={t('popular_artists')}
-                            artists={popularArtistsData || []}
-                            onMoreClick={() => {
-                                // TODO: Implement "More" functionality for Popular Artists section
-                            }}
+                            artists={artists}
+                            onMoreClick={() => { /* TODO: Navigate to full list */ }}
                         />
-                        {/* Індикатор фонового оновлення */}
-                        {isFetchingArtists && !isLoadingArtists &&
-                            <span style={{marginLeft: '10px', fontSize: '0.8em', color: '#888'}}>🔄 Оновлення...</span>}
-                    </>
+                        {isFetchingArtists && !isLoadingArtists && <UpdatingIndicator />}
+                    </div>
                 )}
             </MusicSectionWrapper>
 
@@ -119,32 +115,31 @@ export default function HomePage() {
                         title={t('from_friends')}
                         promptText={t('login_prompt_text')}
                         buttonText={t('login_prompt_button')}
-                        onLoginClick={() => setIsLoggedIn(true)}
-                        onMoreClick={() => {
-                            // TODO: Implement "More" functionality for From Friends section
+                        onLoginClick={() => {
+                            // TODO: Redirect to login page
+                            console.log("Redirect to login...");
                         }}
                     />
                 ) : isLoadingFriends ? (
-                    <SectionSkeleton title={t('from_friends')}/>
-                ) : friendsRecommendations.length > 0 ? (
+                    <SectionSkeleton title={t('from_friends')} />
+                ) : isFriendsError ? (
+                    <EmptyStateSection
+                        title={t('from_friends')}
+                        message={t('error_loading_friends', 'Could not load friends activity.')}
+                    />
+                ) : friendsActivity.length > 0 ? (
                     <TrackSection
                         title={t('from_friends')}
-                        tracks={friendsRecommendations}
-                        onMoreClick={() => {
-                            // TODO: Implement "More" functionality for From Friends section
-                        }}
+                        tracks={friendsActivity}
+                        onMoreClick={() => { /* TODO: Navigate to friends page */ }}
                     />
                 ) : (
                     <EmptyStateSection
                         title={t('from_friends')}
                         message={t('empty_state_message')}
-                        onMoreClick={() => {
-                            // TODO: Implement "More" functionality for From Friends section
-                        }}
                     />
                 )}
             </MusicSectionWrapper>
-
         </>
     );
 }

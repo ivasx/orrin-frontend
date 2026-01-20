@@ -1,70 +1,60 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from "react-i18next";
-import { useQuery } from '@tanstack/react-query';
+import {useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import FeedFilters from '../../components/FeedFilters/FeedFilters.jsx';
 import FeedPost from '../../components/FeedPost/FeedPost.jsx';
 import CreatePost from '../../components/CreatePost/CreatePost.jsx';
-import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
-import { getTracks } from '../../services/api';
-import { mockPosts } from '../../data/mockData';
+import {getFeedPosts} from '../../services/api';
 import './FeedPage.css';
 
 export default function FeedPage() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
+    const queryClient = useQueryClient();
+
     const [activeTab, setActiveTab] = useState('recommended');
     const [filters, setFilters] = useState({
         contentType: null,
         sort: 'newest'
     });
-    const [posts, setPosts] = useState([]);
-    const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
-    const handlePostCreated = (newPost) => {
-        setPosts([newPost, ...posts]);
+    // Fetch posts using React Query.
+    // The query key includes filters, so it auto-refetches when filters change.
+    const {
+        data: posts = [],
+        isLoading: isLoadingPosts
+    } = useQuery({
+        queryKey: ['feed', activeTab, filters],
+        queryFn: () => getFeedPosts({
+            type: activeTab,
+            sort: filters.sort,
+            contentType: filters.contentType
+        }),
+        // This keeps the old list visible while the new filter is loading
+        // to prevent UI flickering.
+        keepPreviousData: true,
+    });
+
+    const handlePostCreated = () => {
+        // Invalidate the feed query to trigger a background refetch
+        // so the new post appears immediately.
+        queryClient.invalidateQueries({queryKey: ['feed']});
     };
 
-    // Завантаження постів (поки що використовуємо моки)
-    useEffect(() => {
-        setIsLoadingPosts(true);
-        // Симулюємо завантаження
-        setTimeout(() => {
-            let filteredPosts = [...mockPosts];
-
-            // Застосовуємо фільтри
-            if (filters.contentType === 'with_music') {
-                filteredPosts = filteredPosts.filter(post => post.attachedTrack);
-            } else if (filters.contentType === 'text_only') {
-                filteredPosts = filteredPosts.filter(post => !post.attachedTrack);
-            }
-
-            // Застосовуємо сортування
-            if (filters.sort === 'popular') {
-                filteredPosts.sort((a, b) => b.likesCount - a.likesCount);
-            } else if (filters.sort === 'discussed') {
-                filteredPosts.sort((a, b) => b.commentsCount - a.commentsCount);
-            }
-
-            setPosts(filteredPosts);
-            setIsLoadingPosts(false);
-        }, 500);
-    }, [activeTab, filters]);
-
-    // Якщо це сторінка "Відстежуються" і користувач не авторизований
     const renderEmptyState = () => {
         if (activeTab === 'following') {
             return (
                 <div className="feed-empty-state">
-                    <h3>{t('feed_no_following', 'Ви ще не відстежуєте нікого')}</h3>
-                    <p>{t('feed_no_following_desc', 'Почніть відстежувати артистів та користувачів, щоб бачити їхні пости тут')}</p>
+                    <h3>{t('feed_no_following', 'You are not following anyone yet')}</h3>
+                    <p>{t('feed_no_following_desc', 'Start following artists and users to see their posts here')}</p>
                 </div>
             );
         }
 
         return (
             <div className="feed-empty-state">
-                <h3>{t('feed_no_posts', 'Поки що немає постів')}</h3>
-                <p>{t('feed_no_posts_desc', 'Спробуйте змінити фільтри або перейдіть на іншу вкладку')}</p>
+                <h3>{t('feed_no_posts', 'No posts yet')}</h3>
+                <p>{t('feed_no_posts_desc', 'Try changing filters or switch to another tab')}</p>
             </div>
         );
     };
@@ -80,18 +70,18 @@ export default function FeedPage() {
 
             <MusicSectionWrapper spacing="default">
                 <div className="feed-posts-container">
-                    {/* Форма створення поста */}
-                    <CreatePost onPostCreated={handlePostCreated} />
+                    <CreatePost onPostCreated={handlePostCreated}/>
 
                     {isLoadingPosts ? (
                         <>
-                            <div className="feed-post-skeleton" />
-                            <div className="feed-post-skeleton" />
-                            <div className="feed-post-skeleton" />
+                            {/* Simple skeleton loading state */}
+                            <div className="feed-post-skeleton"/>
+                            <div className="feed-post-skeleton"/>
+                            <div className="feed-post-skeleton"/>
                         </>
                     ) : posts.length > 0 ? (
                         posts.map(post => (
-                            <FeedPost key={post.id} post={post} />
+                            <FeedPost key={post.id} post={post}/>
                         ))
                     ) : (
                         renderEmptyState()

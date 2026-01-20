@@ -1,11 +1,9 @@
-/* Основний контейнер */
 .AppContainer {
     min-height: 100vh;
     background: #000000;
     color: #ffffff;
 }
 
-/* Header завжди на повну ширину - перевизначаємо стилі */
 .AppContainer .header {
     position: fixed !important;
     top: 0 !important;
@@ -22,27 +20,23 @@
     margin: 0 auto !important;
 }
 
-/* Основний контент */
 .main-content {
     margin-left: 72px;
-    margin-top: 64px; /* Висота header */
+    margin-top: 64px;
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     min-height: calc(100vh - 64px);
     display: flex;
     flex-direction: column;
 }
 
-/* Контент з відкритим сайдбаром */
 .main-content--shifted {
     margin-left: 240px;
 }
 
-/* Контент зі згорнутим сайдбаром */
 .main-content--full {
     margin-left: 72px;
 }
 
-/* Обгортка для основного вмісту */
 .main-wrapper {
     flex: 1;
     padding: 0 24px 100px;
@@ -56,8 +50,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-bottom: 0; /* Прибираємо зайвий відступ знизу */
-    margin-top: 70px; /* Висота хедера */
+    padding-bottom: 0;
+    margin-top: 70px;
     min-height: calc(100vh - 70px);
 }
 
@@ -69,6 +63,31 @@
     padding-bottom: calc(var(--player-height, 84px));
 }
 
+.mini-loader {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #e1e1e1;
+    border-top: 2px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.update-status {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    font-size: 0.8em;
+    color: #888;
+}
+
 @media (max-width: 480px) {
     .player-visible .sidebar {
         height: calc(100vh - var(--player-height, 120px));
@@ -78,7 +97,7 @@
         padding-bottom: var(--player-height, 120px);
     }
 }
-/* Мобільна версія */
+
 @media (max-width: 768px) {
     .header {
         position: fixed;
@@ -99,7 +118,7 @@
     }
 }
 
-/* Планшетна версія */
+
 @media (min-width: 769px) and (max-width: 1024px) {
     .main-content--shifted {
         margin-left: 200px;
@@ -110,7 +129,6 @@
     }
 }
 
-/* Великі екрани */
 @media (min-width: 1400px) {
     .main-wrapper {
         padding: 0 32px 100px;
