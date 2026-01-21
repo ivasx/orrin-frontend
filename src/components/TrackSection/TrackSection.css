@@ -1,3 +1,9 @@
+.track-section {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
 .track-section-grid {
     display: grid;
     grid-auto-flow: column;

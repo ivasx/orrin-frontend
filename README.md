@@ -1,213 +1,213 @@
 # Orrin Frontend
 
-**[🇺🇦 Українська](README.md)** | [🇬🇧 English](README-ENG.md)
+[🇺🇦 Українська](README-UK.md) | **[🇬🇧 English](README.md)**
 
-Фронтенд частина веб-додатку **Orrin** — музичного сервісу з елементами соціальної мережі.
+Frontend part of **Orrin** web application — a music service with social network elements.
 
 [![React](https://img.shields.io/badge/React-19.1.1-61dafb?logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.7-646cff?logo=vite)](https://vitejs.dev/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.90.5-ff4154?logo=react-query)](https://tanstack.com/query)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## 📋 Опис проекту
+## 📋 Project Description
 
-Orrin — це інноваційний веб-додаток, який поєднує функціонал музичного сервісу та соціальної мережі. Користувачі можуть не лише слухати музику, але й взаємодіяти з друзями, ділитися враженнями та отримувати цікаву інформацію про улюблені треки.
+Orrin is an innovative web application that combines the functionality of a music service and a social network. Users can not only listen to music, but also interact with friends, share impressions and get interesting information about their favorite tracks.
 
-### ✨ Основні можливості
+### ✨ Key Features
 
-- ✅ **Прослуховування музики** — якісне відтворення треків з інтуїтивним плеєром
-- ✅ **Соціальна взаємодія** — слідкування за активністю друзів та обмін треками
-- ✅ **Коментарі та нотатки** — обговорення треків та створення власних нотаток до артистів
-- ✅ **Інформаційні сторінки** — детальна інформація про артистів, історія, дискографія
-- ✅ **Інтелектуальний пошук** — пошук треків та артистів з підказками та історією
-- ✅ **Черга відтворення** — управління списком треків з підтримкою shuffle та repeat
-- ✅ **Media Session API** — інтеграція з системними медіа-контролами
-- ✅ **Контекстні меню** — швидкий доступ до функцій треків
-- ✅ **Багатомовність** — підтримка української та англійської мов
-- ✅ **Адаптивний дизайн** — оптимізація для всіх типів пристроїв
-- 🔄 **Досягнення та гейміфікація** — нагороди за активність (в розробці)
-- 🔄 **Офлайн-режим** — завантаження треків для прослуховування без інтернету (в розробці)
+- ✅ **Music Playback** — high-quality track playback with intuitive player
+- ✅ **Social Interaction** — follow friends' activity and share tracks
+- ✅ **Comments and Notes** — discuss tracks and create personal notes for artists
+- ✅ **Information Pages** — detailed information about artists, history, discography
+- ✅ **Smart Search** — search for tracks and artists with suggestions and history
+- ✅ **Playback Queue** — manage track list with shuffle and repeat support
+- ✅ **Media Session API** — integration with system media controls
+- ✅ **Context Menus** — quick access to track functions
+- ✅ **Multilingual** — support for Ukrainian and English
+- ✅ **Responsive Design** — optimization for all device types
+- 🔄 **Achievements and Gamification** — rewards for activity (in development)
+- 🔄 **Offline Mode** — download tracks for listening without internet (in development)
 
-## 🛠 Технології
+## 🛠 Technologies
 
-Проект побудований на сучасному стеку технологій:
+The project is built on a modern technology stack:
 
 ### Core
-- **React 19.1.1** — бібліотека для побудови користувацького інтерфейсу
-- **Vite 7.1.7** — швидкий інструмент для розробки та збірки
-- **React Router DOM 7.9.3** — маршрутизація на стороні клієнта
+- **React 19.1.1** — library for building user interfaces
+- **Vite 7.1.7** — fast development and build tool
+- **React Router DOM 7.9.3** — client-side routing
 
 ### State Management & Data Fetching
-- **Context API** — управління глобальним станом
-    - `AudioCoreContext` — управління аудіоплеєром
-    - `QueueContext` — управління чергою відтворення
-    - `PlayerUIContext` — управління UI плеєра
-    - `SettingsContext` — налаштування додатку
-- **TanStack Query 5.90.5** — управління серверним станом, кешування та синхронізація даних
+- **Context API** — global state management
+    - `AudioCoreContext` — audio player management
+    - `QueueContext` — playback queue management
+    - `PlayerUIContext` — player UI management
+    - `SettingsContext` — app settings
+- **TanStack Query 5.90.5** — server state management, caching and data synchronization
 
 ### Forms & Validation
-- **React Hook Form 7.65.0** — управління формами
-- **Yup 1.7.1** — валідація схем
-- **@hookform/resolvers 5.2.2** — інтеграція валідації з формами
+- **React Hook Form 7.65.0** — form management
+- **Yup 1.7.1** — schema validation
+- **@hookform/resolvers 5.2.2** — validation integration with forms
 
 ### Internationalization
-- **i18next 25.6.0** — інтернаціоналізація
-- **react-i18next 16.0.1** — React інтеграція для i18next
-- **i18next-browser-languagedetector 8.2.0** — автоматичне визначення мови
+- **i18next 25.6.0** — internationalization
+- **react-i18next 16.0.1** — React integration for i18next
+- **i18next-browser-languagedetector 8.2.0** — automatic language detection
 
 ### UI & Icons
-- **Lucide React 0.545.0** — бібліотека іконок
-- **React Icons 5.5.0** — додаткові іконки
+- **Lucide React 0.545.0** — icon library
+- **React Icons 5.5.0** — additional icons
 
 ### Styling
-- **CSS3** — стилізація компонентів з CSS модулями
-- **CSS Custom Properties** — динамічні теми
-- **Responsive Design** — адаптивний дизайн
+- **CSS3** — component styling with CSS modules
+- **CSS Custom Properties** — dynamic themes
+- **Responsive Design** — adaptive design
 
 ### Development Tools
-- **ESLint 9.36.0** — лінтинг коду
-- **Docker** — контейнеризація додатку
-- **TanStack Query DevTools** — інструменти розробника для Query
+- **ESLint 9.36.0** — code linting
+- **Docker** — application containerization
+- **TanStack Query DevTools** — developer tools for Query
 
-## 📁 Структура проекту
+## 📁 Project Structure
 
 ```
 orrin-frontend/
-├── public/                          # Публічні статичні файли
-│   ├── orrin-logo.svg              # Логотип додатку
-│   └── songs/                       # Аудіо файли (demo)
+├── public/                          # Public static files
+│   ├── orrin-logo.svg              # App logo
+│   └── songs/                       # Audio files (demo)
 ├── src/
-│   ├── assets/                      # Ресурси (зображення, аудіо)
-│   ├── components/                  # Перевикористовувані UI компоненти
-│   │   ├── ArtistCard/             # Картка артиста
-│   │   ├── ArtistNotesTab/         # Вкладка нотаток артиста
-│   │   ├── ArtistSection/          # Секція артистів
-│   │   ├── BottomPlayer/           # Нижній плеєр
-│   │   ├── CreatePost/             # Створення поста
-│   │   ├── Dropdown/               # Випадаюче меню
-│   │   ├── EmptyStateSection/      # Порожній стан
-│   │   ├── FeedFilters/            # Фільтри стрічки
-│   │   ├── FeedPost/               # Пост у стрічці
-│   │   ├── Header/                 # Шапка сайту
-│   │   ├── LoginPromptSection/     # Запит на вхід
-│   │   ├── MusicLyrics/            # Тексти пісень
-│   │   ├── MusicSectionWrapper/    # Обгортка музичних секцій
-│   │   ├── NoteCard/               # Картка нотатки
-│   │   ├── OptionsMenu/            # Контекстне меню
-│   │   ├── SectionHeader/          # Заголовок секції
-│   │   ├── SectionSkeleton/        # Скелетон завантаження
-│   │   ├── Sidebar/                # Бокова панель
-│   │   ├── Spinner/                # Індикатор завантаження
-│   │   ├── TrackCard/              # Картка треку
-│   │   └── TrackSection/           # Секція треків
-│   ├── constants/                   # Константи та fallback значення
-│   │   └── fallbacks.js            # Нормалізація даних
+│   ├── assets/                      # Resources (images, audio)
+│   ├── components/                  # Reusable UI components
+│   │   ├── ArtistCard/             # Artist card
+│   │   ├── ArtistNotesTab/         # Artist notes tab
+│   │   ├── ArtistSection/          # Artists section
+│   │   ├── BottomPlayer/           # Bottom player
+│   │   ├── CreatePost/             # Create post
+│   │   ├── Dropdown/               # Dropdown menu
+│   │   ├── EmptyStateSection/      # Empty state
+│   │   ├── FeedFilters/            # Feed filters
+│   │   ├── FeedPost/               # Feed post
+│   │   ├── Header/                 # Site header
+│   │   ├── LoginPromptSection/     # Login prompt
+│   │   ├── MusicLyrics/            # Music lyrics
+│   │   ├── MusicSectionWrapper/    # Music section wrapper
+│   │   ├── NoteCard/               # Note card
+│   │   ├── OptionsMenu/            # Context menu
+│   │   ├── SectionHeader/          # Section header
+│   │   ├── SectionSkeleton/        # Loading skeleton
+│   │   ├── Sidebar/                # Sidebar
+│   │   ├── Spinner/                # Loading indicator
+│   │   ├── TrackCard/              # Track card
+│   │   └── TrackSection/           # Tracks section
+│   ├── constants/                   # Constants and fallback values
+│   │   └── fallbacks.js            # Data normalization
 │   ├── context/                     # React Contexts
-│   │   ├── AudioCoreContext.jsx    # Ядро аудіо системи
-│   │   ├── PlayerUIContext.jsx     # UI стан плеєра
-│   │   ├── QueueContext.jsx        # Черга відтворення
-│   │   └── SettingsContext.jsx     # Налаштування
-│   ├── data/                        # Mock дані
-│   │   └── mockData.js             # Дані для розробки
+│   │   ├── AudioCoreContext.jsx    # Audio system core
+│   │   ├── PlayerUIContext.jsx     # Player UI state
+│   │   ├── QueueContext.jsx        # Playback queue
+│   │   └── SettingsContext.jsx     # Settings
+│   ├── data/                        # Mock data
+│   │   └── mockData.js             # Development data
 │   ├── hooks/                       # Custom React Hooks
-│   │   ├── audio/                   # Хуки для аудіо
-│   │   ├── useMarquee.jsx          # Анімація прокрутки тексту
-│   │   └── useProgressBar.jsx      # Прогрес-бар
-│   ├── i18n/                        # Локалізація
-│   │   ├── i18n.js                 # Конфігурація i18n
-│   │   ├── en.json                 # Англійські переклади
-│   │   └── uk.json                 # Українські переклади
-│   ├── layouts/                     # Макети сторінок
-│   │   ├── HeaderOnlyLayout.jsx    # Макет тільки з header
-│   │   └── MainLayout.jsx          # Основний макет
-│   ├── pages/                       # Компоненти сторінок
-│   │   ├── ArtistPage/             # Сторінка артиста
-│   │   ├── Auth/                    # Аутентифікація
-│   │   ├── FavoritesPage/          # Улюблене
-│   │   ├── FeedPage/               # Стрічка
-│   │   ├── HistoryPage/            # Історія
-│   │   ├── HomePage/               # Головна
-│   │   ├── LibraryPage/            # Бібліотека
+│   │   ├── audio/                   # Audio hooks
+│   │   ├── useMarquee.jsx          # Text scroll animation
+│   │   └── useProgressBar.jsx      # Progress bar
+│   ├── i18n/                        # Localization
+│   │   ├── i18n.js                 # i18n configuration
+│   │   ├── en.json                 # English translations
+│   │   └── uk.json                 # Ukrainian translations
+│   ├── layouts/                     # Page layouts
+│   │   ├── HeaderOnlyLayout.jsx    # Header-only layout
+│   │   └── MainLayout.jsx          # Main layout
+│   ├── pages/                       # Page components
+│   │   ├── ArtistPage/             # Artist page
+│   │   ├── Auth/                    # Authentication
+│   │   ├── FavoritesPage/          # Favorites
+│   │   ├── FeedPage/               # Feed
+│   │   ├── HistoryPage/            # History
+│   │   ├── HomePage/               # Home
+│   │   ├── LibraryPage/            # Library
 │   │   ├── NotFoundPage/           # 404
-│   │   ├── PlaylistsPage/          # Плейлісти
-│   │   ├── RadioPage/              # Радіо
-│   │   ├── SearchResultsPage/      # Результати пошуку
-│   │   ├── SettingsPage/           # Налаштування
-│   │   ├── TopTracksPage/          # Топ треки
-│   │   └── TrackPage/              # Сторінка треку
-│   ├── services/                    # API сервіси
-│   │   └── api.js                  # HTTP запити до бекенду
-│   ├── App.jsx                      # Головний компонент
-│   ├── App.css                      # Стилі додатку
-│   ├── data.js                      # Тестові дані (mock)
-│   ├── main.jsx                     # Вхідна точка
-│   └── index.css                    # Глобальні стилі
-├── .dockerignore                    # Виключення для Docker
-├── Dockerfile                       # Production збірка
-├── Dockerfile.dev                   # Development збірка
-├── nginx.conf                       # Конфігурація Nginx
-├── eslint.config.js                 # ESLint конфігурація
-├── vite.config.js                   # Vite конфігурація
-├── package.json                     # Залежності проекту
-└── README.md                        # Цей файл
+│   │   ├── PlaylistsPage/          # Playlists
+│   │   ├── RadioPage/              # Radio
+│   │   ├── SearchResultsPage/      # Search results
+│   │   ├── SettingsPage/           # Settings
+│   │   ├── TopTracksPage/          # Top tracks
+│   │   └── TrackPage/              # Track page
+│   ├── services/                    # API services
+│   │   └── api.js                  # HTTP requests to backend
+│   ├── App.jsx                      # Main component
+│   ├── App.css                      # App styles
+│   ├── data.js                      # Test data (mock)
+│   ├── main.jsx                     # Entry point
+│   └── index.css                    # Global styles
+├── .dockerignore                    # Docker exclusions
+├── Dockerfile                       # Production build
+├── Dockerfile.dev                   # Development build
+├── nginx.conf                       # Nginx configuration
+├── eslint.config.js                 # ESLint configuration
+├── vite.config.js                   # Vite configuration
+├── package.json                     # Project dependencies
+└── README.md                        # This file
 ```
 
-## 🚀 Встановлення та запуск
+## 🚀 Installation and Setup
 
-### Вимоги
+### Requirements
 
-- Node.js (версія 20 або вища)
-- npm (версія 8 або вища)
+- Node.js (version 20 or higher)
+- npm (version 8 or higher)
 
-### ⚠️ Важливо: Backend API
+### ⚠️ Important: Backend API
 
-**Для коректної роботи додатку необхідно запустити backend сервер!**
+**For correct operation of the application, you need to run the backend server!**
 
-Backend знаходиться в окремому репозиторії: [orrin-backend](https://github.com/ivasx/orrin-backend)
+The backend is located in a separate repository: [orrin-backend](https://github.com/ivasx/orrin-backend)
 
-Переконайтеся, що backend запущено за адресою `http://127.0.0.1:8000` або оновіть змінну середовища `VITE_API_BASE_URL` у файлі `.env`:
+Make sure the backend is running at `http://127.0.0.1:8000` or update the `VITE_API_BASE_URL` environment variable in the `.env` file:
 
 ```env
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-### Інсталяція
+### Installation
 
-1. **Клонуйте репозиторій:**
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/ivasx/orrin-frontend.git
 cd orrin-frontend
 ```
 
-2. **Встановіть залежності:**
+2. **Install dependencies:**
 ```bash
 npm install
 ```
 
-3. **Створіть файл `.env` (опціонально):**
+3. **Create `.env` file (optional):**
 ```bash
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-4. **Запустіть проект у режимі розробки:**
+4. **Run the project in development mode:**
 ```bash
 npm run dev
 ```
 
-5. **Відкрийте браузер за адресою:**
+5. **Open browser at:**
 ```
 http://localhost:5173
 ```
 
-### Збірка для продакшену
+### Production Build
 
 ```bash
 npm run build
 ```
 
-Готові файли будуть у папці `dist/`.
+The finished files will be in the `dist/` folder.
 
-### Перегляд продакшн збірки
+### Preview Production Build
 
 ```bash
 npm run preview
@@ -218,180 +218,180 @@ npm run preview
 ### Development
 
 ```bash
-# Збірка dev образу
+# Build dev image
 docker build -f Dockerfile.dev -t orrin-frontend-dev .
 
-# Запуск dev контейнера
+# Run dev container
 docker run -p 5173:5173 -v $(pwd):/app orrin-frontend-dev
 ```
 
 ### Production
 
 ```bash
-# Збірка production образу
+# Build production image
 docker build -t orrin-frontend .
 
-# Запуск production контейнера
+# Run production container
 docker run -p 80:80 orrin-frontend
 ```
 
-## 🎯 Основні компоненти
+## 🎯 Main Components
 
 ### Header
-Шапка сайту з логотипом, інтелектуальним пошуком та навігацією. Підтримує:
-- Адаптивний дизайн з мобільним меню
-- Пошук з підказками та історією
-- Автоматичне визначення мови
+Website header with logo, smart search, and navigation. Supports:
+- Responsive design with mobile menu
+- Search with suggestions and history
+- Automatic language detection
 
 ### TrackCard
-Компонент картки треку з можливістю:
-- Відтворення/паузи з ripple ефектом
-- Контекстного меню (play, pause, mute, volume, share, download)
-- Візуальних ефектів (анімовані індикатори відтворення)
-- Адаптації під touch та desktop пристрої
-- Навігації до сторінки треку та артиста
+Track card component with the following features:
+- Play/pause with ripple effect
+- Context menu (play, pause, mute, volume, share, download)
+- Visual effects (animated playback indicators)
+- Adaptation for touch and desktop devices
+- Navigation to track and artist pages
 
 ### AudioCoreContext
-Глобальний контекст для управління відтворенням музики:
-- Централізоване управління станом плеєра
-- Синхронізація між компонентами
-- Підтримка списку відтворення та черги
-- Режими повтору (off, all, one)
-- Інтеграція з Media Session API
+Global context for music playback management:
+- Centralized player status management
+- Synchronization between components
+- Playlist and queue support
+- Repeat modes (off, all, one)
+- Integration with Media Session API
 
 ### TanStack Query Integration
-Управління серверним станом:
-- Автоматичне кешування запитів
-- Фонове оновлення даних
-- Оптимістичні оновлення
-- Обробка помилок та повторні спроби
-- DevTools для відлагодження
+Server state management:
+- Automatic request caching
+- Background data updates
+- Optimistic updates
+- Error handling and retry logic
+- DevTools for debugging
 
-## 💡 Особливості реалізації
+## 💡 Implementation Features
 
-### Управління станом
-- Використання React Context API для глобального стану UI
-- TanStack Query для серверного стану та кешування
-- Розділення логіки на окремі контексти (Audio, Queue, UI, Settings)
-- Локальний стан компонентів через useState та useEffect
-- Мемоізація callback-функцій через useCallback та useMemo
+### State Management
+- Using React Context API for global UI state
+- TanStack Query for server state and caching
+- Separating logic into separate contexts (Audio, Queue, UI, Settings)
+- Local component state via useState and useEffect
+- Memoization of callback functions via useCallback and useMemo
 
-### Робота з API
-- Централізовані API запити через `src/services/api.js`
-- Нормалізація даних через `src/constants/fallbacks.js`
-- Fallback на mock-дані при недоступності API
-- Автоматична обробка помилок завантаження
+### API Integration
+- Centralized API requests through `src/services/api.js`
+- Data normalization through `src/constants/fallbacks.js`
+- Fallback to mock data when API is unavailable
+- Automatic loading error handling
 
-### Адаптивність
-- Mobile-first підхід
-- Підтримка touch-жестів
-- Оптимізація під різні розміри екранів
-- Адаптивні контекстні меню
+### Responsiveness
+- Mobile-first approach
+- Touch gesture support
+- Optimization for different screen sizes
+- Adaptive context menus
 
-### Доступність
-- Семантичний HTML
-- ARIA-атрибути для всіх інтерактивних елементів
-- Клавіатурна навігація в меню
-- Підтримка screen readers
+### Accessibility
+- Semantic HTML
+- ARIA attributes for all interactive elements
+- Keyboard navigation in menus
+- Screen reader support
 
-### Продуктивність
-- Lazy loading зображень
-- Оптимізація ре-рендерів через React.memo та useMemo
-- Ефективне управління подіями
-- Throttling для drag операцій
-- Дебаунсинг для пошуку
-- Кешування запитів через TanStack Query
+### Performance
+- Lazy loading of images
+- Re-render optimization via React.memo and useMemo
+- Efficient event management
+- Throttling for drag operations
+- Debouncing for search
+- Request caching via TanStack Query
 
-### Інтернаціоналізація
-- Підтримка української та англійської мов
-- Автоматичне визначення мови браузера
-- Збереження вибору мови в localStorage
-- Перемикання мови без перезавантаження
+### Internationalization
+- Support for Ukrainian and English languages
+- Automatic browser language detection
+- Saving language selection in localStorage
+- Language switching without reloading
 
 ### Media Session API
-- Інтеграція з системними медіа-контролами
-- Відображення обкладинки, назви та артиста
-- Оновлення прогресу відтворення
-- Обробка команд (play, pause, previous, next)
+- Integration with system media controls
+- Display of cover art, title, and artist
+- Playback progress updates
+- Command processing (play, pause, previous, next)
 
-## 🎨 Кастомізація
+## 🎨 Customization
 
-### Теми
-Додаток використовує CSS Custom Properties для кастомізації. Основні змінні:
+### Themes
+The app uses CSS Custom Properties for customization. Main variables:
 ```css
 :root {
-  --player-height: 84px; /* Player UI height */
+  --player-height: 84px; /* Player height */
 }
 ```
 
-### Локалізація
-Для додавання нової мови:
-1. Створіть файл `src/i18n/{код_мови}.json`
-2. Додайте переклади за зразком існуючих файлів
-3. Імпортуйте та зареєструйте в `src/i18n/i18n.js`
+### Localization
+To add a new language:
+1. Create a file `src/i18n/{language_code}.json`
+2. Add translations following the example of existing files
+3. Import and register in `src/i18n/i18n.js`
 
 ## 🔧 API Integration
 
-Додаток інтегрується з backend API через `src/services/api.js`.
+The application integrates with the backend API through `src/services/api.js`.
 
-### Основні endpoints:
-- `GET /api/v1/tracks/` — отримання списку треків
-- `GET /api/v1/tracks/{slug}/` — деталі треку
-- `GET /api/v1/artists/` — список артистів
-- `GET /api/v1/artists/{slug}/` — деталі артиста
+### Main endpoints:
+- `GET /api/v1/tracks/` — get list of tracks
+- `GET /api/v1/tracks/{slug}/` — track details
+- `GET /api/v1/artists/` — list of artists
+- `GET /api/v1/artists/{slug}/` — artist details
 
-### Fallback механізм
-При недоступності API, додаток автоматично використовує mock-дані з `src/data.js` та `src/data/mockData.js`.
+### Fallback Mechanism
+When the API is unavailable, the application automatically uses mock data from `src/data.js` and `src/data/mockData.js`.
 
-## 🤝 Внесок у проект
+## 🤝 Contributing
 
-Ми відкриті до внесків! Якщо ви хочете допомогти:
+We are open to contributions! If you want to help:
 
-1. Зробіть fork проекту
-2. Створіть гілку для вашої функції:
+1. Fork the project
+2. Create a branch for your feature:
    ```bash
    git checkout -b feature/AmazingFeature
    ```
-3. Зробіть commit змін:
+3. Commit the changes:
    ```bash
    git commit -m 'Add some AmazingFeature'
    ```
-4. Відправте зміни:
+4. Push the changes:
    ```bash
    git push origin feature/AmazingFeature
    ```
-5. Відкрийте Pull Request
+5. Open Pull Request
 
 ### Coding Guidelines
-- Використовуйте ESLint для перевірки коду
-- Дотримуйтесь існуючої структури компонентів
-- Додавайте коментарі для складної логіки
-- Створюйте окремі CSS файли для стилів компонентів
-- Використовуйте функціональні компоненти та хуки
-- Використовуйте TanStack Query для запитів до API
+- Use ESLint to check your code
+- Follow the existing component structure
+- Add comments for complex logic
+- Create separate CSS files for component styles
+- Use functional components and hooks
+- Use TanStack Query for API requests
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Автори
+## 👨‍💻 Authors
 
-- **Івас** - [@ivasx](https://github.com/ivasx)
+- **Ivas** - [@ivasx](https://github.com/ivasx)
 
-## 📞 Контакти
+## 📞 Contact
 
-Якщо у вас є питання або пропозиції, зв'яжіться з нами:
+If you have any questions or suggestions, please contact us:
 - **Email:** ambroziak.v.ivan@gmail.com
 - **GitHub Issues:** [orrin-frontend/issues](https://github.com/ivasx/orrin-frontend/issues)
 
-## 🙏 Подяки
+## 🙏 Acknowledgements
 
-- [React](https://reactjs.org/) за чудову бібліотеку
-- [Vite](https://vitejs.dev/) за швидкий dev server
-- [TanStack Query](https://tanstack.com/query) за управління серверним станом
-- [Lucide](https://lucide.dev/) за красиві іконки
-- [i18next](https://www.i18next.com/) за інтернаціоналізацію
+- [React](https://reactjs.org/) for the excellent library
+- [Vite](https://vitejs.dev/) for the fast dev server
+- [TanStack Query](https://tanstack.com/query) for server state management
+- [Lucide](https://lucide.dev/) for the beautiful icons
+- [i18next](https://www.i18next.com/) for internationalization
 
 ---
 
-**Orrin** — музика, яка об'єднує! 🎵
+**Orrin** — music that brings people together! 🎵

@@ -157,6 +157,11 @@
     "error_unknown": "Невідома помилка",
     "error_details": "Деталі помилки",
     "reload_page": "Перезавантажити сторінку",
-    "try_again": "Спробувати ще раз"
+    "try_again": "Спробувати ще раз",
+    "to_start_using_the_library_log_in": "Щоб почати користуватись бібліотекою увійдіть",
+    "error_loading_library": "Помилка завнтаження бібліотеки",
+    "login_to_see_favorites": "Щоб побачити улюблені увійдіть.",
+    "favorites_empty_title": "Вибраних ще немає",
+    "favorites_empty_msg": "Зберігайте улюблені треки, натискаючи значок серця"
   }
 }

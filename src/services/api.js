@@ -83,6 +83,24 @@ export const getTrackBySlug = async (slug) => {
     return normalizeTrackData(data);
 };
 
+export const getUserLibrary = async () => {
+    const data = await fetchJson('/api/v1/library/');
+    return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
+};
+
+export const getUserFavorites = async () => {
+    const data = await fetchJson('/api/v1/favorites/');
+    return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
+};
+
+export const getUserHistory = async () => {
+    const data = await fetchJson('/api/v1/history/');
+    const tracksRaw = Array.isArray(data) ? data : (data.results || []);
+    return Array.isArray(tracksRaw)
+        ? tracksRaw.map(normalizeTrackData).filter(Boolean)
+        : [];
+};
+
 /* --- ARTISTS --- */
 
 export const getArtists = async () => {

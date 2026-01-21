@@ -158,6 +158,16 @@
     "error_unknown": "Unknown error",
     "error_details": "Error details",
     "reload_page": "Reload page",
-    "try_again": "Try again"
+    "try_again": "Try again",
+    "to_start_using_the_library_log_in": "To start using the library, log in.",
+    "error_loading_library": "Error loading library",
+    "library_empty_title": "Your library is empty",
+    "library_empty_message": "Songs you add will appear here",
+    "login_to_see_favorites": "To start using the favorites, log in.",
+    "favorites_empty_title": "No favorites yet",
+    "favorites_empty_msg": "Save tracks you love by clicking the heart icon",
+    "login_to_see_history": "Log in to see what you've listened to",
+    "history_empty_title": "No history yet",
+    "history_empty_msg": "Listen to some tracks and they will show up here"
   }
 }
