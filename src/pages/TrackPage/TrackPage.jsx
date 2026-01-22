@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { getTrackBySlug } from '../../services/api';
 import { normalizeTrackData } from '../../constants/fallbacks.js';
-import MusicLyrics from '../../components/MusicLyrics/MusicLyrics';
+import MusicLyrics from '../../components/Shared/MusicLyrics/MusicLyrics';
 import './TrackPage.css';
 
 export default function TrackPage() {

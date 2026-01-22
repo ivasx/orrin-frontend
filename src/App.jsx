@@ -9,8 +9,8 @@ import { AudioCoreProvider, useAudioCore } from './context/AudioCoreContext.jsx'
 import { SettingsProvider } from './context/SettingsContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 import HeaderOnlyLayout from './layouts/HeaderOnlyLayout.jsx';
-import BottomPlayer from './components/BottomPlayer/BottomPlayer.jsx';
-import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.jsx';
+import BottomPlayer from './components/Layout/BottomPlayer/BottomPlayer.jsx';
+import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary.jsx';
 
 import HomePage from './pages/HomePage/HomePage.jsx';
 import FeedPage from './pages/FeedPage/FeedPage.jsx';

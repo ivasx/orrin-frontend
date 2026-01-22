@@ -1,0 +1,257 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: #000;
+    border-bottom: 1px solid #333;
+    z-index: 1200;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.menuToggle {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.navbarTogglerIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+
+.navbarTogglerIcon span {
+    display: block;
+    height: 3px;
+    background: #fff;
+    border-radius: 2px;
+    transition: background 0.2s;
+}
+
+.menuToggle:hover .navbarTogglerIcon span {
+    background: #636363;
+}
+
+.logoWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
+}
+
+.logo {
+    width: 49px;
+    height: 47px;
+}
+
+.siteName {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.searchDesktop {
+    margin-left: 5%;
+    margin-right: auto;
+    width: 100%;
+    max-width: 600px;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.searchToggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+}
+
+.searchToggle:hover {
+    opacity: 0.7;
+}
+
+.username {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #fff;
+    white-space: nowrap;
+}
+
+
+.registerBtn {
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    color: #fff !important;
+    white-space: nowrap !important;
+    padding: 0 !important;
+    background: transparent !important;
+    height: auto !important;
+    min-height: auto !important;
+}
+
+.registerBtn:hover {
+    color: #636363 !important;
+    background: transparent !important;
+}
+
+.loginBtn {
+    border-radius: 25px !important;
+    padding: 8px 20px !important;
+    min-width: 100px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    height: auto !important;
+    line-height: normal !important;
+}
+
+.logoutBtn {
+    border-radius: 25px !important;
+    padding: 8px 20px !important;
+    min-width: 100px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    height: auto !important;
+    line-height: normal !important;
+}
+
+.mobileSearch {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 70px;
+    background: #000;
+    z-index: 2500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobileSearchOpen {
+    display: flex;
+}
+
+.mobileSearchContainer {
+    width: 100%;
+    max-width: 350px;
+    padding: 0 20px;
+}
+
+@media (max-width: 991px) {
+    .searchDesktop {
+        max-width: 300px;
+        margin-left: 20px;
+    }
+}
+
+@media (max-width: 767px) {
+    .header {
+        height: 70px;
+    }
+
+    .container {
+        padding: 0 15px;
+        justify-content: space-between;
+    }
+
+    .searchDesktop {
+        display: none;
+    }
+
+    .searchToggle {
+        display: flex;
+    }
+
+    .mobileSearch {
+        height: 70px;
+    }
+
+    .mobileSearchContainer {
+        max-width: 280px;
+    }
+
+    .username {
+        display: none;
+    }
+
+
+    .registerBtn {
+        display: none !important;
+    }
+
+    .loginBtn,
+    .logoutBtn {
+        font-size: 0.75rem !important;
+        padding: 6px 15px !important;
+        min-width: 80px !important;
+        height: auto !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .logo {
+        width: 40px;
+        height: 38px;
+    }
+
+    .logoWrapper {
+        margin-left: 5px;
+    }
+
+    .siteName {
+        font-size: 1rem;
+    }
+
+    .menuToggle {
+        width: 24px;
+        height: 18px;
+    }
+
+    .navbarTogglerIcon span {
+        height: 2.5px;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobileSearch {
+        display: none !important;
+    }
+}

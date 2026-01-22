@@ -1,4 +1,4 @@
-import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
+import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import { useSettings } from '../../context/SettingsContext';
 import './SettingsPage.css';
 import { useTranslation } from 'react-i18next';

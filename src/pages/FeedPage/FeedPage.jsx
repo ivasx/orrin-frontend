@@ -1,10 +1,10 @@
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
-import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
-import FeedFilters from '../../components/FeedFilters/FeedFilters.jsx';
-import FeedPost from '../../components/FeedPost/FeedPost.jsx';
-import CreatePost from '../../components/CreatePost/CreatePost.jsx';
+import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
+import FeedFilters from './FeedFilters/FeedFilters.jsx';
+import FeedPost from '../../components/Shared/FeedPost/FeedPost.jsx';
+import CreatePost from '../../components/Shared/CreatePost/CreatePost.jsx';
 import {getFeedPosts} from '../../services/api';
 import './FeedPage.css';
 

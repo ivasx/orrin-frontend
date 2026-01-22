@@ -6,17 +6,17 @@ import {Play, MoreVertical} from 'lucide-react';
 import './ArtistPage.css';
 import { logger } from '../../utils/logger';
 
-import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
-import TrackSection from '../../components/TrackSection/TrackSection.jsx';
-import ArtistSection from '../../components/ArtistSection/ArtistSection.jsx';
-import ArtistCard from '../../components/ArtistCard/ArtistCard.jsx';
-import ArtistNotesTab from '../../components/ArtistNotesTab/ArtistNotesTab.jsx';
+import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
+import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
+import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection.jsx';
+import ArtistCard from '../../components/Shared/ArtistCard/ArtistCard.jsx';
+import ArtistNotesTab from './ArtistNotesTab/ArtistNotesTab.jsx';
 import {useAudioCore} from '../../context/AudioCoreContext.jsx';
 
 import {useQuery} from '@tanstack/react-query';
 import {getArtistById, getTracksByIds} from '../../services/api.js'; // getTracks for discography, until there is an album API
 import {normalizeArtistData, normalizeTrackData} from '../../constants/fallbacks.js';
-import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
+import SectionSkeleton from '../../components/UI/SectionSkeleton/SectionSkeleton.jsx';
 
 
 function AboutTab({artist}) {

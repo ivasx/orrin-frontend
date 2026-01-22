@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ways, popularArtists } from '../../data';
-import TrackSection from '../../components/TrackSection/TrackSection';
-import ArtistSection from '../../components/ArtistSection/ArtistSection';
-import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper';
+import TrackSection from '../../components/Shared/TrackSection/TrackSection';
+import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection';
+import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper';
 import './SearchResultsPage.css';
 
 export default function SearchResultsPage() {

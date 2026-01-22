@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import MusicSectionWrapper from '../../components/MusicSectionWrapper/MusicSectionWrapper.jsx';
-import TrackSection from '../../components/TrackSection/TrackSection.jsx';
-import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
-import LoginPromptSection from '../../components/LoginPromptSection/LoginPromptSection.jsx';
-import EmptyStateSection from '../../components/EmptyStateSection/EmptyStateSection.jsx';
+import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
+import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
+import SectionSkeleton from '../../components/UI/SectionSkeleton/SectionSkeleton.jsx';
+import LoginPromptSection from '../../components/Shared/LoginPromptSection/LoginPromptSection.jsx';
+import EmptyStateSection from '../../components/UI/EmptyStateSection/EmptyStateSection.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getUserHistory } from '../../services/api.js';
 import { logger } from '../../utils/logger.js';

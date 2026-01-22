@@ -1,0 +1,130 @@
+.container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #272727;
+    border: 1px solid #fff;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+
+.container::-webkit-scrollbar {
+    width: 8px;
+}
+.container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.container::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+.container::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.item {
+    padding: 12px 16px;
+    padding-right: 44px;
+    font-size: 0.875rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    min-height: 44px;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.item:hover {
+    background-color: #333;
+}
+
+.loading .item {
+    color: #888;
+    cursor: default;
+    border-bottom: none;
+    justify-content: center;
+}
+.loading .item:hover {
+    background-color: transparent;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    flex-shrink: 0;
+}
+
+.svgIcon {
+    display: block;
+}
+
+.text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.removeBtn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+    pointer-events: none;
+}
+
+.item:hover .removeBtn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.removeBtn:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+@media (max-width: 1024px) {
+    .removeBtn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}

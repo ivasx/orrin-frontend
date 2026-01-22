@@ -141,3 +141,20 @@ export const getCurrentUser = async () => {
     const data = await fetchJson('/api/v1/users/me/');
     return normalizeUserData(data);
 };
+
+/* --- SEARCH --- */
+
+export const searchGlobal = async (query) => {
+    const [tracks, artists] = await Promise.all([
+        fetchJson(`/api/v1/tracks/?search=${encodeURIComponent(query)}`),
+        fetchJson(`/api/v1/artists/?search=${encodeURIComponent(query)}`)
+    ]);
+
+    const normalizedTracks = (Array.isArray(tracks) ? tracks : tracks.results || []).map(normalizeTrackData);
+    const normalizedArtists = (Array.isArray(artists) ? artists : artists.results || []).map(normalizeArtistData);
+
+    return {
+        tracks: normalizedTracks,
+        artists: normalizedArtists
+    };
+};

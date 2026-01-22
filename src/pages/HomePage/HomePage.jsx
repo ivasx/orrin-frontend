@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from "react-i18next";
-import TrackSection from '../../components/TrackSection/TrackSection.jsx';
-import ArtistSection from '../../components/ArtistSection/ArtistSection.jsx';
-import MusicSectionWrapper from "../../components/MusicSectionWrapper/MusicSectionWrapper.jsx";
-import LoginPromptSection from '../../components/LoginPromptSection/LoginPromptSection.jsx';
-import EmptyStateSection from '../../components/EmptyStateSection/EmptyStateSection.jsx';
-import SectionSkeleton from '../../components/SectionSkeleton/SectionSkeleton.jsx';
-import Spinner from '../../components/Spinner/Spinner.jsx';
+import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
+import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection.jsx';
+import MusicSectionWrapper from "../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx";
+import LoginPromptSection from '../../components/Shared/LoginPromptSection/LoginPromptSection.jsx';
+import EmptyStateSection from '../../components/UI/EmptyStateSection/EmptyStateSection.jsx';
+import SectionSkeleton from '../../components/UI/SectionSkeleton/SectionSkeleton.jsx';
+import Spinner from '../../components/UI/Spinner/Spinner.jsx';
 import { getTracks, getArtists, getFriendsActivity } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 

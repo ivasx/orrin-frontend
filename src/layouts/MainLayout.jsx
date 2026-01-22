@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Outlet} from 'react-router-dom';
-import Header from '../components/Header/Header.jsx';
-import Sidebar from '../components/Sidebar/Sidebar.jsx';
+import Header from '../components/Layout/Header/Header.jsx';
+import Sidebar from '../components/Layout/Sidebar/Sidebar.jsx';
 import {useAudioCore} from '../context/AudioCoreContext.jsx';
 
 export default function MainLayout() {
