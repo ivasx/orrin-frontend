@@ -64,7 +64,9 @@ function AppContent() {
                     <Route path="/favorites" element={<FavoritesPage />} />
                     <Route path="/history" element={<HistoryPage />} />
                     <Route path="/top" element={<TopTracksPage />} />
-                    <Route path="/radio" element={<RadioPage />} />
+
+                    {/*TODO: [Radio Feature] Temporarily disabled.*/}
+                    {/*<Route path="/radio" element={<RadioPage />} />*/}
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/track/:trackId" element={<TrackPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
