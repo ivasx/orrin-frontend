@@ -1,14 +1,14 @@
-import {Outlet} from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Header from '../components/Layout/Header/Header.jsx';
-
 
 export default function HeaderOnlyLayout() {
     return (
-        <div className="AppContainer">
-            <Header/>
-            <main className="main-wrapper main-wrapper--full-page">
-                <Outlet/>
+        <>
+            <Header showMenuButton={false} />
+
+            <main style={{ paddingTop: 'var(--header-height, 64px)' }}>
+                <Outlet />
             </main>
-        </div>
+        </>
     );
 }

@@ -8,7 +8,7 @@ import styles from "./Header.module.css";
 import {logger} from '../../../utils/logger.js';
 import {Search} from 'lucide-react';
 
-export default function Header({user, onLogout, onMenuToggle}) {
+export default function Header({user, onLogout, onMenuToggle, showMenuButton = true}) {
     const {t} = useTranslation();
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
     const navigate = useNavigate();
@@ -33,18 +33,20 @@ export default function Header({user, onLogout, onMenuToggle}) {
         <header className={styles.header}>
             <div className={styles.container}>
                 <div className={styles.left}>
-                    <button
-                        className={styles.menuToggle}
-                        type="button"
-                        onClick={onMenuToggle}
-                        aria-label={t('open_menu')}
-                    >
-                        <span className={styles.navbarTogglerIcon}>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </span>
-                    </button>
+                    {showMenuButton && (
+                        <button
+                            className={styles.menuToggle}
+                            type="button"
+                            onClick={onMenuToggle}
+                            aria-label={t('open_menu')}
+                        >
+                            <span className={styles.navbarTogglerIcon}>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                        </button>
+                    )}
 
                     <div
                         className={styles.logoWrapper}

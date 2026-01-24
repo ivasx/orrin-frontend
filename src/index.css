@@ -1,3 +1,32 @@
+:root {
+    --color-primary: #af947e;
+    --color-primary-hover: #c3a994;
+    --color-error: #e53e3e;
+    --color-success: #1db954;
+    --color-bg-main: #151515;
+    --color-bg-base: #000000;
+    --color-surface-1: #1c1c1c;
+    --color-surface-2: #282828;
+    --color-surface-3: #333333;
+    --color-bg-glass-subtle: rgba(255, 255, 255, 0.03);
+    --color-bg-glass-light: rgba(255, 255, 255, 0.1);
+    --color-bg-glass-medium: rgba(255, 255, 255, 0.15);
+    --color-bg-overlay: rgba(0, 0, 0, 0.6);
+    --color-text-main: #ffffff;
+    --color-text-secondary: #b3b3b3;
+    --color-text-muted: #6a6a6a;
+    --color-text-inverse: #121212;
+    --color-border-main: #333333;
+    --color-border-subtle: rgba(255, 255, 255, 0.1);
+    --color-border-focus: #535353;
+    --font-main: 'Montserrat', sans-serif;
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-pill: 50px;
+    --transition-fast: 0.2s ease;
+    --shadow-main: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -6,7 +35,7 @@ html, body {
     overflow-x: hidden;
     margin: 0;
     padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    background: #151515;
-    color: #fff;
+    font-family: var(--font-main);
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
 }

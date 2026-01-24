@@ -1,0 +1,195 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 20px 80px 20px;
+    color: var(--color-text-main);
+    font-family: var(--font-main);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+}
+
+.section {
+    margin-bottom: 3rem;
+    background: var(--color-bg-glass-subtle);
+    border-radius: var(--border-radius-md);
+    padding: 24px;
+    border: 1px solid var(--color-bg-glass-subtle);
+}
+
+.sectionHeader {
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-text-main);
+}
+
+.sectionSubtitle {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.row:first-child {
+    padding-top: 0;
+}
+
+.labelGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 70%;
+}
+
+.label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-main);
+}
+
+.description {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+}
+
+.select {
+    appearance: none;
+    background-color: var(--color-bg-glass-light);
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-main);
+    padding: 10px 36px 10px 16px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+.select:hover {
+    background-color: var(--color-bg-glass-medium);
+}
+
+.select:focus {
+    outline: none;
+    border-color: var(--color-text-main);
+}
+
+.select option {
+    background-color: var(--color-surface-1);
+    color: var(--color-text-main);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-surface-3);
+    transition: .3s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--color-text-main);
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.switch input:checked + .slider {
+    background-color: var(--color-primary);
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.switch input:focus + .slider {
+    box-shadow: 0 0 1px var(--color-primary);
+}
+
+.version {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.link {
+    color: var(--color-text-main);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: border-color var(--transition-fast);
+}
+
+.link:hover {
+    border-color: var(--color-text-main);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+    .container { padding: 16px; }
+    .title { font-size: 2rem; }
+    .row { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .control { width: 100%; justify-content: space-between; }
+    .select { width: 100%; }
+    .switch { margin-left: auto; }
+}

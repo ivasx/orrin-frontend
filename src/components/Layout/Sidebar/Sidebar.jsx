@@ -25,10 +25,14 @@ export default function Sidebar({isOpen, onClose, isPlayerVisible}) {
     ], [t]);
 
     const libraryItems = useMemo(() => [
-        {icon: Music, label: t('sidebar_playlists'), path: '/playlists'},
+        // TODO: [Playlists Feature] Temporarily disabled.
+        // {icon: Music, label: t('sidebar_playlists'), path: '/playlists'},
+
         {icon: Heart, label: t('sidebar_favorites'), path: '/favorites'},
         {icon: Clock, label: t('sidebar_history'), path: '/history'},
-        {icon: TrendingUp, label: t('sidebar_top_tracks'), path: '/top'},
+
+        // TODO: [TopTracks Feature] Temporarily disabled.
+        // {icon: TrendingUp, label: t('sidebar_top_tracks'), path: '/top'},
 
         // TODO: [Radio Feature] Temporarily disabled.
         // { icon: Disc, label: t('sidebar_radio'), path: '/radio' }
