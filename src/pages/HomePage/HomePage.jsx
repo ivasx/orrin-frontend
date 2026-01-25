@@ -3,9 +3,7 @@ import { useTranslation } from "react-i18next";
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection.jsx';
 import MusicSectionWrapper from "../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx";
-import LoginPromptSection from '../../components/Shared/LoginPromptSection/LoginPromptSection.jsx';
-import EmptyStateSection from '../../components/UI/EmptyStateSection/EmptyStateSection.jsx';
-import SectionSkeleton from '../../components/UI/SectionSkeleton/SectionSkeleton.jsx';
+import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx'; // Новий універсальний компонент
 import Spinner from '../../components/UI/Spinner/Spinner.jsx';
 import { getTracks, getArtists, getFriendsActivity } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -21,7 +19,7 @@ const UpdatingIndicator = () => (
 
 export default function HomePage() {
     const { t } = useTranslation();
-    const { isLoggedIn, login } = useAuth();
+    const { isLoggedIn } = useAuth();
 
     // 1. Tracks Query
     const {
@@ -67,13 +65,16 @@ export default function HomePage() {
         <>
             <MusicSectionWrapper spacing="top-only">
                 {isLoadingTracks ? (
-                    <SectionSkeleton title={t('listen_now')} />
+                    <InfoSection title={t('listen_now')} isLoading={true} />
                 ) : isTracksError ? (
-                    <SectionSkeleton
+                    <InfoSection
                         title={t('listen_now')}
-                        isError={true}
                         error={tracksError}
-                        onRetry={refetchTracks}
+                        action={{
+                            label: t('retry'),
+                            onClick: refetchTracks,
+                            variant: 'secondary'
+                        }}
                     />
                 ) : (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -89,13 +90,16 @@ export default function HomePage() {
 
             <MusicSectionWrapper spacing="default">
                 {isLoadingArtists ? (
-                    <SectionSkeleton title={t('popular_artists')} />
+                    <InfoSection title={t('popular_artists')} isLoading={true} />
                 ) : isArtistsError ? (
-                    <SectionSkeleton
+                    <InfoSection
                         title={t('popular_artists')}
-                        isError={true}
                         error={artistsError}
-                        onRetry={refetchArtists}
+                        action={{
+                            label: t('retry'),
+                            onClick: refetchArtists,
+                            variant: 'secondary'
+                        }}
                     />
                 ) : (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -111,21 +115,24 @@ export default function HomePage() {
 
             <MusicSectionWrapper spacing="default">
                 {!isLoggedIn ? (
-                    <LoginPromptSection
+                    <InfoSection
                         title={t('from_friends')}
-                        promptText={t('login_prompt_text')}
-                        buttonText={t('login_prompt_button')}
-                        onLoginClick={() => {
-                            // TODO: Redirect to login page
-                            console.log("Redirect to login...");
+                        message={t('login_prompt_text')}
+                        action={{
+                            label: t('login_prompt_button'),
+                            onClick: () => {
+                                // TODO: Redirect to login page
+                                console.log("Redirect to login...");
+                            },
+                            variant: 'primary'
                         }}
                     />
                 ) : isLoadingFriends ? (
-                    <SectionSkeleton title={t('from_friends')} />
+                    <InfoSection title={t('from_friends')} isLoading={true} />
                 ) : isFriendsError ? (
-                    <EmptyStateSection
+                    <InfoSection
                         title={t('from_friends')}
-                        message={t('error_loading_friends', 'Could not load friends activity.')}
+                        message={t('error_loading_friends')}
                     />
                 ) : friendsActivity.length > 0 ? (
                     <TrackSection
@@ -134,7 +141,7 @@ export default function HomePage() {
                         onMoreClick={() => { /* TODO: Navigate to friends page */ }}
                     />
                 ) : (
-                    <EmptyStateSection
+                    <InfoSection
                         title={t('from_friends')}
                         message={t('empty_state_message')}
                     />
