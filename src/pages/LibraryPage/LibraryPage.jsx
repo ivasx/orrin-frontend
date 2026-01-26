@@ -1,12 +1,9 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
-import LoginPromptSection from '../../components/Shared/LoginPromptSection/LoginPromptSection.jsx';
-import Spinner from '../../components/UI/Spinner/Spinner.jsx';
-import EmptyStateSection from '../../components/UI/EmptyStateSection/EmptyStateSection.jsx';
+import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getUserLibrary } from '../../services/api.js';
 import { logger } from '../../utils/logger.js';
@@ -20,7 +17,8 @@ export default function LibraryPage() {
         data: tracks = [],
         isLoading,
         isError,
-        error
+        error,
+        refetch
     } = useQuery({
         queryKey: ['library'],
         queryFn: getUserLibrary,
@@ -30,11 +28,14 @@ export default function LibraryPage() {
     if (!isLoggedIn) {
         return (
             <MusicSectionWrapper spacing="top-only">
-                <LoginPromptSection
+                <InfoSection
                     title={t('your_library')}
-                    promptText={t('to_start_using_the_library_log_in')}
-                    buttonText={t('login')}
-                    onLoginClick={() => navigate('/login')}
+                    message={t('to_start_using_the_library_log_in')}
+                    action={{
+                        label: t('login'),
+                        onClick: () => navigate('/login'),
+                        variant: 'primary'
+                    }}
                 />
             </MusicSectionWrapper>
         );
@@ -43,7 +44,7 @@ export default function LibraryPage() {
     if (isLoading) {
         return (
             <MusicSectionWrapper spacing="top-only">
-                <Spinner />
+                <InfoSection title={t('your_library')} isLoading={true} />
             </MusicSectionWrapper>
         );
     }
@@ -52,9 +53,15 @@ export default function LibraryPage() {
         logger.error("Library fetch error", error);
         return (
             <MusicSectionWrapper spacing="top-only">
-                <div style={{ textAlign: 'center', color: 'red' }}>
-                    {t('error_loading_library')}
-                </div>
+                <InfoSection
+                    title={t('your_library')}
+                    error={error}
+                    action={{
+                        label: t('retry', 'Спробувати ще'),
+                        onClick: refetch,
+                        variant: 'outline'
+                    }}
+                />
             </MusicSectionWrapper>
         );
     }
@@ -70,9 +77,9 @@ export default function LibraryPage() {
                     }}
                 />
             ) : (
-                <EmptyStateSection
-                    title={t('library_empty_title')}
-                    description={t('library_empty_message')}
+                <InfoSection
+                    title={t('your_library')}
+                    message={t('library_empty_message', 'Ваша бібліотека порожня')}
                 />
             )}
         </MusicSectionWrapper>

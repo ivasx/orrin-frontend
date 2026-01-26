@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
-import SectionSkeleton from '../../components/UI/SectionSkeleton/SectionSkeleton.jsx';
-import LoginPromptSection from "../../components/Shared/LoginPromptSection/LoginPromptSection.jsx";
-import EmptyStateSection from '../../components/UI/EmptyStateSection/EmptyStateSection.jsx';
+import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx'; // Новий універсальний компонент
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getUserFavorites } from '../../services/api.js';
 import { logger } from '../../utils/logger.js';
@@ -27,15 +25,17 @@ export default function FavoritesPage() {
         enabled: isLoggedIn,
     });
 
-
     if (!isLoggedIn) {
         return (
             <MusicSectionWrapper spacing="top-only">
-                <LoginPromptSection
+                <InfoSection
                     title={t('favorites_tracks')}
-                    promptText={t('login_to_see_favorites')}
-                    buttonText={t('login')}
-                    onLoginClick={() => navigate('/login')}
+                    message={t('login_to_see_favorites')}
+                    action={{
+                        label: t('login'),
+                        onClick: () => navigate('/login'),
+                        variant: 'primary'
+                    }}
                 />
             </MusicSectionWrapper>
         );
@@ -44,7 +44,7 @@ export default function FavoritesPage() {
     if (isLoading) {
         return (
             <MusicSectionWrapper spacing="top-only">
-                <SectionSkeleton title={t('favorites_tracks')}/>
+                <InfoSection title={t('favorites_tracks')} isLoading={true} />
             </MusicSectionWrapper>
         );
     }
@@ -54,10 +54,14 @@ export default function FavoritesPage() {
 
         return (
             <MusicSectionWrapper spacing="top-only">
-                <SectionSkeleton
+                <InfoSection
                     title={t('favorites_tracks')}
-                    isError={true}
-                    onRetry={refetch}
+                    error={error}
+                    action={{
+                        label: t('retry', 'Спробувати ще'),
+                        onClick: refetch,
+                        variant: 'outline'
+                    }}
                 />
             </MusicSectionWrapper>
         );
@@ -72,9 +76,9 @@ export default function FavoritesPage() {
                     onMoreClick={() => logger.log("Load more favorites")}
                 />
             ) : (
-                <EmptyStateSection
+                <InfoSection
                     title={t('favorites_empty_title')}
-                    description={t('favorites_empty_msg')}
+                    message={t('favorites_empty_msg')}
                 />
             )}
         </MusicSectionWrapper>

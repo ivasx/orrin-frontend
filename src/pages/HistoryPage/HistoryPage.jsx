@@ -3,13 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
-import SectionSkeleton from '../../components/UI/SectionSkeleton/SectionSkeleton.jsx';
-import LoginPromptSection from '../../components/Shared/LoginPromptSection/LoginPromptSection.jsx';
-import EmptyStateSection from '../../components/UI/EmptyStateSection/EmptyStateSection.jsx';
+import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getUserHistory } from '../../services/api.js';
 import { logger } from '../../utils/logger.js';
-
 
 export default function HistoryPage() {
     const { t } = useTranslation();
@@ -28,15 +25,17 @@ export default function HistoryPage() {
         enabled: isLoggedIn,
     });
 
-
     if (!isLoggedIn) {
         return (
             <MusicSectionWrapper spacing="top-only">
-                <LoginPromptSection
+                <InfoSection
                     title={t('listening_history')}
-                    promptText={t('login_to_see_history')}
-                    buttonText={t('login')}
-                    onLoginClick={() => navigate('/login')}
+                    message={t('login_to_see_history')}
+                    action={{
+                        label: t('login'),
+                        onClick: () => navigate('/login'),
+                        variant: 'primary'
+                    }}
                 />
             </MusicSectionWrapper>
         );
@@ -45,7 +44,7 @@ export default function HistoryPage() {
     if (isLoading) {
         return (
             <MusicSectionWrapper spacing="top-only">
-                <SectionSkeleton title={t('listening_history')} />
+                <InfoSection title={t('listening_history')} isLoading={true} />
             </MusicSectionWrapper>
         );
     }
@@ -54,10 +53,14 @@ export default function HistoryPage() {
         logger.error("History fetch error", error);
         return (
             <MusicSectionWrapper spacing="top-only">
-                <SectionSkeleton
+                <InfoSection
                     title={t('listening_history')}
-                    isError={true}
-                    onRetry={refetch}
+                    error={error}
+                    action={{
+                        label: t('retry', 'Спробувати ще'),
+                        onClick: refetch,
+                        variant: 'outline'
+                    }}
                 />
             </MusicSectionWrapper>
         );
@@ -74,9 +77,9 @@ export default function HistoryPage() {
                     }}
                 />
             ) : (
-                <EmptyStateSection
+                <InfoSection
                     title={t('history_empty_title')}
-                    description={t('history_empty_msg')}
+                    message={t('history_empty_msg')}
                 />
             )}
         </MusicSectionWrapper>
