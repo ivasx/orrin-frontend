@@ -6,6 +6,7 @@ import { QueueProvider } from './context/QueueContext.jsx';
 import { PlayerUIProvider } from './context/PlayerUIContext.jsx';
 import { AudioCoreProvider, useAudioCore } from './context/AudioCoreContext.jsx';
 import { SettingsProvider } from './context/SettingsContext.jsx';
+import { ToastProvider } from './context/ToastContext.jsx';
 
 // Components
 import BottomPlayer from './components/Layout/BottomPlayer/BottomPlayer.jsx';
@@ -50,13 +51,15 @@ export default function App() {
         <Router>
             <ErrorBoundary>
                 <SettingsProvider>
-                    <QueueProvider>
-                        <PlayerUIProvider>
-                            <AudioCoreProvider>
-                                <AppLayout />
-                            </AudioCoreProvider>
-                        </PlayerUIProvider>
-                    </QueueProvider>
+                    <ToastProvider>
+                        <QueueProvider>
+                            <PlayerUIProvider>
+                                <AudioCoreProvider>
+                                    <AppLayout />
+                                </AudioCoreProvider>
+                            </PlayerUIProvider>
+                        </QueueProvider>
+                    </ToastProvider>
                 </SettingsProvider>
             </ErrorBoundary>
         </Router>

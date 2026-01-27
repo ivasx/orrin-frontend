@@ -1,75 +1,197 @@
-import { useState, useRef, memo } from 'react';
+import { useState, useRef, memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { logger } from '../../../utils/logger.js';
+import { useMutation } from '@tanstack/react-query';
 import {
     Heart,
     MessageCircle,
     Repeat2,
     Send,
     MoreHorizontal,
-    Music,
     Play,
-    CheckCircle
+    CheckCircle,
+    Check
 } from 'lucide-react';
 import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
+import { useAuth } from '../../../context/AuthContext.jsx';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
-import './FeedPost.css';
+import { useToast } from '../../../context/ToastContext.jsx';
+import {
+    toggleLikePost,
+    repostPost,
+    addComment,
+    toggleSavePost,
+    reportPost
+} from '../../../services/api.js';
+import { logger } from '../../../utils/logger.js';
+import styles from './FeedPost.module.css';
 
 function FeedPost({ post }) {
     const { t } = useTranslation();
     const { playTrack } = useAudioCore();
-
+    const { user } = useAuth();
+    const { showToast } = useToast();
     const [isLiked, setIsLiked] = useState(post.isLiked || false);
     const [likesCount, setLikesCount] = useState(post.likesCount || 0);
+    const [isReposted, setIsReposted] = useState(post.isReposted || false);
+    const [repostsCount, setRepostsCount] = useState(post.repostsCount || 0);
+    const [isSaved, setIsSaved] = useState(post.isSaved || false); // Added state
+    const [comments, setComments] = useState(post.comments || []);
     const [commentsCount, setCommentsCount] = useState(post.commentsCount || 0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
-    const [comments, setComments] = useState(post.comments || []);
     const [showMenu, setShowMenu] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const [shareFeedback, setShareFeedback] = useState(false);
 
     const menuButtonRef = useRef(null);
 
-    const handleLike = () => {
-        setIsLiked(!isLiked);
-        setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-    };
 
-    const handleComment = () => {
-        setShowComments(!showComments);
+    const likeMutation = useMutation({
+        mutationFn: () => toggleLikePost(post.id),
+        onError: (error) => {
+            logger.error(`Failed to like post ${post.id}:`, error);
+            setIsLiked(!isLiked);
+            setLikesCount(prev => isLiked ? prev + 1 : prev - 1);
+            showToast(t('error_like'), 'error');
+        }
+    });
+
+    const repostMutation = useMutation({
+        mutationFn: () => repostPost(post.id),
+        onError: (error) => {
+            logger.error(`Failed to repost post ${post.id}:`, error);
+            setIsReposted(!isReposted);
+            setRepostsCount(prev => isReposted ? prev + 1 : prev - 1);
+            showToast(t('error_repost'), 'error');
+        }
+    });
+
+    const saveMutation = useMutation({
+        mutationFn: () => toggleSavePost(post.id),
+        onSuccess: () => {
+            const msg = !isSaved
+                ? t('post_saved_success')
+                : t('post_unsaved_success');
+            showToast(msg, 'success');
+        },
+        onError: (error) => {
+            logger.error(`Failed to save post ${post.id}:`, error);
+            setIsSaved(!isSaved);
+            showToast(t('error_save'), 'error');
+        }
+    });
+
+    const reportMutation = useMutation({
+        mutationFn: () => reportPost(post.id, 'inappropriate'),
+        onSuccess: () => {
+            showToast(t('report_sent'), 'success');
+        },
+        onError: (error) => {
+            logger.error(`Failed to report post ${post.id}:`, error);
+            showToast(t('error_report'), 'error');
+        }
+    });
+
+    const commentMutation = useMutation({
+        mutationFn: (text) => addComment(post.id, text),
+        onSuccess: () => {
+            showToast(t('comment_added'), 'success');
+        },
+        onError: (error, variables, context) => {
+            logger.error('Failed to add comment:', error);
+            const tempId = context?.tempId;
+            if (tempId) {
+                setComments(prev => prev.filter(c => c.id !== tempId));
+                setCommentsCount(prev => prev - 1);
+            }
+            showToast(t('error_comment'), 'error');
+        },
+        onMutate: async () => {
+            const tempId = `temp-${Date.now()}`;
+            return { tempId };
+        }
+    });
+
+    const handleLike = () => {
+        const newIsLiked = !isLiked;
+        setIsLiked(newIsLiked);
+        setLikesCount(prev => newIsLiked ? prev + 1 : prev - 1);
+        likeMutation.mutate();
     };
 
     const handleRepost = () => {
-        // TODO: Implement repost logic
+        const newIsReposted = !isReposted;
+        setIsReposted(newIsReposted);
+        setRepostsCount(prev => newIsReposted ? prev + 1 : prev - 1);
+        repostMutation.mutate();
     };
 
-    const handleShare = () => {
-        // TODO: Implement share logic
+    const handleSavePost = () => {
+        // Optimistic update
+        setIsSaved(!isSaved);
+        saveMutation.mutate();
+        setShowMenu(false);
+    };
+
+    const handleReportPost = () => {
+        if (window.confirm(t('confirm_report'))) {
+            reportMutation.mutate();
+        }
+        setShowMenu(false);
+    };
+
+    const handleCommentToggle = () => {
+        setShowComments(!showComments);
+    };
+
+    const handleShare = async () => {
+        const shareData = {
+            title: 'Orrin',
+            text: post.text,
+            url: `${window.location.origin}/post/${post.id}`,
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                logger.log('Shared via native API');
+            } else {
+                await navigator.clipboard.writeText(shareData.url);
+                setShareFeedback(true);
+                setTimeout(() => setShareFeedback(false), 2000);
+                logger.log('Link copied to clipboard');
+            }
+        } catch (err) {
+            logger.error('Share failed:', err);
+        }
     };
 
     const handleSubmitComment = (e) => {
         e.preventDefault();
         if (!commentText.trim()) return;
 
+        const tempId = `temp-${Date.now()}`;
         const newComment = {
-            id: `comment-${Date.now()}`,
+            id: tempId,
             author: {
-                name: t('you', 'Ви'),
-                avatar: '/path/to/user/avatar.png'
+                name: user?.name || t('you'),
+                avatar: user?.avatar || '/default-avatar.png'
             },
             text: commentText,
-            timestamp: t('just_now', 'щойно'),
-            likesCount: 0
+            timestamp: t('just_now'),
         };
 
         setComments([newComment, ...comments]);
-        setCommentsCount(commentsCount + 1);
+        setCommentsCount(prev => prev + 1);
         setCommentText('');
+
+        commentMutation.mutate(newComment.text, { tempId });
     };
 
-    const handlePlayTrack = () => {
+    const handlePlayTrack = (e) => {
+        e.stopPropagation();
         if (post.attachedTrack) {
             playTrack(post.attachedTrack);
         }
@@ -84,64 +206,69 @@ function FeedPost({ post }) {
         setShowMenu(!showMenu);
     };
 
-    const menuItems = [
-        {
-            id: 'save',
-            label: t('post_save', 'Зберегти'),
-            action: () => {
-                // TODO: Implement save post functionality
-            }
-        },
+    const handleCopyLink = () => {
+        const url = `${window.location.origin}/post/${post.id}`;
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                setShowMenu(false);
+                setShareFeedback(true);
+                setTimeout(() => setShareFeedback(false), 2000);
+            })
+            .catch(err => logger.error('Copy link failed:', err));
+    };
+
+    const menuItems = useMemo(() => [
         {
             id: 'copy-link',
-            label: t('post_copy_link', 'Копіювати посилання'),
-            action: () => {
-                // TODO: Implement copy link functionality
-            }
+            label: t('post_copy_link'),
+            action: handleCopyLink
+        },
+        {
+            id: 'save',
+            label: isSaved ? t('post_unsave') : t('post_save'),
+            action: handleSavePost
         },
         { type: 'separator' },
         {
             id: 'report',
-            label: t('post_report', 'Поскаржитись'),
+            label: t('post_report'),
             variant: 'danger',
-            action: () => {
-                // TODO: Implement report post functionality
-            }
+            action: handleReportPost
         }
-    ];
+    ], [isSaved, t]);
 
     const shouldTruncate = post.text && post.text.length > 300;
 
     return (
-        <article className="feed-post">
-            <div className="post-header">
+        <article className={styles.feedPost}>
+            <div className={styles.header}>
                 <Link to={`/user/${post.author.id}`}>
                     <img
                         src={post.author.avatar}
                         alt={post.author.name}
-                        className="post-avatar"
+                        className={styles.avatar}
                     />
                 </Link>
 
-                <div className="post-header-info">
-                    <div className="post-author-line">
+                <div className={styles.headerInfo}>
+                    <div className={styles.authorLine}>
                         <Link
                             to={`/user/${post.author.id}`}
-                            className="post-author-name"
+                            className={styles.authorName}
                         >
                             {post.author.name}
                         </Link>
                         {post.author.isVerified && (
                             <CheckCircle
                                 size={16}
-                                className="post-author-badge"
+                                className={styles.authorBadge}
                                 fill="currentColor"
                             />
                         )}
                     </div>
-                    <div className="post-meta">
+                    <div className={styles.meta}>
                         <span
-                            className="post-timestamp"
+                            className={styles.timestamp}
                             title={post.fullTimestamp}
                         >
                             {post.timestamp}
@@ -149,7 +276,7 @@ function FeedPost({ post }) {
                         {post.author.isArtist && (
                             <>
                                 <span>•</span>
-                                <span>{t('post_artist', 'Музикант')}</span>
+                                <span>{t('post_artist')}</span>
                             </>
                         )}
                     </div>
@@ -157,28 +284,28 @@ function FeedPost({ post }) {
 
                 <button
                     ref={menuButtonRef}
-                    className="post-menu-button"
+                    className={styles.menuButton}
                     onClick={handleMenuClick}
-                    aria-label={t('post_more_options', 'Більше опцій')}
+                    aria-label={t('post_more_options')}
                 >
                     <MoreHorizontal size={20} />
                 </button>
             </div>
 
-            <div className="post-content">
+            <div className={styles.content}>
                 {post.text && (
                     <>
-                        <p className={`post-text ${!isExpanded && shouldTruncate ? 'collapsed' : ''}`}>
+                        <p className={`${styles.text} ${!isExpanded && shouldTruncate ? styles.textCollapsed : ''}`}>
                             {post.text}
                         </p>
                         {shouldTruncate && (
                             <button
-                                className="post-read-more"
+                                className={styles.readMore}
                                 onClick={() => setIsExpanded(!isExpanded)}
                             >
                                 {isExpanded
-                                    ? t('show_less', 'Показати менше')
-                                    : t('show_more', 'Показати більше')
+                                    ? t('show_less')
+                                    : t('show_more')
                                 }
                             </button>
                         )}
@@ -187,26 +314,26 @@ function FeedPost({ post }) {
 
                 {post.attachedTrack && (
                     <div
-                        className="post-track-attachment"
+                        className={styles.trackAttachment}
                         onClick={handlePlayTrack}
                     >
                         <img
                             src={post.attachedTrack.cover}
                             alt={post.attachedTrack.title}
-                            className="post-track-cover"
+                            className={styles.trackCover}
                         />
-                        <div className="post-track-info">
-                            <div className="post-track-title">
+                        <div className={styles.trackInfo}>
+                            <div className={styles.trackTitle}>
                                 {post.attachedTrack.title}
                             </div>
-                            <div className="post-track-artist">
+                            <div className={styles.trackArtist}>
                                 {post.attachedTrack.artist}
                             </div>
                         </div>
                         <button
-                            className="post-track-play-button"
+                            className={styles.trackPlayButton}
                             onClick={handlePlayTrack}
-                            aria-label={t('play', 'Грати')}
+                            aria-label={t('play')}
                         >
                             <Play size={20} />
                         </button>
@@ -214,67 +341,67 @@ function FeedPost({ post }) {
                 )}
             </div>
 
-            <div className="post-actions">
+            <div className={styles.actions}>
                 <button
-                    className={`post-action-button ${isLiked ? 'liked' : ''}`}
+                    className={`${styles.actionButton} ${isLiked ? styles.actionButtonLiked : ''}`}
                     onClick={handleLike}
-                    aria-label={t('like', 'Вподобати')}
+                    aria-label={t('like')}
                 >
                     <Heart
                         size={20}
                         fill={isLiked ? 'currentColor' : 'none'}
                     />
                     {likesCount > 0 && (
-                        <span className="post-action-count">{likesCount}</span>
+                        <span className={styles.actionCount}>{likesCount}</span>
                     )}
                 </button>
 
                 <button
-                    className="post-action-button"
-                    onClick={handleComment}
-                    aria-label={t('comment', 'Коментувати')}
+                    className={styles.actionButton}
+                    onClick={handleCommentToggle}
+                    aria-label={t('comment')}
                 >
                     <MessageCircle size={20} />
                     {commentsCount > 0 && (
-                        <span className="post-action-count">{commentsCount}</span>
+                        <span className={styles.actionCount}>{commentsCount}</span>
                     )}
                 </button>
 
                 <button
-                    className="post-action-button"
+                    className={`${styles.actionButton} ${isReposted ? styles.actionButtonReposted : ''}`}
                     onClick={handleRepost}
-                    aria-label={t('repost', 'Репост')}
+                    aria-label={t('repost')}
                 >
                     <Repeat2 size={20} />
-                    {post.repostsCount > 0 && (
-                        <span className="post-action-count">{post.repostsCount}</span>
+                    {repostsCount > 0 && (
+                        <span className={styles.actionCount}>{repostsCount}</span>
                     )}
                 </button>
 
                 <button
-                    className="post-action-button"
+                    className={`${styles.actionButton} ${shareFeedback ? styles.actionButtonShared : ''}`}
                     onClick={handleShare}
-                    aria-label={t('share', 'Поділитися')}
+                    aria-label={t('share')}
                 >
-                    <Send size={20} />
+                    {shareFeedback ? <Check size={20} /> : <Send size={20} />}
                 </button>
             </div>
 
             {showComments && (
-                <div className="post-comments-section">
-                    <div className="post-comments-header">
-                        <h4 className="post-comments-title">
-                            {t('comments', 'Коментарі')} ({commentsCount})
+                <div className={styles.commentsSection}>
+                    <div className={styles.commentsHeader}>
+                        <h4 className={styles.commentsTitle}>
+                            {t('comments')} ({commentsCount})
                         </h4>
                     </div>
 
                     <form
-                        className="post-comment-form"
+                        className={styles.commentForm}
                         onSubmit={handleSubmitComment}
                     >
                         <textarea
-                            className="comment-input"
-                            placeholder={t('add_comment', 'Додати коментар...')}
+                            className={styles.commentInput}
+                            placeholder={t('add_comment')}
                             value={commentText}
                             onChange={(e) => setCommentText(e.target.value)}
                             rows={1}
@@ -285,45 +412,40 @@ function FeedPost({ post }) {
                         />
                         <button
                             type="submit"
-                            className="comment-submit-button"
+                            className={styles.commentSubmitButton}
                             disabled={!commentText.trim()}
                         >
-                            {t('post', 'Опублікувати')}
+                            {t('post')}
                         </button>
                     </form>
 
                     {comments.length > 0 && (
-                        <div className="post-comments-list">
-                            {comments.slice(0, 3).map(comment => (
-                                <div key={comment.id} className="post-comment">
+                        <div className={styles.commentsList}>
+                            {comments.slice(0, 5).map(comment => (
+                                <div key={comment.id} className={styles.comment}>
                                     <img
                                         src={comment.author.avatar}
                                         alt={comment.author.name}
-                                        className="comment-avatar"
+                                        className={styles.commentAvatar}
                                     />
-                                    <div className="comment-content">
-                                        <div className="comment-author">
+                                    <div className={styles.commentContent}>
+                                        <div className={styles.commentAuthor}>
                                             {comment.author.name}
                                         </div>
-                                        <p className="comment-text">
+                                        <p className={styles.commentText}>
                                             {comment.text}
                                         </p>
-                                        <div className="comment-meta">
-                                            <span className="comment-timestamp">
+                                        <div className={styles.commentMeta}>
+                                            <span className={styles.commentTimestamp}>
                                                 {comment.timestamp}
                                             </span>
-                                            <span>•</span>
-                                            <button className="comment-like-button">
-                                                {t('like', 'Вподобати')}
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             ))}
-
-                            {comments.length > 3 && (
-                                <button className="show-more-comments">
-                                    {t('show_more_comments', 'Показати ще коментарі')}
+                            {commentsCount > 5 && (
+                                <button className={styles.showMoreComments}>
+                                    {t('show_more_comments')}
                                 </button>
                             )}
                         </div>

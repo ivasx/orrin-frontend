@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter, X, Check, Music, Users, Sparkles } from 'lucide-react';
 import Dropdown from '../../../components/UI/Dropdown/Dropdown.jsx';
-import './FeedFilters.css';
+import styles from './FeedFilters.module.css';
 
 export default function FeedFilters({ activeTab, onTabChange, filters, onFiltersChange }) {
     const { t } = useTranslation();
@@ -10,40 +10,42 @@ export default function FeedFilters({ activeTab, onTabChange, filters, onFilters
     const [tempFilters, setTempFilters] = useState(filters);
     const dropdownRef = useRef(null);
 
+    // Using useMemo to prevent unnecessary re-creations
     const dropdownItems = useMemo(() => [
         {
             value: 'recommended',
-            label: t('feed_recommended', 'Рекомендації'),
+            label: t('feed_recommended'),
             icon: <Sparkles size={16} />
         },
         {
             value: 'following',
-            label: t('feed_following', 'Відстежуються'),
+            label: t('feed_following'),
             icon: <Users size={16} />
         },
         {
             value: 'artists',
-            label: t('feed_artists', 'Від музикантів'),
+            label: t('feed_artists'),
             icon: <Music size={16} />
         },
         {
             value: 'users',
-            label: t('feed_users', 'Від користувачів'),
+            label: t('feed_users'),
             icon: <Users size={16} />
         },
     ], [t]);
 
-    const contentTypes = [
-        { id: 'with_music', label: t('filter_with_music', 'З музикою') },
-        { id: 'text_only', label: t('filter_text_only', 'Тільки текст') },
-    ];
+    const contentTypes = useMemo(() => [
+        { id: 'with_music', label: t('filter_with_music') },
+        { id: 'text_only', label: t('filter_text_only') },
+    ], [t]);
 
-    const sortOptions = [
-        { id: 'newest', label: t('filter_newest', 'Спочатку нові') },
-        { id: 'popular', label: t('filter_popular', 'Популярні') },
-        { id: 'discussed', label: t('filter_discussed', 'Обговорювані') },
-    ];
+    const sortOptions = useMemo(() => [
+        { id: 'newest', label: t('filter_newest') },
+        { id: 'popular', label: t('filter_popular') },
+        { id: 'discussed', label: t('filter_discussed') },
+    ], [t]);
 
+    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -85,93 +87,92 @@ export default function FeedFilters({ activeTab, onTabChange, filters, onFilters
     const activeFiltersCount = Object.values(filters).filter(v => v && v !== 'newest').length;
 
     return (
-        <div className="feed-filters">
-            <div className="feed-filters-wrapper">
-                <div className="feed-additional-filters">
-                    <div style={{ position: 'relative' }} ref={dropdownRef}>
+        <div className={styles.container}>
+            <div className={styles.wrapper}>
+                <div className={styles.additionalFilters}>
+                    <div className={styles.dropdown} ref={dropdownRef}>
                         <button
-                            className={`filter-button ${activeFiltersCount > 0 ? 'active' : ''}`}
+                            className={`${styles.filterButton} ${activeFiltersCount > 0 ? styles.filterButtonActive : ''}`}
                             onClick={() => setShowFiltersDropdown(!showFiltersDropdown)}
+                            aria-label={t('filters', 'Filters')}
                         >
                             <Filter size={16} />
-                            {t('filters', 'Фільтри')}
+                            {t('filters', 'Filters')}
                             {activeFiltersCount > 0 && (
-                                <span className="filter-badge">{activeFiltersCount}</span>
+                                <span className={styles.filterBadge}>{activeFiltersCount}</span>
                             )}
                         </button>
 
                         {showFiltersDropdown && (
-                            <div className="filters-dropdown">
-                                <div className="filters-dropdown-header">
-                                    <h3 className="filters-dropdown-title">
-                                        {t('filters', 'Фільтри')}
+                            <div className={styles.dropdownMenu}>
+                                <div className={styles.dropdownHeader}>
+                                    <h3 className={styles.dropdownTitle}>
+                                        {t('filters')}
                                     </h3>
                                     <button
-                                        className="filters-close-button"
+                                        className={styles.closeButton}
                                         onClick={() => setShowFiltersDropdown(false)}
                                     >
                                         <X size={20} />
                                     </button>
                                 </div>
 
-                                {/* Тип контенту */}
-                                <div className="filters-dropdown-section">
-                                    <h4 className="filters-section-title">
-                                        {t('filter_content_type', 'Тип контенту')}
+                                <div className={styles.section}>
+                                    <h4 className={styles.sectionTitle}>
+                                        {t('filter_content_type')}
                                     </h4>
-                                    <div className="filters-options">
+                                    <div className={styles.optionsList}>
                                         {contentTypes.map(type => (
                                             <div
                                                 key={type.id}
-                                                className={`filter-option ${tempFilters.contentType === type.id ? 'selected' : ''}`}
+                                                className={`${styles.option} ${tempFilters.contentType === type.id ? styles.optionSelected : ''}`}
                                                 onClick={() => handleFilterToggle('contentType', type.id)}
                                             >
-                                                <div className="filter-checkbox">
+                                                <div className={styles.checkbox}>
                                                     {tempFilters.contentType === type.id && (
                                                         <Check size={14} />
                                                     )}
                                                 </div>
-                                                <span className="filter-label">{type.label}</span>
+                                                <span className={styles.label}>{type.label}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                {/* Сортування */}
-                                <div className="filters-dropdown-section">
-                                    <h4 className="filters-section-title">
-                                        {t('filter_sort', 'Сортування')}
+                                <div className={styles.section}>
+                                    <h4 className={styles.sectionTitle}>
+                                        {t('filter_sort')}
                                     </h4>
-                                    <div className="filters-options">
+                                    <div className={styles.optionsList}>
                                         {sortOptions.map(option => (
                                             <div
                                                 key={option.id}
-                                                className={`filter-option ${tempFilters.sort === option.id ? 'selected' : ''}`}
+                                                className={`${styles.option} ${tempFilters.sort === option.id ? styles.optionSelected : ''}`}
                                                 onClick={() => handleFilterToggle('sort', option.id)}
                                             >
-                                                <div className="filter-checkbox">
+                                                <div className={styles.checkbox}>
                                                     {tempFilters.sort === option.id && (
                                                         <Check size={14} />
                                                     )}
                                                 </div>
-                                                <span className="filter-label">{option.label}</span>
+                                                <span className={styles.label}>{option.label}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="filters-dropdown-actions">
+                                <div className={styles.actions}>
                                     <button
-                                        className="filters-clear-button"
+                                        className={styles.clearButton}
                                         onClick={handleClearFilters}
                                     >
-                                        {t('clear_all', 'Очистити все')}
+                                        {t('clear_all')}
                                     </button>
                                     <button
-                                        className="filters-apply-button"
+                                        className={styles.applyButton}
                                         onClick={handleApplyFilters}
                                     >
-                                        {t('apply', 'Застосувати')}
+                                        {t('apply')}
                                     </button>
                                 </div>
                             </div>
@@ -183,7 +184,7 @@ export default function FeedFilters({ activeTab, onTabChange, filters, onFilters
                     items={dropdownItems}
                     selectedValue={activeTab}
                     onSelect={onTabChange}
-                    placeholder={t('select_feed', 'Оберіть стрічку')}
+                    placeholder={t('select_feed')}
                 />
             </div>
         </div>

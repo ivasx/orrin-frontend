@@ -5,8 +5,8 @@ import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/Mus
 import FeedFilters from './FeedFilters/FeedFilters.jsx';
 import FeedPost from '../../components/Shared/FeedPost/FeedPost.jsx';
 import CreatePost from '../../components/Shared/CreatePost/CreatePost.jsx';
-import {getFeedPosts} from '../../services/api';
-import './FeedPage.css';
+import {getFeedPosts} from '../../services/api.js';
+import styles from './FeedPage.module.css';
 
 export default function FeedPage() {
     const {t} = useTranslation();
@@ -18,8 +18,7 @@ export default function FeedPage() {
         sort: 'newest'
     });
 
-    // Fetch posts using React Query.
-    // The query key includes filters, so it auto-refetches when filters change.
+    // Fetch posts using React Query with updated professional parameters
     const {
         data: posts = [],
         isLoading: isLoadingPosts
@@ -30,31 +29,29 @@ export default function FeedPage() {
             sort: filters.sort,
             contentType: filters.contentType
         }),
-        // This keeps the old list visible while the new filter is loading
-        // to prevent UI flickering.
         keepPreviousData: true,
+        staleTime: 60000, // 1 minute stale time for better performance
     });
 
     const handlePostCreated = () => {
-        // Invalidate the feed query to trigger a background refetch
-        // so the new post appears immediately.
+        // Invalidate queries to trigger a refetch after posting
         queryClient.invalidateQueries({queryKey: ['feed']});
     };
 
     const renderEmptyState = () => {
         if (activeTab === 'following') {
             return (
-                <div className="feed-empty-state">
-                    <h3>{t('feed_no_following', 'You are not following anyone yet')}</h3>
-                    <p>{t('feed_no_following_desc', 'Start following artists and users to see their posts here')}</p>
+                <div className={styles.emptyState}>
+                    <h3>{t('feed_no_following')}</h3>
+                    <p>{t('feed_no_following_desc')}</p>
                 </div>
             );
         }
 
         return (
-            <div className="feed-empty-state">
-                <h3>{t('feed_no_posts', 'No posts yet')}</h3>
-                <p>{t('feed_no_posts_desc', 'Try changing filters or switch to another tab')}</p>
+            <div className={styles.emptyState}>
+                <h3>{t('feed_no_posts')}</h3>
+                <p>{t('feed_no_posts_desc')}</p>
             </div>
         );
     };
@@ -69,15 +66,14 @@ export default function FeedPage() {
             />
 
             <MusicSectionWrapper spacing="default">
-                <div className="feed-posts-container">
+                <div className={styles.container}>
                     <CreatePost onPostCreated={handlePostCreated}/>
 
                     {isLoadingPosts ? (
                         <>
-                            {/* Simple skeleton loading state */}
-                            <div className="feed-post-skeleton"/>
-                            <div className="feed-post-skeleton"/>
-                            <div className="feed-post-skeleton"/>
+                            <div className={styles.skeleton}/>
+                            <div className={styles.skeleton}/>
+                            <div className={styles.skeleton}/>
                         </>
                     ) : posts.length > 0 ? (
                         posts.map(post => (

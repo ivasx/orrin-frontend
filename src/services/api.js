@@ -7,9 +7,6 @@ import {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
-/**
- * Custom error class for API errors
- */
 export class ApiError extends Error {
     constructor(message, status = null, endpoint = null) {
         super(message);
@@ -19,9 +16,6 @@ export class ApiError extends Error {
     }
 }
 
-/**
- * Helper to handle fetch responses
- */
 async function handleResponse(response, endpoint) {
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -31,29 +25,31 @@ async function handleResponse(response, endpoint) {
             endpoint
         );
     }
+
+    if (response.status === 204) {
+        return null;
+    }
     const data = await response.json();
-    // Support Django Rest Framework standard pagination: { count: 100, results: [...] }
     return data.results || data;
 }
 
-/**
- * Helper to get auth headers
- */
 function getAuthHeaders() {
     const token = localStorage.getItem('access_token');
     return token ? { 'Authorization': `Bearer ${token}` } : {};
 }
 
-/**
- * Generic fetch wrapper
- */
 async function fetchJson(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    const isFormData = options.body instanceof FormData;
+
     const headers = {
-        'Content-Type': 'application/json',
         ...getAuthHeaders(),
         ...options.headers,
     };
+
+    if (!isFormData) {
+        headers['Content-Type'] = 'application/json';
+    }
 
     try {
         const response = await fetch(url, { ...options, headers });
@@ -65,10 +61,8 @@ async function fetchJson(endpoint, options = {}) {
 }
 
 /* --- TRACKS --- */
-
 export const getTracks = async () => {
     const data = await fetchJson('/api/v1/tracks/');
-    // Map transforms each item using the normalizer
     return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
 };
 
@@ -96,13 +90,10 @@ export const getUserFavorites = async () => {
 export const getUserHistory = async () => {
     const data = await fetchJson('/api/v1/history/');
     const tracksRaw = Array.isArray(data) ? data : (data.results || []);
-    return Array.isArray(tracksRaw)
-        ? tracksRaw.map(normalizeTrackData).filter(Boolean)
-        : [];
+    return Array.isArray(tracksRaw) ? tracksRaw.map(normalizeTrackData).filter(Boolean) : [];
 };
 
 /* --- ARTISTS --- */
-
 export const getArtists = async () => {
     const data = await fetchJson('/api/v1/artists/');
     return Array.isArray(data) ? data.map(normalizeArtistData) : [];
@@ -113,8 +104,7 @@ export const getArtistById = async (slugOrId) => {
     return normalizeArtistData(data);
 };
 
-/* --- FEED --- */
-
+/* --- FEED ACTIONS --- */
 export const getFeedPosts = async ({ type, sort, contentType } = {}) => {
     const queryParams = new URLSearchParams();
     if (type) queryParams.append('feed_type', type);
@@ -125,15 +115,45 @@ export const getFeedPosts = async ({ type, sort, contentType } = {}) => {
     const endpoint = `/api/v1/feed/${queryString ? `?${queryString}` : ''}`;
 
     const data = await fetchJson(endpoint);
-    // Normalize feed items (converts likes_count -> likesCount, etc.)
     return Array.isArray(data) ? data.map(normalizePostData) : [];
 };
 
-/* --- USER & FRIENDS --- */
+export const createPost = async (postData) => {
+    return fetchJson('/api/v1/feed/posts/', {
+        method: 'POST',
+        body: postData
+    });
+};
 
+export const toggleLikePost = async (postId) => {
+    return fetchJson(`/api/v1/feed/posts/${postId}/like/`, { method: 'POST' });
+};
+
+export const repostPost = async (postId) => {
+    return fetchJson(`/api/v1/feed/posts/${postId}/repost/`, { method: 'POST' });
+};
+
+export const addComment = async (postId, text) => {
+    return fetchJson(`/api/v1/feed/posts/${postId}/comments/`, {
+        method: 'POST',
+        body: JSON.stringify({ text })
+    });
+};
+
+export const toggleSavePost = async (postId) => {
+    return fetchJson(`/api/v1/feed/posts/${postId}/save/`, { method: 'POST' });
+};
+
+export const reportPost = async (postId, reason = 'spam') => {
+    return fetchJson(`/api/v1/feed/posts/${postId}/report/`, {
+        method: 'POST',
+        body: JSON.stringify({ reason })
+    });
+};
+
+/* --- USER & FRIENDS --- */
 export const getFriendsActivity = async () => {
     const data = await fetchJson('/api/v1/friends/activity/');
-    // Assuming friends activity returns a list of tracks they listened to
     return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
 };
 
@@ -143,7 +163,6 @@ export const getCurrentUser = async () => {
 };
 
 /* --- SEARCH --- */
-
 export const searchGlobal = async (query) => {
     const [tracks, artists] = await Promise.all([
         fetchJson(`/api/v1/tracks/?search=${encodeURIComponent(query)}`),
