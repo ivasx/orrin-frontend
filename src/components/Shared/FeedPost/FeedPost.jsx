@@ -15,6 +15,7 @@ import {
 import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
+import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
 import { useToast } from '../../../context/ToastContext.jsx';
 import {
     toggleLikePost,
@@ -29,13 +30,15 @@ import styles from './FeedPost.module.css';
 function FeedPost({ post }) {
     const { t } = useTranslation();
     const { playTrack } = useAudioCore();
-    const { user } = useAuth();
+    const { user, isLoggedIn } = useAuth(); // Додаємо isLoggedIn
     const { showToast } = useToast();
+
+    // States
     const [isLiked, setIsLiked] = useState(post.isLiked || false);
     const [likesCount, setLikesCount] = useState(post.likesCount || 0);
     const [isReposted, setIsReposted] = useState(post.isReposted || false);
     const [repostsCount, setRepostsCount] = useState(post.repostsCount || 0);
-    const [isSaved, setIsSaved] = useState(post.isSaved || false); // Added state
+    const [isSaved, setIsSaved] = useState(post.isSaved || false);
     const [comments, setComments] = useState(post.comments || []);
     const [commentsCount, setCommentsCount] = useState(post.commentsCount || 0);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -45,8 +48,20 @@ function FeedPost({ post }) {
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const [shareFeedback, setShareFeedback] = useState(false);
 
+    // Auth Modal State
+    const [showAuthModal, setShowAuthModal] = useState(false);
+
     const menuButtonRef = useRef(null);
 
+    // Helper to protect actions
+    const handleAuthAction = (action) => {
+        if (!isLoggedIn) {
+            setShowAuthModal(true);
+            setShowMenu(false); // Close menu if open
+            return;
+        }
+        action();
+    };
 
     const likeMutation = useMutation({
         mutationFn: () => toggleLikePost(post.id),
@@ -115,31 +130,39 @@ function FeedPost({ post }) {
     });
 
     const handleLike = () => {
-        const newIsLiked = !isLiked;
-        setIsLiked(newIsLiked);
-        setLikesCount(prev => newIsLiked ? prev + 1 : prev - 1);
-        likeMutation.mutate();
+        handleAuthAction(() => {
+            const newIsLiked = !isLiked;
+            setIsLiked(newIsLiked);
+            setLikesCount(prev => newIsLiked ? prev + 1 : prev - 1);
+            likeMutation.mutate();
+        });
     };
 
     const handleRepost = () => {
-        const newIsReposted = !isReposted;
-        setIsReposted(newIsReposted);
-        setRepostsCount(prev => newIsReposted ? prev + 1 : prev - 1);
-        repostMutation.mutate();
+        handleAuthAction(() => {
+            const newIsReposted = !isReposted;
+            setIsReposted(newIsReposted);
+            setRepostsCount(prev => newIsReposted ? prev + 1 : prev - 1);
+            repostMutation.mutate();
+        });
     };
 
     const handleSavePost = () => {
-        // Optimistic update
-        setIsSaved(!isSaved);
-        saveMutation.mutate();
-        setShowMenu(false);
+        handleAuthAction(() => {
+            // Optimistic update
+            setIsSaved(!isSaved);
+            saveMutation.mutate();
+            setShowMenu(false);
+        });
     };
 
     const handleReportPost = () => {
-        if (window.confirm(t('confirm_report'))) {
-            reportMutation.mutate();
-        }
-        setShowMenu(false);
+        handleAuthAction(() => {
+            if (window.confirm(t('confirm_report'))) {
+                reportMutation.mutate();
+            }
+            setShowMenu(false);
+        });
     };
 
     const handleCommentToggle = () => {
@@ -147,6 +170,7 @@ function FeedPost({ post }) {
     };
 
     const handleShare = async () => {
+        // Sharing is usually allowed for public
         const shareData = {
             title: 'Orrin',
             text: post.text,
@@ -170,24 +194,27 @@ function FeedPost({ post }) {
 
     const handleSubmitComment = (e) => {
         e.preventDefault();
-        if (!commentText.trim()) return;
 
-        const tempId = `temp-${Date.now()}`;
-        const newComment = {
-            id: tempId,
-            author: {
-                name: user?.name || t('you'),
-                avatar: user?.avatar || '/default-avatar.png'
-            },
-            text: commentText,
-            timestamp: t('just_now'),
-        };
+        handleAuthAction(() => {
+            if (!commentText.trim()) return;
 
-        setComments([newComment, ...comments]);
-        setCommentsCount(prev => prev + 1);
-        setCommentText('');
+            const tempId = `temp-${Date.now()}`;
+            const newComment = {
+                id: tempId,
+                author: {
+                    name: user?.name || t('you'),
+                    avatar: user?.avatar || '/default-avatar.png'
+                },
+                text: commentText,
+                timestamp: t('just_now'),
+            };
 
-        commentMutation.mutate(newComment.text, { tempId });
+            setComments([newComment, ...comments]);
+            setCommentsCount(prev => prev + 1);
+            setCommentText('');
+
+            commentMutation.mutate(newComment.text, { tempId });
+        });
     };
 
     const handlePlayTrack = (e) => {
@@ -235,12 +262,17 @@ function FeedPost({ post }) {
             variant: 'danger',
             action: handleReportPost
         }
-    ], [isSaved, t]);
+    ], [isSaved, t, isLoggedIn]);
 
     const shouldTruncate = post.text && post.text.length > 300;
 
     return (
         <article className={styles.feedPost}>
+            <AuthPromptModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+            />
+
             <div className={styles.header}>
                 <Link to={`/user/${post.author.id}`}>
                     <img
@@ -398,10 +430,11 @@ function FeedPost({ post }) {
                     <form
                         className={styles.commentForm}
                         onSubmit={handleSubmitComment}
+                        onClick={(e) => !isLoggedIn && handleAuthAction(() => {})}
                     >
                         <textarea
                             className={styles.commentInput}
-                            placeholder={t('add_comment')}
+                            placeholder={isLoggedIn ? t('add_comment') : t('login_to_comment')}
                             value={commentText}
                             onChange={(e) => setCommentText(e.target.value)}
                             rows={1}
@@ -409,11 +442,18 @@ function FeedPost({ post }) {
                                 e.target.style.height = 'auto';
                                 e.target.style.height = e.target.scrollHeight + 'px';
                             }}
+                            readOnly={!isLoggedIn}
                         />
                         <button
                             type="submit"
                             className={styles.commentSubmitButton}
-                            disabled={!commentText.trim()}
+                            disabled={!commentText.trim() && isLoggedIn}
+                            onClick={(e) => {
+                                if (!isLoggedIn) {
+                                    e.preventDefault();
+                                    handleAuthAction(() => {});
+                                }
+                            }}
                         >
                             {t('post')}
                         </button>

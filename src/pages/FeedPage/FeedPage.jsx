@@ -1,16 +1,22 @@
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {Link, useNavigate} from 'react-router-dom';
+import {LogIn} from 'lucide-react';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import FeedFilters from './FeedFilters/FeedFilters.jsx';
 import FeedPost from '../../components/Shared/FeedPost/FeedPost.jsx';
 import CreatePost from '../../components/Shared/CreatePost/CreatePost.jsx';
+import Button from '../../components/UI/Button/Button.jsx';
 import {getFeedPosts} from '../../services/api.js';
+import {useAuth} from '../../context/AuthContext.jsx';
 import styles from './FeedPage.module.css';
 
 export default function FeedPage() {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
+    const {isLoggedIn} = useAuth();
+    const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState('recommended');
     const [filters, setFilters] = useState({
@@ -67,7 +73,25 @@ export default function FeedPage() {
 
             <MusicSectionWrapper spacing="default">
                 <div className={styles.container}>
-                    <CreatePost onPostCreated={handlePostCreated}/>
+                    {isLoggedIn ? (
+                        <CreatePost onPostCreated={handlePostCreated}/>
+                    ) : (
+                        <div className={styles.authBanner}>
+                            <h3 className={styles.authBannerTitle}>
+                                {t('login_required_create_title')}
+                            </h3>
+                            <p className={styles.authBannerDesc}>
+                                {t('login_required_create_desc')}
+                            </p>
+                            <Button
+                                variant="primary"
+                                onClick={() => navigate('/login')}
+                                icon={<LogIn size={18} />}
+                            >
+                                {t('login')}
+                            </Button>
+                        </div>
+                    )}
 
                     {isLoadingPosts ? (
                         <>
