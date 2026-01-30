@@ -1,186 +1,179 @@
-import {useState, useMemo} from 'react';
-import {useTranslation} from 'react-i18next';
-import {Music, Clock, Users, Globe, Lock} from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Music, Clock, Users, Lock, Globe } from 'lucide-react';
 import NoteCard from '../../../components/Shared/NoteCard/NoteCard.jsx';
-import './ArtistNotesTab.css';
+import styles from './ArtistNotesTab.module.css';
 
-export default function ArtistNotesTab({initialNotes = [], popularTracks = []}) {
-    const {t} = useTranslation();
-    const [notes, setNotes] = useState(initialNotes);
-    const [newNoteText, setNewNoteText] = useState('');
-    const [noteType, setNoteType] = useState('private');
-    const [selectedTrackId, setSelectedTrackId] = useState('');
+const NoteForm = ({
+                      onSubmit,
+                      onCancel,
+                      popularTracks,
+                      t
+                  }) => {
+    const [text, setText] = useState('');
+    const [type, setType] = useState('private');
+    const [trackId, setTrackId] = useState('');
     const [timecode, setTimecode] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!text.trim()) return;
+        onSubmit({ text, type, trackId, timecode });
+    };
+
+    return (
+        <form className={styles.form} onSubmit={handleSubmit}>
+            <textarea
+                className={styles.textarea}
+                placeholder={t('notes_placeholder')}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={4}
+                autoFocus
+            />
+
+            <div className={styles.formFooter}>
+                <div className={styles.options}>
+                    {/* Privacy Selector */}
+                    <div className={styles.selectWrapper}>
+                        <div className={styles.selectIcon}>
+                            {type === 'private' ? <Lock size={16} /> : <Globe size={16} />}
+                        </div>
+                        <select
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                            className={styles.select}
+                        >
+                            <option value="private">{t('notes_private')}</option>
+                            <option value="public">{t('notes_public')}</option>
+                        </select>
+                    </div>
+
+                    {/* Track Selector */}
+                    {popularTracks.length > 0 && (
+                        <div className={styles.selectWrapper}>
+                            <Music size={16} className={styles.selectIcon} />
+                            <select
+                                value={trackId}
+                                onChange={(e) => setTrackId(e.target.value)}
+                                className={styles.select}
+                            >
+                                <option value="">{t('notes_select_track')}</option>
+                                {popularTracks.map(track => (
+                                    <option key={track.trackId} value={track.trackId}>
+                                        {track.title}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    {/* Timecode Input (shown only if track selected) */}
+                    {trackId && (
+                        <div className={styles.selectWrapper}>
+                            <Clock size={16} className={styles.selectIcon} />
+                            <input
+                                type="text"
+                                placeholder="0:00"
+                                value={timecode}
+                                onChange={(e) => setTimecode(e.target.value)}
+                                className={styles.input}
+                                style={{ width: '80px', paddingLeft: '36px' }}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <div className={styles.actions}>
+                    <button type="button" className={styles.cancelButton} onClick={onCancel}>
+                        {t('cancel', 'Cancel')}
+                    </button>
+                    <button type="submit" className={styles.submitButton} disabled={!text.trim()}>
+                        {t('notes_add_button', 'Add Note')}
+                    </button>
+                </div>
+            </div>
+        </form>
+    );
+};
+
+
+export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }) {
+    const { t } = useTranslation();
+    const [notes, setNotes] = useState(initialNotes);
     const [isAddingNote, setIsAddingNote] = useState(false);
 
-    const handleAddNote = (e) => {
-        e.preventDefault();
-        if (newNoteText.trim() === '') return;
-
-        const selectedTrack = popularTracks.find(track => track.trackId === selectedTrackId);
+    const handleAddNote = (noteData) => {
+        const selectedTrack = popularTracks.find(t => t.trackId === noteData.trackId);
 
         const newNote = {
             id: `note-new-${Date.now()}`,
-            author: t('notes_you', 'Ви (Me)'),
-            // TODO: Замінити на реальний аватар користувача з системи аутентифікації
-            avatar: '/path/to/default/user/avatar.png',
-            text: newNoteText,
-            type: noteType,
-            timestamp: t('notes_just_now', 'щойно'),
-            trackContext: selectedTrack ? {trackId: selectedTrack.trackId, title: selectedTrack.title} : undefined,
-            timecode: selectedTrack && timecode.trim() ? timecode.trim() : undefined
+            author: t('notes_you', 'You'),
+            // TODO: Replace with real user avatar from AuthContext
+            avatar: '/orrin-logo.svg',
+            text: noteData.text,
+            type: noteData.type,
+            timestamp: t('notes_just_now'),
+            relatedTrack: selectedTrack ? {
+                id: selectedTrack.trackId,
+                title: selectedTrack.title,
+                timecode: noteData.timecode
+            } : null
         };
 
         setNotes([newNote, ...notes]);
-        setNewNoteText('');
-        setNoteType('private');
-        setSelectedTrackId('');
-        setTimecode('');
         setIsAddingNote(false);
     };
 
-    const handleCancelAddNote = () => {
-        setNewNoteText('');
-        setNoteType('private');
-        setSelectedTrackId('');
-        setTimecode('');
-        setIsAddingNote(false);
-    };
-
-    const noteTypeIcons = {
-        private: <Lock size={16}/>,
-        friends: <Users size={16}/>,
-        public: <Globe size={16}/>
-    };
-
-    const {myNotes, publicNotes} = useMemo(() => {
-        return notes.reduce((acc, note) => {
-            if (note.type === 'private' || note.author === t('notes_you', 'Ви (Me)')) {
-                acc.myNotes.push(note);
-            } else {
-                acc.publicNotes.push(note);
-            }
-            return acc;
-        }, {myNotes: [], publicNotes: []});
-    }, [notes, t]);
+    const myNotes = useMemo(() => notes.filter(n => n.type === 'private' || n.author === t('notes_you', 'You')), [notes, t]);
+    const publicNotes = useMemo(() => notes.filter(n => n.type === 'public' && n.author !== t('notes_you', 'You')), [notes, t]);
 
     return (
-        <div className="artist-notes-tab">
-            <div className="add-note-section">
-                {!isAddingNote ? (
-                    <button
-                        className="btn-outline-light show-add-note-form-button"
-                        onClick={() => setIsAddingNote(true)}
-                    >
-                        {t('notes_add_yours', 'Додати свою нотатку')}
-                    </button>
-                ) : (
-                    <form className="add-note-form modern" onSubmit={handleAddNote}>
-                        <textarea
-                            className="note-textarea-modern"
-                            value={newNoteText}
-                            onChange={(e) => setNewNoteText(e.target.value)}
-                            placeholder={t('notes_placeholder', 'Що ви думаєте про цього артиста?')}
-                            rows="3"
-                            required
-                            autoFocus
-                        />
-                        <div className="note-options-row">
-                            <div className="note-options-controls">
-                                <div className="form-group-inline">
-                                    <label htmlFor="note-type-select" className="visually-hidden">
-                                        {t('notes_type_label', 'Тип нотатки:')}
-                                    </label>
-                                    <div className="select-with-icon">
-                                        {noteTypeIcons[noteType]}
-                                        <select
-                                            id="note-type-select"
-                                            className="form-select-modern"
-                                            value={noteType}
-                                            onChange={(e) => setNoteType(e.target.value)}
-                                        >
-                                            <option value="private">{t('notes_type_private', 'Приватна')}</option>
-                                            <option value="friends">{t('notes_type_friends', 'Для друзів')}</option>
-                                            <option value="public">{t('notes_type_public', 'Публічна')}</option>
-                                        </select>
-                                    </div>
-                                </div>
+        <div className={styles.container}>
+            {!isAddingNote ? (
+                <button
+                    className={styles.toggleButton}
+                    onClick={() => setIsAddingNote(true)}
+                >
+                    + {t('notes_add_button')}
+                </button>
+            ) : (
+                <NoteForm
+                    onSubmit={handleAddNote}
+                    onCancel={() => setIsAddingNote(false)}
+                    popularTracks={popularTracks}
+                    t={t}
+                />
+            )}
 
-                                <div className="form-group-inline">
-                                    <label htmlFor="note-track-select" className="visually-hidden">
-                                        {t('notes_track_label', 'Прив\'язати до треку (необов\'язково):')}
-                                    </label>
-                                    <div className="select-with-icon">
-                                        <Music size={16}/>
-                                        <select
-                                            id="note-track-select"
-                                            className="form-select-modern"
-                                            value={selectedTrackId}
-                                            onChange={(e) => setSelectedTrackId(e.target.value)}
-                                        >
-                                            <option
-                                                value="">{t('notes_track_select_placeholder', '-- Виберіть трек --')}</option>
-                                            {Array.isArray(popularTracks) && popularTracks.map(track => (
-                                                <option key={track.trackId} value={track.trackId}>{track.title}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
+            <div className={styles.divider} />
 
-                                {selectedTrackId && (
-                                    <div className="form-group-inline timecode-group-inline">
-                                        <label htmlFor="note-timecode" className="visually-hidden">
-                                            {t('notes_timecode_label', 'Тайм-код (напр., 1:23):')}
-                                        </label>
-                                        <div className="input-with-icon">
-                                            <Clock size={16}/>
-                                            <input
-                                                type="text"
-                                                id="note-timecode"
-                                                className="form-input-modern timecode-input-modern"
-                                                value={timecode}
-                                                onChange={(e) => setTimecode(e.target.value)}
-                                                placeholder="mm:ss"
-                                                pattern="\d{1,2}:\d{2}"
-                                                title={t('notes_timecode_format_hint', 'Введіть час у форматі хвилини:секунди')}
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="add-note-form-actions-modern">
-                                <button type="button" className="btn-secondary-modern" onClick={handleCancelAddNote}>
-                                    {t('cancel', 'Скасувати')}
-                                </button>
-                                <button type="submit" className="btn-primary-modern" disabled={!newNoteText.trim()}>
-                                    {t('notes_add_button', 'Додати нотатку')}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                )}
-            </div>
-
-            <div className="notes-divider"/>
             {myNotes.length > 0 && (
-                <div className="notes-list-section">
-                    <h3 className="notes-section-title">{t('notes_my_notes', 'Мої нотатки')}</h3>
-                    <div className="notes-list">
-                        {myNotes.map(note => <NoteCard key={note.id} note={note}/>)}
+                <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>
+                        <Lock size={18} /> {t('notes_my_notes')}
+                    </h3>
+                    <div className={styles.list}>
+                        {myNotes.map(note => <NoteCard key={note.id} note={note} />)}
                     </div>
                 </div>
             )}
+
             {publicNotes.length > 0 && (
-                <div className="notes-list-section">
-                    <h3 className="notes-section-title">{t('notes_public_notes', 'Публічні нотатки')}</h3>
-                    <div className="notes-list">
-                        {publicNotes.map(note => <NoteCard key={note.id} note={note}/>)}
+                <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>
+                        <Users size={18} /> {t('notes_public_notes')}
+                    </h3>
+                    <div className={styles.list}>
+                        {publicNotes.map(note => <NoteCard key={note.id} note={note} />)}
                     </div>
                 </div>
             )}
+
             {myNotes.length === 0 && publicNotes.length === 0 && !isAddingNote && (
-                <p className="no-notes-message">{t('notes_empty', 'Поки що немає жодної нотатки.')}</p>
+                <p className={styles.emptyMessage}>
+                    {t('notes_empty')}
+                </p>
             )}
         </div>
     );

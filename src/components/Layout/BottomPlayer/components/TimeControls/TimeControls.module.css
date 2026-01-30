@@ -1,0 +1,41 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 600px;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.time { min-width: 35px; text-align: center; }
+
+.container {
+    flex: 1;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    touch-action: none;
+}
+
+.track {
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-surface-3);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    background-color: var(--color-text-main);
+    border-radius: 2px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.container:hover .bar { background-color: var(--color-primary); }

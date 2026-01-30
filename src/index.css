@@ -25,6 +25,8 @@
     --border-radius-pill: 50px;
     --transition-fast: 0.2s ease;
     --shadow-main: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --transition-normal: 0.3s ease;
+    --z-player: 1000;
 }
 
 * {

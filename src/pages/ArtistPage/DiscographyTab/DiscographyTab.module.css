@@ -1,0 +1,100 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+.card {
+    text-decoration: none;
+    color: inherit;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: var(--color-surface-1);
+    transition: background-color var(--transition-normal);
+}
+
+.card:hover {
+    background-color: var(--color-surface-2);
+}
+
+.coverWrapper {
+    position: relative;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.card:hover .overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.playButton {
+    background-color: var(--color-primary);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-bg-base);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s;
+}
+
+.playButton:hover {
+    transform: scale(1.1);
+    background-color: var(--color-primary-hover);
+}
+
+.title {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-text-main);
+}
+
+.meta {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+}

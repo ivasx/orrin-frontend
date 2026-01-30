@@ -1,13 +1,11 @@
 import { logger } from '../utils/logger';
 
-/* --- CONSTANTS --- */
 const FALLBACK_COVER = '/orrin-logo.svg';
 const FALLBACK_AVATAR = '/orrin-logo.svg';
 const FALLBACK_AUDIO = null;
 const FALLBACK_TRACK_TITLE = 'Unknown Title';
 const FALLBACK_ARTIST_NAME = 'Unknown Artist';
 const FALLBACK_USERNAME = 'Anonymous';
-
 
 const getFallbackValue = (value, fallback) => {
     return (value === null || value === undefined || value === '') ? fallback : value;
@@ -30,6 +28,10 @@ const getBoolean = (value, defaultValue) => {
 export const normalizeArtistData = (artist) => {
     if (!artist) return null;
 
+    if (artist.id && artist.imageUrl && !artist.slug && artist.hasOwnProperty('isVerified')) {
+        return artist;
+    }
+
     if (typeof artist === 'string') {
         return { id: null, name: artist, slug: null, imageUrl: FALLBACK_AVATAR };
     }
@@ -49,28 +51,29 @@ export const normalizeArtistData = (artist) => {
 export const normalizeTrackData = (track) => {
     if (!track) return null;
 
-    const trackId = track.slug || track.id;
+    if (track.trackId && track.durationFormatted && track.artistObj) {
+        return track;
+    }
+
+    const trackId = track.trackId || track.slug || track.id;
 
     if (!trackId) {
-        console.error('Track normalization failed: No slug or id found', track);
+        logger.warn('Track normalization failed: Missing slug or id', track);
         return null;
     }
 
-    const artistData = normalizeArtistData(track.artist);
+    const artistData = normalizeArtistData(track.artist || track.artistObj);
 
     return {
         trackId: String(trackId),
         title: getFallbackValue(track.title, FALLBACK_TRACK_TITLE),
-        artist: artistData ? artistData.name : FALLBACK_ARTIST_NAME,
+        artist: artistData ? artistData.name : (typeof track.artist === 'string' ? track.artist : FALLBACK_ARTIST_NAME),
         artistId: artistData ? artistData.id : null,
         artistObj: artistData,
-
         cover: track.cover_url || track.cover || FALLBACK_COVER,
         audio: track.audio_url || track.audio || FALLBACK_AUDIO,
-
         duration: typeof track.duration === 'number' ? track.duration : 0,
         durationFormatted: track.duration_formatted || formatDuration(track.duration),
-
         playsCount: track.plays_count || 0,
         isLiked: getBoolean(track.is_liked, false),
         lyrics: track.lyrics || { type: 'none', content: null }

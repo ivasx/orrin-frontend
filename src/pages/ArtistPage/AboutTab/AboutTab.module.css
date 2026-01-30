@@ -1,0 +1,45 @@
+.container {
+    max-width: 800px;
+    animation: fadeIn 0.3s ease;
+}
+
+.description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin-bottom: 24px;
+    white-space: pre-wrap;
+}
+
+.meta {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    color: var(--color-text-main);
+}
+
+.socials {
+    display: flex;
+    gap: 16px;
+}
+
+.socialLink {
+    font-size: 24px;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-normal);
+}
+
+.socialLink:hover {
+    color: var(--color-text-main);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

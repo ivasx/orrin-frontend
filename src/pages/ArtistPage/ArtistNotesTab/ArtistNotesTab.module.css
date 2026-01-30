@@ -1,0 +1,206 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Toggle Button */
+.toggleButton {
+    align-self: flex-start;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid var(--color-text-secondary);
+    border-radius: 500px;
+    color: var(--color-text-main);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-family: inherit;
+}
+
+.toggleButton:hover {
+    border-color: var(--color-text-main);
+    background-color: var(--color-surface-2);
+}
+
+/* Form */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: var(--color-surface-1);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border-subtle);
+}
+
+.textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
+    border-radius: 8px;
+    color: var(--color-text-main);
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    transition: border-color var(--transition-normal);
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.formFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.options {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Inputs & Selects */
+.selectWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.selectIcon {
+    position: absolute;
+    left: 10px;
+    pointer-events: none;
+    color: var(--color-text-secondary);
+}
+
+.select {
+    appearance: none;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
+    color: var(--color-text-main);
+    padding: 8px 12px 8px 36px; /* Space for icon */
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color var(--transition-normal);
+}
+
+.select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.input {
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
+    color: var(--color-text-main);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+/* Action Buttons */
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.cancelButton {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: color var(--transition-normal);
+}
+
+.cancelButton:hover {
+    color: var(--color-text-main);
+}
+
+.submitButton {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base); /* Contrast text */
+    border: none;
+    padding: 8px 24px;
+    border-radius: 500px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color var(--transition-normal), transform var(--transition-fast);
+}
+
+.submitButton:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+    transform: scale(1.02);
+}
+
+.submitButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--color-surface-3);
+    color: var(--color-text-secondary);
+}
+
+/* Sections */
+.divider {
+    height: 1px;
+    background-color: var(--color-border-subtle);
+    width: 100%;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.emptyMessage {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+    .formFooter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .actions {
+        justify-content: flex-end;
+    }
+}

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useCallback, useMemo } from 'react';
 import { useQueue } from './QueueContext';
-
 import { useAudioElement } from '../hooks/audio/useAudioElement';
 import { useAudioPlayback } from '../hooks/audio/useAudioPlayback';
 import { useAudioVolume } from '../hooks/audio/useAudioVolume';
@@ -11,6 +10,7 @@ import { useTrackEndHandler } from '../hooks/audio/useTrackEndHandler';
 import { useMediaSession } from '../hooks/audio/useMediaSession';
 import { useMediaSessionPosition } from '../hooks/audio/useMediaSessionPosition';
 import { logger } from '../utils/logger';
+import { normalizeTrackData } from '../constants/fallbacks';
 
 const AudioCoreContext = createContext();
 
@@ -32,7 +32,7 @@ export const AudioCoreProvider = ({ children }) => {
         initializeQueue
     } = useQueue();
 
-    const { repeatMode, hasRepeatedOnce, setHasRepeatedOnce, toggleRepeat, resetRepeatOnce } = useRepeatMode();
+    const { repeatMode, hasRepeatedOnce, setHasRepeatedOnce, toggleRepeat } = useRepeatMode();
     const audioRef = useAudioElement(trackFromQueue, repeatMode);
 
     const {
@@ -56,30 +56,30 @@ export const AudioCoreProvider = ({ children }) => {
         audioRef
     );
 
-    const playTrack = useCallback((trackData, trackList = null) => {
-        logger.log("[AudioCoreContext playTrack] Отримано trackData:", trackData);
-        logger.log("[AudioCoreContext playTrack] trackData.audio (має бути URL):", trackData?.audio);
+    const playTrack = useCallback((rawTrackData, rawTrackList = null) => {
+        const cleanTrackData = normalizeTrackData(rawTrackData);
 
-        if (trackList && Array.isArray(trackList)) {
-            const formattedTrackList = trackList.map(t => {
-                const needsFormatting = t.hasOwnProperty('audio_url') || t.hasOwnProperty('cover_url');
-                return needsFormatting ? {
-                    ...t,
-                    audio: t.audio_url,
-                    cover: t.cover_url,
-                } : t;
-            });
-            logger.log("[AudioCoreContext playTrack] Форматований trackList для черги:", formattedTrackList);
-            initializeQueue(formattedTrackList, trackData.trackId);
+        if (!cleanTrackData) {
+            logger.error('[AudioCoreContext] Playback failed: Invalid track data', rawTrackData);
+            return;
+        }
+
+        if (rawTrackList && Array.isArray(rawTrackList)) {
+            const cleanQueueList = rawTrackList
+                .map(normalizeTrackData)
+                .filter(Boolean);
+
+            initializeQueue(cleanQueueList, cleanTrackData.trackId);
         } else {
-            const indexInCurrentQueue = queue.findIndex(t => t.trackId === trackData.trackId);
+            const indexInCurrentQueue = queue.findIndex(t => t.trackId === cleanTrackData.trackId);
             if (indexInCurrentQueue !== -1) {
                 playTrackByIndex(indexInCurrentQueue);
             } else {
-                const newQueue = [...queue, trackData];
-                initializeQueue(newQueue, trackData.trackId);
+                const newQueue = [...queue, cleanTrackData];
+                initializeQueue(newQueue, cleanTrackData.trackId);
             }
         }
+
         setIsPlaying(true);
         setHasRepeatedOnce(false);
     }, [initializeQueue, playTrackByIndex, queue, setIsPlaying, setHasRepeatedOnce]);
@@ -99,25 +99,8 @@ export const AudioCoreProvider = ({ children }) => {
         }
     }, [audioRef, seek]);
 
-
-    useTrackEndHandler(
-        audioRef,
-        repeatMode,
-        hasRepeatedOnce,
-        setHasRepeatedOnce,
-        nextTrack
-    );
-
-    useMediaSession(
-        trackFromQueue,
-        isPlaying,
-        resumeTrack,
-        pauseTrack,
-        stopTrack,
-        nextTrack,
-        previousTrack
-    );
-
+    useTrackEndHandler(audioRef, repeatMode, hasRepeatedOnce, setHasRepeatedOnce, nextTrack);
+    useMediaSession(trackFromQueue, isPlaying, resumeTrack, pauseTrack, stopTrack, nextTrack, previousTrack);
     useMediaSessionPosition(audioRef, trackFromQueue, isPlaying);
 
     const value = useMemo(() => ({
@@ -142,8 +125,7 @@ export const AudioCoreProvider = ({ children }) => {
         toggleMute,
         seek,
         seekToPercent,
-
-        isTrackPlaying: (trackId) => trackFromQueue?.trackId === trackId && isPlaying,
+        isTrackPlaying: (trackId) => trackFromQueue?.trackId === String(trackId) && isPlaying,
     }), [
         trackFromQueue, isPlaying, repeatMode, volume, isMuted, isLoading, loadError,
         playTrack, pauseTrack, resumeTrack, stopTrack, nextTrack, previousTrack,

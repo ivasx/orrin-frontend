@@ -1,3 +1,5 @@
+import styles from './TimeControls.module.css';
+
 export default function TimeControls({
                                          progressBarRef,
                                          progressPercent,
@@ -7,19 +9,19 @@ export default function TimeControls({
                                          formatTime
                                      }) {
     return (
-        <div className="progress-wrapper">
-            <div className="time-display">{formatTime(currentTime)}</div>
+        <div className={styles.wrapper}>
+            <span className={styles.time}>{formatTime(currentTime)}</span>
             <div
-                className="progress-container"
+                className={styles.container}
                 onMouseDown={onMouseDown}
-                onTouchStart={onMouseDown} // for touch devices
+                onTouchStart={onMouseDown}
                 ref={progressBarRef}
             >
-                <div className="progress-track">
-                    <div className="progress-bar" style={{ width: `${progressPercent}%` }} />
+                <div className={styles.track}>
+                    <div className={styles.bar} style={{width: `${progressPercent}%`}}/>
                 </div>
             </div>
-            <div className="time-display">{formatTime(duration)}</div>
+            <span className={styles.time}>{formatTime(duration)}</span>
         </div>
     );
 }
