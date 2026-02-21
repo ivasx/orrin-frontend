@@ -5,6 +5,7 @@ import MainLayout from '../layouts/MainLayout.jsx';
 import HeaderOnlyLayout from '../layouts/HeaderOnlyLayout.jsx';
 
 import Spinner from '../components/UI/Spinner/Spinner.jsx';
+import {ProtectedRoute} from "./ProtectedRoute.jsx";
 
 
 const HomePage = lazy(() => import('../pages/HomePage/HomePage.jsx'));
@@ -27,15 +28,19 @@ export default function AppRouter() {
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/feed" element={<FeedPage />} />
-                    <Route path="/library" element={<LibraryPage />} />
-                    <Route path="/favorites" element={<FavoritesPage />} />
-                    <Route path="/history" element={<HistoryPage />} />
+
+                    <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+                        <Route path="/library" element={<LibraryPage />} />
+                        <Route path="/favorites" element={<FavoritesPage />} />
+                        <Route path="/history" element={<HistoryPage />} />
+                    </Route>
+
+
 
                     {/* TODO: [Features] Temporarily disabled. */}
                     {/* <Route path="/playlists" element={<PlaylistsPage />} /> */}
                     {/* <Route path="/top" element={<TopTracksPage />} /> */}
                     {/* <Route path="/radio" element={<RadioPage />} /> */}
-
 
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/track/:trackId" element={<TrackPage />} />
