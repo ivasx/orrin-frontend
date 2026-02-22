@@ -6,11 +6,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './Auth.css';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
-import { logger } from '../../utils/logger';
+import { registerUser } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState('');
 
@@ -74,9 +76,42 @@ export default function Register() {
         }
     }, [birthDay, birthMonth, birthYear, trigger, touchedFields]);
 
-    const onSubmit = (data) => {
-        // TODO: Implement registration functionality
-        logger.log("Data for submission:", data);
+    const onSubmit = async (data) => {
+        setIsLoading(true);
+        setServerError('');
+
+        try {
+            const formattedMonth = String(data.birthMonth).padStart(2, '0');
+            const formattedDay = String(data.birthDay).padStart(2, '0');
+            const dateOfBirth = `${data.birthYear}-${formattedMonth}-${formattedDay}`;
+
+            const payload = {
+                first_name: data.firstName,
+                email: data.email,
+                password: data.password,
+                date_of_birth: dateOfBirth,
+                gender: data.gender === 'prefer_not_to_say' ? null : data.gender
+            };
+
+            const response = await registerUser(payload);
+
+            if (response.access_token || response.access) {
+                const accessToken = response.access_token || response.access;
+                const refreshToken = response.refresh_token || response.refresh;
+                login(accessToken, refreshToken);
+                navigate('/', { replace: true });
+            } else {
+                navigate('/login');
+            }
+        } catch (error) {
+            setServerError(error.message || t('register_failed_error'));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSocialLogin = (provider) => {
+        window.location.href = `/api/v1/auth/${provider.toLowerCase()}/login/`;
     };
 
     const months = useMemo(() => ([
@@ -172,8 +207,8 @@ export default function Register() {
                 <div className="social-register">
                     <div className="divider"><span>{t('register_with_divider')}</span></div>
                     <div className="social-buttons">
-                        <button className="social-button google"><FaGoogle /> Google</button>
-                        <button className="social-button apple"><FaApple /> Apple</button>
+                        <button className="social-button google" onClick={() => handleSocialLogin('Google')}><FaGoogle /> Google</button>
+                        <button className="social-button apple" onClick={() => handleSocialLogin('Apple')}><FaApple /> Apple</button>
                     </div>
                 </div>
             </div>

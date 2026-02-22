@@ -8,14 +8,11 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('access_token'));
     const [isLoading, setIsLoading] = useState(true);
 
-
     const fetchUser = useCallback(async () => {
         try {
             const userData = await getCurrentUser();
             setUser(userData);
         } catch (error) {
-            console.error('Failed to fetch user profile:', error);
-            // If the token is invalid - log out:
             logout();
         } finally {
             setIsLoading(false);
@@ -30,8 +27,11 @@ export const AuthProvider = ({ children }) => {
         }
     }, [token, fetchUser]);
 
-    const login = (newToken, userData = null) => {
+    const login = (newToken, newRefreshToken = null, userData = null) => {
         localStorage.setItem('access_token', newToken);
+        if (newRefreshToken) {
+            localStorage.setItem('refresh_token', newRefreshToken);
+        }
         setToken(newToken);
         if (userData) {
             setUser(userData);
@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         setToken(null);
         setUser(null);
     };

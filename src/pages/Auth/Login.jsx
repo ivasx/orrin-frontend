@@ -1,27 +1,47 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
 import './Auth.css';
-import { logger } from '../../utils/logger';
+import { loginUser } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useAuth();
+
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [serverError, setServerError] = useState('');
+
+    const from = location.state?.from?.pathname || '/';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Implement login functionality
-        logger.log('Login attempt with:', formData);
+        setIsLoading(true);
+        setServerError('');
+
+        try {
+            const response = await loginUser(formData);
+            const accessToken = response.access_token || response.access;
+            const refreshToken = response.refresh_token || response.refresh;
+
+            login(accessToken, refreshToken);
+            navigate(from, { replace: true });
+        } catch (error) {
+            setServerError(error.message || t('login_failed_error'));
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSocialLogin = (provider) => {
-        // TODO: Implement social login functionality
-        logger.log(`Login with ${provider}`);
+        window.location.href = `/api/v1/auth/${provider.toLowerCase()}/login/`;
     };
 
     const handleChange = (e) => {
@@ -76,8 +96,10 @@ export default function Login() {
                         />
                     </div>
 
-                    <button type="submit" className="auth-button">
-                        {t('login_button')}
+                    {serverError && <div className="error-message server-error" style={{ marginBottom: '1rem' }}>{serverError}</div>}
+
+                    <button type="submit" className="auth-button" disabled={isLoading}>
+                        {isLoading ? t('loading') : t('login_button')}
                     </button>
                 </form>
 

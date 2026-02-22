@@ -60,7 +60,20 @@ async function fetchJson(endpoint, options = {}) {
     }
 }
 
-/* --- TRACKS --- */
+export const loginUser = async (credentials) => {
+    return fetchJson('/api/v1/auth/login/', {
+        method: 'POST',
+        body: JSON.stringify(credentials)
+    });
+};
+
+export const registerUser = async (userData) => {
+    return fetchJson('/api/v1/auth/register/', {
+        method: 'POST',
+        body: JSON.stringify(userData)
+    });
+};
+
 export const getTracks = async () => {
     const data = await fetchJson('/api/v1/tracks/');
     return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
@@ -93,7 +106,6 @@ export const getUserHistory = async () => {
     return Array.isArray(tracksRaw) ? tracksRaw.map(normalizeTrackData).filter(Boolean) : [];
 };
 
-/* --- ARTISTS --- */
 export const getArtists = async () => {
     const data = await fetchJson('/api/v1/artists/');
     return Array.isArray(data) ? data.map(normalizeArtistData) : [];
@@ -104,7 +116,6 @@ export const getArtistById = async (slugOrId) => {
     return normalizeArtistData(data);
 };
 
-/* --- FEED ACTIONS --- */
 export const getFeedPosts = async ({ type, sort, contentType } = {}) => {
     const queryParams = new URLSearchParams();
     if (type) queryParams.append('feed_type', type);
@@ -151,7 +162,6 @@ export const reportPost = async (postId, reason = 'spam') => {
     });
 };
 
-/* --- USER & FRIENDS --- */
 export const getFriendsActivity = async () => {
     const data = await fetchJson('/api/v1/friends/activity/');
     return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
@@ -162,7 +172,6 @@ export const getCurrentUser = async () => {
     return normalizeUserData(data);
 };
 
-/* --- SEARCH --- */
 export const searchGlobal = async (query) => {
     const [tracks, artists] = await Promise.all([
         fetchJson(`/api/v1/tracks/?search=${encodeURIComponent(query)}`),
