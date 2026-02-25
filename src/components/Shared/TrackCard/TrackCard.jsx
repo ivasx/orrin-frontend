@@ -1,17 +1,17 @@
 import './TrackCard.css';
-import { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
+import {useState, useEffect, useCallback, useRef, useMemo, memo} from 'react';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
-import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
-import { useTranslation } from "react-i18next";
-import { createTrackMenuItems } from './trackMenuItems.jsx';
-import { Link } from 'react-router-dom';
-import { AlertCircle, Music } from 'lucide-react';
-import { isTrackPlayable } from '../../../constants/fallbacks.js';
-import { logger } from '../../../utils/logger.js';
+import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
+import {useTranslation} from "react-i18next";
+import {createTrackMenuItems} from './trackMenuItems.jsx';
+import {Link} from 'react-router-dom';
+import { MoreHorizontal, AlertCircle, Music } from 'lucide-react';
+import {isTrackPlayable} from '../../../constants/fallbacks.js';
+import {logger} from '../../../utils/logger.js';
 import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
 
 function TrackCard(props) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const {
         currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef,
         isMuted, toggleMute, volume, updateVolume
@@ -36,7 +36,7 @@ function TrackCard(props) {
     const [durationHovered, setDurationHovered] = useState(false);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
     const [rippleStyle, setRippleStyle] = useState({});
     const [showRipple, setShowRipple] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -110,7 +110,12 @@ function TrackCard(props) {
     function createRippleEffect(e) {
         const rect = e.currentTarget.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
-        setRippleStyle({ width: size, height: size, left: e.clientX - rect.left - size / 2, top: e.clientY - rect.top - size / 2 });
+        setRippleStyle({
+            width: size,
+            height: size,
+            left: e.clientX - rect.left - size / 2,
+            top: e.clientY - rect.top - size / 2
+        });
         setShowRipple(true);
         setTimeout(() => setShowRipple(false), 600);
     }
@@ -130,7 +135,7 @@ function TrackCard(props) {
 
     const handleContextMenu = (e) => {
         e.preventDefault();
-        setMenuPosition({ x: e.clientX, y: e.clientY });
+        setMenuPosition({x: e.clientX, y: e.clientY});
         setShowMenu(true);
     };
 
@@ -138,7 +143,7 @@ function TrackCard(props) {
         e.stopPropagation();
         if (dotsButtonRef.current) {
             const rect = dotsButtonRef.current.getBoundingClientRect();
-            setMenuPosition({ x: rect.right, y: rect.top });
+            setMenuPosition({x: rect.right, y: rect.top});
             setShowMenu(prev => !prev);
         }
     }
@@ -149,7 +154,7 @@ function TrackCard(props) {
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
-            aria-label={t('track_card_aria_label', { title: track.title, artist: track.artist })}
+            aria-label={t('track_card_aria_label', {title: track.title, artist: track.artist})}
         >
             <div
                 className={`track-cover-wrapper ${isPlaying ? 'playing' : ''} ${!hasValidAudio ? 'disabled' : ''}`}
@@ -159,37 +164,53 @@ function TrackCard(props) {
                 onTouchStart={() => isTouchDevice && hasValidAudio && setShowControls(true)}
             >
                 {coverError ? (
-                    <div className="track-cover-fallback"><Music size={32} /></div>
+                    <div className="track-cover-fallback"><Music size={32}/></div>
                 ) : (
-                    <img src={displayCover} alt={track.title} className="track-cover" loading="lazy" />
+                    <img src={displayCover} alt={track.title} className="track-cover" loading="lazy"/>
                 )}
 
-                {showRipple && <div className="ripple-effect" style={rippleStyle} />}
+                {showRipple && <div className="ripple-effect" style={rippleStyle}/>}
 
-                {showLoadingIndicator && <div className="loading-indicator"><div className="spinner-small"></div></div>}
+                {showLoadingIndicator && <div className="loading-indicator">
+                    <div className="spinner-small"></div>
+                </div>}
 
-                {shouldShowControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
+                {showControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
                     <div className="play-icon" onClick={handlePlayButtonClick}>
-                        {!isPlaying ? <div className="triangle"></div> : <div className="pause"><span></span><span></span></div>}
+                        {!isPlaying ? <div className="triangle"></div> :
+                            <div className="pause"><span></span><span></span></div>}
                     </div>
                 )}
 
-                {isPlaying && !shouldShowControls && hasValidAudio && <div className="bars"><span></span><span></span><span></span></div>}
+                {isPlaying && !showControls && hasValidAudio &&
+                    <div className="bars"><span></span><span></span><span></span></div>}
             </div>
 
             <div className="track-info">
                 <Link to={`/track/${track.trackId}`} className="track-title">{track.title}</Link>
                 <div className="track-artist">
-                    {track.artistId ? <Link to={`/artist/${track.artistId}`} className="track-artist-link">{track.artist}</Link> : <span>{track.artist}</span>}
+                    {track.artistId ?
+                        <Link to={`/artist/${track.artistId}`} className="track-artist-link">{track.artist}</Link> :
+                        <span>{track.artist}</span>}
                 </div>
-                <div ref={dotsButtonRef} className="track-duration" onClick={handleDotsClick}>
-                    {!durationHovered ? <span>{track.duration_formatted}</span> : <span>...</span>}
+                <div
+                    ref={dotsButtonRef}
+                    className="track-duration"
+                    onClick={handleDotsClick}
+                    onMouseEnter={() => setDurationHovered(true)}
+                    onMouseLeave={() => setDurationHovered(false)}
+                >
+                    {!durationHovered ?
+                        <span className="duration-text">{track.duration_formatted}</span> :
+                        <MoreHorizontal size={20} className="duration-icon" />
+                    }
                 </div>
             </div>
 
-            <ContextMenu isVisible={showMenu} position={menuPosition} onClose={() => setShowMenu(false)} menuItems={getMenuItems()} />
+            <ContextMenu isVisible={showMenu} position={menuPosition} onClose={() => setShowMenu(false)}
+                         menuItems={getMenuItems()}/>
 
-            <AuthPromptModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+            <AuthPromptModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)}/>
         </div>
     );
 }

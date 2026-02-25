@@ -62,12 +62,8 @@
 }
 
 @keyframes skeleton-loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 .track-cover-wrapper.not-playable {
@@ -105,12 +101,8 @@
 }
 
 @keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.6;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
 }
 
 .track-cover-wrapper.loading .track-cover {
@@ -134,12 +126,6 @@
 @media (prefers-color-scheme: dark) {
     .track-cover-skeleton {
         background: linear-gradient(90deg, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%);
-    }
-}
-
-@media (max-width: 768px) {
-    .track-cover-skeleton {
-        animation-duration: 1.2s;
     }
 }
 
@@ -176,7 +162,6 @@
     overflow: hidden;
 }
 
-
 .ripple-effect {
     position: absolute;
     border-radius: 50%;
@@ -187,10 +172,7 @@
 }
 
 @keyframes ripple {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
+    to { transform: scale(4); opacity: 0; }
 }
 
 .play-icon {
@@ -262,9 +244,6 @@
     font-size: 16px;
     font-weight: bold;
     color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     text-decoration: none;
 }
 
@@ -275,10 +254,6 @@
 .track-artist {
     font-size: 14px;
     color: #aaa;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-decoration: none;
 }
 
 .track-artist-link {
@@ -286,7 +261,6 @@
     text-decoration: none;
     transition: color 0.2s ease;
 }
-
 
 .track-artist-link:hover {
     color: #fff;
@@ -301,7 +275,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
     cursor: pointer;
     user-select: none;
     padding: 4px 8px;
@@ -309,12 +282,13 @@
     min-width: 65px;
     z-index: 1;
     background: transparent;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .track-duration:hover {
     color: #fff;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    border-radius: 20px;
 }
 
 .duration-text {
@@ -327,16 +301,15 @@
 
 .duration-dots {
     font-family: 'Montserrat', sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    color: #aaa;
-    white-space: nowrap;
-    transform: translateY(-0.3em) translateX(-0.25em);
-}
-
-.track-duration:hover .duration-text,
-.track-duration:hover .duration-dots {
+    font-size: 22px;
+    font-weight: 700;
     color: #fff;
+    white-space: nowrap;
+    line-height: 0;
+    display: flex;
+    align-items: center;
+    letter-spacing: 1px;
+    transform: translateY(-2px);
 }
 
 .bars {
@@ -358,80 +331,29 @@
     filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
-.bars span:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-.bars span:nth-child(3) {
-    animation-delay: 0.2s;
-}
-
-.mobile-bars {
-    bottom: 3px;
-    opacity: 0.7;
-}
+.bars span:nth-child(2) { animation-delay: 0.1s; }
+.bars span:nth-child(3) { animation-delay: 0.2s; }
 
 @keyframes bounce {
-    0% {
-        transform: scaleY(0.3);
-    }
-    100% {
-        transform: scaleY(1);
-    }
+    0% { transform: scaleY(0.3); }
+    100% { transform: scaleY(1); }
 }
 
 @media (max-width: 768px) {
-    .card-track {
-        width: 280px;
-    }
-
-    .track-info {
-        padding-right: 65px;
-        width: calc(100% - 70px);
-    }
-
-    .track-duration {
-        min-width: 55px;
-        padding: 4px 6px;
-    }
-
-    .track-title {
-        font-size: 18px;
-    }
-
-    .track-artist {
-        font-size: 13px;
-    }
+    .card-track { width: 280px; }
+    .track-info { padding-right: 65px; width: calc(100% - 70px); }
+    .track-duration { min-width: 55px; padding: 4px 6px; }
+    .track-title { font-size: 18px; }
+    .track-artist { font-size: 13px; }
 }
 
 @media (max-width: 480px) {
-    .card-track {
-        width: 250px;
-    }
-
-    .track-info {
-        padding-right: 60px;
-        width: calc(100% - 65px);
-    }
-
-    .track-duration {
-        min-width: 50px;
-        padding: 4px 5px;
-    }
+    .card-track { width: 250px; }
+    .track-info { padding-right: 60px; width: calc(100% - 65px); }
+    .track-duration { min-width: 50px; padding: 4px 5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .track-cover,
-    .play-icon,
-    .menu-item {
-        transition: none;
-    }
-
-    .bars span {
-        animation: none;
-        transform: scaleY(1);
-    }
-    .ripple-effect {
-        animation: none;
-    }
+    .track-cover, .play-icon, .ripple-effect { transition: none; animation: none; }
+    .bars span { animation: none; transform: scaleY(1); }
 }
