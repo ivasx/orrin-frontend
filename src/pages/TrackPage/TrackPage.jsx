@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getTrackBySlug } from '../../services/api';
 import { normalizeTrackData } from '../../constants/fallbacks.js';
 import MusicLyrics from '../../components/Shared/MusicLyrics/MusicLyrics';
+import InlineError from '../../components/Shared/InlineError/InlineError';
 import './TrackPage.css';
 
 export default function TrackPage() {
@@ -23,7 +24,6 @@ export default function TrackPage() {
 
     const track = rawTrack ? normalizeTrackData(rawTrack) : null;
 
-    // --- Функція кліку по рядку (заготовка) ---
     const handleLineClick = (time) => {
         // TODO: Implement seek functionality
     };
@@ -31,31 +31,19 @@ export default function TrackPage() {
     if (isLoading) {
         return (
             <div className="track-page">
-                {/* Простий лоадер */}
                 <div style={{color: 'white', padding: '50px'}}>Loading...</div>
             </div>
         );
     }
 
-    if (isError) {
+    if (isError || !track) {
         return (
             <div className="track-page">
-                <div className="error-container">
-                    <h2>{t('error_loading_track', 'Помилка завантаження треку')}</h2>
-                    <p>{error.message}</p>
-                    <Link to="/" className="back-button">{t('back_to_home', 'На головну')}</Link>
-                </div>
-            </div>
-        );
-    }
-
-    if (!track) {
-        return (
-            <div className="track-page">
-                <div className="error-container">
-                    <h2>{t('track_not_found', 'Трек не знайдено')}</h2>
-                    <Link to="/" className="back-button">{t('back_to_home', 'На головну')}</Link>
-                </div>
+                <InlineError
+                    error={error}
+                    title={t('error_loading_track')}
+                    defaultMessage={t('track_not_found')}
+                />
             </div>
         );
     }
@@ -63,7 +51,6 @@ export default function TrackPage() {
     return (
         <div className="track-page">
             <div className="track-page-content-wrapper">
-                {/* ЛІВА ЧАСТИНА: Інфо */}
                 <div className="tp-info-side">
                     <div className="tp-cover-container">
                         <img
@@ -92,7 +79,6 @@ export default function TrackPage() {
                     </div>
                 </div>
 
-                {/* ПРАВА ЧАСТИНА: Лірика */}
                 <div className="tp-lyrics-side">
                     <MusicLyrics
                         lyricsData={track.lyrics}
