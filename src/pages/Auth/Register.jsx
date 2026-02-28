@@ -23,8 +23,8 @@ export default function Register() {
             .required(t('password_required'))
             .min(8, t('password_min'))
             .matches(/[A-Z]/, t('password_uppercase'))
-            .matches(/[0-9]/, t('password_digit'))
-            .matches(/[!@#$%^&*]/, t('password_special')),
+            .matches(/[0-9]/, t('password_digit')),
+            // .matches(/[!@#$%^&*]/, t('password_special'))
         birthMonth: yup.string().required(t('month_required')),
         birthDay: yup.number()
             .typeError(t('day_invalid_format'))

@@ -61,7 +61,7 @@ async function fetchJson(endpoint, options = {}) {
 }
 
 export const loginUser = async (credentials) => {
-    return fetchJson('/api/v1/auth/login/', {
+    return fetchJson('/api/v1/auth/token/', {
         method: 'POST',
         body: JSON.stringify(credentials)
     });

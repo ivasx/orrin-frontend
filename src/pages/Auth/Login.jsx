@@ -13,7 +13,7 @@ export default function Login() {
     const { login } = useAuth();
 
     const [formData, setFormData] = useState({
-        email: '',
+        username: '',
         password: ''
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -71,12 +71,12 @@ export default function Login() {
                     <div className="form-group">
                         <label htmlFor="email" className="form-label">{t('email_label')}</label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
+                            type="text"
+                            id="username"
+                            name="username"
                             className="form-input"
-                            placeholder={t('email_placeholder')}
-                            value={formData.email}
+                            placeholder={t('email_or_username_placeholder')}
+                            value={formData.username}
                             onChange={handleChange}
                             required
                         />
