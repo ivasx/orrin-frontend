@@ -3,15 +3,20 @@ import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import {useTranslation} from "react-i18next";
-import Button from "../../UI/Button/Button";
 import styles from "./Header.module.css";
 import {logger} from '../../../utils/logger.js';
 import {Search} from 'lucide-react';
+import { useAuth } from '../../../context/AuthContext.jsx';
+import { UserActions } from "./components/UserActions.jsx";
+import { GuestActions } from "./components/GuestActions.jsx";
 
-export default function Header({user, onLogout, onMenuToggle, showMenuButton = true}) {
+
+export default function Header({onMenuToggle, showMenuButton = true}) {
     const {t} = useTranslation();
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
     const navigate = useNavigate();
+
+    const { user } = useAuth();
 
     useEffect(() => {
         document.body.style.overflow = mobileSearchOpen ? "hidden" : "auto";
@@ -70,36 +75,8 @@ export default function Header({user, onLogout, onMenuToggle, showMenuButton = t
                         <Search/>
                     </button>
 
-                    {user ? (
-                        <>
-                            <span className={styles.username}>{user.username}</span>
-                            <Button
-                                variant="outline"
-                                className={styles.logoutBtn}
-                                onClick={onLogout}
-                            >
-                                {t('logout')}
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Button
-                                variant="ghost"
-                                className={styles.registerBtn}
-                                onClick={() => navigate('/register')}
-                            >
-                                {t('register')}
-                            </Button>
+                    {user ? <UserActions /> : <GuestActions />}
 
-                            <Button
-                                variant="primary"
-                                className={styles.loginBtn}
-                                onClick={() => navigate('/login')}
-                            >
-                                {t('login')}
-                            </Button>
-                        </>
-                    )}
                 </div>
             </div>
 
