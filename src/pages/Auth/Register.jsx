@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './Auth.css';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
-import { registerUser } from '../../services/api';
+import { registerUser } from '../../services/auth';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
