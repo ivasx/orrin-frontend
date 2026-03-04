@@ -42,7 +42,7 @@ export const mockUsers = [
         id: 'user-1',
         name: 'Саша Рояль',
         username: 'sasuk',
-        avatar: 'https://static-cdn.jtvnw.net/jtv_user_pictures/fa82070b-d5dc-4044-bf2b-cef510e3a3e9-profile_image-300x300.png',
+        avatarUrl: 'https://static-cdn.jtvnw.net/jtv_user_pictures/fa82070b-d5dc-4044-bf2b-cef510e3a3e9-profile_image-300x300.png',
         isVerified: true,
         isArtist: false,
         followersCount: 15420,

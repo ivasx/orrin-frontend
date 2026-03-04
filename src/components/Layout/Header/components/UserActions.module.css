@@ -1,0 +1,67 @@
+.actionsContainer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.notificationBtn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.notificationBtn:hover {
+    color: #AF947E;
+    background: rgba(175, 148, 126, 0.1);
+}
+
+.avatarTrigger {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
+}
+
+.avatarTrigger:hover {
+    transform: scale(1.05);
+}
+
+.avatarImage {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.avatarTrigger:hover .avatarImage {
+    border-color: #AF947E;
+}
+
+.avatarPlaceholder {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #AF947E 0%, #8A6F51 100%);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 0 4px 10px rgba(138, 111, 81, 0.25);
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatarTrigger:hover .avatarPlaceholder {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 14px rgba(138, 111, 81, 0.4);
+}

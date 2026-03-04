@@ -1,13 +1,14 @@
-import {useState, useRef, useEffect} from 'react';
-import {ChevronDown, Check} from 'lucide-react';
-import './Dropdown.css';
+import { useState, useRef, useEffect } from 'react';
+import { ChevronDown, Check } from 'lucide-react';
+import styles from './Dropdown.module.css';
 
 export default function Dropdown({
                                      trigger,
+                                     customTrigger,
                                      items = [],
                                      selectedValue,
                                      onSelect,
-                                     placeholder = 'Оберіть',
+                                     placeholder = 'Select',
                                      icon,
                                      className = ''
                                  }) {
@@ -44,7 +45,7 @@ export default function Dropdown({
 
         const handleKeyDown = (event) => {
             const menuItems = Array.from(
-                dropdownRef.current?.querySelectorAll('.dropdown-item:not(.disabled)') || []
+                dropdownRef.current?.querySelectorAll(`.${styles.dropdownItem}:not(.${styles.disabled})`) || []
             );
 
             if (menuItems.length === 0) return;
@@ -108,30 +109,62 @@ export default function Dropdown({
     const displayLabel = selectedItem?.label || trigger || placeholder;
 
     return (
-        <div className={`dropdown-container ${className}`} ref={dropdownRef}>
-            <button
-                ref={triggerRef}
-                className={`dropdown-trigger ${isOpen ? 'open' : ''}`}
-                onClick={() => setIsOpen(!isOpen)}
-                aria-haspopup="true"
-                aria-expanded={isOpen}
-            >
-                {icon && <span className="dropdown-trigger-icon-left">{icon}</span>}
-                <span>{displayLabel}</span>
-                <ChevronDown size={16} className="dropdown-trigger-icon"/>
-            </button>
+        <div className={`${styles.dropdownContainer} ${className}`} ref={dropdownRef}>
+            {customTrigger ? (
+                <div
+                    ref={triggerRef}
+                    className={styles.customTriggerWrapper}
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                >
+                    {customTrigger}
+                </div>
+            ) : (
+                <button
+                    ref={triggerRef}
+                    className={`${styles.dropdownTrigger} ${isOpen ? styles.open : ''}`}
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                >
+                    {icon && <span className={styles.dropdownTriggerIconLeft}>{icon}</span>}
+                    <span>{displayLabel}</span>
+                    <ChevronDown size={16} className={styles.dropdownTriggerIcon} />
+                </button>
+            )}
 
             {isOpen && (
-                <div
-                    className="dropdown-menu"
-                    role="menu"
-                >
+                <div className={styles.dropdownMenu} role="menu">
                     {items.map((item, index) => {
+                        if (item.type === 'header') {
+                            return (
+                                <div
+                                    key={`header-${index}`}
+                                    className={`
+                                        ${styles.dropdownHeader} 
+                                        ${item.action ? styles.clickableHeader : ''}
+                                    `}
+                                    onClick={() => {
+                                        const selection = window.getSelection().toString();
+                                        if (selection.length > 0) return;
+
+                                        if (item.action) {
+                                            item.action();
+                                            setIsOpen(false);
+                                        }
+                                    }}
+                                >
+                                    {item.label}
+                                </div>
+                            );
+                        }
+
                         if (item.type === 'separator') {
                             return (
                                 <div
                                     key={`separator-${index}`}
-                                    className="dropdown-separator"
+                                    className={styles.dropdownSeparator}
                                     role="separator"
                                     aria-hidden="true"
                                 />
@@ -139,29 +172,35 @@ export default function Dropdown({
                         }
 
                         const isSelected = selectedValue !== undefined && item.value === selectedValue;
+                        const isDangerItem = item.isDanger;
 
                         return (
                             <div
                                 key={item.value || `item-${index}`}
-                                className={`dropdown-item ${isSelected ? 'selected' : ''} ${item.disabled ? 'disabled' : ''}`}
+                                className={`
+                                    ${styles.dropdownItem} 
+                                    ${isSelected ? styles.selected : ''} 
+                                    ${item.disabled ? styles.disabled : ''}
+                                `}
                                 onClick={() => handleItemClick(item)}
                                 role="menuitem"
                                 tabIndex={item.disabled ? -1 : 0}
                                 aria-disabled={item.disabled}
                                 aria-current={isSelected ? 'true' : 'false'}
+                                style={isDangerItem ? { color: '#ff4b4b' } : {}}
                             >
                                 {item.icon && (
-                                    <span className="dropdown-item-icon">
+                                    <span className={styles.dropdownItemIcon}>
                                         {item.icon}
                                     </span>
                                 )}
 
-                                <span className="dropdown-item-label">
+                                <span className={styles.dropdownItemLabel}>
                                     {item.label}
                                 </span>
 
                                 {isSelected && (
-                                    <Check size={16} className="dropdown-item-checkmark"/>
+                                    <Check size={16} className={styles.dropdownItemCheckmark} />
                                 )}
                             </div>
                         );
