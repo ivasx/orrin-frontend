@@ -6,8 +6,8 @@ import App from './App.jsx';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import {AuthProvider} from "./context/AuthContext.jsx";
-
+import { AuthProvider } from "./context/AuthContext.jsx";
+import VinylLoader from './components/UI/Spinner/VinylLoader.jsx';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -24,7 +24,7 @@ createRoot(document.getElementById('root')).render(
     <StrictMode>
         <AuthProvider>
             <QueryClientProvider client={queryClient}>
-                <Suspense fallback="Loading...">
+                <Suspense fallback={<VinylLoader />}>
                     <I18nextProvider i18n={i18n}>
                         <App />
                     </I18nextProvider>
@@ -32,6 +32,5 @@ createRoot(document.getElementById('root')).render(
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </AuthProvider>
-
     </StrictMode>,
 );

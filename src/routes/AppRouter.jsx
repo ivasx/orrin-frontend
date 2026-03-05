@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout.jsx';
 import HeaderOnlyLayout from '../layouts/HeaderOnlyLayout.jsx';
 
-import Spinner from '../components/UI/Spinner/Spinner.jsx';
+import VinylLoader from '../components/UI/Spinner/VinylLoader.jsx';
 import {ProtectedRoute} from "./ProtectedRoute.jsx";
 
 
@@ -23,7 +23,7 @@ const LoginPage = lazy(() => import('../pages/Auth/Login.jsx'));
 
 export default function AppRouter() {
     return (
-        <Suspense fallback={<div className="page-loader"><Spinner /></div>}>
+        <Suspense fallback={<VinylLoader />}>
             <Routes>
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomePage />} />
