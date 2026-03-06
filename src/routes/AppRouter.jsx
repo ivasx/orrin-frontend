@@ -20,6 +20,7 @@ const ArtistPage = lazy(() => import('../pages/ArtistPage/ArtistPage.jsx'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage/NotFoundPage.jsx'));
 const RegisterPage = lazy(() => import('../pages/Auth/Register.jsx'));
 const LoginPage = lazy(() => import('../pages/Auth/Login.jsx'));
+const UserProfilePage = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
 
 export default function AppRouter() {
     return (
@@ -34,7 +35,7 @@ export default function AppRouter() {
                         <Route path="/favorites" element={<FavoritesPage />} />
                         <Route path="/history" element={<HistoryPage />} />
                     </Route>
-
+                    <Route path="/user/:userId" element={<UserProfilePage />} />
 
 
                     {/* TODO: [Features] Temporarily disabled. */}

@@ -186,3 +186,23 @@ export const searchGlobal = async (query) => {
         artists: normalizedArtists
     };
 };
+
+export const getUserProfileById = async (userId) => {
+    const data = await fetchJson(`/api/v1/users/${userId}/`);
+    return normalizeUserData(data);
+};
+
+export const getUserProfileById = async (userId) => {
+    const data = await fetchJson(`/api/v1/users/${userId}/`);
+    return normalizeUserData(data);
+};
+
+export const getUserPosts = async (userId) => {
+    const data = await fetchJson(`/api/v1/users/${userId}/posts/`);
+    return Array.isArray(data) ? data.map(normalizePostData) : [];
+};
+
+export const getUserFriends = async (userId) => {
+    const data = await fetchJson(`/api/v1/users/${userId}/friends/`);
+    return Array.isArray(data) ? data.map(normalizeUserData) : [];
+};

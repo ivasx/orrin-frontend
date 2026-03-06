@@ -1,0 +1,106 @@
+.hero {
+    position: relative;
+    height: 340px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 2rem;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 2rem;
+    width: 100%;
+}
+
+.avatar {
+    width: 192px;
+    height: 192px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border: 4px solid var(--bg-color-primary, #000000);
+}
+
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.badge {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-color-primary, #ffffff);
+}
+
+.username {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    margin: 0;
+    color: var(--text-color-primary, #ffffff);
+}
+
+.stats {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--text-color-secondary, #b3b3b3);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.stats strong {
+    color: var(--text-color-primary, #ffffff);
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.actionBtn, .actionBtnPrimary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color, #ffffff);
+}
+
+.actionBtn {
+    background: transparent;
+    color: var(--text-color-primary, #ffffff);
+}
+
+.actionBtn:hover {
+    transform: scale(1.04);
+}
+
+.actionBtnPrimary {
+    background: var(--text-color-primary, #ffffff);
+    color: var(--bg-color-primary, #000000);
+    border: none;
+}
+
+.actionBtnPrimary:hover {
+    transform: scale(1.04);
+}
