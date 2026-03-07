@@ -1,0 +1,33 @@
+.container {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-color-primary, #ffffff);
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.text {
+    color: var(--text-color-secondary, #b3b3b3);
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.link {
+    color: var(--accent-color, #1db954);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.link:hover {
+    text-decoration: underline;
+    color: var(--accent-color-hover, #1ed760);
+}

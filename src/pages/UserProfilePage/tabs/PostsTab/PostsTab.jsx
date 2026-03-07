@@ -4,21 +4,22 @@ import InfoSection from '../../../../components/Shared/InfoSection/InfoSection.j
 import FeedPost from '../../../../components/Shared/FeedPost/FeedPost.jsx';
 import CreatePost from '../../../../components/Shared/CreatePost/CreatePost.jsx';
 import { getUserPosts } from '../../../../services/api.js';
+import styles from './PostsTab.module.css';
 
-export const PostsTab = ({ userId, isOwnProfile }) => {
+export const PostsTab = ({ username, isOwnProfile }) => {
     const { t } = useTranslation();
 
     const { data: posts, isLoading, isError } = useQuery({
-        queryKey: ['userPosts', userId],
-        queryFn: () => getUserPosts(userId),
-        enabled: !!userId,
+        queryKey: ['userPosts', username],
+        queryFn: () => getUserPosts(username),
+        enabled: !!username,
     });
 
     if (isLoading) return <InfoSection isLoading />;
     if (isError) return <InfoSection message={t('profile_error_posts', 'Could not load posts.')} />;
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '800px', margin: '0 auto' }}>
+        <div className={styles.container}>
             {isOwnProfile && <CreatePost />}
 
             {posts?.length > 0 ? (

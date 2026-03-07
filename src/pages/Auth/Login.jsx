@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
 import './Auth.css';
-import { loginUser } from '../../services/auth';
+import { loginUser } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
@@ -69,7 +69,7 @@ export default function Login() {
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="email" className="form-label">{t('email_label')}</label>
+                        <label htmlFor="username" className="form-label">{t('email_label')}</label>
                         <input
                             type="text"
                             id="username"
@@ -96,7 +96,11 @@ export default function Login() {
                         />
                     </div>
 
-                    {serverError && <div className="error-message server-error" style={{ marginBottom: '1rem' }}>{serverError}</div>}
+                    {serverError && (
+                        <div className="error-message server-error" style={{ marginBottom: '1rem', color: 'var(--color-error)' }}>
+                            {serverError}
+                        </div>
+                    )}
 
                     <button type="submit" className="auth-button" disabled={isLoading}>
                         {isLoading ? t('loading') : t('login_button')}

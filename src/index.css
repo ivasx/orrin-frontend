@@ -27,6 +27,12 @@
     --shadow-main: 0 4px 20px rgba(0, 0, 0, 0.5);
     --transition-normal: 0.3s ease;
     --z-player: 1000;
+
+    --bg-color-secondary: var(--color-surface-1);
+    --bg-color-tertiary: var(--color-surface-2);
+    --text-color-primary: var(--color-text-main);
+    --accent-color: var(--color-success);
+    --accent-color-hover: #1ed760;
 }
 
 * {

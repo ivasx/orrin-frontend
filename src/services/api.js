@@ -19,8 +19,11 @@ export class ApiError extends Error {
 async function handleResponse(response, endpoint) {
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+
+        const errorMessage = errorData.detail || errorData.message || `HTTP error ${response.status}`;
+
         throw new ApiError(
-            errorData.message || `HTTP error ${response.status}`,
+            errorMessage,
             response.status,
             endpoint
         );
@@ -187,22 +190,21 @@ export const searchGlobal = async (query) => {
     };
 };
 
-export const getUserProfileById = async (userId) => {
-    const data = await fetchJson(`/api/v1/users/${userId}/`);
+export const getUserProfile = async (username) => {
+    const data = await fetchJson(`/api/v1/users/${username}/`);
     return normalizeUserData(data);
 };
 
-export const getUserProfileById = async (userId) => {
-    const data = await fetchJson(`/api/v1/users/${userId}/`);
-    return normalizeUserData(data);
+export const toggleFollowUser = async (username) => {
+    return fetchJson(`/api/v1/users/${username}/follow/`, { method: 'POST' });
 };
 
-export const getUserPosts = async (userId) => {
-    const data = await fetchJson(`/api/v1/users/${userId}/posts/`);
+export const getUserPosts = async (username) => {
+    const data = await fetchJson(`/api/v1/users/${username}/posts/`);
     return Array.isArray(data) ? data.map(normalizePostData) : [];
 };
 
-export const getUserFriends = async (userId) => {
-    const data = await fetchJson(`/api/v1/users/${userId}/friends/`);
+export const getUserFollowers = async (username) => {
+    const data = await fetchJson(`/api/v1/users/${username}/followers/`);
     return Array.isArray(data) ? data.map(normalizeUserData) : [];
 };
