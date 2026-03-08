@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-// Contexts
+import { AuthProvider } from './context/AuthContext.jsx';
+import { NotificationProvider } from './context/NotificationContext.jsx';
 import { QueueProvider } from './context/QueueContext.jsx';
 import { PlayerUIProvider } from './context/PlayerUIContext.jsx';
 import { AudioCoreProvider, useAudioCore } from './context/AudioCoreContext.jsx';
 import { SettingsProvider } from './context/SettingsContext.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
 
-// Components
 import BottomPlayer from './components/Layout/BottomPlayer/BottomPlayer.jsx';
 import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary.jsx';
 import AppRouter from './routes/AppRouter.jsx';
@@ -50,17 +50,21 @@ export default function App() {
     return (
         <Router>
             <ErrorBoundary>
-                <SettingsProvider>
-                    <ToastProvider>
-                        <QueueProvider>
-                            <PlayerUIProvider>
-                                <AudioCoreProvider>
-                                    <AppLayout />
-                                </AudioCoreProvider>
-                            </PlayerUIProvider>
-                        </QueueProvider>
-                    </ToastProvider>
-                </SettingsProvider>
+                <AuthProvider>
+                    <NotificationProvider>
+                        <SettingsProvider>
+                            <ToastProvider>
+                                <QueueProvider>
+                                    <PlayerUIProvider>
+                                        <AudioCoreProvider>
+                                            <AppLayout />
+                                        </AudioCoreProvider>
+                                    </PlayerUIProvider>
+                                </QueueProvider>
+                            </ToastProvider>
+                        </SettingsProvider>
+                    </NotificationProvider>
+                </AuthProvider>
             </ErrorBoundary>
         </Router>
     );

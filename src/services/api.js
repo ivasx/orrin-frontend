@@ -208,3 +208,16 @@ export const getUserFollowers = async (username) => {
     const data = await fetchJson(`/api/v1/users/${username}/followers/`);
     return Array.isArray(data) ? data.map(normalizeUserData) : [];
 };
+
+export const getNotifications = async () => {
+    const data = await fetchJson('/api/v1/notifications/');
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const markNotificationAsRead = async (id) => {
+    return fetchJson(`/api/v1/notifications/${id}/read/`, { method: 'POST' });
+};
+
+export const markAllNotificationsAsRead = async () => {
+    return fetchJson('/api/v1/notifications/read-all/', { method: 'POST' });
+};
