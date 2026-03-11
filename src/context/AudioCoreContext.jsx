@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
+
 import { useQueue } from './QueueContext';
 import { useAudioElement } from '../hooks/audio/useAudioElement';
 import { useAudioPlayback } from '../hooks/audio/useAudioPlayback';
@@ -12,7 +14,7 @@ import { useMediaSessionPosition } from '../hooks/audio/useMediaSessionPosition'
 import { logger } from '../utils/logger';
 import { normalizeTrackData } from '../constants/fallbacks';
 
-const AudioCoreContext = createContext();
+const AudioCoreContext = createContext(null);
 
 export const useAudioCore = () => {
     const context = useContext(AudioCoreContext);
@@ -60,23 +62,19 @@ export const AudioCoreProvider = ({ children }) => {
         const cleanTrackData = normalizeTrackData(rawTrackData);
 
         if (!cleanTrackData) {
-            logger.error('[AudioCoreContext] Playback failed: Invalid track data', rawTrackData);
+            logger.error('[AudioCore] Playback failed: Invalid track data provided', rawTrackData);
             return;
         }
 
         if (rawTrackList && Array.isArray(rawTrackList)) {
-            const cleanQueueList = rawTrackList
-                .map(normalizeTrackData)
-                .filter(Boolean);
-
+            const cleanQueueList = rawTrackList.map(normalizeTrackData).filter(Boolean);
             initializeQueue(cleanQueueList, cleanTrackData.trackId);
         } else {
             const indexInCurrentQueue = queue.findIndex(t => t.trackId === cleanTrackData.trackId);
             if (indexInCurrentQueue !== -1) {
                 playTrackByIndex(indexInCurrentQueue);
             } else {
-                const newQueue = [...queue, cleanTrackData];
-                initializeQueue(newQueue, cleanTrackData.trackId);
+                initializeQueue([...queue, cleanTrackData], cleanTrackData.trackId);
             }
         }
 
@@ -94,8 +92,7 @@ export const AudioCoreProvider = ({ children }) => {
     const seekToPercent = useCallback((percent) => {
         const audio = audioRef.current;
         if (audio && audio.duration && isFinite(percent)) {
-            const time = (percent / 100) * audio.duration;
-            seek(time);
+            seek((percent / 100) * audio.duration);
         }
     }, [audioRef, seek]);
 
@@ -110,8 +107,6 @@ export const AudioCoreProvider = ({ children }) => {
         repeatMode,
         volume,
         isMuted,
-        currentTime: audioRef.current?.currentTime || 0,
-        duration: audioRef.current?.duration || 0,
         isLoading,
         loadError,
         playTrack,
@@ -135,7 +130,10 @@ export const AudioCoreProvider = ({ children }) => {
     return (
         <AudioCoreContext.Provider value={value}>
             {children}
-            <audio ref={audioRef} preload="metadata" />
         </AudioCoreContext.Provider>
     );
+};
+
+AudioCoreProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 };

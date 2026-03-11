@@ -1,11 +1,11 @@
-import { useEffect, useState, forwardRef, useRef, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { MoreHorizontal } from 'lucide-react';
-import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
-import { useQueue } from '../../../context/QueueContext.jsx';
-import { logger } from '../../../utils/logger.js';
-import { useProgressBar } from '../../../hooks/useProgressBar.jsx';
-import { isTrackPlayable } from '../../../constants/fallbacks.js';
+import {useEffect, useState, forwardRef, useRef, useCallback, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+import {MoreHorizontal} from 'lucide-react';
+import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
+import {useQueue} from '../../../context/QueueContext.jsx';
+import {logger} from '../../../utils/logger.js';
+import {useProgressBar} from '../../../hooks/useProgressBar.jsx';
+import {isTrackPlayable} from '../../../constants/fallbacks.js';
 
 import TrackInfo from './components/TrackInfo/TrackInfo.jsx';
 import PlayerControls from './components/PlayerControls/PlayerControls.jsx';
@@ -22,8 +22,8 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         isLoading: contextIsLoading, loadError: contextLoadError,
     } = useAudioCore();
 
-    const { isShuffled, toggleShuffle } = useQueue();
-    const { t } = useTranslation();
+    const {isShuffled, toggleShuffle} = useQueue();
+    const {t} = useTranslation();
 
     const isPlayable = currentTrack ? isTrackPlayable(currentTrack) : false;
     const [retryCount, setRetryCount] = useState(0);
@@ -71,9 +71,9 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     }, []);
 
     const playerMenuItems = useMemo(() => [
-        { id: 'add_queue', label: t('player_menu_add_to_queue'), disabled: true },
-        { id: 'share', label: t('player_menu_share'), disabled: true },
-        { id: 'artist', label: t('player_menu_go_to_artist'), disabled: true },
+        {id: 'add_queue', label: t('player_menu_add_to_queue'), disabled: true},
+        {id: 'share', label: t('player_menu_share'), disabled: true},
+        {id: 'artist', label: t('player_menu_go_to_artist'), disabled: true},
     ], [t]);
 
     if (!currentTrack) return null;
@@ -99,14 +99,7 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                         onToggleShuffle={toggleShuffle}
                         onToggleRepeat={toggleRepeat}
                     />
-                    <TimeControls
-                        progressBarRef={progressBarRef}
-                        progressPercent={progressPercent}
-                        currentTime={currentTime}
-                        duration={duration}
-                        onMouseDown={handleMouseDown}
-                        formatTime={formatTime}
-                    />
+                    <TimeControls/>
                 </div>
 
                 <div className={styles.playerRight}>

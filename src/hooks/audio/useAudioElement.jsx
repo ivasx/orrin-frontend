@@ -9,6 +9,16 @@ export function useAudioElement(trackFromQueue, repeatMode) {
     const audioRef = useRef(null);
     const prevTrackIdRef = useRef(null);
 
+    // Initialize audio element once
+    useEffect(() => {
+        if (!audioRef.current) {
+            audioRef.current = new Audio();
+            audioRef.current.preload = 'auto';
+            logger.info('[AudioCore] Audio DOM element created in memory');
+        }
+    }, []);
+
+    // Handle track source changes
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -19,26 +29,31 @@ export function useAudioElement(trackFromQueue, repeatMode) {
             prevTrackIdRef.current = currentTrackId;
 
             if (trackFromQueue && audio.src !== trackFromQueue.audio) {
-                logger.log("Setting new src:", trackFromQueue.audio);
-                audio.src = trackFromQueue.audio;
-                audio.currentTime = 0;
-            } else if (!trackFromQueue && audio.src) {
-                logger.log("Clearing src");
+                logger.info('[AudioCore] Setting new src:', trackFromQueue.audio);
+                // Prevent AbortError by explicitly pausing and clearing buffer before new load
                 audio.pause();
                 audio.removeAttribute('src');
                 audio.load();
+
+                audio.src = trackFromQueue.audio;
+                audio.load();
                 audio.currentTime = 0;
+            } else if (!trackFromQueue && audio.src) {
+                logger.info('[AudioCore] Clearing src');
+                audio.pause();
+                audio.removeAttribute('src');
+                audio.load();
             }
         }
     }, [trackFromQueue]);
 
+    // Handle repeat mode
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
         const shouldLoop = repeatMode === 'all';
         if (audio.loop !== shouldLoop) {
-            logger.log(`Setting audio loop attribute to: ${shouldLoop}`);
             audio.loop = shouldLoop;
         }
     }, [repeatMode]);
