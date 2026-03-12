@@ -16,50 +16,134 @@ export class ApiError extends Error {
     }
 }
 
+// Synchronous initialization to prevent race conditions on initial mount
+let inMemoryAccessToken = localStorage.getItem('access_token');
+let isRefreshing = false;
+let failedQueue = [];
+let onSessionExpiredCallback = () => {};
+
+export const setAccessToken = (token) => {
+    inMemoryAccessToken = token;
+};
+
+export const setSessionExpiredCallback = (callback) => {
+    onSessionExpiredCallback = callback;
+};
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach((promise) => {
+        if (error) {
+            promise.reject(error);
+        } else {
+            promise.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
+const refreshAuthToken = async () => {
+    try {
+        const refreshToken = localStorage.getItem('refresh_token');
+        if (!refreshToken) {
+            throw new Error('Refresh token is missing');
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ refresh: refreshToken }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Refresh token request failed');
+        }
+
+        const data = await response.json();
+        const newAccessToken = data.access || data.access_token;
+        const newRefreshToken = data.refresh || data.refresh_token || refreshToken;
+
+        setAccessToken(newAccessToken);
+        localStorage.setItem('access_token', newAccessToken);
+        localStorage.setItem('refresh_token', newRefreshToken);
+
+        return newAccessToken;
+    } catch (error) {
+        setAccessToken(null);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        onSessionExpiredCallback();
+        throw error;
+    }
+};
+
 async function handleResponse(response, endpoint) {
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-
         const errorMessage = errorData.detail || errorData.message || `HTTP error ${response.status}`;
-
-        throw new ApiError(
-            errorMessage,
-            response.status,
-            endpoint
-        );
+        throw new ApiError(errorMessage, response.status, endpoint);
     }
 
     if (response.status === 204) {
         return null;
     }
+
     const data = await response.json();
     return data.results || data;
 }
 
-function getAuthHeaders() {
-    const token = localStorage.getItem('access_token');
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
-}
-
-async function fetchJson(endpoint, options = {}) {
+const executeFetch = async (endpoint, options, token) => {
     const url = `${API_BASE_URL}${endpoint}`;
-    const isFormData = options.body instanceof FormData;
+    const headers = { ...options.headers };
 
-    const headers = {
-        ...getAuthHeaders(),
-        ...options.headers,
-    };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
 
-    if (!isFormData) {
+    if (!(options.body instanceof FormData)) {
         headers['Content-Type'] = 'application/json';
     }
 
+    const response = await fetch(url, { ...options, headers });
+
+    if (response.status === 401) {
+        throw new ApiError('Unauthorized', 401, endpoint);
+    }
+
+    return handleResponse(response, endpoint);
+};
+
+export async function fetchJson(endpoint, options = {}) {
     try {
-        const response = await fetch(url, { ...options, headers });
-        return await handleResponse(response, endpoint);
+        return await executeFetch(endpoint, options, inMemoryAccessToken);
     } catch (error) {
-        if (error instanceof ApiError) throw error;
-        throw new ApiError(error.message || 'Network error', 0, endpoint);
+        if (error.status === 401) {
+            if (isRefreshing) {
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({ resolve, reject });
+                }).then((token) => executeFetch(endpoint, options, token))
+                    .catch((err) => Promise.reject(err));
+            }
+
+            isRefreshing = true;
+
+            return new Promise((resolve, reject) => {
+                refreshAuthToken()
+                    .then((newToken) => {
+                        processQueue(null, newToken);
+                        resolve(executeFetch(endpoint, options, newToken));
+                    })
+                    .catch((err) => {
+                        processQueue(err, null);
+                        reject(err);
+                    })
+                    .finally(() => {
+                        isRefreshing = false;
+                    });
+            });
+        }
+        throw error;
     }
 }
 

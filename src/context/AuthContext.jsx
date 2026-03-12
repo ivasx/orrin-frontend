@@ -1,56 +1,63 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getCurrentUser } from '../services/api';
+import { getCurrentUser, setAccessToken, setSessionExpiredCallback } from '../services/api';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem('access_token'));
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('access_token'));
     const [isLoading, setIsLoading] = useState(true);
+
+    const logout = useCallback(() => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setAccessToken(null);
+        setUser(null);
+        setIsLoggedIn(false);
+    }, []);
+
+    useEffect(() => {
+        setSessionExpiredCallback(logout);
+    }, [logout]);
 
     const fetchUser = useCallback(async () => {
         try {
             const userData = await getCurrentUser();
             setUser(userData);
+            setIsLoggedIn(true);
         } catch (error) {
             logout();
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [logout]);
 
     useEffect(() => {
-        if (token) {
+        if (isLoggedIn) {
             fetchUser();
         } else {
             setIsLoading(false);
         }
-    }, [token, fetchUser]);
+    }, [isLoggedIn, fetchUser]);
 
-    const login = (newToken, newRefreshToken = null, userData = null) => {
+    const login = useCallback((newToken, newRefreshToken = null, userData = null) => {
         localStorage.setItem('access_token', newToken);
         if (newRefreshToken) {
             localStorage.setItem('refresh_token', newRefreshToken);
         }
-        setToken(newToken);
+        setAccessToken(newToken);
+        setIsLoggedIn(true);
+
         if (userData) {
             setUser(userData);
         } else {
             fetchUser();
         }
-    };
-
-    const logout = () => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        setToken(null);
-        setUser(null);
-    };
+    }, [fetchUser]);
 
     const value = {
         user,
-        token,
-        isLoggedIn: !!token,
+        isLoggedIn,
         isLoading,
         login,
         logout

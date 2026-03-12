@@ -1,17 +1,21 @@
-import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection.jsx';
 import MusicSectionWrapper from "../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx";
-import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx'; // Новий універсальний компонент
+import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx';
 import Spinner from '../../components/UI/Spinner/Spinner.jsx';
-import { getTracks, getArtists, getFriendsActivity } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import {
+    useTracksQuery,
+    useArtistsQuery,
+    useFriendsActivityQuery
+} from '../../hooks/queries/useMusicQueries';
+import styles from './HomePage.module.css';
 
-// Helper component for background updates
 const UpdatingIndicator = () => (
-    <div style={{ display: 'flex', alignItems: 'center', marginLeft: '12px', opacity: 0.7 }}>
-        <div style={{ transform: 'scale(0.6)' }}>
+    <div className={styles.updatingIndicator}>
+        <div className={styles.spinnerContainer}>
             <Spinner />
         </div>
     </div>
@@ -20,8 +24,8 @@ const UpdatingIndicator = () => (
 export default function HomePage() {
     const { t } = useTranslation();
     const { isLoggedIn } = useAuth();
+    const navigate = useNavigate();
 
-    // 1. Tracks Query
     const {
         data: tracks = [],
         isLoading: isLoadingTracks,
@@ -29,13 +33,8 @@ export default function HomePage() {
         isError: isTracksError,
         error: tracksError,
         refetch: refetchTracks,
-    } = useQuery({
-        queryKey: ['tracks', 'listen-now'],
-        queryFn: getTracks,
-        staleTime: 1000 * 60 * 5, // 5 minutes
-    });
+    } = useTracksQuery();
 
-    // 2. Artists Query
     const {
         data: artists = [],
         isLoading: isLoadingArtists,
@@ -43,23 +42,21 @@ export default function HomePage() {
         isError: isArtistsError,
         error: artistsError,
         refetch: refetchArtists,
-    } = useQuery({
-        queryKey: ['artists', 'popular'],
-        queryFn: getArtists,
-        staleTime: 1000 * 60 * 10, // 10 minutes
-    });
+    } = useArtistsQuery();
 
-    // 3. Friends Query
     const {
         data: friendsActivity = [],
         isLoading: isLoadingFriends,
         isError: isFriendsError,
-    } = useQuery({
-        queryKey: ['friends', 'activity'],
-        queryFn: getFriendsActivity,
-        enabled: isLoggedIn,
-        retry: 1,
-    });
+    } = useFriendsActivityQuery(isLoggedIn);
+
+    const handleNavigateToLogin = () => {
+        navigate('/login');
+    };
+
+    const handleNavigateToList = (path) => {
+        navigate(path);
+    };
 
     return (
         <>
@@ -77,11 +74,11 @@ export default function HomePage() {
                         }}
                     />
                 ) : (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className={styles.sectionHeaderWrapper}>
                         <TrackSection
                             title={t('listen_now')}
                             tracks={tracks}
-                            onMoreClick={() => { /* TODO: Navigate to full list */ }}
+                            onMoreClick={() => handleNavigateToList('/tracks')}
                         />
                         {isFetchingTracks && !isLoadingTracks && <UpdatingIndicator />}
                     </div>
@@ -102,11 +99,11 @@ export default function HomePage() {
                         }}
                     />
                 ) : (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className={styles.sectionHeaderWrapper}>
                         <ArtistSection
                             title={t('popular_artists')}
                             artists={artists}
-                            onMoreClick={() => { /* TODO: Navigate to full list */ }}
+                            onMoreClick={() => handleNavigateToList('/artists')}
                         />
                         {isFetchingArtists && !isLoadingArtists && <UpdatingIndicator />}
                     </div>
@@ -120,10 +117,7 @@ export default function HomePage() {
                         message={t('login_prompt_text')}
                         action={{
                             label: t('login_prompt_button'),
-                            onClick: () => {
-                                // TODO: Redirect to login page
-                                console.log("Redirect to login...");
-                            },
+                            onClick: handleNavigateToLogin,
                             variant: 'primary'
                         }}
                     />
@@ -138,7 +132,7 @@ export default function HomePage() {
                     <TrackSection
                         title={t('from_friends')}
                         tracks={friendsActivity}
-                        onMoreClick={() => { /* TODO: Navigate to friends page */ }}
+                        onMoreClick={() => handleNavigateToList('/friends')}
                     />
                 ) : (
                     <InfoSection

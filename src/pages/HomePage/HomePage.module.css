@@ -1,0 +1,15 @@
+.sectionHeaderWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.updatingIndicator {
+    display: flex;
+    align-items: center;
+    margin-left: 12px;
+    opacity: 0.7;
+}
+
+.spinnerContainer {
+    transform: scale(0.6);
+}
