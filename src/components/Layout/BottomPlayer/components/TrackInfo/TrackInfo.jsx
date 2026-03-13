@@ -1,10 +1,12 @@
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useMarquee } from '../../../../../hooks/useMarquee.jsx';
 import styles from './TrackInfo.module.css';
 
-export default function TrackInfo({ track }) {
+const TrackInfo = ({ track }) => {
     const titleMarquee = useMarquee(track.trackId);
     const artistMarquee = useMarquee(track.trackId);
+
     const renderMarquee = (text, marqueeHook, baseClassName) => {
         const containerClass = `${baseClassName} ${marqueeHook.isScrolling ? styles.scrolling : ''}`;
 
@@ -33,6 +35,7 @@ export default function TrackInfo({ track }) {
                     src={track.cover}
                     alt={track.title}
                     className={styles.cover}
+                    loading="lazy"
                 />
             </Link>
 
@@ -51,4 +54,6 @@ export default function TrackInfo({ track }) {
             </div>
         </div>
     );
-}
+};
+
+export default memo(TrackInfo);

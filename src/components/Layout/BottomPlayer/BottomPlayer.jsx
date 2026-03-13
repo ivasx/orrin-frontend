@@ -1,11 +1,10 @@
-import {useEffect, useState, forwardRef, useRef, useCallback, useMemo} from 'react';
-import {useTranslation} from 'react-i18next';
-import {MoreHorizontal} from 'lucide-react';
-import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
-import {useQueue} from '../../../context/QueueContext.jsx';
-import {logger} from '../../../utils/logger.js';
-import {useProgressBar} from '../../../hooks/useProgressBar.jsx';
-import {isTrackPlayable} from '../../../constants/fallbacks.js';
+import React, { useEffect, useState, forwardRef, useRef, useCallback, useMemo, memo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MoreHorizontal } from 'lucide-react';
+import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
+import { useQueue } from '../../../context/QueueContext.jsx';
+import { logger } from '../../../utils/logger.js';
+import { isTrackPlayable } from '../../../constants/fallbacks.js';
 
 import TrackInfo from './components/TrackInfo/TrackInfo.jsx';
 import PlayerControls from './components/PlayerControls/PlayerControls.jsx';
@@ -15,6 +14,31 @@ import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
 
 import styles from './BottomPlayer.module.css';
 
+
+const TopProgressBar = memo(({ audioRef }) => {
+    const barRef = useRef(null);
+    const animationRef = useRef(null);
+
+    const syncProgress = useCallback(() => {
+        if (audioRef.current && barRef.current) {
+            const { currentTime, duration } = audioRef.current;
+            if (duration > 0) {
+                const percent = (currentTime / duration) * 100;
+                barRef.current.style.width = `${percent}%`;
+            }
+        }
+        animationRef.current = requestAnimationFrame(syncProgress);
+    }, [audioRef]);
+
+    useEffect(() => {
+        animationRef.current = requestAnimationFrame(syncProgress);
+        return () => cancelAnimationFrame(animationRef.current);
+    }, [syncProgress]);
+
+    return <div className={styles.topProgressBar} ref={barRef} />;
+});
+TopProgressBar.displayName = 'TopProgressBar';
+
 const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     const {
         currentTrack, isPlaying, pauseTrack, resumeTrack,
@@ -22,21 +46,16 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         isLoading: contextIsLoading, loadError: contextLoadError,
     } = useAudioCore();
 
-    const {isShuffled, toggleShuffle} = useQueue();
-    const {t} = useTranslation();
+    const { isShuffled, toggleShuffle } = useQueue();
+    const { t } = useTranslation();
 
     const isPlayable = currentTrack ? isTrackPlayable(currentTrack) : false;
     const [retryCount, setRetryCount] = useState(0);
     const MAX_RETRY_ATTEMPTS = 3;
 
     const [isPlayerMenuOpen, setIsPlayerMenuOpen] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
+    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const optionsMenuBtnRef = useRef(null);
-
-    const {
-        currentTime, duration, progressPercent, progressBarRef,
-        handleMouseDown, formatTime
-    } = useProgressBar(audioRef, isPlaying, resumeTrack, pauseTrack);
 
     useEffect(() => {
         if (!contextLoadError) setRetryCount(0);
@@ -48,32 +67,32 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
         const audio = audioRef.current;
         if (audio) {
             audio.load();
-            audio.play().catch(err => logger.error("Retry play failed:", err));
+            audio.play().catch(err => logger.error("[BottomPlayer] Retry play failed:", err));
         }
     }, [currentTrack, isPlayable, audioRef]);
 
-    const handlePlayPause = () => {
+    const handlePlayPause = useCallback(() => {
         if (contextLoadError) {
             if (retryCount < MAX_RETRY_ATTEMPTS) handleRetry();
             return;
         }
         isPlaying ? pauseTrack() : resumeTrack();
-    };
+    }, [contextLoadError, retryCount, handleRetry, isPlaying, pauseTrack, resumeTrack]);
 
     const handleMenuClose = useCallback(() => setIsPlayerMenuOpen(false), []);
 
     const handleOptionsMenuClick = useCallback(() => {
         if (optionsMenuBtnRef.current) {
             const rect = optionsMenuBtnRef.current.getBoundingClientRect();
-            setMenuPosition({x: rect.left, y: rect.top});
+            setMenuPosition({ x: rect.left, y: rect.top });
         }
         setIsPlayerMenuOpen(prev => !prev);
     }, []);
 
     const playerMenuItems = useMemo(() => [
-        {id: 'add_queue', label: t('player_menu_add_to_queue'), disabled: true},
-        {id: 'share', label: t('player_menu_share'), disabled: true},
-        {id: 'artist', label: t('player_menu_go_to_artist'), disabled: true},
+        { id: 'add_queue', label: t('player_menu_add_to_queue'), disabled: true },
+        { id: 'share', label: t('player_menu_share'), disabled: true },
+        { id: 'artist', label: t('player_menu_go_to_artist'), disabled: true },
     ], [t]);
 
     if (!currentTrack) return null;
@@ -83,9 +102,9 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     return (
         <>
             <div className={`${styles.bottomPlayer} ${isHiddenFor404 ? styles.hidden : ''}`} ref={ref}>
-                <div className={styles.topProgressBar} style={{width: `${progressPercent}%`}}></div>
+                <TopProgressBar audioRef={audioRef} />
 
-                <TrackInfo track={currentTrack}/>
+                <TrackInfo track={currentTrack} />
 
                 <div className={styles.playerCenter}>
                     <PlayerControls
@@ -99,18 +118,18 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
                         onToggleShuffle={toggleShuffle}
                         onToggleRepeat={toggleRepeat}
                     />
-                    <TimeControls/>
+                    <TimeControls />
                 </div>
 
                 <div className={styles.playerRight}>
-                    <VolumeControls/>
+                    <VolumeControls />
                     <button
                         ref={optionsMenuBtnRef}
                         className={styles.optionBtn}
                         onClick={handleOptionsMenuClick}
                         aria-label={t('player_menu_options_aria')}
                     >
-                        <MoreHorizontal size={20}/>
+                        <MoreHorizontal size={20} />
                     </button>
                 </div>
             </div>
@@ -126,4 +145,4 @@ const BottomPlayer = forwardRef(function BottomPlayer(props, ref) {
     );
 });
 
-export default BottomPlayer;
+export default memo(BottomPlayer);

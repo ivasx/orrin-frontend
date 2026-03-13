@@ -1,122 +1,164 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { useAudioCore } from '../../../../../../context/AudioCoreContext';
 import styles from './TimeControls.module.css';
 
 const formatTime = (timeInSeconds) => {
-    if (!timeInSeconds || isNaN(timeInSeconds)) return '0:00';
+    if (!timeInSeconds || isNaN(timeInSeconds) || !isFinite(timeInSeconds)) return '0:00';
     const mins = Math.floor(timeInSeconds / 60);
     const secs = Math.floor(timeInSeconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
-export default function TimeControls() {
+const TimeControls = () => {
     const { audioRef } = useAudioCore();
-
-    const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
 
+    const timeTextRef = useRef(null);
+    const progressFillRef = useRef(null);
     const progressBarRef = useRef(null);
+
+    const isDraggingRef = useRef(false);
     const animationRef = useRef(null);
+    const durationRef = useRef(0);
 
     const syncProgress = useCallback(() => {
-        if (!audioRef.current || isDragging) return;
-        setCurrentTime(audioRef.current.currentTime || 0);
-        setDuration(audioRef.current.duration || 0);
+        if (!audioRef.current) return;
+
+        if (!isDraggingRef.current) {
+            const currentAudioTime = audioRef.current.currentTime || 0;
+            const currentDuration = audioRef.current.duration || 0;
+
+            if (timeTextRef.current) {
+                timeTextRef.current.textContent = formatTime(currentAudioTime);
+            }
+
+            if (progressFillRef.current && currentDuration > 0) {
+                const percent = (currentAudioTime / currentDuration) * 100;
+                progressFillRef.current.style.width = `${percent}%`;
+            }
+        }
+
+        // Always schedule the next frame to keep the animation loop alive
         animationRef.current = requestAnimationFrame(syncProgress);
-    }, [audioRef, isDragging]);
+    }, [audioRef]);
 
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
         const handlePlay = () => {
-            animationRef.current = requestAnimationFrame(syncProgress);
+            if (!animationRef.current) {
+                animationRef.current = requestAnimationFrame(syncProgress);
+            }
         };
 
         const handlePause = () => {
-            if (animationRef.current) cancelAnimationFrame(animationRef.current);
-            if (!isDragging) {
-                setCurrentTime(audio.currentTime || 0);
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+                animationRef.current = null;
             }
+            syncProgress(); // One last sync to ensure precision
         };
 
-        const handleDurationChange = () => setDuration(audio.duration || 0);
-
-        const handleTimeUpdate = () => {
-            if (!isDragging && audio.paused) {
-                setCurrentTime(audio.currentTime || 0);
-            }
+        const handleDurationChange = () => {
+            const newDuration = audio.duration || 0;
+            setDuration(newDuration);
+            durationRef.current = newDuration;
         };
 
         audio.addEventListener('play', handlePlay);
         audio.addEventListener('pause', handlePause);
         audio.addEventListener('durationchange', handleDurationChange);
-        audio.addEventListener('timeupdate', handleTimeUpdate);
 
-        setCurrentTime(audio.currentTime || 0);
-        setDuration(audio.duration || 0);
-
-        if (!audio.paused) {
-            handlePlay();
-        }
+        handleDurationChange();
+        if (!audio.paused) handlePlay();
 
         return () => {
-            if (animationRef.current) cancelAnimationFrame(animationRef.current);
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+                animationRef.current = null;
+            }
             audio.removeEventListener('play', handlePlay);
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('durationchange', handleDurationChange);
-            audio.removeEventListener('timeupdate', handleTimeUpdate);
         };
-    }, [audioRef, syncProgress, isDragging]);
+    }, [audioRef, syncProgress]);
 
     const calculateTimeFromEvent = useCallback((e) => {
-        if (!progressBarRef.current || !audioRef.current || !duration) return null;
+        if (!progressBarRef.current || !durationRef.current) return null;
         const rect = progressBarRef.current.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+        let clientX;
+        if (e.type.includes('touch')) {
+            const touch = e.touches[0] || e.changedTouches[0];
+            clientX = touch?.clientX;
+        } else {
+            clientX = e.clientX;
+        }
+
+        if (clientX === undefined) return null;
+
         const offsetX = Math.max(0, Math.min(clientX - rect.left, rect.width));
-        return (offsetX / rect.width) * duration;
-    }, [audioRef, duration]);
+        return (offsetX / rect.width) * durationRef.current;
+    }, []);
+
+    const updateVisuals = useCallback((newTime) => {
+        if (timeTextRef.current) {
+            timeTextRef.current.textContent = formatTime(newTime);
+        }
+        if (progressFillRef.current && durationRef.current > 0) {
+            progressFillRef.current.style.width = `${(newTime / durationRef.current) * 100}%`;
+            progressFillRef.current.style.transition = 'none'; // Disable transition while dragging
+        }
+    }, []);
 
     const handleSeekStart = useCallback((e) => {
-        setIsDragging(true);
+        isDraggingRef.current = true;
         const newTime = calculateTimeFromEvent(e);
-        if (newTime !== null) setCurrentTime(newTime);
-    }, [calculateTimeFromEvent]);
+        if (newTime !== null) updateVisuals(newTime);
+    }, [calculateTimeFromEvent, updateVisuals]);
 
     const handleSeekMove = useCallback((e) => {
-        if (!isDragging) return;
+        if (!isDraggingRef.current) return;
         const newTime = calculateTimeFromEvent(e);
-        if (newTime !== null) setCurrentTime(newTime);
-    }, [isDragging, calculateTimeFromEvent]);
+        if (newTime !== null) updateVisuals(newTime);
+    }, [calculateTimeFromEvent, updateVisuals]);
 
-    const handleSeekEnd = useCallback(() => {
-        if (isDragging && audioRef.current && isFinite(currentTime)) {
-            audioRef.current.currentTime = currentTime;
+    const handleSeekEnd = useCallback((e) => {
+        if (!isDraggingRef.current) return;
+
+        const newTime = calculateTimeFromEvent(e);
+        if (newTime !== null && audioRef.current && isFinite(newTime)) {
+            audioRef.current.currentTime = newTime;
         }
-        setIsDragging(false);
-    }, [isDragging, audioRef, currentTime]);
+
+        if (progressFillRef.current) {
+            progressFillRef.current.style.transition = 'width 0.1s linear';
+        }
+
+        isDraggingRef.current = false;
+    }, [calculateTimeFromEvent, audioRef]);
 
     useEffect(() => {
-        if (isDragging) {
-            window.addEventListener('mousemove', handleSeekMove);
-            window.addEventListener('mouseup', handleSeekEnd);
-            window.addEventListener('touchmove', handleSeekMove, { passive: false });
-            window.addEventListener('touchend', handleSeekEnd);
-        }
-        return () => {
-            window.removeEventListener('mousemove', handleSeekMove);
-            window.removeEventListener('mouseup', handleSeekEnd);
-            window.removeEventListener('touchmove', handleSeekMove);
-            window.removeEventListener('touchend', handleSeekEnd);
-        };
-    }, [isDragging, handleSeekMove, handleSeekEnd]);
+        const handleMove = (e) => handleSeekMove(e);
+        const handleEnd = (e) => handleSeekEnd(e);
 
-    const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('mouseup', handleEnd);
+        document.addEventListener('touchmove', handleMove, { passive: false });
+        document.addEventListener('touchend', handleEnd);
+
+        return () => {
+            document.removeEventListener('mousemove', handleMove);
+            document.removeEventListener('mouseup', handleEnd);
+            document.removeEventListener('touchmove', handleMove);
+            document.removeEventListener('touchend', handleEnd);
+        };
+    }, [handleSeekMove, handleSeekEnd]);
 
     return (
         <div className={styles.wrapper}>
-            <span className={styles.time}>{formatTime(currentTime)}</span>
+            <span className={styles.time} ref={timeTextRef}>0:00</span>
             <div
                 className={styles.container}
                 onMouseDown={handleSeekStart}
@@ -124,16 +166,12 @@ export default function TimeControls() {
                 ref={progressBarRef}
             >
                 <div className={styles.track}>
-                    <div
-                        className={styles.bar}
-                        style={{
-                            width: `${progressPercent}%`,
-                            transition: isDragging ? 'none' : 'width 0.1s linear'
-                        }}
-                    />
+                    <div className={styles.bar} ref={progressFillRef} />
                 </div>
             </div>
             <span className={styles.time}>{formatTime(duration)}</span>
         </div>
     );
-}
+};
+
+export default memo(TimeControls);

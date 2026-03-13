@@ -1,13 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { AuthProvider } from './context/AuthContext.jsx';
-import { NotificationProvider } from './context/NotificationContext.jsx';
-import { QueueProvider } from './context/QueueContext.jsx';
-import { PlayerUIProvider } from './context/PlayerUIContext.jsx';
-import { AudioCoreProvider, useAudioCore } from './context/AudioCoreContext.jsx';
-import { SettingsProvider } from './context/SettingsContext.jsx';
-import { ToastProvider } from './context/ToastContext.jsx';
+import { AppProviders } from './context/AppProviders.jsx';
+import { useAudioCore } from './context/AudioCoreContext.jsx';
 
 import BottomPlayer from './components/Layout/BottomPlayer/BottomPlayer.jsx';
 import ErrorBoundary from './components/UI/ErrorBoundary/ErrorBoundary.jsx';
@@ -19,6 +14,8 @@ function AppLayout() {
     const { currentTrack } = useAudioCore();
     const playerRef = useRef(null);
 
+    const isPlayerUiVisible = Boolean(currentTrack);
+
     useEffect(() => {
         const playerElement = playerRef.current;
         if (!playerElement) return;
@@ -29,11 +26,10 @@ function AppLayout() {
                 document.documentElement.style.setProperty('--player-height', `${height}px`);
             }
         });
+
         resizeObserver.observe(playerElement);
         return () => resizeObserver.disconnect();
-    }, [currentTrack]);
-
-    const isPlayerUiVisible = !!currentTrack;
+    }, [isPlayerUiVisible]);
 
     return (
         <div className={`AppContainer ${isPlayerUiVisible ? 'player-visible' : ''}`}>
@@ -50,21 +46,9 @@ export default function App() {
     return (
         <Router>
             <ErrorBoundary>
-                <AuthProvider>
-                    <NotificationProvider>
-                        <SettingsProvider>
-                            <ToastProvider>
-                                <QueueProvider>
-                                    <PlayerUIProvider>
-                                        <AudioCoreProvider>
-                                            <AppLayout />
-                                        </AudioCoreProvider>
-                                    </PlayerUIProvider>
-                                </QueueProvider>
-                            </ToastProvider>
-                        </SettingsProvider>
-                    </NotificationProvider>
-                </AuthProvider>
+                <AppProviders>
+                    <AppLayout />
+                </AppProviders>
             </ErrorBoundary>
         </Router>
     );
