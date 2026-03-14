@@ -16,11 +16,12 @@ export default function CreatePost({ onPostCreated }) {
     const { showToast } = useToast();
     const [postText, setPostText] = useState('');
     const [attachedTrack, setAttachedTrack] = useState(null);
-    const [attachedImage, setAttachedImage] = useState(null); // File object
-    const [imagePreview, setImagePreview] = useState(null);   // URL for preview
+    const [attachedImage, setAttachedImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
     const [showTrackPicker, setShowTrackPicker] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [trackSearchQuery, setTrackSearchQuery] = useState('');
+
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
 
@@ -36,16 +37,17 @@ export default function CreatePost({ onPostCreated }) {
         onSuccess: (newPostData) => {
             showToast(t('post_created'), 'success');
 
-            // Call parent callback to update feed
             if (onPostCreated) {
                 onPostCreated(newPostData);
             }
 
-            // Reset Form
+            // Reset Form reliably
             setPostText('');
             setAttachedTrack(null);
             setAttachedImage(null);
             setImagePreview(null);
+            setShowEmojiPicker(false);
+
             if (textareaRef.current) {
                 textareaRef.current.style.height = 'auto';
             }
@@ -73,23 +75,18 @@ export default function CreatePost({ onPostCreated }) {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            if (file.size > 5 * 1024 * 1024) {
                 showToast(t('error_file_size'), 'error');
                 return;
             }
 
             setAttachedImage(file);
 
-            // Create preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
             };
             reader.readAsDataURL(file);
-
-            // Can't have track and image simultaneously (business logic choice, or allowed?)
-            // Assuming simplified logic: one attachment type preferred, but we allow mixed if supported by backend.
-            // For now, let's keep them independent.
         }
     };
 
@@ -99,9 +96,7 @@ export default function CreatePost({ onPostCreated }) {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
-    const handleAttachTrack = () => {
-        setShowTrackPicker(true);
-    };
+    const handleAttachTrack = () => setShowTrackPicker(true);
 
     const handleSelectTrack = (track) => {
         setAttachedTrack({
@@ -114,9 +109,7 @@ export default function CreatePost({ onPostCreated }) {
         setTrackSearchQuery('');
     };
 
-    const handleRemoveTrack = () => {
-        setAttachedTrack(null);
-    };
+    const handleRemoveTrack = () => setAttachedTrack(null);
 
     const handleAddEmoji = (emoji) => {
         setPostText(prev => prev + emoji);
@@ -148,7 +141,8 @@ export default function CreatePost({ onPostCreated }) {
         return title.includes(query) || artist.includes(query);
     });
 
-    const isSubmitDisabled = (!postText.trim() && !attachedTrack && !attachedImage) || createPostMutation.isLoading;
+    // Spam click protection via isPending
+    const isSubmitDisabled = (!postText.trim() && !attachedTrack && !attachedImage) || createPostMutation.isPending;
 
     return (
         <>
@@ -167,9 +161,9 @@ export default function CreatePost({ onPostCreated }) {
                             value={postText}
                             onChange={handleTextareaChange}
                             rows={1}
+                            disabled={createPostMutation.isPending}
                         />
 
-                        {/* Image Preview */}
                         {imagePreview && (
                             <div className={styles.attachmentPreview}>
                                 <img
@@ -181,6 +175,7 @@ export default function CreatePost({ onPostCreated }) {
                                     className={styles.removeButton}
                                     onClick={handleRemoveImage}
                                     type="button"
+                                    disabled={createPostMutation.isPending}
                                 >
                                     <X size={16}/>
                                 </button>
@@ -206,6 +201,7 @@ export default function CreatePost({ onPostCreated }) {
                                     className={styles.removeButton}
                                     onClick={handleRemoveTrack}
                                     aria-label={t('remove_track', 'Remove track')}
+                                    disabled={createPostMutation.isPending}
                                 >
                                     <X size={16}/>
                                 </button>
@@ -218,7 +214,7 @@ export default function CreatePost({ onPostCreated }) {
                                     className={`${styles.toolButton} ${attachedTrack ? styles.toolButtonActive : ''}`}
                                     onClick={handleAttachTrack}
                                     aria-label={t('attach_music', 'Attach music')}
-                                    disabled={!!attachedTrack} // Can only attach one track
+                                    disabled={!!attachedTrack || createPostMutation.isPending}
                                     type="button"
                                 >
                                     <Music size={20}/>
@@ -235,7 +231,7 @@ export default function CreatePost({ onPostCreated }) {
                                     className={`${styles.toolButton} ${attachedImage ? styles.toolButtonActive : ''}`}
                                     onClick={handleImageClick}
                                     aria-label={t('attach_image', 'Attach image')}
-                                    disabled={!!attachedImage} // Can only attach one image
+                                    disabled={!!attachedImage || createPostMutation.isPending}
                                     type="button"
                                 >
                                     <ImageIcon size={20}/>
@@ -247,6 +243,7 @@ export default function CreatePost({ onPostCreated }) {
                                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                                         aria-label={t('add_emoji')}
                                         type="button"
+                                        disabled={createPostMutation.isPending}
                                     >
                                         <Smile size={20}/>
                                     </button>
@@ -273,7 +270,7 @@ export default function CreatePost({ onPostCreated }) {
                                 onClick={handleSubmit}
                                 disabled={isSubmitDisabled}
                             >
-                                {createPostMutation.isLoading ? t('publishing') : t('publish')}
+                                {createPostMutation.isPending ? t('publishing') : t('publish')}
                             </button>
                         </div>
                     </div>

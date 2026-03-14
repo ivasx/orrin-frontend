@@ -16,7 +16,6 @@ export class ApiError extends Error {
     }
 }
 
-// Synchronous initialization to prevent race conditions on initial mount
 let inMemoryAccessToken = localStorage.getItem('access_token');
 let isRefreshing = false;
 let failedQueue = [];
@@ -203,11 +202,12 @@ export const getArtistById = async (slugOrId) => {
     return normalizeArtistData(data);
 };
 
-export const getFeedPosts = async ({ type, sort, contentType } = {}) => {
+export const getFeedPosts = async ({ type, sort, contentType, pageParam = 1 } = {}) => {
     const queryParams = new URLSearchParams();
     if (type) queryParams.append('feed_type', type);
     if (sort) queryParams.append('sort', sort);
     if (contentType) queryParams.append('content_type', contentType);
+    if (pageParam) queryParams.append('page', pageParam);
 
     const queryString = queryParams.toString();
     const endpoint = `/api/v1/feed/${queryString ? `?${queryString}` : ''}`;
