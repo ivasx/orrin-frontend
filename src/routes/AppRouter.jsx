@@ -3,10 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 
 import MainLayout from '../layouts/MainLayout.jsx';
 import HeaderOnlyLayout from '../layouts/HeaderOnlyLayout.jsx';
-
 import VinylLoader from '../components/UI/Spinner/VinylLoader.jsx';
-import {ProtectedRoute} from "./ProtectedRoute.jsx";
-
+import { ProtectedRoute } from './ProtectedRoute.jsx';
 
 const HomePage = lazy(() => import('../pages/HomePage/HomePage.jsx'));
 const FeedPage = lazy(() => import('../pages/FeedPage/FeedPage.jsx'));
@@ -22,31 +20,35 @@ const RegisterPage = lazy(() => import('../pages/Auth/Register.jsx'));
 const LoginPage = lazy(() => import('../pages/Auth/Login.jsx'));
 const UserProfilePage = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
 
+// Placeholder export for artist management view
+const ArtistDashboardPage = lazy(() => import('../pages/ArtistDashboardPage/ArtistDashboardPage.jsx'));
+
 export default function AppRouter() {
     return (
         <Suspense fallback={<VinylLoader />}>
             <Routes>
                 <Route element={<MainLayout />}>
+                    {/* Publicly Accessible Routes */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/feed" element={<FeedPage />} />
-
-                    <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
-                        <Route path="/library" element={<LibraryPage />} />
-                        <Route path="/favorites" element={<FavoritesPage />} />
-                        <Route path="/history" element={<HistoryPage />} />
-                    </Route>
-                    <Route path="/user/:userId" element={<UserProfilePage />} />
-
-
-                    {/* TODO: [Features] Temporarily disabled. */}
-                    {/* <Route path="/playlists" element={<PlaylistsPage />} /> */}
-                    {/* <Route path="/top" element={<TopTracksPage />} /> */}
-                    {/* <Route path="/radio" element={<RadioPage />} /> */}
-
-                    <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/track/:trackId" element={<TrackPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/artist/:artistId" element={<ArtistPage />} />
+                    <Route path="/user/:userId" element={<UserProfilePage />} />
+
+                    {/* Standard Authenticated Routes */}
+                    <Route element={<ProtectedRoute requireArtistManagement={false} />}>
+                        <Route path="/library" element={<LibraryPage />} />
+                        <Route path="/favorites" element={<FavoritesPage />} />
+                        <Route path="/history" element={<HistoryPage />} />
+                        <Route path="/settings" element={<SettingsPage />} />
+                    </Route>
+
+                    {/* Artist Manager Protected Routes (Resource-Based Auth) */}
+                    <Route element={<ProtectedRoute requireArtistManagement={true} />}>
+                        <Route path="/artist/:artistId/manage" element={<ArtistDashboardPage />} />
+                        <Route path="/artist/:artistId/upload" element={<ArtistDashboardPage />} />
+                    </Route>
                 </Route>
 
                 {/* Pages without sidebar (404) */}
@@ -54,6 +56,7 @@ export default function AppRouter() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
 
+                {/* Auth Routes */}
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
             </Routes>
