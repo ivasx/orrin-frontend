@@ -1,397 +1,151 @@
 # Orrin Frontend
 
-[🇺🇦 Українська](README-UK.md) | **[🇬🇧 English](README.md)**
+## Project Overview
 
-Frontend part of **Orrin** web application — a music service with social network elements.
+Orrin is an enterprise-grade web application that merges high-fidelity music streaming with advanced social networking capabilities. This repository houses the highly optimized frontend architecture, engineered to deliver a seamless, high-performance user experience. Moving beyond a standard minimum viable product, the Orrin frontend leverages modern web technologies to handle complex state management, secure authentication flows, and latency-sensitive media playback.
 
-[![React](https://img.shields.io/badge/React-19.1.1-61dafb?logo=react)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.1.7-646cff?logo=vite)](https://vitejs.dev/)
-[![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.90.5-ff4154?logo=react-query)](https://tanstack.com/query)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+## Core Architecture & Technical Highlights
 
-## 📋 Project Description
+The Orrin frontend has been significantly refactored to implement robust architectural patterns suitable for scale and maintainability.
 
-Orrin is an innovative web application that combines the functionality of a music service and a social network. Users can not only listen to music, but also interact with friends, share impressions and get interesting information about their favorite tracks.
+### High-Performance Audio Engine
 
-### ✨ Key Features
+To prevent UI thread blocking during continuous audio playback, the application utilizes a zero-rerender Pub/Sub architecture. The media player's UI components, specifically the time controls and progress indicators, utilize `requestAnimationFrame` for 60FPS tracking. This approach completely bypasses the standard React render cycle for high-frequency updates, ensuring smooth animations and uninterrupted audio playback regardless of concurrent DOM mutations.
 
-- ✅ **Music Playback** — high-quality track playback with intuitive player
-- ✅ **Social Interaction** — follow friends' activity and share tracks
-- ✅ **Comments and Notes** — discuss tracks and create personal notes for artists
-- ✅ **Information Pages** — detailed information about artists, history, discography
-- ✅ **Smart Search** — search for tracks and artists with suggestions and history
-- ✅ **Playback Queue** — manage track list with shuffle and repeat support
-- ✅ **Media Session API** — integration with system media controls
-- ✅ **Context Menus** — quick access to track functions
-- ✅ **Multilingual** — support for Ukrainian and English
-- ✅ **Responsive Design** — optimization for all device types
-- 🔄 **Achievements and Gamification** — rewards for activity (in development)
-- 🔄 **Offline Mode** — download tracks for listening without internet (in development)
+### Enterprise Network Layer
 
-## 🛠 Technologies
+Security and session continuity are managed via a custom, robust network layer. Authentication relies on in-memory JSON Web Token (JWT) storage to mitigate Cross-Site Scripting (XSS) attack vectors. The application utilizes an advanced fetch interceptor equipped with a failed-request queue. Upon encountering a `401 Unauthorized` response, the interceptor pauses outgoing requests, silently negotiates a token refresh in the background, and subsequently flushes and retries the queued requests without user disruption.
 
-The project is built on a modern technology stack:
+### State Management & Optimistic UI
 
-### Core
-- **React 19.1.1** — library for building user interfaces
-- **Vite 7.1.7** — fast development and build tool
-- **React Router DOM 7.9.3** — client-side routing
+Global server state, caching, and data synchronization are orchestrated using TanStack React Query v5. This provides built-in mechanisms for background refetching and stale data invalidation. For heavy data loads such as activity feeds and discographies, the application implements infinite scrolling via the Intersection Observer API. To ensure perceived zero-latency interactions for social features (e.g., likes, reposts, and comments), Optimistic UI updates are heavily employed. These updates instantly mutate the local cache while the network request is pending, complete with automated rollback mechanisms if the mutation fails.
 
-### State Management & Data Fetching
-- **Context API** — global state management
-    - `AudioCoreContext` — audio player management
-    - `QueueContext` — playback queue management
-    - `PlayerUIContext` — player UI management
-    - `SettingsContext` — app settings
-- **TanStack Query 5.90.5** — server state management, caching and data synchronization
+### Advanced RBAC & Routing
 
-### Forms & Validation
-- **React Hook Form 7.65.0** — form management
-- **Yup 1.7.1** — schema validation
-- **@hookform/resolvers 5.2.2** — validation integration with forms
+Application routing is deeply integrated with a strict Resource-Based Access Control (RBAC) system. Utilizing React Router, the architecture enforces strict route protection that evaluates permissions before rendering. The system accurately distinguishes between different user roles, specifically restricting features and data access among Unauthenticated Guests, Standard Users, and Artist Managers. This resource-based validation ensures that users only interact with authorized endpoints and UI views.
 
-### Internationalization
-- **i18next 25.6.0** — internationalization
-- **react-i18next 16.0.1** — React integration for i18next
-- **i18next-browser-languagedetector 8.2.0** — automatic language detection
+## Tech Stack
 
-### UI & Icons
-- **Lucide React 0.545.0** — icon library
-- **React Icons 5.5.0** — additional icons
+The application is built on a modern, strictly typed, and highly performant foundation:
 
-### Styling
-- **CSS3** — component styling with CSS modules
-- **CSS Custom Properties** — dynamic themes
-- **Responsive Design** — adaptive design
+| Dependency | Version |
+|---|---|
+| **Core Framework:** React | 19.1.1 |
+| **Build Tool:** Vite | 7.1.7 |
+| **State Management (Server):** TanStack React Query | 5.90.5 |
+| **Routing:** React Router DOM | 7.9.3 |
+| **Forms & Validation:** React Hook Form | 7.65.0 |
+| **Schema Validation:** Yup | 1.7.1 |
+| **Styling:** CSS Modules with CSS Custom Properties | — |
+| **Internationalization:** i18next | 25.6.0 |
+| **Icons:** Lucide React | 0.545.0 |
+| **Icons:** React Icons | 5.5.0 |
 
-### Development Tools
-- **ESLint 9.36.0** — code linting
-- **Docker** — application containerization
-- **TanStack Query DevTools** — developer tools for Query
+## Project Structure
 
-## 📁 Project Structure
+The codebase is organized into a modular, feature-centric directory structure to support enterprise scalability.
 
-```
+```text
 orrin-frontend/
-├── public/                          # Public static files
-│   ├── orrin-logo.svg              # App logo
-│   └── songs/                       # Audio files (demo)
+├── public/                 # Static assets and media files
 ├── src/
-│   ├── assets/                      # Resources (images, audio)
-│   ├── components/                  # Reusable UI components
-│   │   ├── ArtistCard/             # Artist card
-│   │   ├── ArtistNotesTab/         # Artist notes tab
-│   │   ├── ArtistSection/          # Artists section
-│   │   ├── BottomPlayer/           # Bottom player
-│   │   ├── CreatePost/             # Create post
-│   │   ├── Dropdown/               # Dropdown menu
-│   │   ├── EmptyStateSection/      # Empty state
-│   │   ├── FeedFilters/            # Feed filters
-│   │   ├── FeedPost/               # Feed post
-│   │   ├── Header/                 # Site header
-│   │   ├── LoginPromptSection/     # Login prompt
-│   │   ├── MusicLyrics/            # Music lyrics
-│   │   ├── MusicSectionWrapper/    # Music section wrapper
-│   │   ├── NoteCard/               # Note card
-│   │   ├── OptionsMenu/            # Context menu
-│   │   ├── SectionHeader/          # Section header
-│   │   ├── SectionSkeleton/        # Loading skeleton
-│   │   ├── Sidebar/                # Sidebar
-│   │   ├── Spinner/                # Loading indicator
-│   │   ├── TrackCard/              # Track card
-│   │   └── TrackSection/           # Tracks section
-│   ├── constants/                   # Constants and fallback values
-│   │   └── fallbacks.js            # Data normalization
-│   ├── context/                     # React Contexts
-│   │   ├── AudioCoreContext.jsx    # Audio system core
-│   │   ├── PlayerUIContext.jsx     # Player UI state
-│   │   ├── QueueContext.jsx        # Playback queue
-│   │   └── SettingsContext.jsx     # Settings
-│   ├── data/                        # Mock data
-│   │   └── mockData.js             # Development data
-│   ├── hooks/                       # Custom React Hooks
-│   │   ├── audio/                   # Audio hooks
-│   │   ├── useMarquee.jsx          # Text scroll animation
-│   │   └── useProgressBar.jsx      # Progress bar
-│   ├── i18n/                        # Localization
-│   │   ├── i18n.js                 # i18n configuration
-│   │   ├── en.json                 # English translations
-│   │   └── uk.json                 # Ukrainian translations
-│   ├── layouts/                     # Page layouts
-│   │   ├── HeaderOnlyLayout.jsx    # Header-only layout
-│   │   └── MainLayout.jsx          # Main layout
-│   ├── pages/                       # Page components
-│   │   ├── ArtistPage/             # Artist page
-│   │   ├── Auth/                    # Authentication
-│   │   ├── FavoritesPage/          # Favorites
-│   │   ├── FeedPage/               # Feed
-│   │   ├── HistoryPage/            # History
-│   │   ├── HomePage/               # Home
-│   │   ├── LibraryPage/            # Library
-│   │   ├── NotFoundPage/           # 404
-│   │   ├── PlaylistsPage/          # Playlists
-│   │   ├── RadioPage/              # Radio
-│   │   ├── SearchResultsPage/      # Search results
-│   │   ├── SettingsPage/           # Settings
-│   │   ├── TopTracksPage/          # Top tracks
-│   │   └── TrackPage/              # Track page
-│   ├── services/                    # API services
-│   │   └── api.js                  # HTTP requests to backend
-│   ├── App.jsx                      # Main component
-│   ├── App.css                      # App styles
-│   ├── data.js                      # Test data (mock)
-│   ├── main.jsx                     # Entry point
-│   └── index.css                    # Global styles
-├── .dockerignore                    # Docker exclusions
-├── Dockerfile                       # Production build
-├── Dockerfile.dev                   # Development build
-├── nginx.conf                       # Nginx configuration
-├── eslint.config.js                 # ESLint configuration
-├── vite.config.js                   # Vite configuration
-├── package.json                     # Project dependencies
-└── README.md                        # This file
+│   ├── assets/             # Bundled static resources (images, vectors)
+│   ├── components/         # Reusable, domain-agnostic UI components
+│   ├── constants/          # Application-wide constants and configuration values
+│   ├── context/            # React Context providers for global client state (Audio, Settings)
+│   ├── data/               # Mock data payloads for offline development
+│   ├── hooks/              # Custom React hooks (Audio processing, Layout logic, Observers)
+│   ├── i18n/               # Localization dictionaries and configuration
+│   ├── layouts/            # Structural page wrappers (MainLayout, HeaderOnlyLayout)
+│   ├── pages/              # Routable page components representing specific views
+│   ├── routes/             # Route definitions and RBAC protection logic
+│   ├── services/           # Network layer, API clients, and interceptor configurations
+│   ├── utils/              # Pure utility functions and formatters
+│   ├── App.jsx             # Root application component
+│   └── main.jsx            # Application entry point and provider injection
+├── .env.dist               # Environment variable template
+├── Dockerfile              # Production containerization specification
+├── package.json            # Dependency manifest and scripts
+└── vite.config.js          # Vite build and development configuration
 ```
 
-## 🚀 Installation and Setup
+## Getting Started
 
-### Requirements
+Follow these instructions to set up the Orrin frontend environment for local development.
 
-- Node.js (version 20 or higher)
-- npm (version 8 or higher)
+### Prerequisites
 
-### ⚠️ Important: Backend API
+Ensure your local development environment meets the following requirements:
 
-**For correct operation of the application, you need to run the backend server!**
-
-The backend is located in a separate repository: [orrin-backend](https://github.com/ivasx/orrin-backend)
-
-Make sure the backend is running at `http://127.0.0.1:8000` or update the `VITE_API_BASE_URL` environment variable in the `.env` file:
-
-```env
-VITE_API_BASE_URL=http://127.0.0.1:8000
-```
+- Node.js (version 20.x or higher)
+- npm (version 8.x or higher)
 
 ### Installation
 
-1. **Clone the repository:**
+Clone the repository to your local machine:
+
 ```bash
 git clone https://github.com/ivasx/orrin-frontend.git
 cd orrin-frontend
 ```
 
-2. **Install dependencies:**
+Install the required dependencies:
+
 ```bash
 npm install
 ```
 
-3. **Create `.env` file (optional):**
-```bash
+### Environment Variables Setup
+
+The application requires specific environment variables to function correctly.
+
+Create a `.env` file in the root directory. You can use `.env.dist` as a template.
+
+Configure the required variables:
+
+```env
+# Define the target API backend.
 VITE_API_BASE_URL=http://127.0.0.1:8000
+
+# Set to 'false' to communicate with a live backend. Set to 'true' to use local mock data.
+VITE_USE_MOCK_DATA=false
 ```
 
-4. **Run the project in development mode:**
+### Running Locally
+
+To start the development server with Vite:
+
 ```bash
 npm run dev
 ```
 
-5. **Open browser at:**
-```
-http://localhost:5173
-```
+The application will be accessible at `http://localhost:5173`.
 
 ### Production Build
+
+To compile the application for production deployment:
 
 ```bash
 npm run build
 ```
 
-The finished files will be in the `dist/` folder.
-
-### Preview Production Build
+To preview the compiled production build locally:
 
 ```bash
 npm run preview
 ```
 
-## 🐳 Docker
+## Authors
 
-### Development
+- **Ivas** — [@ivasx](https://github.com/ivasx)
 
-```bash
-# Build dev image
-docker build -f Dockerfile.dev -t orrin-frontend-dev .
+## Contact
 
-# Run dev container
-docker run -p 5173:5173 -v $(pwd):/app orrin-frontend-dev
-```
+If you have any questions or suggestions, please reach out:
 
-### Production
-
-```bash
-# Build production image
-docker build -t orrin-frontend .
-
-# Run production container
-docker run -p 80:80 orrin-frontend
-```
-
-## 🎯 Main Components
-
-### Header
-Website header with logo, smart search, and navigation. Supports:
-- Responsive design with mobile menu
-- Search with suggestions and history
-- Automatic language detection
-
-### TrackCard
-Track card component with the following features:
-- Play/pause with ripple effect
-- Context menu (play, pause, mute, volume, share, download)
-- Visual effects (animated playback indicators)
-- Adaptation for touch and desktop devices
-- Navigation to track and artist pages
-
-### AudioCoreContext
-Global context for music playback management:
-- Centralized player status management
-- Synchronization between components
-- Playlist and queue support
-- Repeat modes (off, all, one)
-- Integration with Media Session API
-
-### TanStack Query Integration
-Server state management:
-- Automatic request caching
-- Background data updates
-- Optimistic updates
-- Error handling and retry logic
-- DevTools for debugging
-
-## 💡 Implementation Features
-
-### State Management
-- Using React Context API for global UI state
-- TanStack Query for server state and caching
-- Separating logic into separate contexts (Audio, Queue, UI, Settings)
-- Local component state via useState and useEffect
-- Memoization of callback functions via useCallback and useMemo
-
-### API Integration
-- Centralized API requests through `src/services/api.js`
-- Data normalization through `src/constants/fallbacks.js`
-- Fallback to mock data when API is unavailable
-- Automatic loading error handling
-
-### Responsiveness
-- Mobile-first approach
-- Touch gesture support
-- Optimization for different screen sizes
-- Adaptive context menus
-
-### Accessibility
-- Semantic HTML
-- ARIA attributes for all interactive elements
-- Keyboard navigation in menus
-- Screen reader support
-
-### Performance
-- Lazy loading of images
-- Re-render optimization via React.memo and useMemo
-- Efficient event management
-- Throttling for drag operations
-- Debouncing for search
-- Request caching via TanStack Query
-
-### Internationalization
-- Support for Ukrainian and English languages
-- Automatic browser language detection
-- Saving language selection in localStorage
-- Language switching without reloading
-
-### Media Session API
-- Integration with system media controls
-- Display of cover art, title, and artist
-- Playback progress updates
-- Command processing (play, pause, previous, next)
-
-## 🎨 Customization
-
-### Themes
-The app uses CSS Custom Properties for customization. Main variables:
-```css
-:root {
-  --player-height: 84px; /* Player height */
-}
-```
-
-### Localization
-To add a new language:
-1. Create a file `src/i18n/{language_code}.json`
-2. Add translations following the example of existing files
-3. Import and register in `src/i18n/i18n.js`
-
-## 🔧 API Integration
-
-The application integrates with the backend API through `src/services/api.js`.
-
-### Main endpoints:
-- `GET /api/v1/tracks/` — get list of tracks
-- `GET /api/v1/tracks/{slug}/` — track details
-- `GET /api/v1/artists/` — list of artists
-- `GET /api/v1/artists/{slug}/` — artist details
-
-### Fallback Mechanism
-When the API is unavailable, the application automatically uses mock data from `src/data.js` and `src/data/mockData.js`.
-
-## 🤝 Contributing
-
-We are open to contributions! If you want to help:
-
-1. Fork the project
-2. Create a branch for your feature:
-   ```bash
-   git checkout -b feature/AmazingFeature
-   ```
-3. Commit the changes:
-   ```bash
-   git commit -m 'Add some AmazingFeature'
-   ```
-4. Push the changes:
-   ```bash
-   git push origin feature/AmazingFeature
-   ```
-5. Open Pull Request
-
-### Coding Guidelines
-- Use ESLint to check your code
-- Follow the existing component structure
-- Add comments for complex logic
-- Create separate CSS files for component styles
-- Use functional components and hooks
-- Use TanStack Query for API requests
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Authors
-
-- **Ivas** - [@ivasx](https://github.com/ivasx)
-
-## 📞 Contact
-
-If you have any questions or suggestions, please contact us:
 - **Email:** ambroziak.v.ivan@gmail.com
 - **GitHub Issues:** [orrin-frontend/issues](https://github.com/ivasx/orrin-frontend/issues)
 
-## 🙏 Acknowledgements
+## License
 
-- [React](https://reactjs.org/) for the excellent library
-- [Vite](https://vitejs.dev/) for the fast dev server
-- [TanStack Query](https://tanstack.com/query) for server state management
-- [Lucide](https://lucide.dev/) for the beautiful icons
-- [i18next](https://www.i18next.com/) for internationalization
-
----
-
-**Orrin** — music that brings people together! 🎵
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
