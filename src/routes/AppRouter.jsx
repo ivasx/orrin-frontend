@@ -35,13 +35,13 @@ export default function AppRouter() {
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/artist/:artistId" element={<ArtistPage />} />
                     <Route path="/user/:userId" element={<UserProfilePage />} />
-
+                    <Route path="/settings" element={<SettingsPage />} />
+                    
                     {/* Standard Authenticated Routes */}
                     <Route element={<ProtectedRoute requireArtistManagement={false} />}>
                         <Route path="/library" element={<LibraryPage />} />
                         <Route path="/favorites" element={<FavoritesPage />} />
                         <Route path="/history" element={<HistoryPage />} />
-                        <Route path="/settings" element={<SettingsPage />} />
                     </Route>
 
                     {/* Artist Manager Protected Routes (Resource-Based Auth) */}

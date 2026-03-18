@@ -15,7 +15,7 @@ import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
 import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
-import { usePostMutations } from '../../../hooks/usePostMutations.js';
+import { usePostMutations } from '../../../hooks/usePostMutations';
 import { logger } from '../../../utils/logger.js';
 import styles from './FeedPost.module.css';
 

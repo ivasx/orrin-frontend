@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
@@ -9,7 +9,7 @@ import FeedPost from '../../components/Shared/FeedPost/FeedPost.jsx';
 import CreatePost from '../../components/Shared/CreatePost/CreatePost.jsx';
 import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx';
 
-import { getFeedPosts } from '../../services/api.js';
+import { useInfiniteFeedQuery } from '../../hooks/queries/useMusicQueries';
 import { useAuth } from '../../context/AuthContext.jsx';
 import styles from './FeedPage.module.css';
 
@@ -34,21 +34,7 @@ export default function FeedPage() {
         isFetchingNextPage,
         hasNextPage,
         fetchNextPage
-    } = useInfiniteQuery({
-        queryKey: ['feed', activeTab, filters],
-        queryFn: ({ pageParam = 1 }) => getFeedPosts({
-            type: activeTab,
-            sort: filters.sort,
-            contentType: filters.contentType,
-            pageParam
-        }),
-        initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => {
-            // Assume the API returns an empty array when no more items exist
-            return lastPage.length > 0 ? allPages.length + 1 : undefined;
-        },
-        staleTime: 60000,
-    });
+    } = useInfiniteFeedQuery(activeTab, filters);
 
     // Flatten pages into a single array for rendering
     const posts = data?.pages.flatMap(page => page) || [];
@@ -65,11 +51,7 @@ export default function FeedPage() {
     );
 
     useEffect(() => {
-        const option = {
-            root: null,
-            rootMargin: '200px',
-            threshold: 0
-        };
+        const option = { root: null, rootMargin: '200px', threshold: 0 };
         const observer = new IntersectionObserver(handleObserver, option);
         if (observerRef.current) observer.observe(observerRef.current);
 
@@ -80,24 +62,6 @@ export default function FeedPage() {
 
     const handlePostCreated = () => {
         queryClient.invalidateQueries({ queryKey: ['feed'] });
-    };
-
-    const renderEmptyState = () => {
-        if (activeTab === 'following') {
-            return (
-                <div className={styles.emptyState}>
-                    <h3>{t('feed_no_following')}</h3>
-                    <p>{t('feed_no_following_desc')}</p>
-                </div>
-            );
-        }
-
-        return (
-            <div className={styles.emptyState}>
-                <h3>{t('feed_no_posts')}</h3>
-                <p>{t('feed_no_posts_desc')}</p>
-            </div>
-        );
     };
 
     return (
@@ -126,23 +90,23 @@ export default function FeedPage() {
                     )}
 
                     {isLoadingPosts ? (
-                        <>
-                            <div className={styles.skeleton} />
-                            <div className={styles.skeleton} />
-                            <div className={styles.skeleton} />
-                        </>
+                        <div className={styles.skeletonContainer}>
+                            {[1, 2, 3].map(i => <div key={i} className={styles.skeleton} />)}
+                        </div>
                     ) : posts.length > 0 ? (
                         <>
                             {posts.map(post => (
                                 <FeedPost key={post.id} post={post} />
                             ))}
-
                             <div ref={observerRef} className={styles.loaderContainer}>
                                 {isFetchingNextPage && <div className={styles.spinner} />}
                             </div>
                         </>
                     ) : (
-                        renderEmptyState()
+                        <div className={styles.emptyState}>
+                            <h3>{t('feed_no_posts')}</h3>
+                            <p>{t('feed_no_posts_desc')}</p>
+                        </div>
                     )}
                 </div>
             </MusicSectionWrapper>

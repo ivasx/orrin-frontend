@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
-import { useAudioCore } from '../../../../../../context/AudioCoreContext';
+import { useAudioCore } from '../../../../../context/AudioCoreContext';
 import styles from './TimeControls.module.css';
 
 const formatTime = (timeInSeconds) => {
