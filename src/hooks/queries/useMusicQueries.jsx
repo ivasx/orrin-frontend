@@ -1,37 +1,42 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { API_ENDPOINTS, buildUrl } from '../../constants/apiEndpoints';
+import {
+    getTracks,
+    getArtists,
+    getFriendsActivity,
+    getFeedPosts
+} from '../../services/api';
+import { ways, popularArtists } from '../../data';
+import { mockPosts } from '../../data/mockData';
 
-const fetchFromApi = async (endpoint) => {
-    const token = localStorage.getItem('access_token');
-    const headers = {
-        'Content-Type': 'application/json',
-    };
+// Check environment variable for mock data mode
+const isMockMode = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(endpoint, { headers });
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Failed to fetch data');
-    }
-
-    return response.json();
-};
+// Utility to simulate network latency (default 400ms)
+const delay = (ms = 400) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const useTracksQuery = () => {
     return useQuery({
         queryKey: ['tracks'],
-        queryFn: () => fetchFromApi(API_ENDPOINTS.TRACKS)
+        queryFn: async () => {
+            if (isMockMode) {
+                await delay();
+                return ways;
+            }
+            return getTracks();
+        }
     });
 };
 
 export const useArtistsQuery = () => {
     return useQuery({
         queryKey: ['artists'],
-        queryFn: () => fetchFromApi(API_ENDPOINTS.ARTISTS)
+        queryFn: async () => {
+            if (isMockMode) {
+                await delay();
+                return popularArtists;
+            }
+            return getArtists();
+        }
     });
 };
 
@@ -42,8 +47,11 @@ export const useFriendsActivityQuery = (isLoggedIn) => {
     return useQuery({
         queryKey: ['friendsActivity'],
         queryFn: async () => {
-            const result = await fetchFromApi(API_ENDPOINTS.USER_FEED);
-            return result.results || result || [];
+            if (isMockMode) {
+                await delay();
+                return ways;
+            }
+            return getFriendsActivity();
         },
         enabled: !!isLoggedIn
     });
@@ -55,21 +63,40 @@ export const useFriendsActivityQuery = (isLoggedIn) => {
 export const useInfiniteFeedQuery = (activeTab, filters) => {
     return useInfiniteQuery({
         queryKey: ['feed', activeTab, filters],
-        queryFn: ({ pageParam = 1 }) => {
-            const url = buildUrl(API_ENDPOINTS.USER_FEED, {
+        queryFn: async ({ pageParam = 1 }) => {
+            if (isMockMode) {
+                await delay();
+                // Return mock posts only for the first page to simulate end of feed
+                return {
+                    results: pageParam === 1 ? mockPosts : [],
+                    next: pageParam === 1 ? 'http://mock.api/feed?page=2' : null
+                };
+            }
+
+            return getFeedPosts({
                 type: activeTab,
-                sort: filters.sort,
-                contentType: filters.contentType,
-                page: pageParam
+                sort: filters?.sort,
+                contentType: filters?.contentType,
+                pageParam
             });
-            return fetchFromApi(url);
         },
         initialPageParam: 1,
-        getNextPageParam: (lastPage) => {
-            if (lastPage.next) {
-                const url = new URL(lastPage.next);
-                return url.searchParams.get('page');
+        getNextPageParam: (lastPage, allPages, lastPageParam) => {
+            if (lastPage && lastPage.next) {
+                try {
+                    const url = new URL(lastPage.next);
+                    const nextPage = url.searchParams.get('page');
+                    return nextPage ? Number(nextPage) : undefined;
+                } catch (e) {
+                    return undefined;
+                }
             }
+
+            if (Array.isArray(lastPage) && lastPage.length > 0) {
+                return lastPageParam + 1;
+            }
+
+            // End of pagination
             return undefined;
         },
         staleTime: 60000,
