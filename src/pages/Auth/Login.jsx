@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
 import './Auth.css';
-import { loginUser } from '../../services/api';
+import { loginUser, getSocialLoginUrl } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
@@ -12,14 +12,12 @@ export default function Login() {
     const location = useLocation();
     const { login } = useAuth();
 
-    const [formData, setFormData] = useState({
-        username: '',
-        password: ''
-    });
+    const [formData, setFormData] = useState({ username: '', password: '' });
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState('');
 
-    const from = location.state?.from?.pathname || '/';
+    const successMessage = location.state?.message ?? '';
+    const from = location.state?.from?.pathname ?? '/';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,7 +28,6 @@ export default function Login() {
             const response = await loginUser(formData);
             const accessToken = response.access_token || response.access;
             const refreshToken = response.refresh_token || response.refresh;
-
             login(accessToken, refreshToken);
             navigate(from, { replace: true });
         } catch (error) {
@@ -41,14 +38,11 @@ export default function Login() {
     };
 
     const handleSocialLogin = (provider) => {
-        window.location.href = `/api/v1/auth/${provider.toLowerCase()}/login/`;
+        window.location.href = getSocialLoginUrl(provider);
     };
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     return (
@@ -67,9 +61,15 @@ export default function Login() {
                     </p>
                 </div>
 
+                {successMessage && (
+                    <p className="auth-success-message">{successMessage}</p>
+                )}
+
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="username" className="form-label">{t('email_label')}</label>
+                        <label htmlFor="username" className="form-label">
+                            {t('email_label')}
+                        </label>
                         <input
                             type="text"
                             id="username"
@@ -83,7 +83,9 @@ export default function Login() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="password" className="form-label">{t('password_label')}</label>
+                        <label htmlFor="password" className="form-label">
+                            {t('password_label')}
+                        </label>
                         <input
                             type="password"
                             id="password"
@@ -94,12 +96,13 @@ export default function Login() {
                             onChange={handleChange}
                             required
                         />
+                        <Link to="/forgot-password" className="form-label-link">
+                            {t('forgot_password_link')}
+                        </Link>
                     </div>
 
                     {serverError && (
-                        <div className="error-message server-error" style={{ marginBottom: '1rem', color: 'var(--color-error)' }}>
-                            {serverError}
-                        </div>
+                        <p className="error-message">{serverError}</p>
                     )}
 
                     <button type="submit" className="auth-button" disabled={isLoading}>
@@ -110,15 +113,22 @@ export default function Login() {
                 <div className="social-register">
                     <div className="divider"><span>{t('login_with_divider')}</span></div>
                     <div className="social-buttons">
-                        <button className="social-button google" onClick={() => handleSocialLogin('Google')}>
+                        <button
+                            type="button"
+                            className="social-button google"
+                            onClick={() => handleSocialLogin('Google')}
+                        >
                             <FaGoogle /> Google
                         </button>
-                        <button className="social-button apple" onClick={() => handleSocialLogin('Apple')}>
+                        <button
+                            type="button"
+                            className="social-button apple"
+                            onClick={() => handleSocialLogin('Apple')}
+                        >
                             <FaApple /> Apple
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     );

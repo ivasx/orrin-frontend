@@ -1,40 +1,40 @@
-/* Auth Page */
 .auth-page {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #000000;
+    background-color: var(--color-bg-base);
     padding: 20px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-main);
 }
 
 .auth-container {
     width: 100%;
     max-width: 500px;
-    background: rgba(39, 39, 39, 0.4);
+    background-color: var(--color-bg-glass-subtle);
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative; /* Для позиціонування стрілки */
+    box-shadow: var(--shadow-main);
+    border: 1px solid var(--color-border-subtle);
+    position: relative;
 }
 
-/* Стилі для стрілки "назад" */
+/* Кнопка "назад" */
 .back-to-home {
     position: absolute;
     top: 40px;
     left: 40px;
-    color: #b3b3b3;
+    color: var(--color-text-secondary);
     font-size: 1.2rem;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
     z-index: 10;
 }
 
 .back-to-home:hover {
-    color: #ffffff;
+    color: var(--color-text-main);
 }
 
+/* Шапка */
 .auth-header {
     text-align: center;
     margin-bottom: 32px;
@@ -49,17 +49,30 @@
 .auth-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--color-text-main);
     margin: 0;
 }
 
 .auth-subtitle {
     font-size: 0.95rem;
-    color: #b3b3b3;
+    color: var(--color-text-secondary);
     margin-top: 8px;
 }
 
-/* Form */
+/* Повідомлення після успішного скидання паролю */
+.auth-success-message {
+    background-color: var(--color-bg-glass-subtle);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    padding: 12px 16px;
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 0 0 4px;
+    line-height: 1.5;
+}
+
+/* Форма */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -72,47 +85,63 @@
     gap: 8px;
 }
 
+
 .form-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #b3b3b3;
+    color: var(--color-text-secondary);
+}
+
+.form-label-link {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    align-self: flex-start;
+    transition: color var(--transition-fast);
+}
+
+.form-label-link:hover {
+    color: var(--color-text-main);
 }
 
 .form-sublabel {
     font-size: 0.75rem;
-    color: #6a6a6a;
-    margin: -4px 0 4px 0;
+    color: var(--color-text-muted);
+    margin: -4px 0 4px;
 }
 
-.form-input, .form-select {
+.form-input,
+.form-select {
     width: 100%;
     padding: 12px 16px;
-    background: #282828;
-    border: 1px solid #333;
-    border-radius: 8px;
-    color: #ffffff;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-main);
     font-size: 0.95rem;
-    font-family: 'Montserrat', sans-serif;
-    transition: all 0.2s ease;
+    font-family: var(--font-main);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
-.form-input:focus, .form-select:focus {
+.form-input:focus,
+.form-select:focus {
     outline: none;
-    border-color: #535353;
-    background: #333;
+    border-color: var(--color-border-focus);
+    background-color: var(--color-surface-3);
 }
 
-.form-input.is-invalid, .form-select.is-invalid {
-    border-color: #e53e3e;
+.form-input.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--color-error);
 }
-
 
 .error-message {
-    color: #e53e3e;
+    color: var(--color-error);
     font-size: 0.8rem;
     margin-top: -4px;
 }
 
+/* Дата народження */
 .date-inputs {
     display: flex;
     gap: 10px;
@@ -122,9 +151,11 @@
     flex: 1;
     min-width: 50px;
 }
+
 .date-inputs .form-select {
     flex: 2;
 }
+
 .date-inputs .date-year {
     flex: 1;
     min-width: 70px;
@@ -136,6 +167,7 @@
     flex: 1;
 }
 
+/* Стать */
 .gender-options {
     display: flex;
     flex-wrap: wrap;
@@ -148,20 +180,19 @@
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
-    color: #b3b3b3;
+    color: var(--color-text-secondary);
     cursor: pointer;
 }
 
 .radio-label input[type="radio"] {
     -webkit-appearance: none;
     appearance: none;
-    background-color: #282828;
+    background-color: var(--color-surface-2);
     margin: 0;
     font: inherit;
-    color: #535353;
     width: 1.15em;
     height: 1.15em;
-    border: 1px solid #535353;
+    border: 1px solid var(--color-border-focus);
     border-radius: 50%;
     transform: translateY(-0.075em);
     display: grid;
@@ -176,45 +207,57 @@
     border-radius: 50%;
     transform: scale(0);
     transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em #af947e;
-    background-color: #af947e;
+    background-color: var(--color-primary);
 }
 
 .radio-label input[type="radio"]:checked::before {
     transform: scale(1);
 }
 
+/* Чекбокс */
 .form-group-checkbox {
     display: flex;
     align-items: center;
     gap: 10px;
     font-size: 0.9rem;
-    color: #b3b3b3;
-}
-.form-group-checkbox input[type="checkbox"] {
-    accent-color: #af947e;
+    color: var(--color-text-secondary);
 }
 
-/* Button */
+.form-group-checkbox input[type="checkbox"] {
+    accent-color: var(--color-primary);
+}
+
+/* Основна кнопка */
 .auth-button {
     width: 100%;
     padding: 14px 24px;
-    background: #e0e0e0;
+    background-color: var(--color-text-main);
     border: none;
-    border-radius: 50px;
-    color: #121212;
+    border-radius: var(--border-radius-pill);
+    color: var(--color-text-inverse);
     font-weight: 700;
     font-size: 1rem;
+    font-family: var(--font-main);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
     margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
-.auth-button:hover {
-    background: #ffffff;
+.auth-button:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: scale(1.01);
 }
 
-/* Social Register */
+.auth-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Соціальний логін */
 .social-register {
     margin-top: 30px;
 }
@@ -223,23 +266,24 @@
     display: flex;
     align-items: center;
     text-align: center;
-    color: #6a6a6a;
+    color: var(--color-text-muted);
     font-size: 0.8rem;
     margin-bottom: 20px;
 }
 
-.divider::before, .divider::after {
+.divider::before,
+.divider::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--color-border-main);
 }
 
 .divider:not(:empty)::before {
-    margin-right: .5em;
+    margin-right: 0.5em;
 }
 
 .divider:not(:empty)::after {
-    margin-left: .5em;
+    margin-left: 0.5em;
 }
 
 .social-buttons {
@@ -250,33 +294,27 @@
 .social-button {
     flex: 1;
     padding: 12px;
-    border-radius: 50px;
-    border: 1px solid #333;
-    background: transparent;
-    color: #fff;
+    border-radius: var(--border-radius-pill);
+    border: 1px solid var(--color-border-main);
+    background-color: var(--color-surface-2);
+    color: var(--color-text-main);
     font-size: 0.9rem;
     font-weight: 600;
+    font-family: var(--font-main);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color var(--transition-fast);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
 }
-.social-button.google {
-    background: #333;
-}
-.social-button.apple {
-    background: #333;
-}
 
 .social-button:hover {
-    background-color: #282828;
+    background-color: var(--color-surface-3);
 }
 
-/* Link */
 .auth-link {
-    color: #ffffff;
+    color: var(--color-text-main);
     font-weight: 600;
     text-decoration: none;
 }

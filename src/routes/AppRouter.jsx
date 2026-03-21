@@ -18,6 +18,8 @@ const ArtistPage = lazy(() => import('../pages/ArtistPage/ArtistPage.jsx'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage/NotFoundPage.jsx'));
 const RegisterPage = lazy(() => import('../pages/Auth/Register.jsx'));
 const LoginPage = lazy(() => import('../pages/Auth/Login.jsx'));
+const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword.jsx'));
+const ResetPassword = lazy(() => import('../pages/Auth/ResetPassword.jsx'));
 const UserProfilePage = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
 
 // Placeholder export for artist management view
@@ -59,6 +61,8 @@ export default function AppRouter() {
                 {/* Auth Routes */}
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
         </Suspense>
     );

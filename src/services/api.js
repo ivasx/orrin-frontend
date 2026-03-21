@@ -305,3 +305,18 @@ export const markNotificationAsRead = async (id) => {
 export const markAllNotificationsAsRead = async () => {
     return fetchJson('/api/v1/notifications/read-all/', { method: 'POST' });
 };
+
+export const requestPasswordReset = (email) =>
+    fetchJson('/api/v1/auth/password/reset/', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+    });
+
+export const confirmPasswordReset = (uid, token, newPassword) =>
+    fetchJson('/api/v1/auth/password/reset/confirm/', {
+        method: 'POST',
+        body: JSON.stringify({ uid, token, new_password: newPassword }),
+    });
+
+export const getSocialLoginUrl = (provider) =>
+    `${API_BASE_URL}/api/v1/auth/${provider.toLowerCase()}/login/`;
