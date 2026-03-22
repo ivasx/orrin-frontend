@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Music, X, Image as ImageIcon, Smile } from 'lucide-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getTracks, createPost } from '../../../services/api.js';
+import { getTracks, createPost } from '../../../services/api/api.real.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { useToast } from '../../../context/ToastContext.jsx';
 import { logger } from '../../../utils/logger.js';

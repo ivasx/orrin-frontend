@@ -1,10 +1,11 @@
 import { mockUsers } from '../../data/mockData';
+import { logger } from '../../utils/logger';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const login = async (credentials) => {
     await delay(800);
-    console.log('[Mock Auth] Login attempt:', credentials);
+    logger.log('[Mock Auth] Login attempt:', credentials);
 
     if (credentials.password && credentials.password.length < 4) {
         throw new Error('Невірний логін або пароль');
@@ -18,7 +19,7 @@ export const login = async (credentials) => {
 
 export const register = async (userData) => {
     await delay(1000);
-    console.log('[Mock Auth] Register data:', userData);
+    logger.log('[Mock Auth] Register data:', userData);
 
     return {
         access: 'mock_access_token_' + Date.now(),

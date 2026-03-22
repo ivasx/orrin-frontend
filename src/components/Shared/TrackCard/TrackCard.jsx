@@ -189,8 +189,8 @@ function TrackCard(props) {
             <div className="track-info">
                 <Link to={`/track/${track.trackId}`} className="track-title">{track.title}</Link>
                 <div className="track-artist">
-                    {track.artistId ?
-                        <Link to={`/artist/${track.artistId}`} className="track-artist-link">{track.artist}</Link> :
+                    {track.artistSlug ?
+                        <Link to={`/artist/${track.artistSlug}`} className="track-artist-link">{track.artist}</Link> :
                         <span>{track.artist}</span>}
                 </div>
                 <div

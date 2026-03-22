@@ -3,37 +3,25 @@ import { useAuth } from '../context/AuthContext';
 export const usePermissions = () => {
     const { user, isLoggedIn } = useAuth();
 
-    const isArtistManager = (artistId) => {
-        if (!isLoggedIn || !user) {
+    const isArtistManager = (artistSlug) => {
+        if (!isLoggedIn || !user || !artistSlug) {
             return false;
         }
 
-        const targetId = String(artistId);
+        const targetSlug = String(artistSlug).toLowerCase();
 
-        const managedArtistIds = Array.isArray(user.managed_artists)
-            ? user.managed_artists.map(artist =>
-                typeof artist === 'object' ? String(artist.id) : String(artist)
-            )
+        // user.managed_artists is now a flat array of slugs from the backend
+        const managedArtistSlugs = Array.isArray(user.managed_artists)
+            ? user.managed_artists.map(slug => String(slug).toLowerCase())
             : [];
 
-        const bandMembershipIds = Array.isArray(user.band_memberships)
-            ? user.band_memberships.map(membership =>
-                typeof membership.band === 'object' ? String(membership.band.id) : String(membership.band)
-            )
-            : [];
+        const allManagedSlugs = new Set([...managedArtistSlugs]);
 
-        const allManagedIds = new Set([...managedArtistIds, ...bandMembershipIds]);
-
-        return allManagedIds.has(targetId);
+        return allManagedSlugs.has(targetSlug);
     };
 
-    const canEditArtist = (artistId) => {
-        return isArtistManager(artistId);
-    };
-
-    const canUploadTracks = (artistId) => {
-        return isArtistManager(artistId);
-    };
+    const canEditArtist = (artistSlug) => isArtistManager(artistSlug);
+    const canUploadTracks = (artistSlug) => isArtistManager(artistSlug);
 
     return {
         isArtistManager,

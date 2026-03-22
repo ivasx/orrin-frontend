@@ -2,13 +2,13 @@ import PropTypes from 'prop-types';
 import { usePermissions } from '../../../hooks/usePermissions';
 
 export const RequirePermission = ({
-                                      artistId,
+                                      artistSlug,
                                       children,
                                       fallback = null
                                   }) => {
     const { isArtistManager } = usePermissions();
 
-    if (artistId && isArtistManager(artistId)) {
+    if (artistSlug && isArtistManager(artistSlug)) {
         return children;
     }
 
@@ -16,7 +16,7 @@ export const RequirePermission = ({
 };
 
 RequirePermission.propTypes = {
-    artistId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    artistSlug: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
     fallback: PropTypes.node
 };

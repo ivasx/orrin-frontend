@@ -10,7 +10,7 @@ export const ProtectedRoute = ({
     const { isLoggedIn, isLoading } = useAuth();
     const { isArtistManager } = usePermissions();
     const location = useLocation();
-    const { artistId } = useParams();
+    const { artistSlug } = useParams();
 
     if (isLoading) {
         return <VinylLoader />;
@@ -20,9 +20,9 @@ export const ProtectedRoute = ({
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    if (requireArtistManagement && artistId) {
-        if (!isArtistManager(artistId)) {
-            return <Navigate to={`/artist/${artistId}`} replace />;
+    if (requireArtistManagement && artistSlug) {
+        if (!isArtistManager(artistSlug)) {
+            return <Navigate to={`/artist/${artistSlug}`} replace />;
         }
     }
 

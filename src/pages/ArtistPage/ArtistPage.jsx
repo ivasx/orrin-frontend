@@ -17,7 +17,7 @@ import DiscographyTab from './DiscographyTab/DiscographyTab.jsx';
 import ArtistNotesTab from './ArtistNotesTab/ArtistNotesTab.jsx';
 
 import { useAudioCore } from '../../context/AudioCoreContext.jsx';
-import { getArtistById, getTracksByIds } from '../../services/api.js';
+import { getArtistById, getTracksByIds } from '../../services/api/api.real.js';
 import { normalizeArtistData, normalizeTrackData } from '../../constants/fallbacks.js';
 import { logger } from '../../utils/logger';
 
@@ -25,15 +25,15 @@ import styles from './ArtistPage.module.css';
 
 export default function ArtistPage() {
     const { t } = useTranslation();
-    const { artistId } = useParams();
+    const { artistSlug } = useParams();
     const [activeTab, setActiveTab] = useState('about');
     const { playTrack } = useAudioCore();
     const navigate = useNavigate();
 
     const { data: rawArtistData, isLoading, isError } = useQuery({
-        queryKey: ['artist', artistId],
-        queryFn: () => getArtistById(artistId),
-        enabled: !!artistId,
+        queryKey: ['artist', artistSlug],
+        queryFn: () => getArtistById(artistSlug),
+        enabled: !!artistSlug,
     });
 
     const artist = rawArtistData ? normalizeArtistData(rawArtistData) : null;

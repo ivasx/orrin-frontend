@@ -10,7 +10,7 @@ import { ProfileHero } from './components/ProfileHero/ProfileHero.jsx';
 import { ProfileTabsNav } from './components/ProfileTabsNav/ProfileTabsNav.jsx';
 import { AboutTab, PostsTab, FollowersTab } from './tabs';
 
-import { getUserProfile } from '../../services/api.js';
+import { getUserProfile } from '../../services/api/api.real.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { logger } from '../../utils/logger';
 

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import InfoSection from '../../../../components/Shared/InfoSection/InfoSection.jsx';
-import { getUserFollowers } from '../../../../services/api.js';
+import { getUserFollowers } from '../../../../services/api/api.real.js';
 import styles from './FollowersTab.module.css';
 
 export const FollowersTab = ({ username }) => {

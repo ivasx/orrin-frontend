@@ -3,7 +3,7 @@ import {
     normalizeArtistData,
     normalizePostData,
     normalizeUserData
-} from '../constants/fallbacks';
+} from '../../constants/fallbacks.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
@@ -146,19 +146,9 @@ export async function fetchJson(endpoint, options = {}) {
     }
 }
 
-export const loginUser = async (credentials) => {
-    return fetchJson('/api/v1/auth/token/', {
-        method: 'POST',
-        body: JSON.stringify(credentials)
-    });
-};
-
-export const registerUser = async (userData) => {
-    return fetchJson('/api/v1/auth/register/', {
-        method: 'POST',
-        body: JSON.stringify(userData)
-    });
-};
+// Auth functions — делегуємо в auth/index.js,
+// який обирає між mock і real залежно від VITE_USE_MOCK_AUTH
+export { loginUser, registerUser, getCurrentUser } from '../auth/index.js';
 
 export const getTracks = async () => {
     const data = await fetchJson('/api/v1/tracks/');
@@ -254,10 +244,7 @@ export const getFriendsActivity = async () => {
     return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
 };
 
-export const getCurrentUser = async () => {
-    const data = await fetchJson('/api/v1/users/me/');
-    return normalizeUserData(data);
-};
+
 
 export const searchGlobal = async (query) => {
     const [tracks, artists] = await Promise.all([

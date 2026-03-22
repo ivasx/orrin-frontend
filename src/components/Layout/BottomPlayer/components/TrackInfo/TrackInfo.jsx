@@ -44,8 +44,8 @@ const TrackInfo = ({ track }) => {
                     {renderMarquee(track.title, titleMarquee, styles.title)}
                 </Link>
 
-                {track.artistId ? (
-                    <Link to={`/artist/${track.artistId}`} className={styles.artistLink}>
+                {track.artistSlug ? (
+                    <Link to={`/artist/${track.artistSlug}`} className={styles.artistLink}>
                         {renderMarquee(track.artist, artistMarquee, styles.artist)}
                     </Link>
                 ) : (

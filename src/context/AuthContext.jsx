@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getCurrentUser, setAccessToken, setSessionExpiredCallback } from '../services/api';
+import { getCurrentUser, setAccessToken, setSessionExpiredCallback } from '../services/api/api.real.js';
 
 const AuthContext = createContext(null);
 

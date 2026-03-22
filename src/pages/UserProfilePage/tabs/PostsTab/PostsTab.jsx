@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import InfoSection from '../../../../components/Shared/InfoSection/InfoSection.jsx';
 import FeedPost from '../../../../components/Shared/FeedPost/FeedPost.jsx';
 import CreatePost from '../../../../components/Shared/CreatePost/CreatePost.jsx';
-import { getUserPosts } from '../../../../services/api.js';
+import { getUserPosts } from '../../../../services/api/api.real.js';
 import styles from './PostsTab.module.css';
 
 export const PostsTab = ({ username, isOwnProfile }) => {

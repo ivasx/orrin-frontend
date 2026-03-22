@@ -5,7 +5,7 @@ import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/Mus
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
 import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getUserHistory } from '../../services/api.js';
+import { getUserHistory } from '../../services/api/api.real.js';
 import { logger } from '../../utils/logger.js';
 
 export default function HistoryPage() {

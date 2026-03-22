@@ -35,7 +35,7 @@ export default function AppRouter() {
                     <Route path="/feed" element={<FeedPage />} />
                     <Route path="/track/:trackId" element={<TrackPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
-                    <Route path="/artist/:artistId" element={<ArtistPage />} />
+                    <Route path="/artist/:artistSlug" element={<ArtistPage />} />
                     <Route path="/user/:userId" element={<UserProfilePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     
@@ -48,8 +48,8 @@ export default function AppRouter() {
 
                     {/* Artist Manager Protected Routes (Resource-Based Auth) */}
                     <Route element={<ProtectedRoute requireArtistManagement={true} />}>
-                        <Route path="/artist/:artistId/manage" element={<ArtistDashboardPage />} />
-                        <Route path="/artist/:artistId/upload" element={<ArtistDashboardPage />} />
+                        <Route path="/artist/:artistSlug/manage" element={<ArtistDashboardPage />} />
+                        <Route path="/artist/:artistSlug/upload" element={<ArtistDashboardPage />} />
                     </Route>
                 </Route>
 

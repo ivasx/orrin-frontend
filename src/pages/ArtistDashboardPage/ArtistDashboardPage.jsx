@@ -8,7 +8,7 @@ import UploadTrackView from './views/UploadTrackView';
 import InlineError from '../../components/Shared/InlineError/InlineError';
 
 export default function ArtistDashboardPage() {
-    const { artistId } = useParams();
+    const { artistSlug } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -24,7 +24,7 @@ export default function ArtistDashboardPage() {
             setIsLoading(true);
             setFetchError(null);
             try {
-                const response = await fetch(`/api/artists/${artistId}/`, {
+                const response = await fetch(`/api/artists/${artistSlug}/`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                     }
@@ -43,13 +43,13 @@ export default function ArtistDashboardPage() {
             }
         };
 
-        if (artistId) {
+        if (artistSlug) {
             fetchArtistDetails();
         }
-    }, [artistId]);
+    }, [artistSlug]);
 
     const handleTabChange = (tab) => {
-        navigate(`/artist/${artistId}/${tab}`);
+        navigate(`/artist/${artistSlug}/${tab}`);
     };
 
     if (isLoading) {
@@ -86,7 +86,7 @@ export default function ArtistDashboardPage() {
                 <div className={styles.headerActions}>
                     <button
                         className={styles.viewPublicButton}
-                        onClick={() => navigate(`/artist/${artistId}`)}
+                        onClick={() => navigate(`/artist/${artistSlug}`)}
                     >
                         {t('artistDashboard.viewPublicPage')}
                     </button>
@@ -110,7 +110,7 @@ export default function ArtistDashboardPage() {
 
             <main className={styles.dashboardContent}>
                 {activeTab === 'manage' && <ManageProfileView artistData={artistData} />}
-                {activeTab === 'upload' && <UploadTrackView artistId={artistId} />}
+                {activeTab === 'upload' && <UploadTrackView artistSlug={artistSlug} />}
             </main>
         </div>
     );

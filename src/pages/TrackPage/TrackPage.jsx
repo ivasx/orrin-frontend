@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { getTrackBySlug } from '../../services/api';
+import { getTrackBySlug } from '../../services/api/api.real.js';
 import { normalizeTrackData } from '../../constants/fallbacks.js';
 import MusicLyrics from '../../components/Shared/MusicLyrics/MusicLyrics';
 import InlineError from '../../components/Shared/InlineError/InlineError';
@@ -64,8 +64,8 @@ export default function TrackPage() {
                         <h1 className="tp-title">{track.title}</h1>
 
                         <div className="tp-artist-row">
-                            {track.artistId ? (
-                                <Link to={`/artist/${track.artistId}`}>
+                            {track.artistSlug ? (
+                                <Link to={`/artist/${track.artistSlug}`}>
                                     {track.artist}
                                 </Link>
                             ) : (

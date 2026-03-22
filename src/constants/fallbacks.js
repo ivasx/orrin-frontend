@@ -68,7 +68,7 @@ export const normalizeTrackData = (track) => {
         trackId: String(trackId),
         title: getFallbackValue(track.title, FALLBACK_TRACK_TITLE),
         artist: artistData ? artistData.name : (typeof track.artist === 'string' ? track.artist : FALLBACK_ARTIST_NAME),
-        artistId: artistData ? artistData.id : null,
+        artistSlug: artistData ? artistData.slug : null,
         artistObj: artistData,
         cover: track.cover_url || track.cover || FALLBACK_COVER,
         audio: track.audio_url || track.audio || FALLBACK_AUDIO,

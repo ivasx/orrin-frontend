@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import styles from '../ArtistDashboardPage.module.css';
 
-export default function UploadTrackView({ artistId }) {
+export default function UploadTrackView({ artistSlug }) {
     const { t } = useTranslation();
 
     const [title, setTitle] = useState('');
@@ -39,7 +39,7 @@ export default function UploadTrackView({ artistId }) {
         try {
             const formData = new FormData();
             formData.append('title', title);
-            formData.append('artist', artistId);
+            formData.append('artist', artistSlug);
             formData.append('is_explicit', isExplicit);
             formData.append('audio_file', audioFile);
 
@@ -134,5 +134,5 @@ export default function UploadTrackView({ artistId }) {
 }
 
 UploadTrackView.propTypes = {
-    artistId: PropTypes.string.isRequired
+    artistSlug: PropTypes.string.isRequired
 };

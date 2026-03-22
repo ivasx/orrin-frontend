@@ -4,7 +4,7 @@ import {
     getArtists,
     getFriendsActivity,
     getFeedPosts
-} from '../../services/api';
+} from '../../services/api/api.real.js';
 import { ways, popularArtists } from '../../data';
 import { mockPosts } from '../../data/mockData';
 

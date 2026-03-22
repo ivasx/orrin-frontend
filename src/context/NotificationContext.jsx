@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../services/api';
+import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../services/api/api.real.js';
 import { logger } from '../utils/logger';
 
 const NotificationContext = createContext(null);
