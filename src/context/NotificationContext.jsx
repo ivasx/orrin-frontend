@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../services/api/api.real.js';
+import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../services/api/index.js';
 import { logger } from '../utils/logger';
 
 const NotificationContext = createContext(null);
@@ -28,6 +28,10 @@ export const NotificationProvider = ({ children }) => {
         }
 
         fetchInitialNotifications();
+
+        // Skip WebSocket entirely in mock mode
+        const isMockMode = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+        if (isMockMode) return;
 
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsHost = import.meta.env.VITE_WS_BASE_URL || window.location.host;

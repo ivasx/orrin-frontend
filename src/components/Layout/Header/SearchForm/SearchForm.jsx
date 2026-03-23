@@ -4,7 +4,7 @@ import {Search, ChevronLeft, X} from 'lucide-react';
 import SearchSuggestions from './SearchSuggestions.jsx';
 import {logger} from '../../../../utils/logger.js';
 import styles from "./SearchForm.module.css";
-import {searchGlobal} from '../../../../services/api/api.real.js';
+import {searchGlobal} from '../../../../services/api/index.js';
 
 const SEARCH_HISTORY_KEY = 'orrin_search_history';
 const MAX_HISTORY_ITEMS = 5;

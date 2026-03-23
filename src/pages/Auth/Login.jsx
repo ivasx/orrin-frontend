@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
 import './Auth.css';
-import { loginUser, getSocialLoginUrl } from '../../services/api/api.real.js';
+import { loginUser, getSocialLoginUrl } from '../../services/api/index.js';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {

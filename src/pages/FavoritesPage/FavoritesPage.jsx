@@ -5,7 +5,7 @@ import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/Mus
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
 import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx'; // Новий універсальний компонент
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getUserFavorites } from '../../services/api/api.real.js';
+import { getUserFavorites } from '../../services/api/index.js';
 import { logger } from '../../utils/logger.js';
 
 export default function FavoritesPage() {

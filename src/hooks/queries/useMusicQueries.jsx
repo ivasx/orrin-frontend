@@ -3,100 +3,75 @@ import {
     getTracks,
     getArtists,
     getFriendsActivity,
-    getFeedPosts
-} from '../../services/api/api.real.js';
-import { ways, popularArtists } from '../../data';
-import { mockPosts } from '../../data/mockData';
+    getFeedPosts,
+} from '../../services/api/index.js';
 
-// Check environment variable for mock data mode
 const isMockMode = import.meta.env.VITE_USE_MOCK_DATA === 'true';
-
-// Utility to simulate network latency (default 400ms)
-const delay = (ms = 400) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms = 400) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const useTracksQuery = () => {
     return useQuery({
         queryKey: ['tracks'],
-        queryFn: async () => {
-            if (isMockMode) {
-                await delay();
-                return ways;
-            }
-            return getTracks();
-        }
+        queryFn: getTracks,
     });
 };
 
 export const useArtistsQuery = () => {
     return useQuery({
         queryKey: ['artists'],
-        queryFn: async () => {
-            if (isMockMode) {
-                await delay();
-                return popularArtists;
-            }
-            return getArtists();
-        }
+        queryFn: getArtists,
     });
 };
 
-/**
- * Hook for HomePage horizontal "From Friends" section
- */
 export const useFriendsActivityQuery = (isLoggedIn) => {
     return useQuery({
         queryKey: ['friendsActivity'],
-        queryFn: async () => {
-            if (isMockMode) {
-                await delay();
-                return ways;
-            }
-            return getFriendsActivity();
-        },
-        enabled: !!isLoggedIn
+        queryFn: getFriendsActivity,
+        enabled: !!isLoggedIn,
     });
 };
 
 /**
- * Hook for FeedPage infinite scrolling
+ * Hook for FeedPage infinite scrolling.
+ * Works with both:
+ *  - Array responses (legacy mock returning plain arrays)
+ *  - Paginated responses: { results: Post[], next: string | null }
  */
 export const useInfiniteFeedQuery = (activeTab, filters) => {
     return useInfiniteQuery({
         queryKey: ['feed', activeTab, filters],
         queryFn: async ({ pageParam = 1 }) => {
-            if (isMockMode) {
-                await delay();
-                // Return mock posts only for the first page to simulate end of feed
-                return {
-                    results: pageParam === 1 ? mockPosts : [],
-                    next: pageParam === 1 ? 'http://mock.api/feed?page=2' : null
-                };
-            }
-
-            return getFeedPosts({
+            const response = await getFeedPosts({
                 type: activeTab,
                 sort: filters?.sort,
                 contentType: filters?.contentType,
-                pageParam
+                pageParam,
             });
+
+            // Normalise to always return a flat array for the pages structure
+            if (Array.isArray(response)) {
+                // Legacy: plain array (old mock)
+                return response;
+            }
+
+            if (response && Array.isArray(response.results)) {
+                // Paginated: { results, next }
+                return response.results;
+            }
+
+            return [];
         },
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages, lastPageParam) => {
-            if (lastPage && lastPage.next) {
-                try {
-                    const url = new URL(lastPage.next);
-                    const nextPage = url.searchParams.get('page');
-                    return nextPage ? Number(nextPage) : undefined;
-                } catch (e) {
-                    return undefined;
+        getNextPageParam: async (lastPage, allPages, lastPageParam) => {
+            // For paginated mock: re-query to see if there's a next page
+            if (lastPage && lastPage.length > 0) {
+                // Try fetching next page to check if it's non-empty
+                // Use a simple heuristic: if this page was full (4 items), assume there's a next
+                const PAGE_SIZE = 4;
+                if (lastPage.length >= PAGE_SIZE) {
+                    return lastPageParam + 1;
                 }
             }
-
-            if (Array.isArray(lastPage) && lastPage.length > 0) {
-                return lastPageParam + 1;
-            }
-
-            // End of pagination
             return undefined;
         },
         staleTime: 60000,

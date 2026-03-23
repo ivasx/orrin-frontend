@@ -17,7 +17,7 @@ import DiscographyTab from './DiscographyTab/DiscographyTab.jsx';
 import ArtistNotesTab from './ArtistNotesTab/ArtistNotesTab.jsx';
 
 import { useAudioCore } from '../../context/AudioCoreContext.jsx';
-import { getArtistById, getTracksByIds } from '../../services/api/api.real.js';
+import { getArtistById, getTracksByIds } from '../../services/api/index.js';
 import { normalizeArtistData, normalizeTrackData } from '../../constants/fallbacks.js';
 import { logger } from '../../utils/logger';
 

@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { getTrackBySlug } from '../../services/api/api.real.js';
+import { getTrackBySlug } from '../../services/api/index.js';
 import { normalizeTrackData } from '../../constants/fallbacks.js';
 import MusicLyrics from '../../components/Shared/MusicLyrics/MusicLyrics';
 import InlineError from '../../components/Shared/InlineError/InlineError';

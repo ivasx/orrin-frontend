@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
 import '../Auth.css';
 import styles from './ResetPassword.module.css';
-import { confirmPasswordReset } from '../../services/api/api.real.js';
+import { confirmPasswordReset } from '../../services/api/index.js';
 
 export default function ResetPassword() {
     const { t } = useTranslation();

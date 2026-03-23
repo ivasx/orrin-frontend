@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './Auth.css';
 import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
-import { registerUser, getSocialLoginUrl } from '../../services/api/api.real.js';
+import { registerUser, getSocialLoginUrl } from '../../services/api/index.js';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {

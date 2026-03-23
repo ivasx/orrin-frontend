@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleLikePost, repostPost, toggleSavePost, addComment, reportPost } from '../services/api/api.real.js';
+import { toggleLikePost, repostPost, toggleSavePost, addComment, reportPost } from '../services/api/index.js';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '../context/ToastContext.jsx';
 import { logger } from '../utils/logger.js';

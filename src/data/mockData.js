@@ -1,23 +1,137 @@
+// ============================================================
+// ORRIN — COMPREHENSIVE MOCK DATA
+// ============================================================
+
+// ─── ARTISTS ───────────────────────────────────────────────
+
 export const mockArtists = [
     {
         id: 'artist-1',
         slug: 'arctic-monkeys',
         name: 'Arctic Monkeys',
-        avatar: 'https://i.scdn.co/image/ab6761610000e5eb7da39dea0a72f581535fb11f',
-        bio: 'English rock band formed in Sheffield in 2002.',
-        followersCount: 15400000,
-        isVerified: true,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Arctic_Monkeys_-_NME_Awards_2014.jpg/800px-Arctic_Monkeys_-_NME_Awards_2014.jpg',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Arctic_Monkeys_-_NME_Awards_2014.jpg/800px-Arctic_Monkeys_-_NME_Awards_2014.jpg',
+        genre: 'Indie Rock, Post-Punk Revival',
+        about: "Arctic Monkeys are an English rock band formed in Sheffield in 2002. The group consists of Alex Turner (lead vocals, guitar), Jamie Cook (guitar), Nick O'Malley (bass guitar), and Matt Helders (drums). Their self-produced demo CDs, which they gave away free at concerts, rapidly spread across the UK.",
+        history: "Formed in Sheffield in 2002 when they were all teenagers, Arctic Monkeys became one of the fastest-rising bands in UK music history. Their debut album \"Whatever People Say I Am, That's What I'm Not\" (2006) became the fastest-selling debut album in UK chart history at the time.\n\nOver the years, they evolved from raw indie rock to incorporate psychedelic, garage rock, and art rock influences. Their 2013 album \"AM\" marked a commercial breakthrough, while \"Tranquility Base Hotel + Casino\" (2018) showcased a more avant-garde, lounge-rock direction.",
+        members: [
+            { id: 'm-1', name: 'Alex Turner',   role: 'Vocals, Guitar',        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Alex_Turner_-_Rock_Werchter_2018.jpg/440px-Alex_Turner_-_Rock_Werchter_2018.jpg' },
+            { id: 'm-2', name: 'Jamie Cook',    role: 'Guitar',                imageUrl: 'https://i.pravatar.cc/150?img=60' },
+            { id: 'm-3', name: "Nick O'Malley", role: 'Bass Guitar',           imageUrl: 'https://i.pravatar.cc/150?img=61' },
+            { id: 'm-4', name: 'Matt Helders',  role: 'Drums, Backing Vocals', imageUrl: 'https://i.pravatar.cc/150?img=62' },
+        ],
+        discography: [
+            { id: 'alb-1', title: 'Whatever People Say I Am...', year: 2006, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png' },
+            { id: 'alb-2', title: 'Favourite Worst Nightmare',   year: 2007, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Favourite_Worst_Nightmare.jpg' },
+            { id: 'alb-3', title: 'Humbug',                      year: 2009, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/6/6d/Arctic_Monkeys_Humbug_album_cover.jpg' },
+            { id: 'alb-4', title: 'Suck It and See',             year: 2011, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Arctic_Monkeys_Suck_It_and_See.png' },
+            { id: 'alb-5', title: 'AM',                          year: 2013, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png' },
+            { id: 'alb-6', title: 'Tranquility Base Hotel + Casino', year: 2018, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Arctic_Monkeys_-_Tranquility_Base_Hotel_%2B_Casino.png' },
+            { id: 'alb-7', title: 'The Car',                     year: 2022, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/0/00/The_Car_Arctic_Monkeys.png' },
+        ],
+        socials: {
+            instagram: 'https://instagram.com/arcticmonkeys',
+            youtube: 'https://youtube.com/arcticmonkeys',
+        },
+        location: 'Sheffield, UK',
+        joinDate: '2002',
+        is_verified: true,
+        monthly_listeners: 40400000,
+        type: 'group',
     },
     {
         id: 'artist-2',
         slug: 'metallica',
         name: 'Metallica',
-        avatar: 'https://i.scdn.co/image/ab6761610000e5eb8101d13bdd630b0889d93366',
-        bio: 'American heavy metal band.',
-        followersCount: 24500000,
-        isVerified: true,
-    }
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Metallica_at_The_O2_Arena_London_2008.jpg/800px-Metallica_at_The_O2_Arena_London_2008.jpg',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Metallica_at_The_O2_Arena_London_2008.jpg/800px-Metallica_at_The_O2_Arena_London_2008.jpg',
+        genre: 'Heavy Metal, Thrash Metal',
+        about: 'Metallica is an American heavy metal band. The band was formed in 1981 in Los Angeles by vocalist/guitarist James Hetfield and drummer Lars Ulrich, and has been based in San Francisco for most of its career.',
+        history: 'Metallica was formed in Los Angeles in 1981 when James Hetfield responded to an advertisement posted by Lars Ulrich. They became one of the Big Four of thrash metal alongside Anthrax, Megadeth, and Slayer.\n\nTheir "Black Album" (1991) remains one of the best-selling albums of all time. They have sold over 125 million records worldwide.',
+        members: [
+            { id: 'm-5', name: 'James Hetfield',  role: 'Vocals, Rhythm Guitar', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/James_Hetfield_2017.jpg/440px-James_Hetfield_2017.jpg' },
+            { id: 'm-6', name: 'Lars Ulrich',     role: 'Drums',                 imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Lars_Ulrich_2018.jpg/440px-Lars_Ulrich_2018.jpg' },
+            { id: 'm-7', name: 'Kirk Hammett',    role: 'Lead Guitar',           imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Kirk_Hammett_2009.jpg/440px-Kirk_Hammett_2009.jpg' },
+            { id: 'm-8', name: 'Robert Trujillo', role: 'Bass Guitar',           imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Robert_Trujillo_2010.jpg/440px-Robert_Trujillo_2010.jpg' },
+        ],
+        discography: [
+            { id: 'alb-8',  title: "Kill 'Em All",           year: 1983, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/6/63/Metallica_-_Kill_%27Em_All_cover.jpg' },
+            { id: 'alb-9',  title: 'Master of Puppets',       year: 1986, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg' },
+            { id: 'alb-10', title: 'Metallica (Black Album)',  year: 1991, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/f/f1/Metallica_-_Metallica_%281991%29.png' },
+            { id: 'alb-11', title: '72 Seasons',              year: 2023, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/7/7f/Metallica_-_72_Seasons.png' },
+        ],
+        socials: { instagram: 'https://instagram.com/metallica' },
+        location: 'San Francisco, USA',
+        joinDate: '1981',
+        is_verified: true,
+        monthly_listeners: 28100000,
+        type: 'group',
+    },
+    {
+        id: 'artist-3',
+        slug: 'chase-atlantic',
+        name: 'Chase Atlantic',
+        image: 'https://i.pravatar.cc/400?img=15',
+        image_url: 'https://i.pravatar.cc/400?img=15',
+        genre: 'Alternative Pop, Dark Pop, R&B',
+        about: 'Chase Atlantic is an Australian alternative pop band from Cairns, Queensland. The trio consists of brothers Mitchel Cave and Clinton Cave, and Christian Anthony.',
+        history: 'Founded in Cairns, Australia in 2014, Chase Atlantic built a following through social media and streaming platforms before signing with Fearless Records. Their self-titled debut (2017) introduced their signature dark, moody sound blending alternative rock with R&B and electronic elements.',
+        members: [
+            { id: 'm-9',  name: 'Mitchel Cave',      role: 'Vocals, Guitar',    imageUrl: 'https://i.pravatar.cc/150?img=12' },
+            { id: 'm-10', name: 'Clinton Cave',       role: 'Bass, Production',  imageUrl: 'https://i.pravatar.cc/150?img=13' },
+            { id: 'm-11', name: 'Christian Anthony',  role: 'Drums, Production', imageUrl: 'https://i.pravatar.cc/150?img=14' },
+        ],
+        discography: [
+            { id: 'alb-12', title: 'Chase Atlantic',  year: 2017, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg' },
+            { id: 'alb-13', title: 'Phases',          year: 2019, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/c/c3/Chase_Atlantic_-_Phases.jpg' },
+            { id: 'alb-14', title: 'Beauty in Death', year: 2021, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/6/6d/Chase_Atlantic_-_Beauty_in_Death.jpg' },
+        ],
+        socials: { instagram: 'https://instagram.com/chaseatlantic' },
+        location: 'Cairns, Australia',
+        joinDate: '2014',
+        is_verified: true,
+        monthly_listeners: 16900000,
+        type: 'group',
+    },
+    {
+        id: 'artist-4',
+        slug: 'gorillaz',
+        name: 'Gorillaz',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Gorillaz_-_Demon_Days_Live_-_20050523.jpg/800px-Gorillaz_-_Demon_Days_Live_-_20050523.jpg',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Gorillaz_-_Demon_Days_Live_-_20050523.jpg/800px-Gorillaz_-_Demon_Days_Live_-_20050523.jpg',
+        genre: 'Alternative Rock, Art Pop, Hip Hop',
+        about: 'Gorillaz are a British virtual band created in 1998 by Damon Albarn and Jamie Hewlett. The band consists of four animated members: 2-D (vocals, keyboards), Murdoc Niccals (bass guitar), Noodle (guitar, vocals), and Russel Hobbs (drums, percussion).',
+        history: 'Created as a fictional multimedia project, Gorillaz broke new ground by combining animation, music, and storytelling. Their self-titled debut (2001) and "Demon Days" (2005) are considered genre-defining albums.',
+        members: [],
+        discography: [
+            { id: 'alb-15', title: 'Gorillaz',                  year: 2001, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/b/b8/Gorillaz_-_Gorillaz.png' },
+            { id: 'alb-16', title: 'Demon Days',                year: 2005, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg' },
+            { id: 'alb-17', title: 'Plastic Beach',             year: 2010, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/7/7f/Gorillaz_-_Plastic_Beach.png' },
+            { id: 'alb-18', title: 'Song Machine, Season One',  year: 2020, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8f/Gorillaz_-_Song_Machine%2C_Season_One.png' },
+        ],
+        socials: { instagram: 'https://instagram.com/gorillaz' },
+        location: 'London, UK',
+        joinDate: '1998',
+        is_verified: true,
+        monthly_listeners: 25200000,
+        type: 'group',
+    },
 ];
+
+// ─── TRACKS ────────────────────────────────────────────────
+
+// Local files from /public/songs — served by Vite at /songs/...
+// Fallback to soundhelix for tracks without a local file
+const AUDIO = {
+    s505:      '/songs/505 - Arctic Monkeys.m4a',
+    sDoIWanna: '/songs/Arctic Monkeys - Do I Wanna Know.mp3',
+    sMaster:   '/songs/Metallica - Master Of Puppets.mp3',
+    sSwim:     '/songs/Chase Atlantic - Swim.mp3',
+    sFeelGood: '/songs/Gorillaz - Feel good inc. (Gachi mix) Right Version.mp3',
+    sRUMine:   'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+    sNothing:  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
+    sClint:    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+};
 
 export const mockTracks = [
     {
@@ -25,91 +139,364 @@ export const mockTracks = [
         slug: '505-arctic-monkeys',
         title: '505',
         artist: mockArtists[0],
-        cover: 'https://i.scdn.co/image/ab67616d0000b2734ae1c4c5c45aabe565499163',
-        audio: 'http://localhost:8000/media/audio/505.m4a', // Замініть на реальний тестовий файл
+        cover_url: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png',
+        audio_url: AUDIO.s505,
         duration: 253,
-        playsCount: 1205000,
-        isLiked: true,
+        duration_formatted: '4:13',
+        plays_count: 120500000,
+        is_liked: true,
+        lyrics: {
+            type: 'static',
+            content: "I'm going back to 505\nIf it's a seven hour flight or a forty five minute drive\nIn my imagination you're waiting, lying on your side\nWith your hands between your thighs\n\nStop and wait a sec\nOh, when you look at me like that, my darling\nWhat did you expect?\nI'd probably still adore you with your hands around my neck\nOr I did last time I checked\n\nNot shy of a spark\nA knife twists at the thought that I should fall short of the mark\nFrightened by the bite though it's no harsher than the bark\nMiddle of adventure, such a perfect place to start\n\nI'm going back to 505\nIf it's a seven hour flight or a forty five minute drive\nIn my imagination you're waiting, lying on your side\nWith your hands between your thighs and a smile",
+        },
     },
     {
         id: 'track-2',
+        slug: 'do-i-wanna-know',
+        title: 'Do I Wanna Know?',
+        artist: mockArtists[0],
+        cover_url: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png',
+        audio_url: AUDIO.sDoIWanna,
+        duration: 272,
+        duration_formatted: '4:32',
+        plays_count: 890000000,
+        is_liked: false,
+        lyrics: {
+            type: 'synced',
+            content: [
+                { time: 0,  text: "Have you got colour in your cheeks?" },
+                { time: 4,  text: "Do you ever get that fear that you can't shift" },
+                { time: 8,  text: "The type that sticks around like something in your teeth?" },
+                { time: 13, text: "Are there some aces up your sleeve?" },
+                { time: 17, text: "Have you no idea that you're in deep?" },
+                { time: 21, text: "I dreamt about you nearly every night this week" },
+                { time: 26, text: "How many secrets can you keep?" },
+                { time: 30, text: "'Cause there's this tune I found that makes me think of you somehow" },
+                { time: 35, text: "When I play it on repeat" },
+                { time: 38, text: "Until I fall asleep" },
+                { time: 41, text: "Spilling drinks on my settee" },
+                { time: 48, text: "Do I wanna know?" },
+                { time: 52, text: "If this feeling flows both ways?" },
+                { time: 56, text: "Sad to see you go" },
+                { time: 60, text: "Was sort of hoping that you'd stay" },
+                { time: 64, text: "Baby we both know" },
+                { time: 68, text: "That the nights were mainly made for saying things you can't take back" },
+            ],
+        },
+    },
+    {
+        id: 'track-3',
+        slug: 'master-of-puppets',
+        title: 'Master of Puppets',
+        artist: mockArtists[1],
+        cover_url: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg',
+        audio_url: AUDIO.sMaster,
+        duration: 514,
+        duration_formatted: '8:34',
+        plays_count: 650000000,
+        is_liked: true,
+        lyrics: {
+            type: 'static',
+            content: "End of passion play, crumbling away\nI'm your source of self-destruction\nVeins that pump with fear, sucking darkest clear\nLeading on your deaths' construction\n\nTaste me you will see\nMore is all you need\nYou're dedicated to\nHow I'm killing you\n\nCome crawling faster\nObey your master\nYour life burns faster\nObey your master\nMaster!\n\nMaster of puppets, I'm pulling your strings\nTwisting your mind and smashing your dreams\nBlinded by me, you can't see a thing\nJust call my name, 'cause I'll hear you scream\nMaster!",
+        },
+    },
+    {
+        id: 'track-4',
+        slug: 'swim',
+        title: 'Swim',
+        artist: mockArtists[2],
+        cover_url: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg',
+        audio_url: AUDIO.sSwim,
+        duration: 228,
+        duration_formatted: '3:48',
+        plays_count: 45000000,
+        is_liked: false,
+        lyrics: {
+            type: 'static',
+            content: "Looking back at where we came from\nBlack inside with the taste of rum\nA thousand miles down a two-way road\nUntil it runs out\n\nThrough the dark of the ocean\nI swim until there's nothing\nAnd I sink below the surface\nI sink below the surface with you\n\nWe were young, we were on fire\nTook the hit and watched it expire\nAnd I still don't know just what went wrong\nWith us, with us",
+        },
+    },
+    {
+        id: 'track-5',
+        slug: 'feel-good-inc',
+        title: 'Feel Good Inc.',
+        artist: mockArtists[3],
+        cover_url: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg',
+        audio_url: AUDIO.sFeelGood,
+        duration: 225,
+        duration_formatted: '3:45',
+        plays_count: 750000000,
+        is_liked: false,
+        lyrics: {
+            type: 'synced',
+            content: [
+                { time: 0,  text: "City's breaking down on a camel's back" },
+                { time: 4,  text: "They just have to go 'cause they don't know whack" },
+                { time: 8,  text: "So all you fill the streets it's appealing to see" },
+                { time: 13, text: "You won't get undercovered anymore" },
+                { time: 17, text: "A rollercoaster 'round the corner in the new ear" },
+                { time: 22, text: "Feel good!" },
+                { time: 30, text: "Windmill, windmill for the land" },
+                { time: 34, text: "Turn forever hand in hand" },
+                { time: 38, text: "Take it all in on your stride" },
+                { time: 42, text: "It is ticking, falling down" },
+                { time: 46, text: "Love forever, love has freely" },
+                { time: 50, text: "Turned forever, you and me" },
+            ],
+        },
+    },
+    {
+        id: 'track-6',
+        slug: 'r-u-mine',
+        title: 'R U Mine?',
+        artist: mockArtists[0],
+        cover_url: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png',
+        audio_url: AUDIO.sRUMine,
+        duration: 200,
+        duration_formatted: '3:20',
+        plays_count: 420000000,
+        is_liked: true,
+        lyrics: {
+            type: 'static',
+            content: "I'm a puppet on a string\nTracy Island, time travelling\nEverything is going wrong, but we're so happy\nI'm a puppet on a string\nI thought I was over you but I was lying\n\nAre you mine?\nAre you mine?",
+        },
+    },
+    {
+        id: 'track-7',
         slug: 'nothing-else-matters',
         title: 'Nothing Else Matters',
         artist: mockArtists[1],
-        cover: 'https://i.scdn.co/image/ab67616d0000b273e1641d401a581e285b01ce4d',
-        audio: 'http://localhost:8000/media/audio/nothing.m4a',
+        cover_url: 'https://upload.wikimedia.org/wikipedia/en/f/f1/Metallica_-_Metallica_%281991%29.png',
+        audio_url: AUDIO.sNothing,
         duration: 388,
-        playsCount: 3500000,
-        isLiked: false,
-    }
+        duration_formatted: '6:28',
+        plays_count: 1200000000,
+        is_liked: false,
+        lyrics: {
+            type: 'static',
+            content: "So close, no matter how far\nCouldn't be much more from the heart\nForever trusting who we are\nAnd nothing else matters\n\nNever opened myself this way\nLife is ours, we live it our way\nAll these words I don't just say\nAnd nothing else matters\n\nTrust I seek and I find in you\nEvery day for us something new\nOpen mind for a different view\nAnd nothing else matters",
+        },
+    },
+    {
+        id: 'track-8',
+        slug: 'clint-eastwood',
+        title: 'Clint Eastwood',
+        artist: mockArtists[3],
+        cover_url: 'https://upload.wikimedia.org/wikipedia/en/b/b8/Gorillaz_-_Gorillaz.png',
+        audio_url: AUDIO.sClint,
+        duration: 340,
+        duration_formatted: '5:40',
+        plays_count: 380000000,
+        is_liked: false,
+        lyrics: {
+            type: 'static',
+            content: "I ain't happy, I'm feeling glad\nI got sunshine in a bag\nI'm useless but not for long\nThe future is coming on\n\nFinally someone let me out of my cage\nNow, time for me is nothing 'cause I'm counting no age\nNow I couldn't be there\nNow you shouldn't be scared\nI'm good at repairs\nAnd I'm under each snare\nBetcha didn't think so I command you to\nPandemonium has been unleashed, a hundred percent and proof",
+        },
+    },
 ];
+
+// ─── USERS ─────────────────────────────────────────────────
 
 export const mockUsers = [
     {
-        id: 'user-1',
-        name: 'Саша Рояль',
-        username: 'sasuk',
-        avatarUrl: 'https://static-cdn.jtvnw.net/jtv_user_pictures/fa82070b-d5dc-4044-bf2b-cef510e3a3e9-profile_image-300x300.png',
-        bio: 'Слухаю рок та інді.',
-        isVerified: true,
-        isArtist: false,
-        followersCount: 15420,
-        followingCount: 234,
-        isFollowing: false
+        id: 'user-1', pk: 1,
+        username: 'alex_rocks', first_name: 'Alex', last_name: 'Mercer', name: 'Alex Mercer',
+        avatar: 'https://i.pravatar.cc/150?img=11',
+        bio: 'Music junkie 🎸 | Indie & Metal collector | Sheffield represent',
+        location: 'Sheffield, UK', website: 'https://alexmercer.dev',
+        is_verified: true, is_artist: false,
+        followers_count: 1542, following_count: 234, is_following: false,
+        managed_artists: [],
     },
     {
-        id: 'user-2',
-        name: 'Іван Амброзяк',
-        username: 'ivas',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/1?v=4',
-        bio: 'Software Engineer & Music Lover',
-        isVerified: false,
-        isArtist: false,
-        followersCount: 120,
-        followingCount: 50,
-        isFollowing: true
-    }
+        id: 'user-2', pk: 2,
+        username: 'katya_music', first_name: 'Katya', last_name: 'Voloshyn', name: 'Katya Voloshyn',
+        avatar: 'https://i.pravatar.cc/150?img=47',
+        bio: 'Finding beauty in every chord 🎹 | UA 🇺🇦',
+        location: 'Kyiv, Ukraine', website: null,
+        is_verified: false, is_artist: false,
+        followers_count: 320, following_count: 180, is_following: true,
+        managed_artists: [],
+    },
+    {
+        id: 'user-3', pk: 3,
+        username: 'metal_ivan', first_name: 'Ivan', last_name: 'Kovalchuk', name: 'Ivan Kovalchuk',
+        avatar: 'https://i.pravatar.cc/150?img=53',
+        bio: 'Thrash metal till I die 🤘 | 30 years of headbanging',
+        location: 'Lviv, Ukraine', website: 'https://metalzone.ua',
+        is_verified: false, is_artist: false,
+        followers_count: 887, following_count: 421, is_following: false,
+        managed_artists: [],
+    },
+    {
+        id: 'user-4', pk: 4,
+        username: 'orrin_demo', first_name: 'Demo', last_name: 'User', name: 'Demo User',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        bio: 'Testing Orrin 🎵 All genres welcome.',
+        location: 'Lviv, Ukraine', website: null,
+        is_verified: false, is_artist: false,
+        followers_count: 12, following_count: 44, is_following: false,
+        managed_artists: ['arctic-monkeys'],
+    },
 ];
+
+// ─── COMMENTS ──────────────────────────────────────────────
+
+const mockComments = [
+    {
+        id: 'comment-1',
+        author: { id: 'user-2', name: 'Katya Voloshyn', avatar: 'https://i.pravatar.cc/150?img=47' },
+        text: 'This track brings back so many memories from that summer roadtrip 🚗💨',
+        timestamp: '2h ago',
+        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        likes_count: 14,
+    },
+    {
+        id: 'comment-2',
+        author: { id: 'user-3', name: 'Ivan Kovalchuk', avatar: 'https://i.pravatar.cc/150?img=53' },
+        text: 'Arctic Monkeys just never miss. Alex Turner is a genius.',
+        timestamp: '5h ago',
+        created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+        likes_count: 8,
+    },
+    {
+        id: 'comment-3',
+        author: { id: 'user-1', name: 'Alex Mercer', avatar: 'https://i.pravatar.cc/150?img=11' },
+        text: 'The bass line in this is insane',
+        timestamp: '1d ago',
+        created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        likes_count: 22,
+    },
+];
+
+// ─── POSTS (FEED) ──────────────────────────────────────────
 
 export const mockPosts = [
     {
         id: 'post-1',
-        author: mockUsers[0],
-        text: 'життя дивна і не зрозуміла штука, але все таки це схоже на шанс',
-        attachedTrack: mockTracks[0],
-        timestamp: '2 год тому',
-        fullTimestamp: '10 листопада 2024, 14:30',
-        likesCount: 234,
-        commentsCount: 45,
-        repostsCount: 12,
-        isLiked: false,
-        comments: [
-            {
-                id: 'comment-1',
-                author: { name: 'пепсікола', avatarUrl: 'https://example.com/pepsi.jpg' },
-                text: 'ех 505',
-                timestamp: '1 год тому',
-                likesCount: 5
-            }
-        ]
-    }
-];
-
-export const mockNotifications = [
-    {
-        id: 'notif-1',
-        type: 'like',
-        user: mockUsers[0],
-        text: 'вподобав ваш допис',
-        isRead: false,
-        timestamp: '5 хв тому'
+        author: { id: 'user-1', name: 'Alex Mercer',    avatar: 'https://i.pravatar.cc/150?img=11', isVerified: true,  isArtist: false },
+        text: "Rediscovering 505 tonight and honestly it hits different at 2am. There's something about the line \"I'm going back to 505\" that feels like the entire concept of missing someone condensed into seven words. Alex Turner is just built different. 🎸",
+        attachedTrack: { trackId: '505-arctic-monkeys', title: '505', artist: 'Arctic Monkeys', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png' },
+        timestamp: '2h ago',
+        fullTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toLocaleString(),
+        likesCount: 234, commentsCount: 45, repostsCount: 12,
+        isLiked: false, isReposted: false, isSaved: false,
+        comments: mockComments,
     },
     {
-        id: 'notif-2',
-        type: 'follow',
-        user: mockUsers[1],
-        text: 'почав стежити за вами',
-        isRead: true,
-        timestamp: '1 день тому'
-    }
+        id: 'post-2',
+        author: { id: 'user-2', name: 'Katya Voloshyn', avatar: 'https://i.pravatar.cc/150?img=47', isVerified: false, isArtist: false },
+        text: "Just got tickets to see Chase Atlantic in Kyiv next month 😭🖤 Cannot believe they're actually coming here. \"Swim\" on the setlist would literally destroy me.",
+        attachedTrack: { trackId: 'swim', title: 'Swim', artist: 'Chase Atlantic', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg' },
+        timestamp: '4h ago',
+        fullTimestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toLocaleString(),
+        likesCount: 87, commentsCount: 18, repostsCount: 5,
+        isLiked: true, isReposted: false, isSaved: false,
+        comments: [mockComments[0]],
+    },
+    {
+        id: 'post-3',
+        author: { id: 'user-3', name: 'Ivan Kovalchuk', avatar: 'https://i.pravatar.cc/150?img=53', isVerified: false, isArtist: false },
+        text: "Unpopular opinion: Master of Puppets is actually the most emotionally complex thrash metal track ever written. People focus on the aggression but miss how vulnerable the bridge is — it's literally about addiction and loss of self. Hetfield was writing poetry and the world wasn't ready.\n\nAlso the guitar solo section is probably top 5 in all of rock history. Fight me.",
+        attachedTrack: { trackId: 'master-of-puppets', title: 'Master of Puppets', artist: 'Metallica', cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg' },
+        timestamp: '8h ago',
+        fullTimestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toLocaleString(),
+        likesCount: 412, commentsCount: 91, repostsCount: 67,
+        isLiked: false, isReposted: false, isSaved: true,
+        comments: mockComments,
+    },
+    {
+        id: 'post-4',
+        author: { id: 'user-1', name: 'Alex Mercer',    avatar: 'https://i.pravatar.cc/150?img=11', isVerified: true,  isArtist: false },
+        text: "The Gorillaz discography is genuinely one of the most creative bodies of work in modern music. From the self-titled to Song Machine — they just never stopped experimenting. Feel Good Inc. being almost 20 years old and still sounding futuristic is wild.",
+        attachedTrack: { trackId: 'feel-good-inc', title: 'Feel Good Inc.', artist: 'Gorillaz', cover: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg' },
+        timestamp: '12h ago',
+        fullTimestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toLocaleString(),
+        likesCount: 156, commentsCount: 23, repostsCount: 31,
+        isLiked: true, isReposted: true, isSaved: false,
+        comments: [mockComments[1], mockComments[2]],
+    },
+    {
+        id: 'post-5',
+        author: { id: 'user-2', name: 'Katya Voloshyn', avatar: 'https://i.pravatar.cc/150?img=47', isVerified: false, isArtist: false },
+        text: "Finally found my perfect studying playlist 📚🎵 Nothing beats post-punk revival when you need to focus. Do I Wanna Know? on loop for 3 hours straight.",
+        attachedTrack: null,
+        timestamp: '1d ago',
+        fullTimestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toLocaleString(),
+        likesCount: 44, commentsCount: 7, repostsCount: 2,
+        isLiked: false, isReposted: false, isSaved: false,
+        comments: [],
+    },
+    {
+        id: 'post-6',
+        author: { id: 'user-4', name: 'Demo User',      avatar: 'https://i.pravatar.cc/150?img=32', isVerified: false, isArtist: false },
+        text: "Testing Orrin from a fresh account — the player is SO smooth. Loving the vibe of this app so far 🎶",
+        attachedTrack: { trackId: 'do-i-wanna-know', title: 'Do I Wanna Know?', artist: 'Arctic Monkeys', cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png' },
+        timestamp: '2d ago',
+        fullTimestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toLocaleString(),
+        likesCount: 9, commentsCount: 1, repostsCount: 0,
+        isLiked: false, isReposted: false, isSaved: false,
+        comments: [],
+    },
+];
+
+// ─── NOTIFICATIONS ─────────────────────────────────────────
+
+export const mockNotifications = [
+    { id: 'notif-1', notification_type: 'like_post',    text: 'Katya Voloshyn liked your post about 505',               is_read: false, created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString() },
+    { id: 'notif-2', notification_type: 'follow',       text: 'Ivan Kovalchuk started following you',                    is_read: false, created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
+    { id: 'notif-3', notification_type: 'reply',        text: 'Alex Mercer commented: "The bass line in this is insane"', is_read: true,  created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString() },
+    { id: 'notif-4', notification_type: 'new_track',    text: 'Arctic Monkeys released a new track you might like',      is_read: true,  created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'notif-5', notification_type: 'like_comment', text: 'Demo User liked your comment',                            is_read: true,  created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+];
+
+// ─── FOLLOWERS ─────────────────────────────────────────────
+
+export const mockFollowers = [
+    { id: 'user-2', username: 'katya_music', first_name: 'Katya', avatar: 'https://i.pravatar.cc/150?img=47' },
+    { id: 'user-3', username: 'metal_ivan',  first_name: 'Ivan',  avatar: 'https://i.pravatar.cc/150?img=53' },
+    { id: 'user-4', username: 'orrin_demo',  first_name: 'Demo',  avatar: 'https://i.pravatar.cc/150?img=32' },
+];
+
+// ─── USER PROFILES ─────────────────────────────────────────
+
+export const mockUserProfiles = {
+    'alex_rocks':  { ...mockUsers[0], cover_photo: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80', followers_count: 1542, following_count: 234, is_following: false },
+    'katya_music': { ...mockUsers[1], cover_photo: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&q=80', followers_count: 320,  following_count: 180, is_following: true  },
+    'metal_ivan':  { ...mockUsers[2], cover_photo: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80', followers_count: 887,  following_count: 421, is_following: false },
+    'orrin_demo':  { ...mockUsers[3], cover_photo: null,                                                                        followers_count: 12,   following_count: 44,  is_following: false },
+};
+
+// ─── ARTIST NOTES ──────────────────────────────────────────
+
+export const mockArtistNotes = [
+    {
+        id: 'note-1',
+        author: 'Alex Mercer',
+        avatar: 'https://i.pravatar.cc/150?img=11',
+        text: '505 is criminally underrated as their best track. The way it builds is just perfect.',
+        type: 'public',
+        timestamp: '3 days ago',
+        trackContext: { trackId: '505-arctic-monkeys', title: '505' },
+        timecode: '2:10',
+    },
+    {
+        id: 'note-2',
+        author: 'You',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Remember to listen to this before the Sheffield show.',
+        type: 'private',
+        timestamp: '1 week ago',
+        trackContext: null,
+    },
+    {
+        id: 'note-3',
+        author: 'Katya Voloshyn',
+        avatar: 'https://i.pravatar.cc/150?img=47',
+        text: "Do I Wanna Know? intro riff is maybe the most recognizable in indie rock history.",
+        type: 'public',
+        timestamp: '2 weeks ago',
+        trackContext: { trackId: 'do-i-wanna-know', title: 'Do I Wanna Know?' },
+        timecode: '0:00',
+    },
 ];

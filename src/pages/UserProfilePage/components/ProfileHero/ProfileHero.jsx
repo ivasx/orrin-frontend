@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FaUserEdit, FaUserPlus, FaUserCheck } from 'react-icons/fa';
-import { toggleFollowUser } from '../../../../services/api/api.real.js';
+import { toggleFollowUser } from '../../../../services/api/index.js';
 import styles from './ProfileHero.module.css';
 
 export const ProfileHero = ({ profile, isOwnProfile }) => {
