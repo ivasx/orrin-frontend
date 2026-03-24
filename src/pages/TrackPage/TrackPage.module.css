@@ -1,0 +1,106 @@
+.page {
+    padding: 40px;
+    color: #fff;
+    min-height: 80vh;
+    box-sizing: border-box;
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+.infoSide {
+    flex: 0 0 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: sticky;
+    top: 100px;
+}
+
+.coverContainer {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: #fff;
+    word-wrap: break-word;
+}
+
+.artistRow {
+    font-size: 1.5rem;
+    color: #b3b3b3;
+    font-weight: 500;
+}
+
+.artistRow a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.artistRow a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.metaExtra {
+    color: #888;
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+.lyricsSide {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .contentWrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .infoSide {
+        flex: auto;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        position: static;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .lyricsSide {
+        width: 100%;
+    }
+}
