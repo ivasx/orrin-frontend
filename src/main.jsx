@@ -29,7 +29,7 @@ createRoot(document.getElementById('root')).render(
                         <App />
                     </I18nextProvider>
                 </Suspense>
-                <ReactQueryDevtools initialIsOpen={false} />
+                {/*<ReactQueryDevtools initialIsOpen={false} />*/}
             </QueryClientProvider>
         </AuthProvider>
     </StrictMode>,

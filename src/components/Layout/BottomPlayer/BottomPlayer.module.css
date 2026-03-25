@@ -1,26 +1,117 @@
-/* Main Container */
-.bottomPlayer {
+:root {
+    --player-height: 80px;             /* approximate rendered height of the bar */
+    --player-handle-height: 28px;      /* height of the floating collapse handle  */
+    --player-transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+ * Fixed to the bottom of the viewport at all times.
+ * Both the sliding panel AND the floating handle live inside this element so
+ * they share the same stacking context and z-index budget.
+ */
+.playerWrapper {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    /* Градієнт від базового чорного до основного фону */
+    z-index: var(--z-player);
+    /* Height equals the handle alone; the inner panel sits on top via
+       negative margin / absolute positioning trick is not needed because
+       the wrapper height grows naturally to contain the panel when visible. */
+    pointer-events: none; /* children opt-in individually */
+}
+
+.playerWrapper.hidden .bottomPlayer,
+.playerWrapper.hidden .floatingHandle {
+    display: none;
+}
+
+
+/*
+ * Always rendered; hidden via opacity + pointer-events when player is
+ * expanded so it doesn't overlap the player bar chrome.
+ * Uses transform for its own show/hide so nothing repaints layout.
+ */
+.floatingHandle {
+    position: absolute;
+    /* Sits just above the player bar. When the bar slides away the handle
+       lands exactly at the bottom edge of the screen. */
+    bottom: calc(100% - var(--player-handle-height));
+    right: 20px;
+    height: var(--player-handle-height);
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-bg-main, #1a1a1a);
+    border: 1px solid var(--color-border-main);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(var(--player-handle-height));
+    transition:
+            opacity var(--player-transition),
+            transform var(--player-transition),
+            color var(--transition-normal, 0.2s ease);
+    white-space: nowrap;
+    max-width: 220px;
+    overflow: hidden;
+}
+
+.floatingHandle:hover {
+    color: var(--color-text-main);
+}
+
+.floatingHandleVisible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.floatingTrackName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 140px;
+    color: var(--color-text-main);
+}
+
+.floatingIcon {
+    flex-shrink: 0;
+    transition: transform var(--player-transition);
+}
+
+.floatingIconUp  { transform: rotate(0deg);    }
+.floatingIconDown { transform: rotate(180deg); }
+
+.bottomPlayer {
+    position: relative;
     background: linear-gradient(135deg, var(--color-bg-base), var(--color-bg-main));
     color: var(--color-text-main);
     border-top: 1px solid var(--color-border-main);
-
     padding: 12px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-    z-index: var(--z-player);
-    transition: transform var(--transition-normal);
+    pointer-events: auto;
+    transform: translateY(0);
+    transition: transform var(--player-transition);
+    will-change: transform;
+}
+
+.playerCollapsed {
+    transform: translateY(100%);
+    pointer-events: none;
 }
 
 .hidden {
-    transform: translateY(100%);
-    pointer-events: none;
+    display: none;
 }
 
 .topProgressBar {
@@ -31,7 +122,7 @@
     background: var(--color-text-main);
     width: 0;
     pointer-events: none;
-    transition: width var(--transition-fast) linear;
+    transition: width var(--transition-fast, 0.1s) linear;
     z-index: 1;
 }
 
@@ -51,9 +142,28 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 15px;
+    gap: 10px;
     min-width: 240px;
     max-width: 240px;
+}
+
+.collapseBtn {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal, 0.2s ease);
+    flex-shrink: 0;
+}
+
+.collapseBtn:hover {
+    color: var(--color-text-main);
+    background: var(--color-bg-glass-light);
 }
 
 .optionBtn {
@@ -66,7 +176,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-normal);
+    transition: all var(--transition-normal, 0.2s ease);
 }
 
 .optionBtn:hover {
@@ -74,13 +184,27 @@
     background: var(--color-bg-glass-light);
 }
 
+
 @media (max-width: 768px) {
     .playerCenter {
         flex-shrink: 0;
         padding: 0 10px;
     }
+
     .playerRight {
         display: none;
+    }
+
+    /*
+     * On mobile the collapse toggle inside .playerRight is hidden along with
+     * it, so the floating handle is the only way to collapse/expand. Make it
+     * slightly larger for easier tap targets.
+     */
+    .floatingHandle {
+        height: 32px;
+        padding: 0 14px;
+        right: 16px;
+        font-size: 11px;
     }
 }
 
@@ -91,6 +215,7 @@
         padding: 10px 15px;
         height: auto;
     }
+
     .playerCenter {
         flex: none;
         width: auto;

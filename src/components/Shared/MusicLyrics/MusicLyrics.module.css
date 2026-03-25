@@ -7,28 +7,24 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+/*
+   Use a CSS custom property so TrackPage can override the height from its own
+   stylesheet without touching this file.
+   Default: 600px desktop → falls back gracefully on mobile via the media query
+   below.                                                                      */
 .containerSynced {
-    height: 600px;
+    height: var(--lyrics-container-height, 600px);
     overflow-y: auto;
     overflow-x: hidden;
+    /* Prevent the browser from propagating scroll events to the window when
+       the user reaches the top/bottom of the lyrics container.               */
+    overscroll-behavior: contain;
 }
 
-.containerSynced::-webkit-scrollbar {
-    width: 8px;
-}
-
-.containerSynced::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.containerSynced::-webkit-scrollbar-thumb {
-    background-color: #333;
-    border-radius: 4px;
-}
-
-.containerSynced::-webkit-scrollbar-thumb:hover {
-    background-color: #444;
-}
+.containerSynced::-webkit-scrollbar        { width: 8px; }
+.containerSynced::-webkit-scrollbar-track  { background: transparent; }
+.containerSynced::-webkit-scrollbar-thumb  { background-color: #333; border-radius: 4px; }
+.containerSynced::-webkit-scrollbar-thumb:hover { background-color: #444; }
 
 .lyricsText {
     color: #e0e0e0;
@@ -56,9 +52,7 @@
     line-height: 1.4;
 }
 
-.syncedLine:hover {
-    color: #bbb;
-}
+.syncedLine:hover { color: #bbb; }
 
 .syncedLine.active {
     color: #fff;
@@ -67,8 +61,10 @@
     transform-origin: left center;
 }
 
+/* Spacer: must be >= half the container height so the last lyric line can
+   reach the vertical centre when scrolled.                                   */
 .endSpacer {
-    height: 320px;
+    height: calc(var(--lyrics-container-height, 600px) / 2);
     flex-shrink: 0;
 }
 
@@ -87,27 +83,27 @@
 }
 
 @media (max-width: 1024px) {
-    .container {
-        padding: 30px;
-    }
+    .container { padding: 30px; }
 
     .containerSynced {
-        height: 500px;
+        --lyrics-container-height: 500px;
     }
 
     .lyricsText,
-    .syncedLine {
-        font-size: 24px;
-    }
+    .syncedLine { font-size: 24px; }
 }
 
 @media (max-width: 600px) {
-    .container {
-        padding: 20px;
-    }
+    .container { padding: 20px; }
 
+    /* On mobile the TrackPage stacks info + lyrics vertically and the lyrics
+       column is no longer beside a sticky panel.  Use viewport height so the
+       container always fills a predictable portion of the screen regardless
+       of how tall the device is.                                              */
     .containerSynced {
-        height: 400px;
+        --lyrics-container-height: 60vh;
+        /* Ensure a sensible minimum on very small screens */
+        min-height: 300px;
     }
 
     .lyricsText,

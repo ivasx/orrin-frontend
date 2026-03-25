@@ -15,6 +15,7 @@ export const PlayerUIProvider = ({ children }) => {
     const [showQueue, setShowQueue] = useState(false);
     const [showTrackInfo, setShowTrackInfo] = useState(false);
     const [showVolumeControl, setShowVolumeControl] = useState(false);
+    const [isPlayerCollapsed, setIsPlayerCollapsed] = useState(false);
 
     const expandPlayer = useCallback(() => setIsExpanded(true), []);
 
@@ -43,19 +44,40 @@ export const PlayerUIProvider = ({ children }) => {
         setShowTrackInfo(false);
     }, []);
 
+    /**
+     * Collapses the player bar out of view, leaving only the floating handle
+     * visible. Other layout consumers (e.g. page wrappers that add bottom
+     * padding) can read `isPlayerCollapsed` to adjust their own spacing.
+     */
+    const togglePlayerCollapsed = useCallback(
+        () => setIsPlayerCollapsed(prev => !prev),
+        [],
+    );
+
     const value = useMemo(() => ({
         isExpanded,
         showQueue,
         showTrackInfo,
         showVolumeControl,
+        isPlayerCollapsed,
         expandPlayer,
         collapsePlayer,
         toggleQueue,
         toggleTrackInfo,
         toggleVolumeControl,
+        togglePlayerCollapsed,
     }), [
-        isExpanded, showQueue, showTrackInfo, showVolumeControl,
-        expandPlayer, collapsePlayer, toggleQueue, toggleTrackInfo, toggleVolumeControl
+        isExpanded,
+        showQueue,
+        showTrackInfo,
+        showVolumeControl,
+        isPlayerCollapsed,
+        expandPlayer,
+        collapsePlayer,
+        toggleQueue,
+        toggleTrackInfo,
+        toggleVolumeControl,
+        togglePlayerCollapsed,
     ]);
 
     return (
