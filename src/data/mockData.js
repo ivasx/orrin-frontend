@@ -500,3 +500,117 @@ export const mockArtistNotes = [
         timecode: '0:00',
     },
 ];
+
+export const MOCK_COMMENTS = [
+    {
+        id: 'c-1',
+        author: 'Alex Mercer',
+        avatar: 'https://i.pravatar.cc/150?img=11',
+        text: 'The guitar work in this track is absolutely phenomenal. Every listen reveals a new layer.',
+        timestamp: '2 hours ago',
+        type: 'public',
+    },
+    {
+        id: 'c-2',
+        author: 'Katya Voloshyn',
+        avatar: 'https://i.pravatar.cc/150?img=47',
+        text: 'This song has been on repeat for three days straight. I cannot explain it.',
+        timestamp: '5 hours ago',
+        type: 'public',
+    },
+    {
+        id: 'c-3',
+        author: 'Ivan Kovalchuk',
+        avatar: 'https://i.pravatar.cc/150?img=53',
+        text: 'Saw them perform this live in Kyiv and it was a completely different experience. Heavier, rawer.',
+        timestamp: '1 day ago',
+        type: 'public',
+    },
+    {
+        id: 'c-4',
+        author: 'Demo User',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Perfect study track. The tempo just works for focused work.',
+        timestamp: '2 days ago',
+        type: 'public',
+    },
+];
+
+export const NOTES_RECOMMENDED = [
+    {
+        id: 'nr-1',
+        author: 'Orrin Editorial',
+        avatar: 'https://i.pravatar.cc/150?img=20',
+        text: 'The opening riff is deceptively simple — it reappears transformed in the bridge, a callback most listeners miss on the first pass.',
+        timestamp: '3 days ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+    },
+    {
+        id: 'nr-2',
+        author: 'Music Theorist',
+        avatar: 'https://i.pravatar.cc/150?img=25',
+        text: 'Notice the modal interchange at the 2:40 mark — the shift from the relative major pulls the emotional weight back down just before the final chorus.',
+        timestamp: '1 week ago',
+        type: 'public',
+        trackContext: null,
+        timecode: '2:40',
+    },
+    {
+        id: 'nr-3',
+        author: 'Studio Notes',
+        avatar: 'https://i.pravatar.cc/150?img=30',
+        text: 'This was reportedly recorded in a single live take with the full band in the room. The slight imperfections in timing are intentional — a choice to preserve the human feel.',
+        timestamp: '2 weeks ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+    },
+];
+
+export const NOTES_FROM_FRIENDS = [
+    {
+        id: 'nf-1',
+        author: 'Alex Mercer',
+        avatar: 'https://i.pravatar.cc/150?img=11',
+        text: 'Added this to our road trip playlist. The 3-hour drive felt like 20 minutes.',
+        timestamp: '4 days ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+    },
+    {
+        id: 'nf-2',
+        author: 'Katya Voloshyn',
+        avatar: 'https://i.pravatar.cc/150?img=47',
+        text: 'The verse melody reminds me so much of something from the late 90s — I can never place it exactly, and that drives me a little crazy.',
+        timestamp: '6 days ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+    },
+];
+
+export const NOTES_OWN = [
+    {
+        id: 'no-1',
+        author: 'You',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Check the drum pattern at the intro — learn this for the cover project.',
+        timestamp: '1 week ago',
+        type: 'private',
+        trackContext: null,
+        timecode: '0:08',
+    },
+    {
+        id: 'no-2',
+        author: 'You',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Play this before every important meeting. Works every time.',
+        timestamp: '3 weeks ago',
+        type: 'private',
+        trackContext: null,
+        timecode: null,
+    },
+];
