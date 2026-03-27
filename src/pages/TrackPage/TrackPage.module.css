@@ -1,24 +1,35 @@
 .page {
-    padding: 40px;
-    color: #fff;
+    padding: 48px 40px 120px;
+    color: var(--color-text-main);
     min-height: 80vh;
     box-sizing: border-box;
+}
+
+.loadingState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .contentWrapper {
     display: flex;
     flex-direction: row;
-    gap: 60px;
+    gap: 64px;
     max-width: 1400px;
     margin: 0 auto;
     align-items: flex-start;
 }
 
 .infoSide {
-    flex: 0 0 400px;
+    flex: 0 0 340px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 28px;
     position: sticky;
     top: 100px;
 }
@@ -26,81 +37,391 @@
 .coverContainer {
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    box-shadow:
+            0 4px 16px rgba(0, 0, 0, 0.4),
+            0 16px 48px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(255, 255, 255, 0.04);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.coverContainer:hover {
+    transform: translateY(-2px);
+    box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.5),
+            0 24px 64px rgba(0, 0, 0, 0.6),
+            0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .cover {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 .metadata {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .title {
-    font-size: 3rem;
+    font-size: 2.6rem;
     font-weight: 800;
     line-height: 1.1;
     margin: 0;
-    letter-spacing: -0.02em;
-    color: #fff;
+    letter-spacing: -0.03em;
+    color: var(--color-text-main);
     word-wrap: break-word;
 }
 
 .artistRow {
-    font-size: 1.5rem;
-    color: #b3b3b3;
+    font-size: 1.15rem;
+    color: var(--color-text-secondary);
     font-weight: 500;
+    letter-spacing: -0.01em;
 }
 
 .artistRow a {
     color: inherit;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.2s ease;
+    border-bottom: 1px solid transparent;
 }
 
 .artistRow a:hover {
-    color: #fff;
-    text-decoration: underline;
+    color: var(--color-text-main);
+    border-bottom-color: var(--color-primary);
 }
 
 .metaExtra {
-    color: #888;
-    font-size: 1rem;
-    margin-top: 5px;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
 }
 
-.lyricsSide {
+.contentSide {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.tabContent {
+    padding-top: 4px;
+    animation: fadeSlideIn 0.22s ease both;
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.tabNav {
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    border-bottom: 1px solid var(--color-border-main);
+    margin-bottom: 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0;
+}
+
+.tabNav::-webkit-scrollbar {
+    display: none;
+}
+
+.tabButton {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 16px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    border-radius: 6px 6px 0 0;
+}
+
+.tabButton:hover {
+    color: var(--color-text-secondary);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tabButton[aria-selected="true"],
+.tabButtonActive {
+    color: var(--color-text-main);
+    border-bottom-color: var(--color-primary);
+}
+
+.tabCount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tabButtonActive .tabCount {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.subTabNav {
+    border-bottom: none;
+    margin-bottom: 20px;
+    gap: 4px;
+    padding: 4px;
+    background: var(--color-surface-1);
+    border-radius: 10px;
+    display: inline-flex;
+    width: auto;
+}
+
+.subTabNav .tabButton {
+    border-bottom: none;
+    border-radius: 7px;
+    margin-bottom: 0;
+    padding: 7px 14px;
+    font-size: 0.77rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    transition: color 0.18s ease, background 0.18s ease;
+}
+
+.subTabNav .tabButton:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-secondary);
+}
+
+.subTabNav .tabButtonActive {
+    background: var(--color-surface-3);
+    color: var(--color-text-main);
+    border-bottom: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.commentsPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.commentItem {
+    display: flex;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--color-border-main);
+    transition: background 0.15s ease;
+    border-radius: 4px;
+    padding-inline: 10px;
+    margin-inline: -10px;
+}
+
+.commentItem:first-child {
+    padding-top: 4px;
+}
+
+.commentItem:last-child {
+    border-bottom: none;
+}
+
+.commentItem:hover {
+    background: var(--color-bg-glass-subtle);
+}
+
+.commentAvatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px var(--color-border-main);
+    margin-top: 2px;
+}
+
+.commentBody {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     flex: 1;
     min-width: 0;
 }
 
-@media (max-width: 900px) {
+.commentMeta {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.commentAuthor {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    letter-spacing: -0.01em;
+}
+
+.commentTimestamp {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.commentText {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
+.notesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+}
+
+/**
+ * Hover lift applied to NoteCard's root element via a wrapper trick —
+ * since NoteCard owns its own .note-card class we apply transition here
+ * by targeting children directly.
+ */
+.notesGrid > * {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 10px;
+}
+
+.notesGrid > *:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.placeholderPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+    min-height: 280px;
+    padding: 48px 32px;
+    border: 1px dashed var(--color-border-main);
+    border-radius: 16px;
+    background:
+            radial-gradient(ellipse at 50% 0%, rgba(175, 148, 126, 0.04) 0%, transparent 60%);
+}
+
+.placeholderIcon {
+    color: var(--color-primary);
+    opacity: 0.45;
+    display: block;
+    flex-shrink: 0;
+}
+
+.placeholderTitle {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    letter-spacing: -0.01em;
+}
+
+.placeholderSubtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    max-width: 320px;
+}
+
+
+@media (max-width: 1100px) {
     .contentWrapper {
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
+        gap: 40px;
     }
 
     .infoSide {
-        flex: auto;
+        flex: 0 0 280px;
+    }
+}
+
+@media (max-width: 860px) {
+    .page {
+        padding: 28px 20px 100px;
+    }
+
+    .contentWrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .infoSide {
+        flex: none;
         width: 100%;
         max-width: 400px;
         text-align: center;
         position: static;
     }
 
+    .artistRow a,
+    .artistRow span {
+        display: inline-block;
+    }
+
     .title {
         font-size: 2rem;
     }
 
-    .lyricsSide {
+    .contentSide {
         width: 100%;
+    }
+
+    .notesGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .subTabNav {
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .subTabNav::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .tabButton {
+        padding: 9px 12px 11px;
+        font-size: 0.75rem;
+    }
+
+    .title {
+        font-size: 1.7rem;
     }
 }

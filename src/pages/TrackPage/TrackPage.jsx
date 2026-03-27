@@ -9,17 +9,36 @@ import { normalizeTrackData } from '../../constants/fallbacks.js';
 import { useAudioCore } from '../../context/AudioCoreContext.jsx';
 
 import MusicLyrics from '../../components/Shared/MusicLyrics/MusicLyrics.jsx';
-import NoteCard from '../../components/Shared/NoteCard/NoteCard.jsx';
-import QueueList from '../../components/Shared/QueueList/QueueList.jsx';
-import InlineError from '../../components/Shared/InlineError/InlineError.jsx';
+import QueueList    from '../../components/Shared/QueueList/QueueList.jsx';
+import InlineError  from '../../components/Shared/InlineError/InlineError.jsx';
+import CommentsTab  from './tabs/CommentsTab/CommentsTab.jsx';
+import NotesTab     from './tabs/NotesTab/NotesTab.jsx';
 
-import { MOCK_COMMENTS, NOTES_RECOMMENDED, NOTES_FROM_FRIENDS, NOTES_OWN } from '../../data/mockData.js';
+import {
+    MOCK_COMMENTS,
+    NOTES_RECOMMENDED,
+    NOTES_FROM_FRIENDS,
+    NOTES_OWN,
+} from '../../data/mockData.js';
 import styles from './TrackPage.module.css';
 
+// Tab Navigation
+
+/**
+ * @param {Object}    props
+ * @param {Array}     props.tabs
+ * @param {string}    props.activeTab
+ * @param {Function}  props.onTabChange
+ * @param {string}    [props.className]
+ */
 function TabNav({ tabs, activeTab, onTabChange, className = '' }) {
     return (
-        <nav className={`${styles.tabNav} ${className}`} aria-label="Track content navigation">
-            {tabs.map((tab) => (
+        <nav
+            className={`${styles.tabNav} ${className}`}
+            aria-label="Track content navigation"
+            role="tablist"
+        >
+            {tabs.map(tab => (
                 <button
                     key={tab.id}
                     className={`${styles.tabButton} ${activeTab === tab.id ? styles.tabButtonActive : ''}`}
@@ -38,62 +57,20 @@ function TabNav({ tabs, activeTab, onTabChange, className = '' }) {
     );
 }
 
-function CommentsPanel({ comments }) {
-    return (
-        <div className={styles.commentsPanel}>
-            {comments.map((comment) => (
-                <div key={comment.id} className={styles.commentItem}>
-                    <img
-                        src={comment.avatar}
-                        alt={comment.author}
-                        className={styles.commentAvatar}
-                    />
-                    <div className={styles.commentBody}>
-                        <div className={styles.commentMeta}>
-                            <span className={styles.commentAuthor}>{comment.author}</span>
-                            <span className={styles.commentTimestamp}>{comment.timestamp}</span>
-                        </div>
-                        <p className={styles.commentText}>{comment.text}</p>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
+// History Placeholder
 
 function HistoryPanel() {
     const { t } = useTranslation();
-
     return (
         <div className={styles.placeholderPanel}>
             <Clock size={40} className={styles.placeholderIcon} aria-hidden="true" />
             <p className={styles.placeholderTitle}>{t('history_placeholder_title')}</p>
-            <p className={styles.placeholderSubtitle}>
-                {t('history_placeholder_subtitle')}
-            </p>
+            <p className={styles.placeholderSubtitle}>{t('history_placeholder_subtitle')}</p>
         </div>
     );
 }
 
-function NotesPanel({ notes, emptyMessageKey }) {
-    const { t } = useTranslation();
-
-    if (notes.length === 0) {
-        return (
-            <div className={styles.placeholderPanel}>
-                <p className={styles.placeholderSubtitle}>{t(emptyMessageKey)}</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className={styles.notesGrid}>
-            {notes.map((note) => (
-                <NoteCard key={note.id} note={note} />
-            ))}
-        </div>
-    );
-}
+// Tab config
 
 const PRIMARY_TAB_CONFIG = [
     { id: 'lyrics',   translationKey: 'tabs_lyrics' },
@@ -103,31 +80,20 @@ const PRIMARY_TAB_CONFIG = [
     { id: 'queue',    translationKey: 'tabs_queue' },
 ];
 
-const NOTE_TAB_CONFIG = [
-    { id: 'recommended', translationKey: 'notes_recommended' },
-    { id: 'friends',     translationKey: 'notes_friends' },
-    { id: 'own',         translationKey: 'notes_own' },
-];
-
-const NOTE_DATA = {
+/** Pre-grouped notes by sub-tab id — passed as initial state to NotesTab. */
+const INITIAL_NOTES = {
     recommended: NOTES_RECOMMENDED,
     friends:     NOTES_FROM_FRIENDS,
     own:         NOTES_OWN,
 };
 
-const NOTE_EMPTY_MESSAGES = {
-    recommended: 'notes_empty_recommended',
-    friends:     'notes_empty_friends',
-    own:         'notes_empty_own',
-};
 
 export default function TrackPage() {
     const { trackId } = useParams();
     const { t } = useTranslation();
     const { seek, playTrack, currentTrack, audioRef } = useAudioCore();
 
-    const [activeTab,     setActiveTab]     = useState('lyrics');
-    const [activeNoteTab, setActiveNoteTab] = useState('recommended');
+    const [activeTab, setActiveTab] = useState('lyrics');
 
     const { data: rawTrack, isLoading, isError, error } = useQuery({
         queryKey: ['track', trackId],
@@ -149,7 +115,6 @@ export default function TrackPage() {
 
     const handleLineClick = useCallback((time) => {
         if (!track) return;
-
         if (currentTrack?.trackId !== track.trackId) {
             playTrack(track);
             const audio = audioRef.current;
@@ -165,14 +130,9 @@ export default function TrackPage() {
     }, [seek, playTrack, track, currentTrack, audioRef]);
 
     const primaryTabs = useMemo(() => PRIMARY_TAB_CONFIG.map(tab => ({
-        id: tab.id,
+        id:    tab.id,
         label: t(tab.translationKey),
-        ...(tab.hasCount ? { count: MOCK_COMMENTS.length } : {})
-    })), [t]);
-
-    const noteTabs = useMemo(() => NOTE_TAB_CONFIG.map(tab => ({
-        id: tab.id,
-        label: t(tab.translationKey)
+        ...(tab.hasCount ? { count: MOCK_COMMENTS.length } : {}),
     })), [t]);
 
     if (isLoading) {
@@ -207,32 +167,14 @@ export default function TrackPage() {
                         onLineClick={handleLineClick}
                     />
                 );
-
             case 'comments':
-                return <CommentsPanel comments={MOCK_COMMENTS} />;
-
+                return <CommentsTab initialComments={MOCK_COMMENTS} />;
             case 'history':
                 return <HistoryPanel />;
-
             case 'notes':
-                return (
-                    <>
-                        <TabNav
-                            tabs={noteTabs}
-                            activeTab={activeNoteTab}
-                            onTabChange={setActiveNoteTab}
-                            className={styles.subTabNav}
-                        />
-                        <NotesPanel
-                            notes={NOTE_DATA[activeNoteTab]}
-                            emptyMessageKey={NOTE_EMPTY_MESSAGES[activeNoteTab]}
-                        />
-                    </>
-                );
-
+                return <NotesTab initialNotes={INITIAL_NOTES} />;
             case 'queue':
                 return <QueueList />;
-
             default:
                 return null;
         }
@@ -255,9 +197,7 @@ export default function TrackPage() {
 
                         <div className={styles.artistRow}>
                             {track.artistSlug ? (
-                                <Link to={`/artist/${track.artistSlug}`}>
-                                    {track.artist}
-                                </Link>
+                                <Link to={`/artist/${track.artistSlug}`}>{track.artist}</Link>
                             ) : (
                                 <span>{track.artist}</span>
                             )}

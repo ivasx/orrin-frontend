@@ -120,8 +120,6 @@ export const mockArtists = [
 
 // ─── TRACKS ────────────────────────────────────────────────
 
-// Local files from /public/songs — served by Vite at /songs/...
-// Fallback to soundhelix for tracks without a local file
 const AUDIO = {
     s505:      '/songs/505 - Arctic Monkeys.m4a',
     sDoIWanna: '/songs/Arctic Monkeys - Do I Wanna Know.mp3',
@@ -302,7 +300,7 @@ export const mockUsers = [
         id: 'user-1', pk: 1,
         username: 'alex_rocks', first_name: 'Alex', last_name: 'Mercer', name: 'Alex Mercer',
         avatar: 'https://i.pravatar.cc/150?img=11',
-        bio: 'Music junkie 🎸 | Indie & Metal collector | Sheffield represent',
+        bio: 'Music junkie | Indie & Metal collector | Sheffield represent',
         location: 'Sheffield, UK', website: 'https://alexmercer.dev',
         is_verified: true, is_artist: false,
         followers_count: 1542, following_count: 234, is_following: false,
@@ -312,7 +310,7 @@ export const mockUsers = [
         id: 'user-2', pk: 2,
         username: 'katya_music', first_name: 'Katya', last_name: 'Voloshyn', name: 'Katya Voloshyn',
         avatar: 'https://i.pravatar.cc/150?img=47',
-        bio: 'Finding beauty in every chord 🎹 | UA 🇺🇦',
+        bio: 'Finding beauty in every chord | UA',
         location: 'Kyiv, Ukraine', website: null,
         is_verified: false, is_artist: false,
         followers_count: 320, following_count: 180, is_following: true,
@@ -322,7 +320,7 @@ export const mockUsers = [
         id: 'user-3', pk: 3,
         username: 'metal_ivan', first_name: 'Ivan', last_name: 'Kovalchuk', name: 'Ivan Kovalchuk',
         avatar: 'https://i.pravatar.cc/150?img=53',
-        bio: 'Thrash metal till I die 🤘 | 30 years of headbanging',
+        bio: 'Thrash metal till I die | 30 years of headbanging',
         location: 'Lviv, Ukraine', website: 'https://metalzone.ua',
         is_verified: false, is_artist: false,
         followers_count: 887, following_count: 421, is_following: false,
@@ -332,7 +330,7 @@ export const mockUsers = [
         id: 'user-4', pk: 4,
         username: 'orrin_demo', first_name: 'Demo', last_name: 'User', name: 'Demo User',
         avatar: 'https://i.pravatar.cc/150?img=32',
-        bio: 'Testing Orrin 🎵 All genres welcome.',
+        bio: 'Testing Orrin. All genres welcome.',
         location: 'Lviv, Ukraine', website: null,
         is_verified: false, is_artist: false,
         followers_count: 12, following_count: 44, is_following: false,
@@ -342,11 +340,274 @@ export const mockUsers = [
 
 // ─── COMMENTS ──────────────────────────────────────────────
 
-const mockComments = [
+/**
+ * @typedef {Object} Comment
+ * @property {string}  id
+ * @property {string}  authorId        - References mockUsers[n].id
+ * @property {string}  authorUsername  - For profile link routing
+ * @property {string}  author          - Display name
+ * @property {string}  avatar
+ * @property {string}  text
+ * @property {string}  timestamp       - Human-readable relative time
+ * @property {string}  type
+ * @property {number}  likesCount
+ * @property {boolean} isLikedByMe     - Pre-seeded like state for the demo user
+ */
+
+export const MOCK_COMMENTS = [
+    {
+        id: 'c-1',
+        authorId: 'user-1',
+        authorUsername: 'alex_rocks',
+        author: 'Alex Mercer',
+        avatar: 'https://i.pravatar.cc/150?img=11',
+        text: 'The guitar work in this track is absolutely phenomenal. Every listen reveals a new layer.',
+        timestamp: '2 hours ago',
+        type: 'public',
+        likesCount: 14,
+        isLikedByMe: true,
+    },
+    {
+        id: 'c-2',
+        authorId: 'user-2',
+        authorUsername: 'katya_music',
+        author: 'Katya Voloshyn',
+        avatar: 'https://i.pravatar.cc/150?img=47',
+        text: 'This song has been on repeat for three days straight. I cannot explain it.',
+        timestamp: '5 hours ago',
+        type: 'public',
+        likesCount: 8,
+        isLikedByMe: false,
+    },
+    {
+        id: 'c-3',
+        authorId: 'user-3',
+        authorUsername: 'metal_ivan',
+        author: 'Ivan Kovalchuk',
+        avatar: 'https://i.pravatar.cc/150?img=53',
+        text: 'Saw them perform this live in Kyiv and it was a completely different experience. Heavier, rawer.',
+        timestamp: '1 day ago',
+        type: 'public',
+        likesCount: 22,
+        isLikedByMe: false,
+    },
+    {
+        id: 'c-4',
+        /** Same as demo logged-in user — triggers Edit/Delete menu in UI */
+        authorId: 'user-4',
+        authorUsername: 'orrin_demo',
+        author: 'Demo User',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Perfect study track. The tempo just works for focused work.',
+        timestamp: '2 days ago',
+        type: 'public',
+        likesCount: 3,
+        isLikedByMe: false,
+    },
+];
+
+// ─── NOTES ─────────────────────────────────────────────────
+
+/**
+ * @typedef {Object} Note
+ * @property {string}       id
+ * @property {string}       authorId
+ * @property {string}       authorUsername
+ * @property {string}       author
+ * @property {string}       avatar
+ * @property {string}       text
+ * @property {string}       type             - 'public' | 'private'
+ * @property {string}       timestamp
+ * @property {Object|null}  trackContext
+ * @property {string|null}  timecode
+ * @property {number}       likesCount
+ * @property {boolean}      isLikedByMe
+ * @property {Object|null}  lyricsLineReference - Attached lyrics line quote
+ * @property {string}       lyricsLineReference.text
+ * @property {number|null}  lyricsLineReference.time  - Seconds into track
+ */
+
+export const NOTES_RECOMMENDED = [
+    {
+        id: 'nr-1',
+        authorId: 'user-editorial',
+        authorUsername: 'orrin_editorial',
+        author: 'Orrin Editorial',
+        avatar: 'https://i.pravatar.cc/150?img=20',
+        text: 'The opening riff is deceptively simple — it reappears transformed in the bridge, a callback most listeners miss on the first pass.',
+        timestamp: '3 days ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+        likesCount: 41,
+        isLikedByMe: false,
+        lyricsLineReference: null,
+    },
+    {
+        id: 'nr-2',
+        authorId: 'user-theory',
+        authorUsername: 'music_theorist',
+        author: 'Music Theorist',
+        avatar: 'https://i.pravatar.cc/150?img=25',
+        text: 'Notice the modal interchange at the 2:40 mark — the shift from the relative major pulls the emotional weight back down just before the final chorus.',
+        timestamp: '1 week ago',
+        type: 'public',
+        trackContext: null,
+        timecode: '2:40',
+        likesCount: 29,
+        isLikedByMe: true,
+        lyricsLineReference: {
+            text: "Not shy of a spark",
+            time: null,
+        },
+    },
+    {
+        id: 'nr-3',
+        authorId: 'user-studio',
+        authorUsername: 'studio_notes',
+        author: 'Studio Notes',
+        avatar: 'https://i.pravatar.cc/150?img=30',
+        text: 'Reportedly recorded in a single live take with the full band in the room. The slight imperfections in timing are intentional — a choice to preserve the human feel.',
+        timestamp: '2 weeks ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+        likesCount: 67,
+        isLikedByMe: false,
+        lyricsLineReference: null,
+    },
+];
+
+export const NOTES_FROM_FRIENDS = [
+    {
+        id: 'nf-1',
+        authorId: 'user-1',
+        authorUsername: 'alex_rocks',
+        author: 'Alex Mercer',
+        avatar: 'https://i.pravatar.cc/150?img=11',
+        text: 'Added this to our road trip playlist. The 3-hour drive felt like 20 minutes.',
+        timestamp: '4 days ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+        likesCount: 5,
+        isLikedByMe: false,
+        lyricsLineReference: null,
+    },
+    {
+        id: 'nf-2',
+        authorId: 'user-2',
+        authorUsername: 'katya_music',
+        author: 'Katya Voloshyn',
+        avatar: 'https://i.pravatar.cc/150?img=47',
+        text: 'The verse melody reminds me of something from the late 90s — I can never place it exactly, and that drives me a little crazy.',
+        timestamp: '6 days ago',
+        type: 'public',
+        trackContext: null,
+        timecode: null,
+        likesCount: 12,
+        isLikedByMe: true,
+        lyricsLineReference: {
+            text: "I'm going back to 505",
+            time: 0,
+        },
+    },
+];
+
+export const NOTES_OWN = [
+    {
+        id: 'no-1',
+        /** Matches demo logged-in user — triggers Edit/Delete menu */
+        authorId: 'user-4',
+        authorUsername: 'orrin_demo',
+        author: 'You',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Check the drum pattern at the intro — learn this for the cover project.',
+        timestamp: '1 week ago',
+        type: 'private',
+        trackContext: null,
+        timecode: '0:08',
+        likesCount: 0,
+        isLikedByMe: false,
+        lyricsLineReference: {
+            text: "Stop and wait a sec",
+            time: null,
+        },
+    },
+    {
+        id: 'no-2',
+        authorId: 'user-4',
+        authorUsername: 'orrin_demo',
+        author: 'You',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Play this before every important meeting. Works every time.',
+        timestamp: '3 weeks ago',
+        type: 'private',
+        trackContext: null,
+        timecode: null,
+        likesCount: 0,
+        isLikedByMe: false,
+        lyricsLineReference: null,
+    },
+];
+
+// ─── ARTIST NOTES (legacy — used on ArtistPage) ────────────
+
+export const mockArtistNotes = [
+    {
+        id: 'note-1',
+        authorId: 'user-1',
+        authorUsername: 'alex_rocks',
+        author: 'Alex Mercer',
+        avatar: 'https://i.pravatar.cc/150?img=11',
+        text: '505 is criminally underrated as their best track. The way it builds is just perfect.',
+        type: 'public',
+        timestamp: '3 days ago',
+        trackContext: { trackId: '505-arctic-monkeys', title: '505' },
+        timecode: '2:10',
+        likesCount: 18,
+        isLikedByMe: false,
+        lyricsLineReference: null,
+    },
+    {
+        id: 'note-2',
+        authorId: 'user-4',
+        authorUsername: 'orrin_demo',
+        author: 'You',
+        avatar: 'https://i.pravatar.cc/150?img=32',
+        text: 'Remember to listen to this before the Sheffield show.',
+        type: 'private',
+        timestamp: '1 week ago',
+        trackContext: null,
+        timecode: null,
+        likesCount: 0,
+        isLikedByMe: false,
+        lyricsLineReference: null,
+    },
+    {
+        id: 'note-3',
+        authorId: 'user-2',
+        authorUsername: 'katya_music',
+        author: 'Katya Voloshyn',
+        avatar: 'https://i.pravatar.cc/150?img=47',
+        text: "Do I Wanna Know? intro riff is maybe the most recognizable in indie rock history.",
+        type: 'public',
+        timestamp: '2 weeks ago',
+        trackContext: { trackId: 'do-i-wanna-know', title: 'Do I Wanna Know?' },
+        timecode: '0:00',
+        likesCount: 33,
+        isLikedByMe: true,
+        lyricsLineReference: null,
+    },
+];
+
+// ─── POSTS (FEED) ──────────────────────────────────────────
+
+const mockCommentsFeed = [
     {
         id: 'comment-1',
         author: { id: 'user-2', name: 'Katya Voloshyn', avatar: 'https://i.pravatar.cc/150?img=47' },
-        text: 'This track brings back so many memories from that summer roadtrip 🚗💨',
+        text: 'This track brings back so many memories from that summer roadtrip',
         timestamp: '2h ago',
         created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         likes_count: 14,
@@ -369,30 +630,28 @@ const mockComments = [
     },
 ];
 
-// ─── POSTS (FEED) ──────────────────────────────────────────
-
 export const mockPosts = [
     {
         id: 'post-1',
         author: { id: 'user-1', name: 'Alex Mercer',    avatar: 'https://i.pravatar.cc/150?img=11', isVerified: true,  isArtist: false },
-        text: "Rediscovering 505 tonight and honestly it hits different at 2am. There's something about the line \"I'm going back to 505\" that feels like the entire concept of missing someone condensed into seven words. Alex Turner is just built different. 🎸",
+        text: "Rediscovering 505 tonight and honestly it hits different at 2am. There's something about the line \"I'm going back to 505\" that feels like the entire concept of missing someone condensed into seven words. Alex Turner is just built different.",
         attachedTrack: { trackId: '505-arctic-monkeys', title: '505', artist: 'Arctic Monkeys', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png' },
         timestamp: '2h ago',
         fullTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toLocaleString(),
         likesCount: 234, commentsCount: 45, repostsCount: 12,
         isLiked: false, isReposted: false, isSaved: false,
-        comments: mockComments,
+        comments: mockCommentsFeed,
     },
     {
         id: 'post-2',
         author: { id: 'user-2', name: 'Katya Voloshyn', avatar: 'https://i.pravatar.cc/150?img=47', isVerified: false, isArtist: false },
-        text: "Just got tickets to see Chase Atlantic in Kyiv next month 😭🖤 Cannot believe they're actually coming here. \"Swim\" on the setlist would literally destroy me.",
+        text: "Just got tickets to see Chase Atlantic in Kyiv next month. Cannot believe they're actually coming here. \"Swim\" on the setlist would literally destroy me.",
         attachedTrack: { trackId: 'swim', title: 'Swim', artist: 'Chase Atlantic', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg' },
         timestamp: '4h ago',
         fullTimestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toLocaleString(),
         likesCount: 87, commentsCount: 18, repostsCount: 5,
         isLiked: true, isReposted: false, isSaved: false,
-        comments: [mockComments[0]],
+        comments: [mockCommentsFeed[0]],
     },
     {
         id: 'post-3',
@@ -403,7 +662,7 @@ export const mockPosts = [
         fullTimestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toLocaleString(),
         likesCount: 412, commentsCount: 91, repostsCount: 67,
         isLiked: false, isReposted: false, isSaved: true,
-        comments: mockComments,
+        comments: mockCommentsFeed,
     },
     {
         id: 'post-4',
@@ -414,12 +673,12 @@ export const mockPosts = [
         fullTimestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toLocaleString(),
         likesCount: 156, commentsCount: 23, repostsCount: 31,
         isLiked: true, isReposted: true, isSaved: false,
-        comments: [mockComments[1], mockComments[2]],
+        comments: [mockCommentsFeed[1], mockCommentsFeed[2]],
     },
     {
         id: 'post-5',
         author: { id: 'user-2', name: 'Katya Voloshyn', avatar: 'https://i.pravatar.cc/150?img=47', isVerified: false, isArtist: false },
-        text: "Finally found my perfect studying playlist 📚🎵 Nothing beats post-punk revival when you need to focus. Do I Wanna Know? on loop for 3 hours straight.",
+        text: "Finally found my perfect studying playlist. Nothing beats post-punk revival when you need to focus. Do I Wanna Know? on loop for 3 hours straight.",
         attachedTrack: null,
         timestamp: '1d ago',
         fullTimestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toLocaleString(),
@@ -430,7 +689,7 @@ export const mockPosts = [
     {
         id: 'post-6',
         author: { id: 'user-4', name: 'Demo User',      avatar: 'https://i.pravatar.cc/150?img=32', isVerified: false, isArtist: false },
-        text: "Testing Orrin from a fresh account — the player is SO smooth. Loving the vibe of this app so far 🎶",
+        text: "Testing Orrin from a fresh account — the player is SO smooth. Loving the vibe of this app so far.",
         attachedTrack: { trackId: 'do-i-wanna-know', title: 'Do I Wanna Know?', artist: 'Arctic Monkeys', cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png' },
         timestamp: '2d ago',
         fullTimestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toLocaleString(),
@@ -466,151 +725,3 @@ export const mockUserProfiles = {
     'metal_ivan':  { ...mockUsers[2], cover_photo: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80', followers_count: 887,  following_count: 421, is_following: false },
     'orrin_demo':  { ...mockUsers[3], cover_photo: null,                                                                        followers_count: 12,   following_count: 44,  is_following: false },
 };
-
-// ─── ARTIST NOTES ──────────────────────────────────────────
-
-export const mockArtistNotes = [
-    {
-        id: 'note-1',
-        author: 'Alex Mercer',
-        avatar: 'https://i.pravatar.cc/150?img=11',
-        text: '505 is criminally underrated as their best track. The way it builds is just perfect.',
-        type: 'public',
-        timestamp: '3 days ago',
-        trackContext: { trackId: '505-arctic-monkeys', title: '505' },
-        timecode: '2:10',
-    },
-    {
-        id: 'note-2',
-        author: 'You',
-        avatar: 'https://i.pravatar.cc/150?img=32',
-        text: 'Remember to listen to this before the Sheffield show.',
-        type: 'private',
-        timestamp: '1 week ago',
-        trackContext: null,
-    },
-    {
-        id: 'note-3',
-        author: 'Katya Voloshyn',
-        avatar: 'https://i.pravatar.cc/150?img=47',
-        text: "Do I Wanna Know? intro riff is maybe the most recognizable in indie rock history.",
-        type: 'public',
-        timestamp: '2 weeks ago',
-        trackContext: { trackId: 'do-i-wanna-know', title: 'Do I Wanna Know?' },
-        timecode: '0:00',
-    },
-];
-
-export const MOCK_COMMENTS = [
-    {
-        id: 'c-1',
-        author: 'Alex Mercer',
-        avatar: 'https://i.pravatar.cc/150?img=11',
-        text: 'The guitar work in this track is absolutely phenomenal. Every listen reveals a new layer.',
-        timestamp: '2 hours ago',
-        type: 'public',
-    },
-    {
-        id: 'c-2',
-        author: 'Katya Voloshyn',
-        avatar: 'https://i.pravatar.cc/150?img=47',
-        text: 'This song has been on repeat for three days straight. I cannot explain it.',
-        timestamp: '5 hours ago',
-        type: 'public',
-    },
-    {
-        id: 'c-3',
-        author: 'Ivan Kovalchuk',
-        avatar: 'https://i.pravatar.cc/150?img=53',
-        text: 'Saw them perform this live in Kyiv and it was a completely different experience. Heavier, rawer.',
-        timestamp: '1 day ago',
-        type: 'public',
-    },
-    {
-        id: 'c-4',
-        author: 'Demo User',
-        avatar: 'https://i.pravatar.cc/150?img=32',
-        text: 'Perfect study track. The tempo just works for focused work.',
-        timestamp: '2 days ago',
-        type: 'public',
-    },
-];
-
-export const NOTES_RECOMMENDED = [
-    {
-        id: 'nr-1',
-        author: 'Orrin Editorial',
-        avatar: 'https://i.pravatar.cc/150?img=20',
-        text: 'The opening riff is deceptively simple — it reappears transformed in the bridge, a callback most listeners miss on the first pass.',
-        timestamp: '3 days ago',
-        type: 'public',
-        trackContext: null,
-        timecode: null,
-    },
-    {
-        id: 'nr-2',
-        author: 'Music Theorist',
-        avatar: 'https://i.pravatar.cc/150?img=25',
-        text: 'Notice the modal interchange at the 2:40 mark — the shift from the relative major pulls the emotional weight back down just before the final chorus.',
-        timestamp: '1 week ago',
-        type: 'public',
-        trackContext: null,
-        timecode: '2:40',
-    },
-    {
-        id: 'nr-3',
-        author: 'Studio Notes',
-        avatar: 'https://i.pravatar.cc/150?img=30',
-        text: 'This was reportedly recorded in a single live take with the full band in the room. The slight imperfections in timing are intentional — a choice to preserve the human feel.',
-        timestamp: '2 weeks ago',
-        type: 'public',
-        trackContext: null,
-        timecode: null,
-    },
-];
-
-export const NOTES_FROM_FRIENDS = [
-    {
-        id: 'nf-1',
-        author: 'Alex Mercer',
-        avatar: 'https://i.pravatar.cc/150?img=11',
-        text: 'Added this to our road trip playlist. The 3-hour drive felt like 20 minutes.',
-        timestamp: '4 days ago',
-        type: 'public',
-        trackContext: null,
-        timecode: null,
-    },
-    {
-        id: 'nf-2',
-        author: 'Katya Voloshyn',
-        avatar: 'https://i.pravatar.cc/150?img=47',
-        text: 'The verse melody reminds me so much of something from the late 90s — I can never place it exactly, and that drives me a little crazy.',
-        timestamp: '6 days ago',
-        type: 'public',
-        trackContext: null,
-        timecode: null,
-    },
-];
-
-export const NOTES_OWN = [
-    {
-        id: 'no-1',
-        author: 'You',
-        avatar: 'https://i.pravatar.cc/150?img=32',
-        text: 'Check the drum pattern at the intro — learn this for the cover project.',
-        timestamp: '1 week ago',
-        type: 'private',
-        trackContext: null,
-        timecode: '0:08',
-    },
-    {
-        id: 'no-2',
-        author: 'You',
-        avatar: 'https://i.pravatar.cc/150?img=32',
-        text: 'Play this before every important meeting. Works every time.',
-        timestamp: '3 weeks ago',
-        type: 'private',
-        trackContext: null,
-        timecode: null,
-    },
-];

@@ -9,21 +9,33 @@
     display: flex;
     align-items: baseline;
     gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border-main);
 }
 
 .heading {
-    font-size: 1rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    color: var(--color-text-main);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
     margin: 0;
-    letter-spacing: -0.01em;
 }
 
 .count {
-    font-size: 0.8rem;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 18px;
+    padding: 0 6px;
+    background: var(--color-surface-2);
     color: var(--color-text-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
 }
 
 .list {
@@ -38,26 +50,40 @@
 .item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 6px 8px;
+    gap: 10px;
+    padding: 5px 8px;
     border-radius: 8px;
     transition: background-color 0.15s ease;
+    /* Ensure TrackCard fills available width */
+    min-width: 0;
 }
 
 .item:hover {
     background: var(--color-bg-glass-subtle);
 }
 
+/**
+ * On hover, brighten the position number to give feedback
+ * without requiring a JS interaction.
+ */
+.item:hover .position {
+    color: var(--color-text-secondary);
+}
+
 .position {
     flex-shrink: 0;
-    width: 24px;
-    font-size: 0.78rem;
-    font-weight: 500;
+    width: 26px;
+    font-size: 0.75rem;
+    font-weight: 600;
     color: var(--color-text-muted);
     text-align: right;
     font-variant-numeric: tabular-nums;
     align-self: center;
     line-height: 1;
+    letter-spacing: -0.01em;
+    transition: color 0.15s ease;
+    /* Optical alignment with track title baseline */
+    padding-top: 1px;
 }
 
 .emptyState {
@@ -66,17 +92,20 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 10px;
-    min-height: 200px;
+    gap: 12px;
+    min-height: 220px;
+    padding: 40px 24px;
     border: 1px dashed var(--color-border-main);
-    border-radius: 12px;
-    padding: 36px 24px;
+    border-radius: 14px;
+    background:
+            radial-gradient(ellipse at 50% 0%, rgba(175, 148, 126, 0.04) 0%, transparent 65%);
 }
 
 .emptyIcon {
-    color: var(--color-text-muted);
-    opacity: 0.5;
+    color: var(--color-primary);
+    opacity: 0.35;
     display: flex;
+    flex-shrink: 0;
 }
 
 .emptyTitle {
@@ -84,15 +113,17 @@
     font-weight: 700;
     color: var(--color-text-secondary);
     margin: 0;
+    letter-spacing: -0.01em;
 }
 
 .emptySubtitle {
-    font-size: 0.835rem;
+    font-size: 0.82rem;
     color: var(--color-text-muted);
     margin: 0;
-    line-height: 1.5;
-    max-width: 280px;
+    line-height: 1.6;
+    max-width: 260px;
 }
+
 
 @media (max-width: 480px) {
     .position {
@@ -101,5 +132,10 @@
 
     .item {
         padding: 4px 0;
+    }
+
+    .header {
+        margin-bottom: 14px;
+        padding-bottom: 10px;
     }
 }
