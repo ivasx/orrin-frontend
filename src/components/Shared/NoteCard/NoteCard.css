@@ -81,6 +81,11 @@
     font-variant-numeric: tabular-nums;
 }
 
+.note-menu-wrapper {
+    display: flex;
+    align-items: center;
+}
+
 .note-dots-btn {
     display: flex;
     align-items: center;
@@ -91,13 +96,26 @@
     padding: 3px 4px;
     border-radius: 5px;
     color: var(--color-text-muted, #888);
-    transition: color 0.15s ease, background 0.15s ease;
+    opacity: 0;
+    transition: color 0.15s ease, background 0.15s ease, opacity 0.18s ease;
     line-height: 1;
+}
+
+.note-card:hover .note-dots-btn,
+.note-dots-btn:focus-visible,
+.note-dots-btn[aria-expanded="true"] {
+    opacity: 1;
 }
 
 .note-dots-btn:hover {
     color: var(--color-text-secondary, #b3b3b3);
     background: rgba(255, 255, 255, 0.06);
+}
+
+@media (hover: none) {
+    .note-dots-btn {
+        opacity: 1;
+    }
 }
 
 .note-lyrics-quote {

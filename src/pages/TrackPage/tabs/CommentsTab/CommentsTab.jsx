@@ -19,17 +19,6 @@ import styles from './CommentsTab.module.css';
  * @property {boolean} isLikedByMe
  */
 
-/**
- * Single comment item with like toggle and context menu.
- *
- * @param {Object}   props
- * @param {Comment}  props.comment
- * @param {string}   props.currentUserId
- * @param {Function} props.onLike
- * @param {Function} props.onEdit
- * @param {Function} props.onDelete
- * @param {Function} props.onReport
- */
 function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onReport }) {
     const { t } = useTranslation();
     const [menuVisible, setMenuVisible] = useState(false);
@@ -40,20 +29,29 @@ function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onRepor
 
     const handleDotsClick = useCallback((e) => {
         e.stopPropagation();
+        e.preventDefault();
         if (!dotsRef.current) return;
         const rect = dotsRef.current.getBoundingClientRect();
-        setMenuPosition({ x: rect.right, y: rect.bottom + 4 });
+        /*
+         * KEY FIX: use rect.left (not rect.right) as the x-anchor.
+         * OptionsMenu's useLayoutEffect clamps the menu to the viewport, so
+         * starting from the left edge of the button keeps it close to the
+         * trigger instead of launching it to the far-right of the screen.
+         */
+        setMenuPosition({ x: rect.left, y: rect.bottom + 4 });
         setMenuVisible(prev => !prev);
     }, []);
+
+    const handleMenuClose = useCallback(() => setMenuVisible(false), []);
 
     const menuItems = isOwn
         ? [
             { id: 'edit',   label: t('menu_edit'),   action: () => onEdit(comment) },
-            { id: 'delete', label: t('menu_delete'),  action: () => onDelete(comment.id), isDanger: true },
+            { id: 'delete', label: t('menu_delete'),  action: () => onDelete(comment.id), variant: 'danger' },
         ]
         : [
             { id: 'share',  label: t('menu_share_to_chat'), action: () => {} },
-            { id: 'report', label: t('menu_report'),        action: () => onReport(comment.id), isDanger: true },
+            { id: 'report', label: t('menu_report'),        action: () => onReport(comment.id), variant: 'danger' },
         ];
 
     return (
@@ -68,6 +66,31 @@ function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onRepor
                         {comment.author}
                     </Link>
                     <span className={styles.timestamp}>{comment.timestamp}</span>
+
+                    {/* stopPropagation wrapper so clicking the menu
+                        doesn't bubble up to any parent handlers */}
+                    <div
+                        className={styles.menuWrapper}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={dotsRef}
+                            className={styles.dotsBtn}
+                            onClick={handleDotsClick}
+                            aria-label={t('aria_comment_options')}
+                            aria-expanded={menuVisible}
+                            aria-haspopup="menu"
+                        >
+                            <MoreHorizontal size={16} />
+                        </button>
+
+                        <ContextMenu
+                            isVisible={menuVisible}
+                            position={menuPosition}
+                            onClose={handleMenuClose}
+                            menuItems={menuItems}
+                        />
+                    </div>
                 </div>
 
                 <p className={styles.text}>{comment.text}</p>
@@ -82,44 +105,21 @@ function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onRepor
                         <Heart size={14} />
                         <span className={styles.likeCount}>{comment.likesCount}</span>
                     </button>
-
-                    <button
-                        ref={dotsRef}
-                        className={styles.dotsBtn}
-                        onClick={handleDotsClick}
-                        aria-label={t('aria_comment_options')}
-                    >
-                        <MoreHorizontal size={16} />
-                    </button>
                 </div>
             </div>
-
-            <ContextMenu
-                isVisible={menuVisible}
-                position={menuPosition}
-                onClose={() => setMenuVisible(false)}
-                menuItems={menuItems}
-            />
         </div>
     );
 }
 
-/**
- * Full comments tab: input form + scrollable comment list.
- *
- * @param {Object}    props
- * @param {Comment[]} props.initialComments  - Seed data from mockData
- */
 export default function CommentsTab({ initialComments = [] }) {
     const { t } = useTranslation();
     const { user } = useAuth();
 
     const [comments, setComments] = useState(initialComments);
     const [draft, setDraft]       = useState('');
-    const [editTarget, setEditTarget] = useState(/** @type {Comment|null} */ null);
+    const [editTarget, setEditTarget] = useState(null);
     const textareaRef = useRef(null);
 
-    /** Toggle like on a comment by id. */
     const handleLike = useCallback((id) => {
         setComments(prev => prev.map(c => {
             if (c.id !== id) return c;
@@ -128,19 +128,16 @@ export default function CommentsTab({ initialComments = [] }) {
         }));
     }, []);
 
-    /** Begin editing an existing comment. */
     const handleEdit = useCallback((comment) => {
         setEditTarget(comment);
         setDraft(comment.text);
         textareaRef.current?.focus();
     }, []);
 
-    /** Delete a comment by id. */
     const handleDelete = useCallback((id) => {
         setComments(prev => prev.filter(c => c.id !== id));
     }, []);
 
-    /** Placeholder — wire to API in production. */
     const handleReport = useCallback((_id) => {}, []);
 
     const handleSubmit = useCallback((e) => {
@@ -154,7 +151,6 @@ export default function CommentsTab({ initialComments = [] }) {
             ));
             setEditTarget(null);
         } else {
-            /** @type {Comment} */
             const newComment = {
                 id:             `c-${Date.now()}`,
                 authorId:       user?.id ?? 'user-4',

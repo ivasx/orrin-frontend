@@ -5,7 +5,7 @@ import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
 import {useTranslation} from "react-i18next";
 import {createTrackMenuItems} from './trackMenuItems.jsx';
 import {Link} from 'react-router-dom';
-import { MoreHorizontal, AlertCircle, Music } from 'lucide-react';
+import { MoreHorizontal, Music } from 'lucide-react';
 import {isTrackPlayable} from '../../../constants/fallbacks.js';
 import {logger} from '../../../utils/logger.js';
 import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
@@ -33,7 +33,6 @@ function TrackCard(props) {
     const [audioError, setAudioError] = useState(false);
     const [isAudioLoading, setIsAudioLoading] = useState(false);
     const [showControls, setShowControls] = useState(false);
-    const [durationHovered, setDurationHovered] = useState(false);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
@@ -79,7 +78,6 @@ function TrackCard(props) {
     const showLoadingIndicator = isCurrentTrack && isAudioLoading;
     const showErrorIndicator = isCurrentTrack && audioError;
 
-    // Плеєр тепер повністю відкритий для всіх
     const handlePlayPause = useCallback(() => {
         if (!track.trackId || !hasValidAudio) return;
 
@@ -166,49 +164,69 @@ function TrackCard(props) {
                 {coverError ? (
                     <div className="track-cover-fallback"><Music size={32}/></div>
                 ) : (
-                    <img src={displayCover} alt={track.title} className="track-cover" loading="lazy"/>
+                    <img
+                        src={displayCover}
+                        alt={track.title}
+                        className="track-cover"
+                        loading="lazy"
+                        onError={() => setCoverError(true)}
+                    />
                 )}
 
                 {showRipple && <div className="ripple-effect" style={rippleStyle}/>}
 
-                {showLoadingIndicator && <div className="loading-indicator">
-                    <div className="spinner-small"></div>
-                </div>}
-
-                {showControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
-                    <div className="play-icon" onClick={handlePlayButtonClick}>
-                        {!isPlaying ? <div className="triangle"></div> :
-                            <div className="pause"><span></span><span></span></div>}
+                {showLoadingIndicator && (
+                    <div className="loading-indicator">
+                        <div className="spinner-small"></div>
                     </div>
                 )}
 
-                {isPlaying && !showControls && hasValidAudio &&
-                    <div className="bars"><span></span><span></span><span></span></div>}
+                {showControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
+                    <div className="play-icon" onClick={handlePlayButtonClick}>
+                        {!isPlaying
+                            ? <div className="triangle"></div>
+                            : <div className="pause"><span></span><span></span></div>
+                        }
+                    </div>
+                )}
+
+                {isPlaying && !showControls && hasValidAudio && (
+                    <div className="bars"><span></span><span></span><span></span></div>
+                )}
             </div>
 
             <div className="track-info">
                 <Link to={`/track/${track.trackId}`} className="track-title">{track.title}</Link>
                 <div className="track-artist">
-                    {track.artistSlug ?
-                        <Link to={`/artist/${track.artistSlug}`} className="track-artist-link">{track.artist}</Link> :
-                        <span>{track.artist}</span>}
-                </div>
-                <div
-                    ref={dotsButtonRef}
-                    className="track-duration"
-                    onClick={handleDotsClick}
-                    onMouseEnter={() => setDurationHovered(true)}
-                    onMouseLeave={() => setDurationHovered(false)}
-                >
-                    {!durationHovered ?
-                        <span className="duration-text">{track.duration_formatted}</span> :
-                        <MoreHorizontal size={20} className="duration-icon" />
+                    {track.artistSlug
+                        ? <Link to={`/artist/${track.artistSlug}`} className="track-artist-link">{track.artist}</Link>
+                        : <span>{track.artist}</span>
                     }
                 </div>
             </div>
 
-            <ContextMenu isVisible={showMenu} position={menuPosition} onClose={() => setShowMenu(false)}
-                         menuItems={getMenuItems()}/>
+            <div
+                className="track-options-wrapper"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button
+                    ref={dotsButtonRef}
+                    className={`track-options-btn${showMenu ? ' track-options-btn--open' : ''}`}
+                    onClick={handleDotsClick}
+                    aria-label={t('post_more_options')}
+                    aria-expanded={showMenu}
+                    aria-haspopup="menu"
+                >
+                    <MoreHorizontal size={18} />
+                </button>
+
+                <ContextMenu
+                    isVisible={showMenu}
+                    position={menuPosition}
+                    onClose={() => setShowMenu(false)}
+                    menuItems={getMenuItems()}
+                />
+            </div>
 
             <AuthPromptModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)}/>
         </div>

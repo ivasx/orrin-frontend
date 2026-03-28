@@ -25,14 +25,6 @@ import './NoteCard.css';
  * @property {number|null}  lyricsLineReference.time
  */
 
-/**
- * @param {Object}   props
- * @param {Note}     props.note
- * @param {Function} [props.onLike]   - (id: string) => void
- * @param {Function} [props.onEdit]   - (note: Note) => void
- * @param {Function} [props.onDelete] - (id: string) => void
- * @param {Function} [props.onReport] - (id: string) => void
- */
 export default function NoteCard({ note, onLike, onEdit, onDelete, onReport }) {
     const { t } = useTranslation();
     const { user } = useAuth();
@@ -45,20 +37,31 @@ export default function NoteCard({ note, onLike, onEdit, onDelete, onReport }) {
 
     const handleDotsClick = useCallback((e) => {
         e.stopPropagation();
+        e.preventDefault();
         if (!dotsRef.current) return;
         const rect = dotsRef.current.getBoundingClientRect();
-        setMenuPosition({ x: rect.right, y: rect.bottom + 4 });
+        /*
+         * KEY FIX: use rect.left (not rect.right) as the x-anchor.
+         * OptionsMenu uses position: fixed and places itself at (x, y).
+         * rect.right is the button's right edge in viewport coords — on a
+         * wide screen that's already far to the right, so the menu spawns
+         * off-screen. rect.left starts the menu at the button's left edge
+         * and OptionsMenu's own clamping logic keeps it fully visible.
+         */
+        setMenuPosition({ x: rect.left, y: rect.bottom + 4 });
         setMenuVisible(prev => !prev);
     }, []);
+
+    const handleMenuClose = useCallback(() => setMenuVisible(false), []);
 
     const menuItems = isOwn
         ? [
             { id: 'edit',   label: t('menu_edit'),   action: () => onEdit?.(note) },
-            { id: 'delete', label: t('menu_delete'),  action: () => onDelete?.(note.id), isDanger: true },
+            { id: 'delete', label: t('menu_delete'),  action: () => onDelete?.(note.id), variant: 'danger' },
         ]
         : [
             { id: 'share',  label: t('menu_share_to_chat'), action: () => {} },
-            { id: 'report', label: t('menu_report'),        action: () => onReport?.(note.id), isDanger: true },
+            { id: 'report', label: t('menu_report'),        action: () => onReport?.(note.id), variant: 'danger' },
         ];
 
     const handleLike = useCallback(() => onLike?.(note.id), [note.id, onLike]);
@@ -76,14 +79,31 @@ export default function NoteCard({ note, onLike, onEdit, onDelete, onReport }) {
                     </Link>
                     <div className="note-header-actions">
                         <span className="note-timestamp">{note.timestamp}</span>
-                        <button
-                            ref={dotsRef}
-                            className="note-dots-btn"
-                            onClick={handleDotsClick}
-                            aria-label={t('aria_note_options')}
+
+                        {/* stopPropagation wrapper prevents card clicks from
+                            interfering with the fixed-position portal menu */}
+                        <div
+                            className="note-menu-wrapper"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <MoreHorizontal size={15} />
-                        </button>
+                            <button
+                                ref={dotsRef}
+                                className="note-dots-btn"
+                                onClick={handleDotsClick}
+                                aria-label={t('aria_note_options')}
+                                aria-expanded={menuVisible}
+                                aria-haspopup="menu"
+                            >
+                                <MoreHorizontal size={15} />
+                            </button>
+
+                            <ContextMenu
+                                isVisible={menuVisible}
+                                position={menuPosition}
+                                onClose={handleMenuClose}
+                                menuItems={menuItems}
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -120,13 +140,6 @@ export default function NoteCard({ note, onLike, onEdit, onDelete, onReport }) {
                     </button>
                 </div>
             </div>
-
-            <ContextMenu
-                isVisible={menuVisible}
-                position={menuPosition}
-                onClose={() => setMenuVisible(false)}
-                menuItems={menuItems}
-            />
         </div>
     );
 }
