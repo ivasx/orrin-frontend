@@ -53,10 +53,15 @@
     gap: 10px;
     padding: 5px 8px;
     border-radius: 8px;
-    transition: background-color 0.15s ease;
+    transition:
+            background-color 0.15s ease,
+            opacity 0.2s ease;
     min-width: 0;
     width: 100%;
     box-sizing: border-box;
+    cursor: default;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
 }
 
 .item:hover {
@@ -66,6 +71,51 @@
 .item:hover .position {
     color: var(--color-text-secondary);
 }
+
+.item:hover .dragHandle,
+.item:focus-within .dragHandle {
+    opacity: 1;
+}
+
+.itemDragging {
+    opacity: 0.35;
+    background: var(--color-surface-2) !important;
+}
+
+.itemDropTop {
+    border-top-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 6%, transparent) !important;
+}
+
+.itemDropBottom {
+    border-bottom-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 6%, transparent) !important;
+}
+
+.dragHandle {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    color: var(--color-text-muted);
+    opacity: 0;
+    cursor: grab;
+    transition: opacity 0.15s ease, color 0.15s ease;
+    user-select: none;
+}
+
+.dragHandle:active {
+    cursor: grabbing;
+    color: var(--color-primary);
+}
+
+@media (hover: none) {
+    .dragHandle {
+        opacity: 1;
+    }
+}
+
 
 .position {
     flex-shrink: 0;
@@ -129,7 +179,8 @@
 }
 
 @media (max-width: 480px) {
-    .position {
+    .position,
+    .dragHandle {
         display: none;
     }
 

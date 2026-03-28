@@ -1,21 +1,47 @@
 import './TrackCard.css';
-import {useState, useEffect, useCallback, useRef, useMemo, memo} from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
-import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
-import {useTranslation} from "react-i18next";
-import {createTrackMenuItems} from './trackMenuItems.jsx';
-import {Link} from 'react-router-dom';
+import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
+import { useQueue } from '../../../context/QueueContext.jsx';
+import { useTranslation } from 'react-i18next';
+import { createTrackMenuItems } from './trackMenuItems.jsx';
+import { Link } from 'react-router-dom';
 import { MoreHorizontal, Music } from 'lucide-react';
-import {isTrackPlayable} from '../../../constants/fallbacks.js';
-import {logger} from '../../../utils/logger.js';
+import { isTrackPlayable } from '../../../constants/fallbacks.js';
+import { logger } from '../../../utils/logger.js';
 import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
 
+/**
+ * Renders a single track row with playback controls, a context menu, and
+ * optional queue-management actions when rendered inside `QueueList`.
+ *
+ * @param {Object}  props
+ * @param {string}  props.trackId          - Unique track identifier.
+ * @param {string}  props.title            - Track title.
+ * @param {string}  props.artist           - Artist display name.
+ * @param {string}  [props.artistSlug]     - Artist slug for routing.
+ * @param {string}  [props.cover]          - Album art URL.
+ * @param {string}  [props.audio]          - Audio file URL.
+ * @param {Array}   [props.tracks]         - Sibling tracks for queue initialization.
+ * @param {boolean} [props.isQueueContext] - True when rendered inside QueueList.
+ * @param {number}  [props.indexInQueue]   - Full-queue index (set by QueueList).
+ */
 function TrackCard(props) {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const {
-        currentTrack, playTrack, pauseTrack, resumeTrack, isTrackPlaying, audioRef,
-        isMuted, toggleMute, volume, updateVolume
+        currentTrack,
+        playTrack,
+        pauseTrack,
+        resumeTrack,
+        isTrackPlaying,
+        audioRef,
+        isMuted,
+        toggleMute,
+        volume,
+        updateVolume,
     } = useAudioCore();
+
+    const { insertNext, removeFromQueue } = useQueue();
 
     const track = useMemo(() => {
         if (!props.trackId) {
@@ -29,122 +55,142 @@ function TrackCard(props) {
 
     const hasValidAudio = isTrackPlayable(track);
 
-    const [coverError, setCoverError] = useState(false);
-    const [audioError, setAudioError] = useState(false);
+    const [coverError, setCoverError]         = useState(false);
+    const [audioError, setAudioError]         = useState(false);
     const [isAudioLoading, setIsAudioLoading] = useState(false);
-    const [showControls, setShowControls] = useState(false);
-    const [isTouchDevice, setIsTouchDevice] = useState(false);
-    const [showMenu, setShowMenu] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
-    const [rippleStyle, setRippleStyle] = useState({});
-    const [showRipple, setShowRipple] = useState(false);
+    const [showControls, setShowControls]     = useState(false);
+    const [isTouchDevice, setIsTouchDevice]   = useState(false);
+    const [showMenu, setShowMenu]             = useState(false);
+    const [menuPosition, setMenuPosition]     = useState({ x: 0, y: 0 });
+    const [rippleStyle, setRippleStyle]       = useState({});
+    const [showRipple, setShowRipple]         = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-    const dotsButtonRef = useRef(null);
-    const displayCover = coverError ? '/orrin-logo.svg' : track.cover;
+    const dotsButtonRef  = useRef(null);
+    const displayCover   = coverError ? '/orrin-logo.svg' : track.cover;
 
+    // Device detection
     useEffect(() => {
-        const mediaQuery = window.matchMedia('(pointer: coarse)');
-        const handleDeviceChange = (e) => setIsTouchDevice(e.matches);
-        setIsTouchDevice(mediaQuery.matches);
-        mediaQuery.addEventListener('change', handleDeviceChange);
-        return () => mediaQuery.removeEventListener('change', handleDeviceChange);
+        const mq = window.matchMedia('(pointer: coarse)');
+        const onChange = (e) => setIsTouchDevice(e.matches);
+        setIsTouchDevice(mq.matches);
+        mq.addEventListener('change', onChange);
+        return () => mq.removeEventListener('change', onChange);
     }, []);
 
+    // Audio event listeners (only for the current track)
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || currentTrack?.trackId !== track.trackId) return;
 
-        const handleAudioError = () => {
-            setAudioError(true);
-            setIsAudioLoading(false);
-        };
-        const handleLoadStart = () => setIsAudioLoading(true);
-        const handleCanPlay = () => setIsAudioLoading(false);
+        const onError    = () => { setAudioError(true); setIsAudioLoading(false); };
+        const onLoadStart = () => setIsAudioLoading(true);
+        const onCanPlay  = () => setIsAudioLoading(false);
 
-        audio.addEventListener('error', handleAudioError);
-        audio.addEventListener('loadstart', handleLoadStart);
-        audio.addEventListener('canplay', handleCanPlay);
+        audio.addEventListener('error',     onError);
+        audio.addEventListener('loadstart', onLoadStart);
+        audio.addEventListener('canplay',   onCanPlay);
 
         return () => {
-            audio.removeEventListener('error', handleAudioError);
-            audio.removeEventListener('loadstart', handleLoadStart);
-            audio.removeEventListener('canplay', handleCanPlay);
+            audio.removeEventListener('error',     onError);
+            audio.removeEventListener('loadstart', onLoadStart);
+            audio.removeEventListener('canplay',   onCanPlay);
         };
     }, [audioRef, currentTrack, track.trackId]);
 
-    const isPlaying = isTrackPlaying(track.trackId);
-    const isCurrentTrack = currentTrack && currentTrack.trackId === track.trackId;
+    const isPlaying          = isTrackPlaying(track.trackId);
+    const isCurrentTrack     = currentTrack && currentTrack.trackId === track.trackId;
     const showLoadingIndicator = isCurrentTrack && isAudioLoading;
-    const showErrorIndicator = isCurrentTrack && audioError;
+    const showErrorIndicator   = isCurrentTrack && audioError;
 
     const handlePlayPause = useCallback(() => {
         if (!track.trackId || !hasValidAudio) return;
-
-        if (isCurrentTrack && isPlaying) {
-            pauseTrack();
-        } else if (isCurrentTrack && !isPlaying) {
-            resumeTrack();
-        } else {
-            playTrack(track, props.tracks);
-        }
+        if (isCurrentTrack && isPlaying)  return pauseTrack();
+        if (isCurrentTrack && !isPlaying) return resumeTrack();
+        playTrack(track, props.tracks);
     }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, track, props.tracks, hasValidAudio]);
 
-    const getMenuItems = useCallback(() => createTrackMenuItems({
-        t,
-        isPlaying,
-        isMuted,
-        volume,
-        handlePlayPause,
-        isCurrentTrack,
-        toggleMute,
-        updateVolume,
-        title: track.title,
-        artist: track.artist,
-        audio: track.audio,
-        hasValidAudio
-    }), [t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack, toggleMute, updateVolume, track.title, track.artist, track.audio, hasValidAudio]);
+    const handleInsertNext = useCallback(() => {
+        insertNext(track);
+        setShowMenu(false);
+    }, [insertNext, track]);
 
-    function createRippleEffect(e) {
+    const handleRemoveFromQueue = useCallback(() => {
+        if (props.isQueueContext && props.indexInQueue != null) {
+            removeFromQueue(track.trackId, props.indexInQueue);
+        }
+        setShowMenu(false);
+    }, [removeFromQueue, track.trackId, props.isQueueContext, props.indexInQueue]);
+
+    const getMenuItems = useCallback(
+        () =>
+            createTrackMenuItems({
+                t,
+                isPlaying,
+                isMuted,
+                volume,
+                handlePlayPause,
+                isCurrentTrack,
+                toggleMute,
+                updateVolume,
+                title: track.title,
+                artist: track.artist,
+                audio: track.audio,
+                hasValidAudio,
+                isQueueContext:    props.isQueueContext ?? false,
+                indexInQueue:      props.indexInQueue,
+                trackId:           track.trackId,
+                onInsertNext:      handleInsertNext,
+                onRemoveFromQueue: handleRemoveFromQueue,
+            }),
+        [
+            t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
+            toggleMute, updateVolume, track.title, track.artist, track.audio,
+            hasValidAudio, props.isQueueContext, props.indexInQueue, track.trackId,
+            handleInsertNext, handleRemoveFromQueue,
+        ],
+    );
+
+    const createRippleEffect = (e) => {
         const rect = e.currentTarget.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
         setRippleStyle({
-            width: size,
+            width:  size,
             height: size,
-            left: e.clientX - rect.left - size / 2,
-            top: e.clientY - rect.top - size / 2
+            left:   e.clientX - rect.left - size / 2,
+            top:    e.clientY - rect.top  - size / 2,
         });
         setShowRipple(true);
         setTimeout(() => setShowRipple(false), 600);
-    }
+    };
 
-    function handleCoverClick(e) {
+    const handleCoverClick = (e) => {
         if (e.button !== 0 || !hasValidAudio) return;
         createRippleEffect(e);
         handlePlayPause();
-    }
+    };
 
-    function handlePlayButtonClick(e) {
+    const handlePlayButtonClick = (e) => {
         e.stopPropagation();
         if (!hasValidAudio) return;
         createRippleEffect(e);
         handlePlayPause();
-    }
+    };
 
     const handleContextMenu = (e) => {
         e.preventDefault();
-        setMenuPosition({x: e.clientX, y: e.clientY});
+        setMenuPosition({ x: e.clientX, y: e.clientY });
         setShowMenu(true);
     };
 
-    function handleDotsClick(e) {
+    const handleDotsClick = (e) => {
         e.stopPropagation();
         if (dotsButtonRef.current) {
             const rect = dotsButtonRef.current.getBoundingClientRect();
-            setMenuPosition({x: rect.right, y: rect.top});
+            setMenuPosition({ x: rect.right, y: rect.top });
             setShowMenu(prev => !prev);
         }
-    }
+    };
 
     return (
         <div
@@ -152,7 +198,7 @@ function TrackCard(props) {
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
-            aria-label={t('track_card_aria_label', {title: track.title, artist: track.artist})}
+            aria-label={t('track_card_aria_label', { title: track.title, artist: track.artist })}
         >
             <div
                 className={`track-cover-wrapper ${isPlaying ? 'playing' : ''} ${!hasValidAudio ? 'disabled' : ''}`}
@@ -162,7 +208,9 @@ function TrackCard(props) {
                 onTouchStart={() => isTouchDevice && hasValidAudio && setShowControls(true)}
             >
                 {coverError ? (
-                    <div className="track-cover-fallback"><Music size={32}/></div>
+                    <div className="track-cover-fallback">
+                        <Music size={32} />
+                    </div>
                 ) : (
                     <img
                         src={displayCover}
@@ -173,33 +221,46 @@ function TrackCard(props) {
                     />
                 )}
 
-                {showRipple && <div className="ripple-effect" style={rippleStyle}/>}
+                {showRipple && <div className="ripple-effect" style={rippleStyle} />}
 
                 {showLoadingIndicator && (
                     <div className="loading-indicator">
-                        <div className="spinner-small"></div>
+                        <div className="spinner-small" />
                     </div>
                 )}
 
                 {showControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
                     <div className="play-icon" onClick={handlePlayButtonClick}>
                         {!isPlaying
-                            ? <div className="triangle"></div>
-                            : <div className="pause"><span></span><span></span></div>
+                            ? <div className="triangle" />
+                            : <div className="pause"><span /><span /></div>
                         }
                     </div>
                 )}
 
                 {isPlaying && !showControls && hasValidAudio && (
-                    <div className="bars"><span></span><span></span><span></span></div>
+                    <div className="bars">
+                        <span />
+                        <span />
+                        <span />
+                    </div>
                 )}
             </div>
 
             <div className="track-info">
-                <Link to={`/track/${track.trackId}`} className="track-title">{track.title}</Link>
+                <Link to={`/track/${track.trackId}`} className="track-title">
+                    {track.title}
+                </Link>
                 <div className="track-artist">
                     {track.artistSlug
-                        ? <Link to={`/artist/${track.artistSlug}`} className="track-artist-link">{track.artist}</Link>
+                        ? (
+                            <Link
+                                to={`/artist/${track.artistSlug}`}
+                                className="track-artist-link"
+                            >
+                                {track.artist}
+                            </Link>
+                        )
                         : <span>{track.artist}</span>
                     }
                 </div>
@@ -228,7 +289,10 @@ function TrackCard(props) {
                 />
             </div>
 
-            <AuthPromptModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)}/>
+            <AuthPromptModal
+                isOpen={isAuthModalOpen}
+                onClose={() => setIsAuthModalOpen(false)}
+            />
         </div>
     );
 }
