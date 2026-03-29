@@ -1,41 +1,100 @@
-:root {
-    --color-primary: #af947e;
-    --color-primary-hover: #c3a994;
-    --color-error: #e53e3e;
-    --color-success: #1db954;
-    --color-bg-main: #151515;
-    --color-bg-base: #000000;
-    --color-surface-1: #1c1c1c;
-    --color-surface-2: #282828;
-    --color-surface-3: #333333;
-    --color-bg-glass-subtle: rgba(255, 255, 255, 0.03);
-    --color-bg-glass-light: rgba(255, 255, 255, 0.1);
-    --color-bg-glass-medium: rgba(255, 255, 255, 0.15);
-    --color-bg-overlay: rgba(0, 0, 0, 0.6);
-    --color-text-main: #ffffff;
-    --color-text-secondary: #b3b3b3;
-    --color-text-muted: #6a6a6a;
-    --color-text-inverse: #121212;
-    --color-border-main: #333333;
-    --color-border-subtle: rgba(255, 255, 255, 0.1);
-    --color-border-focus: #535353;
-    --font-main: 'Montserrat', sans-serif;
-    --border-radius-sm: 8px;
-    --border-radius-md: 16px;
-    --border-radius-pill: 50px;
-    --transition-fast: 0.2s ease;
-    --shadow-main: 0 4px 20px rgba(0, 0, 0, 0.5);
-    --transition-normal: 0.3s ease;
-    --z-player: 1000;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
-    --bg-color-secondary: var(--color-surface-1);
-    --bg-color-tertiary: var(--color-surface-2);
-    --text-color-primary: var(--color-text-main);
-    --accent-color: var(--color-success);
-    --accent-color-hover: #1ed760;
+:root {
+    /* ── Primary Accent: Sand / Coffee ── */
+    --color-primary:           #af947e;
+    --color-primary-hover:     #c3a994;
+    --color-primary-dim:       rgba(175, 148, 126, 0.18);
+    --color-primary-glow:      rgba(175, 148, 126, 0.35);
+
+    /* ── Secondary Accent: Warm Copper ── */
+    --color-secondary:         #c98f71;
+    --color-secondary-hover:   #e3a585;
+    --color-secondary-dim:     rgba(201, 143, 113, 0.15);
+
+    /* ── Semantic Colors ── */
+    --color-error:             #e53e3e;
+    --color-error-dim:         rgba(229, 62, 62, 0.15);
+    --color-warning:           #f59e0b;
+    --color-success:           #10b981;
+    --color-success-dim:       rgba(16, 185, 129, 0.15);
+    --color-info:              #38bdf8;
+
+    /* ── Background Scale ── */
+    --color-bg-base:           #000000;
+    --color-bg-main:           #151515;
+    --color-surface-0:         #151515;
+    --color-surface-1:         #1c1c1c;
+    --color-surface-2:         #282828;
+    --color-surface-3:         #333333;
+    --color-surface-4:         #3e3e3e;
+
+    /* ── Glass / Overlay Layers ── */
+    --color-bg-glass-subtle:   rgba(255, 255, 255, 0.03);
+    --color-bg-glass-light:    rgba(255, 255, 255, 0.1);
+    --color-bg-glass-medium:   rgba(255, 255, 255, 0.15);
+    --color-bg-glass-heavy:    rgba(255, 255, 255, 0.22);
+    --color-bg-overlay:        rgba(0, 0, 0, 0.6);
+    --color-bg-overlay-heavy:  rgba(0, 0, 0, 0.85);
+
+    /* ── Accent Glass ── */
+    --color-accent-glass:      rgba(175, 148, 126, 0.08);
+    --color-accent-glass-mid:  rgba(175, 148, 126, 0.14);
+
+    /* ── Text Scale ── */
+    --color-text-main:         #ffffff;
+    --color-text-secondary:    #b3b3b3;
+    --color-text-muted:        #6a6a6a;
+    --color-text-inverse:      #121212;
+    --color-text-accent:       #c3a994;
+
+    /* ── Border Scale ── */
+    --color-border-main:       #333333;
+    --color-border-subtle:     rgba(255, 255, 255, 0.1);
+    --color-border-focus:      #535353;
+    --color-border-accent:     rgba(175, 148, 126, 0.3);
+
+    /* ── Typography ── */
+    --font-main:               'Montserrat', sans-serif;
+    --font-body:               'DM Sans', sans-serif;
+
+    /* ── Radii ── */
+    --border-radius-xs:        4px;
+    --border-radius-sm:        8px;
+    --border-radius-md:        16px;
+    --border-radius-lg:        20px;
+    --border-radius-xl:        28px;
+    --border-radius-pill:      50px;
+
+    /* ── Transitions ── */
+    --transition-fast:         0.2s ease;
+    --transition-normal:       0.3s ease;
+    --transition-slow:         0.4s ease;
+    --transition-spring:       0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* ── Shadows ── */
+    --shadow-sm:               0 2px 8px rgba(0, 0, 0, 0.35);
+    --shadow-main:             0 4px 20px rgba(0, 0, 0, 0.5);
+    --shadow-lg:               0 8px 40px rgba(0, 0, 0, 0.65);
+    --shadow-accent:           0 4px 24px rgba(175, 148, 126, 0.25);
+    --shadow-accent-lg:        0 8px 40px rgba(175, 148, 126, 0.3);
+
+    /* ── Layout ── */
+    --z-player:                1000;
+    --z-sidebar:               100;
+    --z-header:                1200;
+    --z-modal:                 2000;
+    --z-toast:                 9999;
+
+    /* ── Legacy aliases (Mapped to the sand theme) ── */
+    --bg-color-secondary:      var(--color-surface-1);
+    --bg-color-tertiary:       var(--color-surface-2);
+    --text-color-primary:      var(--color-text-main);
+    --accent-color:            var(--color-primary);
+    --accent-color-hover:      var(--color-primary-hover);
 }
 
-* {
+*, *::before, *::after {
     box-sizing: border-box;
 }
 
@@ -46,7 +105,14 @@ html, body {
     font-family: var(--font-main);
     background: var(--color-bg-main);
     color: var(--color-text-main);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-surface-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-surface-4); opacity: 0.8; }
 
 img {
     -webkit-user-drag: none;
@@ -57,4 +123,15 @@ img {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+}
+
+::selection {
+    background: var(--color-primary-dim);
+    color: var(--color-text-main);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-xs);
 }

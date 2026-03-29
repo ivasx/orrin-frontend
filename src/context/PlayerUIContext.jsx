@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState, useCallback, useMemo } from
 
 const PlayerUIContext = createContext();
 
+export const PLAYER_BAR_HEIGHT = 84;
+
+export const MINI_PLAYER_PADDING = 90;
+
 export const usePlayerUI = () => {
     const context = useContext(PlayerUIContext);
     if (!context) {
@@ -44,11 +48,7 @@ export const PlayerUIProvider = ({ children }) => {
         setShowTrackInfo(false);
     }, []);
 
-    /**
-     * Collapses the player bar out of view, leaving only the floating handle
-     * visible. Other layout consumers (e.g. page wrappers that add bottom
-     * padding) can read `isPlayerCollapsed` to adjust their own spacing.
-     */
+
     const togglePlayerCollapsed = useCallback(
         () => setIsPlayerCollapsed(prev => !prev),
         [],
