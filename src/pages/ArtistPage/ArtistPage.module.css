@@ -1,14 +1,8 @@
-/* ═══════════════════════════════════════════════════════════
-   ArtistPage.module.css
-   ═══════════════════════════════════════════════════════════ */
-
-/* ── Page wrapper ─────────────────────────────────────────── */
 .page {
     min-height: 100vh;
     animation: fadeIn 0.4s ease;
 }
 
-/* ── Hero ─────────────────────────────────────────────────── */
 .hero {
     position: relative;
     min-height: 440px;
@@ -20,7 +14,6 @@
     overflow: hidden;
 }
 
-/* Grain texture for depth */
 .heroNoise {
     position: absolute;
     inset: 0;
@@ -34,7 +27,7 @@
     inset: 0;
     background: linear-gradient(
             to bottom,
-            rgba(5, 5, 8, 0)   0%,
+            rgba(5, 5, 8, 0)    0%,
             rgba(5, 5, 8, 0.3)  40%,
             rgba(5, 5, 8, 0.75) 70%,
             rgba(5, 5, 8, 0.97) 100%
@@ -52,7 +45,6 @@
     gap: 2rem;
 }
 
-/* ── Hero Avatar ──────────────────────────────────────────── */
 .heroAvatarBlock {
     position: relative;
     flex-shrink: 0;
@@ -63,9 +55,10 @@
     height: 160px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 0 3px var(--color-surface-2),
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    0 0 0 5px var(--color-primary-dim);
+    box-shadow:
+            0 0 0 3px var(--color-surface-2),
+            0 8px 32px rgba(0, 0, 0, 0.6),
+            0 0 0 5px var(--color-primary-dim);
     display: block;
 }
 
@@ -87,7 +80,6 @@
     white-space: nowrap;
 }
 
-/* ── Hero Meta ────────────────────────────────────────────── */
 .heroMeta {
     flex: 1;
     min-width: 0;
@@ -115,7 +107,6 @@
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* ── Hero Actions ─────────────────────────────────────────── */
 .heroActions {
     display: flex;
     align-items: center;
@@ -137,16 +128,16 @@
     font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background var(--transition-fast),
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast);
+    transition:
+            background var(--transition-fast),
+            transform var(--transition-fast),
+            box-shadow var(--transition-fast);
     box-shadow: var(--shadow-accent);
 }
 
 .playBtn:hover {
     background: var(--color-primary-hover);
     transform: scale(1.04);
-    box-shadow: var(--shadow-accent-lg);
 }
 
 .playBtn:active {
@@ -231,7 +222,28 @@
     box-shadow: var(--shadow-accent);
 }
 
-/* ── Tab Navigation ───────────────────────────────────────── */
+.dashboardBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    background: var(--color-surface-2);
+    color: var(--color-text-secondary);
+    border: 1.5px solid var(--color-border-main);
+    border-radius: var(--border-radius-pill);
+    font-family: var(--font-main);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.dashboardBtn:hover {
+    background: var(--color-surface-3);
+    color: var(--color-text-main);
+    border-color: var(--color-border-focus);
+}
+
 .tabNav {
     display: flex;
     align-items: center;
@@ -265,13 +277,9 @@
     transition: color var(--transition-fast);
 }
 
-.tabBtn:hover {
-    color: var(--color-text-secondary);
-}
+.tabBtn:hover { color: var(--color-text-secondary); }
 
-.tabBtnActive {
-    color: var(--color-text-main);
-}
+.tabBtnActive { color: var(--color-text-main); }
 
 .tabBtnActive::after {
     content: '';
@@ -284,13 +292,11 @@
     border-radius: 2px 2px 0 0;
 }
 
-/* ── Tab Content ──────────────────────────────────────────── */
 .tabContent {
     min-height: 280px;
     animation: fadeIn 0.25s ease;
 }
 
-/* ── Songs Tab ────────────────────────────────────────────── */
 .songsTab {
     display: flex;
     flex-direction: column;
@@ -326,19 +332,6 @@
     white-space: pre-wrap;
 }
 
-/* ── Posts Tab ────────────────────────────────────────────── */
-.postsTab {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 680px;
-}
-
-.createPostWrapper {
-    margin-bottom: 0.5rem;
-}
-
-/* ── Members Grid ─────────────────────────────────────────── */
 .membersGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -346,340 +339,11 @@
     animation: fadeIn 0.3s ease;
 }
 
-.memberCard {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px;
-    background: var(--color-surface-1);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--border-radius-md);
-    text-decoration: none;
-    transition: all var(--transition-fast);
-}
+.spinIcon { animation: spin 0.9s linear infinite; }
 
-.memberCard:hover {
-    background: var(--color-surface-2);
-    border-color: var(--color-border-accent);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-
-.memberAvatar {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid var(--color-border-main);
-}
-
-.memberInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 0;
-}
-
-.memberName {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--color-text-main);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.memberRole {
-    font-size: 0.78rem;
-    color: var(--color-text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* ── Editable Image Helper ────────────────────────────────── */
-.editableImageWrapper {
-    position: relative;
-    overflow: hidden;
-    border-radius: inherit;
-    cursor: pointer;
-}
-
-.editableImageContent {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: filter var(--transition-fast);
-}
-
-.editableImageWrapper:hover .editableImageContent {
-    filter: brightness(0.55);
-}
-
-.editableImageOverlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
-    opacity: 0;
-    cursor: pointer;
-    transition: opacity var(--transition-fast);
-    font-family: var(--font-main);
-}
-
-.editableImageWrapper:hover .editableImageOverlay {
-    opacity: 1;
-}
-
-.hiddenInput {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-}
-
-/* ── Edit Modal ───────────────────────────────────────────── */
-.modalOverlay {
-    position: fixed;
-    inset: 0;
-    background: var(--color-bg-overlay-heavy);
-    backdrop-filter: blur(8px);
-    z-index: var(--z-modal);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    animation: fadeIn 0.2s ease;
-}
-
-.editModal {
-    background: var(--color-surface-1);
-    border: 1px solid var(--color-border-main);
-    border-radius: var(--border-radius-xl);
-    width: 100%;
-    max-width: 580px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow-lg);
-    animation: slideUp 0.3s var(--transition-spring);
-}
-
-.editModalHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--color-border-main);
-}
-
-.editModalHeader h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--color-text-main);
-}
-
-.editModalClose {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-bg-glass-light);
-    border: none;
-    border-radius: 50%;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.editModalClose:hover {
-    background: var(--color-surface-3);
-    color: var(--color-text-main);
-}
-
-.editModalBody {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.editFormGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.editFormLabel {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--color-text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-.editFormInput {
-    width: 100%;
-    padding: 10px 14px;
-    background: var(--color-surface-2);
-    border: 1px solid var(--color-border-main);
-    border-radius: var(--border-radius-sm);
-    color: var(--color-text-main);
-    font-size: 0.95rem;
-    font-family: var(--font-main);
-    transition: border-color var(--transition-fast);
-}
-
-.editFormInput:focus {
-    outline: none;
-    border-color: var(--color-border-focus);
-    background: var(--color-surface-3);
-}
-
-.editFormInput:disabled {
-    opacity: 0.55;
-}
-
-.editFormTextarea {
-    composes: editFormInput;
-    resize: vertical;
-    min-height: 120px;
-    line-height: 1.55;
-}
-
-/* Banner / avatar pickers */
-.bannerEditWrapper {
-    position: relative;
-    border-radius: var(--border-radius-md);
-    overflow: hidden;
-    aspect-ratio: 16 / 5;
-    background: var(--color-surface-2);
-}
-
-.bannerEditPreview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.avatarEditRow {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.avatarEditPreview {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--color-border-main);
-    flex-shrink: 0;
-}
-
-.filePickerBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 16px;
-    background: var(--color-surface-2);
-    border: 1px solid var(--color-border-main);
-    border-radius: var(--border-radius-sm);
-    color: var(--color-text-secondary);
-    font-size: 0.85rem;
-    font-weight: 600;
-    font-family: var(--font-main);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.filePickerBtn:hover {
-    background: var(--color-surface-3);
-    color: var(--color-text-main);
-    border-color: var(--color-border-focus);
-}
-
-.editModalActions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--color-border-main);
-}
-
-.cancelBtn {
-    padding: 9px 20px;
-    background: transparent;
-    border: 1px solid var(--color-border-main);
-    border-radius: var(--border-radius-pill);
-    color: var(--color-text-secondary);
-    font-family: var(--font-main);
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.cancelBtn:hover:not(:disabled) {
-    color: var(--color-text-main);
-    border-color: var(--color-text-secondary);
-}
-
-.saveBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 9px 22px;
-    background: var(--color-primary);
-    color: var(--color-text-main);
-    border: none;
-    border-radius: var(--border-radius-pill);
-    font-family: var(--font-main);
-    font-weight: 700;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    box-shadow: var(--shadow-accent);
-}
-
-.saveBtn:hover:not(:disabled) {
-    background: var(--color-primary-hover);
-    transform: scale(1.03);
-}
-
-.saveBtn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-/* ── Spin animation for loading icons ─────────────────────── */
-.spinIcon {
-    animation: spin 0.9s linear infinite;
-}
-
-/* ── Animations ───────────────────────────────────────────── */
 @keyframes fadeIn {
     from { opacity: 0; }
     to   { opacity: 1; }
-}
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes spin {
@@ -687,7 +351,6 @@
     to   { transform: rotate(360deg); }
 }
 
-/* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 768px) {
     .hero { min-height: 360px; }
 
@@ -709,15 +372,9 @@
 
     .tabNav { padding: 0 1rem; }
 
-    .membersGrid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .editModal { border-radius: var(--border-radius-md); }
+    .membersGrid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 480px) {
-    .membersGrid {
-        grid-template-columns: 1fr;
-    }
+    .membersGrid { grid-template-columns: 1fr; }
 }

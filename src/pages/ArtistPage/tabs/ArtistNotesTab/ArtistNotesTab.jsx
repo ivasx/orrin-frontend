@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Music, Clock, Users, Lock, Globe } from 'lucide-react';
-import NoteCard from '../../../components/Shared/NoteCard/NoteCard.jsx';
+import NoteCard from '../../../../components/Shared/NoteCard/NoteCard.jsx';
 import styles from './ArtistNotesTab.module.css';
 
 const NoteForm = ({

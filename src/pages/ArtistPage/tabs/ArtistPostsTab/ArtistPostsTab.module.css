@@ -1,0 +1,10 @@
+.postsTab {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 680px;
+}
+
+.createPostWrapper {
+    margin-bottom: 0.5rem;
+}

@@ -338,21 +338,200 @@ export const mockUsers = [
     },
 ];
 
-// ─── COMMENTS ──────────────────────────────────────────────
+// ─── ARTIST POSTS ──────────────────────────────────────────
+// Keyed by artist slug. Each entry has an `author` that represents
+// the artist account (or a named band member), ensuring posts tab
+// only shows content from the artist themselves.
 
-/**
- * @typedef {Object} Comment
- * @property {string}  id
- * @property {string}  authorId        - References mockUsers[n].id
- * @property {string}  authorUsername  - For profile link routing
- * @property {string}  author          - Display name
- * @property {string}  avatar
- * @property {string}  text
- * @property {string}  timestamp       - Human-readable relative time
- * @property {string}  type
- * @property {number}  likesCount
- * @property {boolean} isLikedByMe     - Pre-seeded like state for the demo user
- */
+export const mockArtistPosts = {
+    'arctic-monkeys': [
+        {
+            id: 'ap-1',
+            author: {
+                id: 'artist-1',
+                name: 'Arctic Monkeys',
+                avatar: 'https://images.prom.ua/3008024129_w640_h320_plakat-arctic-monkeys.jpg',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "Sheffield to the world. New dates announced for the North America leg — full list at the link in bio. See you out there.",
+            attachedTrack: {
+                trackId: 'r-u-mine',
+                title: 'R U Mine?',
+                artist: 'Arctic Monkeys',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png',
+            },
+            timestamp: '2h ago',
+            fullTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 18400,
+            commentsCount: 932,
+            repostsCount: 4200,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+        {
+            id: 'ap-2',
+            author: {
+                id: 'artist-1',
+                name: 'Arctic Monkeys',
+                avatar: 'https://images.prom.ua/3008024129_w640_h320_plakat-arctic-monkeys.jpg',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "505 was written in a single sitting at 3am in a Sheffield flat. Alex had a phone number in his head and built the whole thing around it. Still one of our favourites to play live.",
+            attachedTrack: {
+                trackId: '505-arctic-monkeys',
+                title: '505',
+                artist: 'Arctic Monkeys',
+                cover: 'https://www.muztonic.com/images/albums/AM.jpg',
+            },
+            timestamp: '3d ago',
+            fullTimestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 62100,
+            commentsCount: 2840,
+            repostsCount: 11300,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+        {
+            id: 'ap-3',
+            author: {
+                id: 'm-4',
+                name: 'Matt Helders',
+                avatar: 'https://i.pravatar.cc/150?img=62',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "Drum check ✓  Sound check ✓  Coffee check ✓  Ready for tonight.",
+            attachedTrack: null,
+            timestamp: '1w ago',
+            fullTimestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 9300,
+            commentsCount: 410,
+            repostsCount: 870,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+    ],
+    'metallica': [
+        {
+            id: 'mp-1',
+            author: {
+                id: 'artist-2',
+                name: 'Metallica',
+                avatar: 'https://www.billboard.com/wp-content/uploads/2025/05/metallica-press-credit-ross-halfin-2025-billboard-1548.jpg?w=942&h=628&crop=1',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "38 years of Master of Puppets. Still can't believe the reaction this record continues to get. Thank you for keeping it alive — every night we play it, the crowd gives it right back to us.",
+            attachedTrack: {
+                trackId: 'master-of-puppets',
+                title: 'Master of Puppets',
+                artist: 'Metallica',
+                cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg',
+            },
+            timestamp: '5h ago',
+            fullTimestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 142000,
+            commentsCount: 8700,
+            repostsCount: 31000,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+        {
+            id: 'mp-2',
+            author: {
+                id: 'artist-2',
+                name: 'Metallica',
+                avatar: 'https://www.billboard.com/wp-content/uploads/2025/05/metallica-press-credit-ross-halfin-2025-billboard-1548.jpg?w=942&h=628&crop=1',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "72 Seasons World Tour — final night. This has been one for the books. See you on the next one. \m/",
+            attachedTrack: null,
+            timestamp: '2d ago',
+            fullTimestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 204000,
+            commentsCount: 14200,
+            repostsCount: 52000,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+    ],
+    'chase-atlantic': [
+        {
+            id: 'cp-1',
+            author: {
+                id: 'artist-3',
+                name: 'Chase Atlantic',
+                avatar: 'https://i.pravatar.cc/400?img=15',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "Swim has now crossed 45 million plays. We wrote that one in Mitchel's bedroom in Cairns at like 2am. Wild that it found its way to so many of you.",
+            attachedTrack: {
+                trackId: 'swim',
+                title: 'Swim',
+                artist: 'Chase Atlantic',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg',
+            },
+            timestamp: '1d ago',
+            fullTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 28400,
+            commentsCount: 1620,
+            repostsCount: 6100,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+    ],
+    'gorillaz': [
+        {
+            id: 'gp-1',
+            author: {
+                id: 'artist-4',
+                name: 'Gorillaz',
+                avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Gorillaz_-_Demon_Days_Live_-_20050523.jpg/800px-Gorillaz_-_Demon_Days_Live_-_20050523.jpg',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "Feel Good Inc. just hit 750 million plays. Noodle says she's not surprised. Murdoc says he deserves a cut. 2-D says he's happy. Russel said nothing but nodded. Business as usual.",
+            attachedTrack: {
+                trackId: 'feel-good-inc',
+                title: 'Feel Good Inc.',
+                artist: 'Gorillaz',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg',
+            },
+            timestamp: '6h ago',
+            fullTimestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 91000,
+            commentsCount: 4300,
+            repostsCount: 22000,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+        {
+            id: 'gp-2',
+            author: {
+                id: 'artist-4',
+                name: 'Gorillaz',
+                avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Gorillaz_-_Demon_Days_Live_-_20050523.jpg/800px-Gorillaz_-_Demon_Days_Live_-_20050523.jpg',
+                isVerified: true,
+                isArtist: true,
+            },
+            text: "Song Machine was always meant to be a living, breathing thing — new collaborators, new sounds, no rules. We're not done yet.",
+            attachedTrack: null,
+            timestamp: '4d ago',
+            fullTimestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toLocaleString(),
+            likesCount: 47000,
+            commentsCount: 2100,
+            repostsCount: 9800,
+            isLiked: false, isReposted: false, isSaved: false,
+            comments: [],
+        },
+    ],
+};
+
+// ─── COMMENTS ──────────────────────────────────────────────
 
 export const MOCK_COMMENTS = [
     {
@@ -393,7 +572,6 @@ export const MOCK_COMMENTS = [
     },
     {
         id: 'c-4',
-        /** Same as demo logged-in user — triggers Edit/Delete menu in UI */
         authorId: 'user-4',
         authorUsername: 'orrin_demo',
         author: 'Demo User',
@@ -407,25 +585,6 @@ export const MOCK_COMMENTS = [
 ];
 
 // ─── NOTES ─────────────────────────────────────────────────
-
-/**
- * @typedef {Object} Note
- * @property {string}       id
- * @property {string}       authorId
- * @property {string}       authorUsername
- * @property {string}       author
- * @property {string}       avatar
- * @property {string}       text
- * @property {string}       type             - 'public' | 'private'
- * @property {string}       timestamp
- * @property {Object|null}  trackContext
- * @property {string|null}  timecode
- * @property {number}       likesCount
- * @property {boolean}      isLikedByMe
- * @property {Object|null}  lyricsLineReference - Attached lyrics line quote
- * @property {string}       lyricsLineReference.text
- * @property {number|null}  lyricsLineReference.time  - Seconds into track
- */
 
 export const NOTES_RECOMMENDED = [
     {
@@ -456,10 +615,7 @@ export const NOTES_RECOMMENDED = [
         timecode: '2:40',
         likesCount: 29,
         isLikedByMe: true,
-        lyricsLineReference: {
-            text: "Not shy of a spark",
-            time: null,
-        },
+        lyricsLineReference: { text: "Not shy of a spark", time: null },
     },
     {
         id: 'nr-3',
@@ -507,17 +663,13 @@ export const NOTES_FROM_FRIENDS = [
         timecode: null,
         likesCount: 12,
         isLikedByMe: true,
-        lyricsLineReference: {
-            text: "I'm going back to 505",
-            time: 0,
-        },
+        lyricsLineReference: { text: "I'm going back to 505", time: 0 },
     },
 ];
 
 export const NOTES_OWN = [
     {
         id: 'no-1',
-        /** Matches demo logged-in user — triggers Edit/Delete menu */
         authorId: 'user-4',
         authorUsername: 'orrin_demo',
         author: 'You',
@@ -529,10 +681,7 @@ export const NOTES_OWN = [
         timecode: '0:08',
         likesCount: 0,
         isLikedByMe: false,
-        lyricsLineReference: {
-            text: "Stop and wait a sec",
-            time: null,
-        },
+        lyricsLineReference: { text: "Stop and wait a sec", time: null },
     },
     {
         id: 'no-2',
@@ -551,7 +700,7 @@ export const NOTES_OWN = [
     },
 ];
 
-// ─── ARTIST NOTES (legacy — used on ArtistPage) ────────────
+// ─── ARTIST NOTES (used on ArtistPage Notes tab) ───────────
 
 export const mockArtistNotes = [
     {
@@ -601,7 +750,7 @@ export const mockArtistNotes = [
     },
 ];
 
-// ─── POSTS (FEED) ──────────────────────────────────────────
+// ─── POSTS (USER FEED) ─────────────────────────────────────
 
 const mockCommentsFeed = [
     {
@@ -634,7 +783,7 @@ export const mockPosts = [
     {
         id: 'post-1',
         author: { id: 'user-1', name: 'Alex Mercer',    avatar: 'https://i.pravatar.cc/150?img=11', isVerified: true,  isArtist: false },
-        text: "Rediscovering 505 tonight and honestly it hits different at 2am. There's something about the line \"I'm going back to 505\" that feels like the entire concept of missing someone condensed into seven words. Alex Turner is just built different.",
+        text: "Rediscovering 505 tonight and honestly it hits different at 2am. There's something about the line \"I'm going back to 505\" that feels like the entire concept of missing someone condensed into seven words.",
         attachedTrack: { trackId: '505-arctic-monkeys', title: '505', artist: 'Arctic Monkeys', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png' },
         timestamp: '2h ago',
         fullTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toLocaleString(),
@@ -645,7 +794,7 @@ export const mockPosts = [
     {
         id: 'post-2',
         author: { id: 'user-2', name: 'Katya Voloshyn', avatar: 'https://i.pravatar.cc/150?img=47', isVerified: false, isArtist: false },
-        text: "Just got tickets to see Chase Atlantic in Kyiv next month. Cannot believe they're actually coming here. \"Swim\" on the setlist would literally destroy me.",
+        text: "Just got tickets to see Chase Atlantic in Kyiv next month. \"Swim\" on the setlist would literally destroy me.",
         attachedTrack: { trackId: 'swim', title: 'Swim', artist: 'Chase Atlantic', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg' },
         timestamp: '4h ago',
         fullTimestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toLocaleString(),
@@ -656,7 +805,7 @@ export const mockPosts = [
     {
         id: 'post-3',
         author: { id: 'user-3', name: 'Ivan Kovalchuk', avatar: 'https://i.pravatar.cc/150?img=53', isVerified: false, isArtist: false },
-        text: "Unpopular opinion: Master of Puppets is actually the most emotionally complex thrash metal track ever written. People focus on the aggression but miss how vulnerable the bridge is — it's literally about addiction and loss of self. Hetfield was writing poetry and the world wasn't ready.\n\nAlso the guitar solo section is probably top 5 in all of rock history. Fight me.",
+        text: "Unpopular opinion: Master of Puppets is the most emotionally complex thrash metal track ever written. The guitar solo section is top 5 in all of rock history. Fight me.",
         attachedTrack: { trackId: 'master-of-puppets', title: 'Master of Puppets', artist: 'Metallica', cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg' },
         timestamp: '8h ago',
         fullTimestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toLocaleString(),
@@ -667,7 +816,7 @@ export const mockPosts = [
     {
         id: 'post-4',
         author: { id: 'user-1', name: 'Alex Mercer',    avatar: 'https://i.pravatar.cc/150?img=11', isVerified: true,  isArtist: false },
-        text: "The Gorillaz discography is genuinely one of the most creative bodies of work in modern music. From the self-titled to Song Machine — they just never stopped experimenting. Feel Good Inc. being almost 20 years old and still sounding futuristic is wild.",
+        text: "The Gorillaz discography is genuinely one of the most creative bodies of work in modern music. Feel Good Inc. being almost 20 years old and still sounding futuristic is wild.",
         attachedTrack: { trackId: 'feel-good-inc', title: 'Feel Good Inc.', artist: 'Gorillaz', cover: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg' },
         timestamp: '12h ago',
         fullTimestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toLocaleString(),
@@ -702,11 +851,11 @@ export const mockPosts = [
 // ─── NOTIFICATIONS ─────────────────────────────────────────
 
 export const mockNotifications = [
-    { id: 'notif-1', notification_type: 'like_post',    text: 'Katya Voloshyn liked your post about 505',               is_read: false, created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString() },
-    { id: 'notif-2', notification_type: 'follow',       text: 'Ivan Kovalchuk started following you',                    is_read: false, created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
-    { id: 'notif-3', notification_type: 'reply',        text: 'Alex Mercer commented: "The bass line in this is insane"', is_read: true,  created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString() },
-    { id: 'notif-4', notification_type: 'new_track',    text: 'Arctic Monkeys released a new track you might like',      is_read: true,  created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'notif-5', notification_type: 'like_comment', text: 'Demo User liked your comment',                            is_read: true,  created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'notif-1', notification_type: 'like_post',    text: 'Katya Voloshyn liked your post about 505',                is_read: false, created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString() },
+    { id: 'notif-2', notification_type: 'follow',       text: 'Ivan Kovalchuk started following you',                     is_read: false, created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
+    { id: 'notif-3', notification_type: 'reply',        text: 'Alex Mercer commented: "The bass line in this is insane"',  is_read: true,  created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString() },
+    { id: 'notif-4', notification_type: 'new_track',    text: 'Arctic Monkeys released a new track you might like',       is_read: true,  created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'notif-5', notification_type: 'like_comment', text: 'Demo User liked your comment',                             is_read: true,  created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
 ];
 
 // ─── FOLLOWERS ─────────────────────────────────────────────
@@ -723,5 +872,5 @@ export const mockUserProfiles = {
     'alex_rocks':  { ...mockUsers[0], cover_photo: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80', followers_count: 1542, following_count: 234, is_following: false },
     'katya_music': { ...mockUsers[1], cover_photo: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&q=80', followers_count: 320,  following_count: 180, is_following: true  },
     'metal_ivan':  { ...mockUsers[2], cover_photo: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80', followers_count: 887,  following_count: 421, is_following: false },
-    'orrin_demo':  { ...mockUsers[3], cover_photo: null,                                                                        followers_count: 12,   following_count: 44,  is_following: false },
+    'orrin_demo':  { ...mockUsers[3], cover_photo: null,                                                                         followers_count: 12,   following_count: 44,  is_following: false },
 };

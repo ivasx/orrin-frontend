@@ -5,6 +5,7 @@ import {
     mockTracks,
     mockArtists,
     mockPosts,
+    mockArtistPosts,
     mockUsers,
     mockNotifications,
     mockFollowers,
@@ -46,17 +47,17 @@ export const getCurrentUser = async () => {
     await delay(300);
     const raw = mockUsers[3]; // orrin_demo
     return {
-        id:             raw.id,
-        pk:             raw.pk,
-        username:       raw.username,
-        name:           raw.name,
-        first_name:     raw.first_name,
-        last_name:      raw.last_name,
-        avatar:         raw.avatar,
-        avatarUrl:      raw.avatar,
-        bio:            raw.bio,
+        id:              raw.id,
+        pk:              raw.pk,
+        username:        raw.username,
+        name:            raw.name,
+        first_name:      raw.first_name,
+        last_name:       raw.last_name,
+        avatar:          raw.avatar,
+        avatarUrl:       raw.avatar,
+        bio:             raw.bio,
         managed_artists: raw.managed_artists,
-        is_verified:    raw.is_verified,
+        is_verified:     raw.is_verified,
     };
 };
 
@@ -94,6 +95,17 @@ export const getArtists = async () => {
     return mockArtists.map(normalizeArtistData).filter(Boolean);
 };
 
+/**
+ * Returns full artist data including all fields needed by every ArtistPage tab:
+ *   - popularTracks  → Songs tab
+ *   - discography    → preserved in normalizeArtistData → Discography tab
+ *   - members        → preserved in normalizeArtistData → Members tab
+ *   - description    → preserved (mapped from `about`) → About + Songs bio
+ *   - history        → preserved → History tab
+ *   - socials        → preserved → About tab
+ *   - notes          → Notes tab
+ *   - similarArtists → "Fans also like" section
+ */
 export const getArtistById = async (slugOrId) => {
     await delay();
     const artist = mockArtists.find(
@@ -101,10 +113,18 @@ export const getArtistById = async (slugOrId) => {
     );
     if (!artist) throw new Error(`Artist not found: ${slugOrId}`);
 
+    // Normalize preserves members, discography, socials, history, description etc.
     const normalized = normalizeArtistData(artist);
+
+    // Attach tracks that belong to this artist
+    const popularTracks = mockTracks
+        .filter((t) => t.artist?.id === artist.id || t.artist?.slug === artist.slug)
+        .map(normalizeTrackData)
+        .filter(Boolean);
+
     return {
         ...normalized,
-        popularTracks: mockTracks.slice(0, 5).map(normalizeTrackData).filter(Boolean),
+        popularTracks,
         notes: mockArtistNotes,
         similarArtists: mockArtists
             .filter((a) => a.id !== artist.id)
@@ -112,7 +132,8 @@ export const getArtistById = async (slugOrId) => {
             .map((a) => ({
                 id:       a.slug,
                 name:     a.name,
-                imageUrl: a.image_url,
+                // Use `image` (the primary mock field) so the card gets a real photo
+                imageUrl: a.image || a.image_url,
                 subtitle: a.genre,
             })),
     };
@@ -120,11 +141,7 @@ export const getArtistById = async (slugOrId) => {
 
 /**
  * Update an artist's profile fields (name, description, image, banner).
- * In mock mode we just echo back a merged object so the query cache updates.
- *
- * @param {string}   slugOrId - Artist slug or id.
- * @param {FormData} formData - Fields: name, description, image, banner.
- * @returns {Promise<Object>} Updated normalized artist data.
+ * In mock mode we echo back a merged object so the query cache updates.
  */
 export const updateArtistProfile = async (slugOrId, formData) => {
     await delay(700);
@@ -134,8 +151,7 @@ export const updateArtistProfile = async (slugOrId, formData) => {
     );
     if (!artist) throw new Error(`Artist not found: ${slugOrId}`);
 
-    // Extract text fields (FormData in browser) — handle plain objects too
-    const getName  = (key) =>
+    const getName = (key) =>
         formData instanceof FormData ? formData.get(key) : formData[key];
 
     const patch = {
@@ -143,30 +159,43 @@ export const updateArtistProfile = async (slugOrId, formData) => {
         description: getName('description') || artist.description,
     };
 
-    // Handle file previews — in real code the server returns a URL; in mock we
-    // generate an object URL so the UI reflects the newly picked file.
     const imageFile  = formData instanceof FormData ? formData.get('image')  : null;
     const bannerFile = formData instanceof FormData ? formData.get('banner') : null;
 
-    if (imageFile  instanceof File) patch.image_url   = URL.createObjectURL(imageFile);
-    if (bannerFile instanceof File) patch.banner_url  = URL.createObjectURL(bannerFile);
+    if (imageFile  instanceof File) {
+        patch.image     = URL.createObjectURL(imageFile);
+        patch.image_url = patch.image;
+    }
+    if (bannerFile instanceof File) {
+        patch.banner_url = URL.createObjectURL(bannerFile);
+    }
 
-    // Merge into the mock store so subsequent reads reflect the change
     Object.assign(artist, patch);
-
     return normalizeArtistData({ ...artist, ...patch });
 };
 
 /**
- * Fetch posts for a given artist.
+ * Returns posts authored by the artist or their band members.
+ * Uses the `mockArtistPosts` map keyed by artist slug so the Posts tab
+ * never shows generic user-feed content.
  *
  * @param {string} slugOrId
  * @returns {Promise<Array>}
  */
 export const getArtistPosts = async (slugOrId) => {
     await delay(400);
-    // Return a slice of mock posts attributed to the artist
-    return mockPosts.slice(0, 4).map(normalizePostData).filter(Boolean);
+
+    const artist = mockArtists.find(
+        (a) => a.id === slugOrId || a.slug === slugOrId,
+    );
+    if (!artist) return [];
+
+    const posts = mockArtistPosts[artist.slug] || [];
+
+    // Return raw post objects — normalizePostData would strip the rich
+    // `author` object (isArtist, isVerified) so we return as-is and let
+    // the FeedPost component handle display.
+    return posts;
 };
 
 // ─── FEED & POSTS ─────────────────────────────────────────────────────────────
@@ -181,8 +210,8 @@ export const getFeedPosts = async ({ type, sort, contentType, pageParam = 1 } = 
 
     if (sort === 'popular') posts = posts.sort((a, b) => b.likesCount - a.likesCount);
 
-    const pageSize = 4;
-    const start    = (pageParam - 1) * pageSize;
+    const pageSize  = 4;
+    const start     = (pageParam - 1) * pageSize;
     const pagePosts = posts.slice(start, start + pageSize);
 
     return {
@@ -230,7 +259,7 @@ export const addComment = async (postId, text) => {
         id:     'comment-new-' + Date.now(),
         author: { id: mockUsers[3].id, name: mockUsers[3].name, avatar: mockUsers[3].avatar },
         text,
-        timestamp: 'just now',
+        timestamp:   'just now',
         likes_count: 0,
     };
 };
@@ -245,7 +274,7 @@ export const searchGlobal = async (query) => {
     const tracks = mockTracks
         .filter((t) =>
             t.title.toLowerCase().includes(q) ||
-            t.artist.name.toLowerCase().includes(q),
+            t.artist?.name?.toLowerCase().includes(q),
         )
         .map(normalizeTrackData).filter(Boolean);
 
@@ -269,14 +298,6 @@ export const getUserProfile = async (usernameOrId) => {
     return profile;
 };
 
-/**
- * Update the current user's own profile.
- * Accepts a FormData (with optional avatar file) or a plain object.
- *
- * @param {string}           username
- * @param {FormData|Object}  payload
- * @returns {Promise<Object>} Updated profile fields.
- */
 export const updateUserProfile = async (username, payload) => {
     await delay(700);
 
@@ -290,9 +311,7 @@ export const updateUserProfile = async (username, payload) => {
         payload instanceof FormData ? payload.get(key) : payload[key];
 
     const patch = {};
-
-    const fields = ['first_name', 'last_name', 'bio', 'location', 'website'];
-    fields.forEach((field) => {
+    ['first_name', 'last_name', 'bio', 'location', 'website'].forEach((field) => {
         const val = get(field);
         if (val !== null && val !== undefined) patch[field] = val;
     });
@@ -323,9 +342,9 @@ export const getUserFollowers = async (username) => {
 
 // ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
 
-export const getNotifications = async () => { await delay(); return mockNotifications; };
-export const markNotificationAsRead    = async (id) => { await delay(150); return { success: true }; };
-export const markAllNotificationsAsRead = async ()  => { await delay(200); return { success: true }; };
+export const getNotifications           = async () => { await delay(); return mockNotifications; };
+export const markNotificationAsRead     = async (id) => { await delay(150); return { success: true }; };
+export const markAllNotificationsAsRead = async ()   => { await delay(200); return { success: true }; };
 
 // ─── AUTH HELPERS ─────────────────────────────────────────────────────────────
 
