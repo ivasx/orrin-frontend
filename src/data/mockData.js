@@ -2,8 +2,6 @@
 // ORRIN — COMPREHENSIVE MOCK DATA
 // ============================================================
 
-// ─── ARTISTS ───────────────────────────────────────────────
-
 export const mockArtists = [
     {
         id: 'artist-1',
@@ -117,8 +115,6 @@ export const mockArtists = [
         type: 'group',
     },
 ];
-
-// ─── TRACKS ────────────────────────────────────────────────
 
 const AUDIO = {
     s505:      '/songs/505 - Arctic Monkeys.m4a',
@@ -293,8 +289,6 @@ export const mockTracks = [
     },
 ];
 
-// ─── USERS ─────────────────────────────────────────────────
-
 export const mockUsers = [
     {
         id: 'user-1', pk: 1,
@@ -337,11 +331,6 @@ export const mockUsers = [
         managed_artists: ['arctic-monkeys'],
     },
 ];
-
-// ─── ARTIST POSTS ──────────────────────────────────────────
-// Keyed by artist slug. Each entry has an `author` that represents
-// the artist account (or a named band member), ensuring posts tab
-// only shows content from the artist themselves.
 
 export const mockArtistPosts = {
     'arctic-monkeys': [
@@ -531,8 +520,6 @@ export const mockArtistPosts = {
     ],
 };
 
-// ─── COMMENTS ──────────────────────────────────────────────
-
 export const MOCK_COMMENTS = [
     {
         id: 'c-1',
@@ -583,8 +570,6 @@ export const MOCK_COMMENTS = [
         isLikedByMe: false,
     },
 ];
-
-// ─── NOTES ─────────────────────────────────────────────────
 
 export const NOTES_RECOMMENDED = [
     {
@@ -700,8 +685,6 @@ export const NOTES_OWN = [
     },
 ];
 
-// ─── ARTIST NOTES (used on ArtistPage Notes tab) ───────────
-
 export const mockArtistNotes = [
     {
         id: 'note-1',
@@ -749,8 +732,6 @@ export const mockArtistNotes = [
         lyricsLineReference: null,
     },
 ];
-
-// ─── POSTS (USER FEED) ─────────────────────────────────────
 
 const mockCommentsFeed = [
     {
@@ -848,8 +829,6 @@ export const mockPosts = [
     },
 ];
 
-// ─── NOTIFICATIONS ─────────────────────────────────────────
-
 export const mockNotifications = [
     { id: 'notif-1', notification_type: 'like_post',    text: 'Katya Voloshyn liked your post about 505',                is_read: false, created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString() },
     { id: 'notif-2', notification_type: 'follow',       text: 'Ivan Kovalchuk started following you',                     is_read: false, created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
@@ -858,15 +837,11 @@ export const mockNotifications = [
     { id: 'notif-5', notification_type: 'like_comment', text: 'Demo User liked your comment',                             is_read: true,  created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
 ];
 
-// ─── FOLLOWERS ─────────────────────────────────────────────
-
 export const mockFollowers = [
     { id: 'user-2', username: 'katya_music', first_name: 'Katya', avatar: 'https://i.pravatar.cc/150?img=47' },
     { id: 'user-3', username: 'metal_ivan',  first_name: 'Ivan',  avatar: 'https://i.pravatar.cc/150?img=53' },
     { id: 'user-4', username: 'orrin_demo',  first_name: 'Demo',  avatar: 'https://i.pravatar.cc/150?img=32' },
 ];
-
-// ─── USER PROFILES ─────────────────────────────────────────
 
 export const mockUserProfiles = {
     'alex_rocks':  { ...mockUsers[0], cover_photo: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80', followers_count: 1542, following_count: 234, is_following: false },
@@ -874,3 +849,133 @@ export const mockUserProfiles = {
     'metal_ivan':  { ...mockUsers[2], cover_photo: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80', followers_count: 887,  following_count: 421, is_following: false },
     'orrin_demo':  { ...mockUsers[3], cover_photo: null,                                                                         followers_count: 12,   following_count: 44,  is_following: false },
 };
+
+export const mockPlaylists = [
+    {
+        id: 'pl-1',
+        name: 'Late Night Drive',
+        description: 'For the 2am city runs',
+        cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80',
+        trackCount: 18,
+        owner: { id: 'user-4', username: 'orrin_demo', name: 'Demo User' },
+        isPublic: true,
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        id: 'pl-2',
+        name: 'Focus Mode',
+        description: 'No lyrics, no distractions',
+        cover: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&q=80',
+        trackCount: 31,
+        owner: { id: 'user-4', username: 'orrin_demo', name: 'Demo User' },
+        isPublic: false,
+        createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        id: 'pl-3',
+        name: 'Sheffield Classics',
+        description: 'All things Arctic Monkeys',
+        cover: 'https://images.prom.ua/3008024129_w640_h320_plakat-arctic-monkeys.jpg',
+        trackCount: 9,
+        owner: { id: 'user-4', username: 'orrin_demo', name: 'Demo User' },
+        isPublic: true,
+        createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        id: 'pl-4',
+        name: 'Heavy Rotation',
+        description: 'What the algorithm keeps throwing at me',
+        cover: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&q=80',
+        trackCount: 44,
+        owner: { id: 'user-4', username: 'orrin_demo', name: 'Demo User' },
+        isPublic: true,
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+];
+
+export const mockSavedAlbums = [
+    {
+        id: 'salb-1',
+        title: 'AM',
+        artist: { id: 'artist-1', slug: 'arctic-monkeys', name: 'Arctic Monkeys' },
+        cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png',
+        year: 2013,
+        trackCount: 12,
+        savedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        id: 'salb-2',
+        title: 'Demon Days',
+        artist: { id: 'artist-4', slug: 'gorillaz', name: 'Gorillaz' },
+        cover: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg',
+        year: 2005,
+        trackCount: 15,
+        savedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        id: 'salb-3',
+        title: 'Master of Puppets',
+        artist: { id: 'artist-2', slug: 'metallica', name: 'Metallica' },
+        cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg',
+        year: 1986,
+        trackCount: 8,
+        savedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        id: 'salb-4',
+        title: 'Whatever People Say I Am...',
+        artist: { id: 'artist-1', slug: 'arctic-monkeys', name: 'Arctic Monkeys' },
+        cover: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png',
+        year: 2006,
+        trackCount: 13,
+        savedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        id: 'salb-5',
+        title: 'Beauty in Death',
+        artist: { id: 'artist-3', slug: 'chase-atlantic', name: 'Chase Atlantic' },
+        cover: 'https://upload.wikimedia.org/wikipedia/en/6/6d/Chase_Atlantic_-_Beauty_in_Death.jpg',
+        year: 2021,
+        trackCount: 14,
+        savedAt: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+];
+
+export const mockFollowingArtists = [
+    {
+        id: 'artist-1',
+        slug: 'arctic-monkeys',
+        name: 'Arctic Monkeys',
+        imageUrl: 'https://images.prom.ua/3008024129_w640_h320_plakat-arctic-monkeys.jpg',
+        genre: 'Indie Rock, Post-Punk Revival',
+        monthly_listeners: 40400000,
+        is_verified: true,
+    },
+    {
+        id: 'artist-4',
+        slug: 'gorillaz',
+        name: 'Gorillaz',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Gorillaz_-_Demon_Days_Live_-_20050523.jpg/800px-Gorillaz_-_Demon_Days_Live_-_20050523.jpg',
+        genre: 'Alternative Rock, Art Pop',
+        monthly_listeners: 25200000,
+        is_verified: true,
+    },
+    {
+        id: 'artist-2',
+        slug: 'metallica',
+        name: 'Metallica',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Metallica_at_The_O2_Arena_London_2008.jpg/800px-Metallica_at_The_O2_Arena_London_2008.jpg',
+        genre: 'Heavy Metal, Thrash Metal',
+        monthly_listeners: 28100000,
+        is_verified: true,
+    },
+    {
+        id: 'artist-3',
+        slug: 'chase-atlantic',
+        name: 'Chase Atlantic',
+        imageUrl: 'https://i.pravatar.cc/400?img=15',
+        genre: 'Alternative Pop, Dark Pop',
+        monthly_listeners: 16900000,
+        is_verified: true,
+    },
+];

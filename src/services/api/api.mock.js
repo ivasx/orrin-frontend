@@ -1,6 +1,3 @@
-// api.mock.js — Full mock API covering all Orrin endpoints
-// Usage: set VITE_USE_MOCK_DATA=true && VITE_USE_MOCK_AUTH=true in .env.local
-
 import {
     mockTracks,
     mockArtists,
@@ -11,6 +8,9 @@ import {
     mockFollowers,
     mockUserProfiles,
     mockArtistNotes,
+    mockPlaylists,
+    mockSavedAlbums,
+    mockFollowingArtists,
 } from '../../data/mockData.js';
 import {
     normalizeTrackData,
@@ -19,10 +19,7 @@ import {
     normalizeUserData,
 } from '../../constants/fallbacks.js';
 
-// Simulate realistic network latency
 const delay = (ms = 350) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// ─── AUTH ────────────────────────────────────────────────────────────────────
 
 export const loginUser = async (credentials) => {
     await delay(600);
@@ -45,7 +42,7 @@ export const registerUser = async (userData) => {
 
 export const getCurrentUser = async () => {
     await delay(300);
-    const raw = mockUsers[3]; // orrin_demo
+    const raw = mockUsers[3];
     return {
         id:              raw.id,
         pk:              raw.pk,
@@ -60,8 +57,6 @@ export const getCurrentUser = async () => {
         is_verified:     raw.is_verified,
     };
 };
-
-// ─── TRACKS ──────────────────────────────────────────────────────────────────
 
 export const getTracks = async () => {
     await delay();
@@ -88,24 +83,51 @@ export const getUserFavorites = async () => { await delay(); return mockTracks.f
 export const getUserHistory   = async () => { await delay(); return [...mockTracks].reverse().map(normalizeTrackData).filter(Boolean); };
 export const getFriendsActivity = async () => { await delay(); return mockTracks.slice(0, 6).map(normalizeTrackData).filter(Boolean); };
 
-// ─── ARTISTS ─────────────────────────────────────────────────────────────────
+export const getLikedSongs = async () => {
+    await delay(400);
+    return mockTracks.filter((t) => t.is_liked).map(normalizeTrackData).filter(Boolean);
+};
+
+export const getUserPlaylists = async () => {
+    await delay(350);
+    return mockPlaylists;
+};
+
+export const getSavedAlbums = async () => {
+    await delay(350);
+    return mockSavedAlbums;
+};
+
+export const getFollowingArtists = async () => {
+    await delay(350);
+    return mockFollowingArtists;
+};
+
+export const createPlaylist = async (formData) => {
+    await delay(700);
+    const getName = (key) => formData instanceof FormData ? formData.get(key) : formData[key];
+    const imageFile = formData instanceof FormData ? formData.get('image') : null;
+
+    const newPlaylist = {
+        id: 'pl-new-' + Date.now(),
+        name: getName('name') || 'New Playlist',
+        description: getName('description') || '',
+        cover: imageFile instanceof File ? URL.createObjectURL(imageFile) : null,
+        trackCount: 0,
+        owner: { id: mockUsers[3].id, username: mockUsers[3].username, name: mockUsers[3].name },
+        isPublic: true,
+        createdAt: new Date().toISOString(),
+    };
+
+    mockPlaylists.unshift(newPlaylist);
+    return newPlaylist;
+};
 
 export const getArtists = async () => {
     await delay();
     return mockArtists.map(normalizeArtistData).filter(Boolean);
 };
 
-/**
- * Returns full artist data including all fields needed by every ArtistPage tab:
- *   - popularTracks  → Songs tab
- *   - discography    → preserved in normalizeArtistData → Discography tab
- *   - members        → preserved in normalizeArtistData → Members tab
- *   - description    → preserved (mapped from `about`) → About + Songs bio
- *   - history        → preserved → History tab
- *   - socials        → preserved → About tab
- *   - notes          → Notes tab
- *   - similarArtists → "Fans also like" section
- */
 export const getArtistById = async (slugOrId) => {
     await delay();
     const artist = mockArtists.find(
@@ -113,10 +135,8 @@ export const getArtistById = async (slugOrId) => {
     );
     if (!artist) throw new Error(`Artist not found: ${slugOrId}`);
 
-    // Normalize preserves members, discography, socials, history, description etc.
     const normalized = normalizeArtistData(artist);
 
-    // Attach tracks that belong to this artist
     const popularTracks = mockTracks
         .filter((t) => t.artist?.id === artist.id || t.artist?.slug === artist.slug)
         .map(normalizeTrackData)
@@ -132,17 +152,12 @@ export const getArtistById = async (slugOrId) => {
             .map((a) => ({
                 id:       a.slug,
                 name:     a.name,
-                // Use `image` (the primary mock field) so the card gets a real photo
                 imageUrl: a.image || a.image_url,
                 subtitle: a.genre,
             })),
     };
 };
 
-/**
- * Update an artist's profile fields (name, description, image, banner).
- * In mock mode we echo back a merged object so the query cache updates.
- */
 export const updateArtistProfile = async (slugOrId, formData) => {
     await delay(700);
 
@@ -174,14 +189,6 @@ export const updateArtistProfile = async (slugOrId, formData) => {
     return normalizeArtistData({ ...artist, ...patch });
 };
 
-/**
- * Returns posts authored by the artist or their band members.
- * Uses the `mockArtistPosts` map keyed by artist slug so the Posts tab
- * never shows generic user-feed content.
- *
- * @param {string} slugOrId
- * @returns {Promise<Array>}
- */
 export const getArtistPosts = async (slugOrId) => {
     await delay(400);
 
@@ -191,14 +198,8 @@ export const getArtistPosts = async (slugOrId) => {
     if (!artist) return [];
 
     const posts = mockArtistPosts[artist.slug] || [];
-
-    // Return raw post objects — normalizePostData would strip the rich
-    // `author` object (isArtist, isVerified) so we return as-is and let
-    // the FeedPost component handle display.
     return posts;
 };
-
-// ─── FEED & POSTS ─────────────────────────────────────────────────────────────
 
 export const getFeedPosts = async ({ type, sort, contentType, pageParam = 1 } = {}) => {
     await delay(500);
@@ -264,8 +265,6 @@ export const addComment = async (postId, text) => {
     };
 };
 
-// ─── SEARCH ───────────────────────────────────────────────────────────────────
-
 export const searchGlobal = async (query) => {
     await delay(300);
     const q = query.toLowerCase().trim();
@@ -284,8 +283,6 @@ export const searchGlobal = async (query) => {
 
     return { tracks, artists };
 };
-
-// ─── USERS & PROFILES ─────────────────────────────────────────────────────────
 
 export const getUserProfile = async (usernameOrId) => {
     await delay();
@@ -340,13 +337,9 @@ export const getUserFollowers = async (username) => {
     return mockFollowers;
 };
 
-// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
-
 export const getNotifications           = async () => { await delay(); return mockNotifications; };
 export const markNotificationAsRead     = async (id) => { await delay(150); return { success: true }; };
 export const markAllNotificationsAsRead = async ()   => { await delay(200); return { success: true }; };
-
-// ─── AUTH HELPERS ─────────────────────────────────────────────────────────────
 
 export const requestPasswordReset = async (email) => { await delay(600); return { success: true }; };
 export const confirmPasswordReset = async (uid, token, newPassword) => { await delay(600); return { success: true }; };

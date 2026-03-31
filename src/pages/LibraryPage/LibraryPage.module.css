@@ -1,0 +1,430 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-bottom: 80px;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background: linear-gradient(135deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 32px;
+    border: 1px solid var(--color-border-subtle);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 0% 50%, var(--color-primary-dim) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.heroCoverGrid {
+    flex-shrink: 0;
+    width: 160px;
+    height: 160px;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-accent-lg);
+    position: relative;
+    z-index: 1;
+}
+
+.heroCoverMosaic {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    width: 100%;
+    height: 100%;
+}
+
+.heroCoverTile {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.heroCoverBlank {
+    background: var(--color-surface-3);
+}
+
+.heroCoverPlaceholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-surface-3) 0%, var(--color-surface-2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.heroCoverIcon {
+    color: var(--color-primary);
+    opacity: 0.6;
+}
+
+.heroContent {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.heroMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.heroEyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-primary);
+}
+
+.heroTitle {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin: 0;
+    letter-spacing: -0.04em;
+    line-height: 1;
+}
+
+.heroSubtitle {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    font-weight: 500;
+}
+
+.likedTracksSection {
+    margin-top: -16px;
+}
+
+.tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--color-border-main);
+    padding-bottom: 0;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 10px 18px;
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    white-space: nowrap;
+}
+
+.tab:hover {
+    color: var(--color-text-secondary);
+}
+
+.tabActive {
+    color: var(--color-text-main);
+    border-bottom-color: var(--color-primary);
+}
+
+.tabIcon {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.tabActive .tabIcon {
+    opacity: 1;
+    color: var(--color-primary);
+}
+
+.tabContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 4px;
+}
+
+.tabActions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 8px;
+}
+
+.cardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+}
+
+.playlistCard,
+.albumCard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.playlistCoverWrapper,
+.albumCoverWrapper {
+    position: relative;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: var(--color-surface-2);
+}
+
+.playlistCover,
+.albumCover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal), filter var(--transition-normal);
+    display: block;
+}
+
+.playlistCard:hover .playlistCover,
+.albumCard:hover .albumCover {
+    transform: scale(1.04);
+    filter: brightness(0.75);
+}
+
+.playlistCoverFallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-surface-3) 0%, var(--color-surface-2) 100%);
+}
+
+.playlistCoverIcon {
+    color: var(--color-primary);
+    opacity: 0.5;
+}
+
+.playlistPlayBtn,
+.albumPlayBtn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: none;
+    color: var(--color-text-inverse);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
+    box-shadow: var(--shadow-accent);
+}
+
+.playlistCard:hover .playlistPlayBtn,
+.albumCard:hover .albumPlayBtn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.playlistPlayBtn:hover,
+.albumPlayBtn:hover {
+    background: var(--color-primary-hover);
+}
+
+.playlistInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 2px;
+}
+
+.playlistName {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlistMeta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.playlistMetaIcon {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+}
+
+.playlistMetaText {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+}
+
+.albumInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 2px;
+}
+
+.albumTitle {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.albumArtist {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.albumYear {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.artistGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px;
+    justify-items: center;
+}
+
+.loadingState {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 200px;
+    text-align: center;
+}
+
+.emptyIcon {
+    color: var(--color-primary);
+    opacity: 0.3;
+}
+
+.emptyText {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    font-weight: 500;
+}
+
+.guestPrompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    min-height: 60vh;
+    padding: 40px;
+}
+
+.guestIcon {
+    color: var(--color-primary);
+    opacity: 0.5;
+}
+
+.guestTitle {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin: 0;
+    letter-spacing: -0.03em;
+}
+
+.guestText {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px 20px;
+        gap: 20px;
+        border-radius: var(--border-radius-sm);
+    }
+
+    .heroCoverGrid {
+        width: 120px;
+        height: 120px;
+    }
+
+    .heroTitle {
+        font-size: 1.8rem;
+    }
+
+    .cardGrid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+
+    .tab {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        gap: 28px;
+    }
+
+    .cardGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .artistGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .tabActions {
+        justify-content: flex-start;
+    }
+}

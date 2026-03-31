@@ -81,7 +81,6 @@ const executeFetch = async (endpoint, options, token) => {
 
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
-    // Only set Content-Type for JSON — let the browser set it for FormData
     if (!(options.body instanceof FormData)) {
         headers['Content-Type'] = 'application/json';
     }
@@ -122,10 +121,7 @@ export async function fetchJson(endpoint, options = {}) {
     }
 }
 
-// Auth is delegated to services/auth/index.js
 export { loginUser, registerUser, getCurrentUser } from '../auth/index.js';
-
-// ─── TRACKS ──────────────────────────────────────────────────────────────────
 
 export const getTracks = async () => {
     const data = await fetchJson('/api/v1/tracks/');
@@ -143,7 +139,7 @@ export const getTrackBySlug = async (slug) => {
     return normalizeTrackData(data);
 };
 
-export const getUserLibrary   = async () => {
+export const getUserLibrary = async () => {
     const data = await fetchJson('/api/v1/library/');
     return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
 };
@@ -159,7 +155,33 @@ export const getUserHistory = async () => {
     return tracks.map(normalizeTrackData).filter(Boolean);
 };
 
-// ─── ARTISTS ─────────────────────────────────────────────────────────────────
+export const getLikedSongs = async () => {
+    const data = await fetchJson('/api/v1/library/liked/');
+    return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
+};
+
+export const getUserPlaylists = async () => {
+    const data = await fetchJson('/api/v1/library/playlists/');
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const getSavedAlbums = async () => {
+    const data = await fetchJson('/api/v1/library/albums/');
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const getFollowingArtists = async () => {
+    const data = await fetchJson('/api/v1/library/artists/');
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const createPlaylist = async (formData) => {
+    const data = await fetchJson('/api/v1/library/playlists/', {
+        method: 'POST',
+        body:   formData,
+    });
+    return data;
+};
 
 export const getArtists = async () => {
     const data = await fetchJson('/api/v1/artists/');
@@ -171,34 +193,19 @@ export const getArtistById = async (slugOrId) => {
     return normalizeArtistData(data);
 };
 
-/**
- * Update an artist's profile. Accepts a FormData so file uploads work.
- *
- * @param {string}   slugOrId
- * @param {FormData} formData  - Fields: name, description, image, banner.
- * @returns {Promise<Object>}  Normalized artist data.
- */
 export const updateArtistProfile = async (slugOrId, formData) => {
     const data = await fetchJson(`/api/v1/artists/${slugOrId}/`, {
         method: 'PATCH',
-        body:   formData,  // FormData — browser sets Content-Type multipart/form-data
+        body:   formData,
     });
     return normalizeArtistData(data);
 };
 
-/**
- * Get social posts published by an artist.
- *
- * @param {string} slugOrId
- * @returns {Promise<Array>}
- */
 export const getArtistPosts = async (slugOrId) => {
     const data = await fetchJson(`/api/v1/artists/${slugOrId}/posts/`);
     const posts = Array.isArray(data) ? data : (data.results || []);
     return posts.map(normalizePostData).filter(Boolean);
 };
-
-// ─── FEED & POSTS ─────────────────────────────────────────────────────────────
 
 export const getFeedPosts = async ({ type, sort, contentType, pageParam = 1 } = {}) => {
     const params = new URLSearchParams();
@@ -207,9 +214,9 @@ export const getFeedPosts = async ({ type, sort, contentType, pageParam = 1 } = 
     if (contentType) params.append('content_type', contentType);
     if (pageParam)   params.append('page',         pageParam);
 
-    const qs       = params.toString();
-    const data     = await fetchJson(`/api/v1/feed/${qs ? `?${qs}` : ''}`);
-    const posts    = Array.isArray(data) ? data : (data.results || []);
+    const qs    = params.toString();
+    const data  = await fetchJson(`/api/v1/feed/${qs ? `?${qs}` : ''}`);
+    const posts = Array.isArray(data) ? data : (data.results || []);
     return posts.map(normalizePostData);
 };
 
@@ -222,8 +229,6 @@ export const reportPost      = async (postId, reason = 'spam') =>
 
 export const addComment = async (postId, text) =>
     fetchJson(`/api/v1/feed/posts/${postId}/comments/`, { method: 'POST', body: JSON.stringify({ text }) });
-
-// ─── SOCIAL / SEARCH ─────────────────────────────────────────────────────────
 
 export const getFriendsActivity = async () => {
     const data = await fetchJson('/api/v1/friends/activity/');
@@ -241,20 +246,11 @@ export const searchGlobal = async (query) => {
     };
 };
 
-// ─── USERS & PROFILES ─────────────────────────────────────────────────────────
-
 export const getUserProfile = async (username) => {
     const data = await fetchJson(`/api/v1/users/${username}/`);
     return normalizeUserData(data);
 };
 
-/**
- * Update the current user's own profile.
- *
- * @param {string}           username
- * @param {FormData|Object}  payload  - Fields: first_name, last_name, bio, location, website, avatar (File).
- * @returns {Promise<Object>} Updated profile.
- */
 export const updateUserProfile = async (username, payload) => {
     const isFormData = payload instanceof FormData;
     const data = await fetchJson(`/api/v1/users/${username}/`, {
@@ -277,8 +273,6 @@ export const getUserFollowers = async (username) => {
     return Array.isArray(data) ? data.map(normalizeUserData) : [];
 };
 
-// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
-
 export const getNotifications = async () => {
     const data = await fetchJson('/api/v1/notifications/');
     return Array.isArray(data) ? data : (data.results || []);
@@ -286,8 +280,6 @@ export const getNotifications = async () => {
 
 export const markNotificationAsRead     = async (id) => fetchJson(`/api/v1/notifications/${id}/read/`, { method: 'POST' });
 export const markAllNotificationsAsRead = async ()   => fetchJson('/api/v1/notifications/read-all/',   { method: 'POST' });
-
-// ─── AUTH HELPERS ─────────────────────────────────────────────────────────────
 
 export const requestPasswordReset = (email) =>
     fetchJson('/api/v1/auth/password/reset/', {
