@@ -21,8 +21,8 @@ const LoginPage = lazy(() => import('../pages/Auth/Login.jsx'));
 const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword.jsx'));
 const ResetPassword = lazy(() => import('../pages/Auth/ResetPassword.jsx'));
 const UserProfilePage = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
+const PlaylistPage = lazy(() => import('../pages/PlaylistsPage/PlaylistsPage.jsx'));
 
-// Placeholder export for artist management view
 const ArtistDashboardPage = lazy(() => import('../pages/ArtistDashboardPage/ArtistDashboardPage.jsx'));
 
 export default function AppRouter() {
@@ -30,7 +30,6 @@ export default function AppRouter() {
         <Suspense fallback={<VinylLoader />}>
             <Routes>
                 <Route element={<MainLayout />}>
-                    {/* Publicly Accessible Routes */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/feed" element={<FeedPage />} />
                     <Route path="/track/:trackId" element={<TrackPage />} />
@@ -38,27 +37,24 @@ export default function AppRouter() {
                     <Route path="/artist/:artistSlug" element={<ArtistPage />} />
                     <Route path="/user/:userId" element={<UserProfilePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
-                    
-                    {/* Standard Authenticated Routes */}
+
                     <Route element={<ProtectedRoute requireArtistManagement={false} />}>
                         <Route path="/library" element={<LibraryPage />} />
+                        <Route path="/playlist/:id" element={<PlaylistPage />} />
                         <Route path="/favorites" element={<FavoritesPage />} />
                         <Route path="/history" element={<HistoryPage />} />
                     </Route>
 
-                    {/* Artist Manager Protected Routes (Resource-Based Auth) */}
                     <Route element={<ProtectedRoute requireArtistManagement={true} />}>
                         <Route path="/artist/:artistSlug/manage" element={<ArtistDashboardPage />} />
                         <Route path="/artist/:artistSlug/upload" element={<ArtistDashboardPage />} />
                     </Route>
                 </Route>
 
-                {/* Pages without sidebar (404) */}
                 <Route element={<HeaderOnlyLayout />}>
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
 
-                {/* Auth Routes */}
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />

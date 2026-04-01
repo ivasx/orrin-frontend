@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { Play, ListMusic, Globe, Lock, Plus } from 'lucide-react';
 import Button from '../../../components/UI/Button/Button.jsx';
 import Spinner from '../../../components/UI/Spinner/Spinner.jsx';
@@ -8,8 +9,19 @@ import styles from '../LibraryPage.module.css';
 
 function PlaylistCard({ playlist }) {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/playlist/${playlist.id}`);
+    };
+
+    const handlePlayClick = (e) => {
+        e.stopPropagation();
+        navigate(`/playlist/${playlist.id}`);
+    };
+
     return (
-        <div className={styles.playlistCard}>
+        <div className={styles.playlistCard} onClick={handleClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleClick()}>
             <div className={styles.playlistCoverWrapper}>
                 {playlist.cover ? (
                     <img src={playlist.cover} alt={playlist.name} className={styles.playlistCover} />
@@ -18,7 +30,7 @@ function PlaylistCard({ playlist }) {
                         <ListMusic size={28} className={styles.playlistCoverIcon} />
                     </div>
                 )}
-                <button className={styles.playlistPlayBtn} aria-label={`${t('play')} ${playlist.name}`}>
+                <button className={styles.playlistPlayBtn} aria-label={`${t('play')} ${playlist.name}`} onClick={handlePlayClick}>
                     <Play size={20} fill="currentColor" />
                 </button>
             </div>

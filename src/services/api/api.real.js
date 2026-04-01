@@ -165,6 +165,16 @@ export const getUserPlaylists = async () => {
     return Array.isArray(data) ? data : (data.results || []);
 };
 
+export const getPlaylistById = async (id) => {
+    const data = await fetchJson(`/api/v1/library/playlists/${id}/`);
+    return data;
+};
+
+export const deletePlaylist = async (id) => {
+    await fetchJson(`/api/v1/library/playlists/${id}/`, { method: 'DELETE' });
+    return { success: true };
+};
+
 export const getSavedAlbums = async () => {
     const data = await fetchJson('/api/v1/library/albums/');
     return Array.isArray(data) ? data : (data.results || []);

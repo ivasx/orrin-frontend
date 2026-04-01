@@ -31,6 +31,8 @@ export const getUserHistory   = api.getUserHistory   || realApi.getUserHistory;
 
 export const getLikedSongs       = api.getLikedSongs       || realApi.getLikedSongs;
 export const getUserPlaylists    = api.getUserPlaylists    || realApi.getUserPlaylists;
+export const getPlaylistById     = api.getPlaylistById     || realApi.getPlaylistById;
+export const deletePlaylist      = api.deletePlaylist      || realApi.deletePlaylist;
 export const getSavedAlbums      = api.getSavedAlbums      || realApi.getSavedAlbums;
 export const getFollowingArtists = api.getFollowingArtists || realApi.getFollowingArtists;
 export const createPlaylist      = api.createPlaylist      || realApi.createPlaylist;

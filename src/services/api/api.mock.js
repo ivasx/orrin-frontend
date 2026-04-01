@@ -21,6 +21,21 @@ import {
 
 const delay = (ms = 350) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const populatePlaylistTracks = (playlist) => {
+    const tracks = (playlist.trackIds || [])
+        .map((id) => mockTracks.find((t) => t.id === id))
+        .filter(Boolean)
+        .map(normalizeTrackData)
+        .filter(Boolean);
+
+    return {
+        ...playlist,
+        tracks,
+        trackCount: tracks.length,
+        totalDuration: tracks.reduce((acc, t) => acc + (t.duration || 0), 0),
+    };
+};
+
 export const loginUser = async (credentials) => {
     await delay(600);
     if (credentials.password && credentials.password.length < 3) {
@@ -90,7 +105,23 @@ export const getLikedSongs = async () => {
 
 export const getUserPlaylists = async () => {
     await delay(350);
-    return mockPlaylists;
+    return mockPlaylists.map(populatePlaylistTracks);
+};
+
+export const getPlaylistById = async (id) => {
+    await delay(400);
+    const playlist = mockPlaylists.find((p) => p.id === id);
+    if (!playlist) throw new Error(`Playlist not found: ${id}`);
+    return populatePlaylistTracks(playlist);
+};
+
+export const deletePlaylist = async (id) => {
+    await delay(500);
+    const index = mockPlaylists.findIndex((p) => p.id === id);
+    if (index !== -1) {
+        mockPlaylists.splice(index, 1);
+    }
+    return { success: true };
 };
 
 export const getSavedAlbums = async () => {
@@ -114,13 +145,15 @@ export const createPlaylist = async (formData) => {
         description: getName('description') || '',
         cover: imageFile instanceof File ? URL.createObjectURL(imageFile) : null,
         trackCount: 0,
+        trackIds: [],
         owner: { id: mockUsers[3].id, username: mockUsers[3].username, name: mockUsers[3].name },
         isPublic: true,
         createdAt: new Date().toISOString(),
+        totalDuration: 0,
     };
 
     mockPlaylists.unshift(newPlaylist);
-    return newPlaylist;
+    return populatePlaylistTracks(newPlaylist);
 };
 
 export const getArtists = async () => {
