@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext.jsx";
 import { Bell, Settings, LogOut } from "lucide-react";
+import Button from "../../../UI/Button/Button.jsx";
 import Dropdown from "../../../UI/Dropdown/Dropdown.jsx";
 import styles from "./UserActions.module.css";
 
@@ -28,14 +29,14 @@ export const UserActions = () => {
         {
             type: 'header',
             label: user?.username || t('guest'),
-            action: () => navigate(`/user/${user?.id || 'me'}`)
+            action: () => navigate(`/user/${user?.username}`),
         },
         { type: 'separator' },
         {
             value: 'settings',
             label: t('edit_profile'),
             icon: <Settings size={16} />,
-            action: () => navigate('/settings')
+            action: () => navigate('/settings'),
         },
         { type: 'separator' },
         {
@@ -43,15 +44,19 @@ export const UserActions = () => {
             label: t('logout'),
             icon: <LogOut size={16} />,
             action: logout,
-            isDanger: true
-        }
+            isDanger: true,
+        },
     ];
 
     return (
         <div className={styles.actionsContainer}>
-            <button className={styles.notificationBtn} aria-label={t('notifications')}>
+            <Button
+                variant="icon"
+                className={styles.notificationBtn}
+                aria-label={t('notifications')}
+            >
                 <Bell size={22} strokeWidth={1.5} />
-            </button>
+            </Button>
 
             <Dropdown
                 customTrigger={AvatarComponent}

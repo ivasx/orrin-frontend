@@ -1,0 +1,245 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: var(--color-bg-overlay-heavy);
+    backdrop-filter: blur(8px);
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease;
+}
+
+.editModal {
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-xl);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s var(--transition-spring);
+}
+
+.editModalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--color-border-main);
+    position: sticky;
+    top: 0;
+    background: var(--color-surface-1);
+    z-index: 1;
+}
+
+.editModalHeader h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.editModalClose {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-glass-light);
+    border: none;
+    border-radius: 50%;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.editModalClose:hover {
+    background: var(--color-surface-3);
+    color: var(--color-text-main);
+}
+
+.editModalBody {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.editAvatarRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.editAvatarPreview {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-border-main);
+    flex-shrink: 0;
+}
+
+.editRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.editFormGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.editFormLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.editFormInput {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-main);
+    font-size: 0.9rem;
+    font-family: var(--font-main);
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.editFormInput:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+    background: var(--color-surface-3);
+}
+
+.editFormInput:disabled {
+    opacity: 0.55;
+}
+
+.editFormTextarea {
+    composes: editFormInput;
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+.filePickerBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-secondary);
+    font-size: 0.825rem;
+    font-weight: 600;
+    font-family: var(--font-main);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filePickerBtn:hover {
+    background: var(--color-surface-3);
+    color: var(--color-text-main);
+    border-color: var(--color-border-focus);
+}
+
+.hiddenInput {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.editModalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border-main);
+}
+
+.cancelBtn {
+    padding: 9px 18px;
+    background: transparent;
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-pill);
+    color: var(--color-text-secondary);
+    font-family: var(--font-main);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.cancelBtn:hover:not(:disabled) {
+    color: var(--color-text-main);
+    border-color: var(--color-text-secondary);
+}
+
+.saveBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    background: var(--color-primary);
+    color: var(--color-text-main);
+    border: none;
+    border-radius: var(--border-radius-pill);
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-accent);
+}
+
+.saveBtn:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+    transform: scale(1.03);
+}
+
+.saveBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.spinIcon {
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .editRow {
+        grid-template-columns: 1fr;
+    }
+
+    .editModal {
+        border-radius: var(--border-radius-md);
+    }
+}

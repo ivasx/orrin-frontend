@@ -16,17 +16,15 @@ export const PostsTab = ({ username, isOwnProfile }) => {
     });
 
     if (isLoading) return <InfoSection isLoading />;
-    if (isError) return <InfoSection message={t('profile_error_posts', 'Could not load posts.')} />;
+    if (isError)   return <InfoSection message={t('profile_error_posts')} />;
 
     return (
         <div className={styles.container}>
             {isOwnProfile && <CreatePost />}
-
-            {posts?.length > 0 ? (
-                posts.map(post => <FeedPost key={post.id} post={post} />)
-            ) : (
-                <InfoSection message={t('profile_no_posts', 'No posts available.')} />
-            )}
+            {posts?.length > 0
+                ? posts.map((post) => <FeedPost key={post.id} post={post} />)
+                : <InfoSection message={t('profile_no_posts')} />
+            }
         </div>
     );
 };

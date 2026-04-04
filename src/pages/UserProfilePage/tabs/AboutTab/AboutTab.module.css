@@ -1,33 +1,61 @@
 .container {
-    padding: 1rem;
-    max-width: 800px;
-    margin: 0 auto;
-    color: var(--text-color-primary, #ffffff);
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
 }
 
 .section {
-    margin-bottom: 2rem;
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--border-radius-md);
+    padding: 1.5rem;
 }
 
-.title {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
+.sectionTitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.75rem;
 }
 
-.text {
-    color: var(--text-color-secondary, #b3b3b3);
-    line-height: 1.6;
+.sectionText {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.925rem;
+    line-height: 1.65;
     white-space: pre-wrap;
 }
 
-.link {
-    color: var(--accent-color, #1db954);
-    text-decoration: none;
-    transition: color 0.2s ease;
+.metaList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.link:hover {
+.metaItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.metaIcon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.metaLink {
+    color: var(--color-primary-hover);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.metaLink:hover {
+    color: var(--color-text-main);
     text-decoration: underline;
-    color: var(--accent-color-hover, #1ed760);
 }
