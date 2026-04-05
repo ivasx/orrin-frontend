@@ -31,3 +31,9 @@ export {
 export {
     mockSavedAlbums,
 } from './mocks/albums.mock.js';
+
+export {
+    mockTopTracks,
+    mockTopAlbums,
+    mockTopArtists,
+} from './mocks/stats.mock.js';

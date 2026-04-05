@@ -63,3 +63,7 @@ export const getUserFollowers    = api.getUserFollowers    || realApi.getUserFol
 export const getNotifications           = api.getNotifications           || realApi.getNotifications;
 export const markNotificationAsRead     = api.markNotificationAsRead     || realApi.markNotificationAsRead;
 export const markAllNotificationsAsRead = api.markAllNotificationsAsRead || realApi.markAllNotificationsAsRead;
+
+export const getTopTracks  = api.getTopTracks  || realApi.getTopTracks;
+export const getTopAlbums  = api.getTopAlbums  || realApi.getTopAlbums;
+export const getTopArtists = api.getTopArtists || realApi.getTopArtists;

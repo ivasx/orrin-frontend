@@ -305,3 +305,18 @@ export const confirmPasswordReset = (uid, token, newPassword) =>
 
 export const getSocialLoginUrl = (provider) =>
     `${API_BASE_URL}/api/v1/auth/${provider.toLowerCase()}/login/`;
+
+export const getTopTracks = async () => {
+    const data = await fetchJson('/api/v1/stats/top-tracks/');
+    return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];
+};
+
+export const getTopAlbums = async () => {
+    const data = await fetchJson('/api/v1/stats/top-albums/');
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const getTopArtists = async () => {
+    const data = await fetchJson('/api/v1/stats/top-artists/');
+    return Array.isArray(data) ? data : (data.results || []);
+};

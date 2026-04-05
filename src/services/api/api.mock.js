@@ -11,6 +11,9 @@ import {
     mockPlaylists,
     mockSavedAlbums,
     mockFollowingArtists,
+    mockTopTracks,
+    mockTopAlbums,
+    mockTopArtists,
 } from '../../data/mockData.js';
 import {
     normalizeTrackData,
@@ -377,3 +380,18 @@ export const markAllNotificationsAsRead = async ()   => { await delay(200); retu
 export const requestPasswordReset = async (email) => { await delay(600); return { success: true }; };
 export const confirmPasswordReset = async (uid, token, newPassword) => { await delay(600); return { success: true }; };
 export const getSocialLoginUrl = (provider) => `#mock-social-login-${provider.toLowerCase()}`;
+
+export const getTopTracks = async () => {
+    await delay(400);
+    return mockTopTracks.map(normalizeTrackData).filter(Boolean);
+};
+
+export const getTopAlbums = async () => {
+    await delay(350);
+    return mockTopAlbums;
+};
+
+export const getTopArtists = async () => {
+    await delay(380);
+    return mockTopArtists;
+};
