@@ -14,6 +14,7 @@ import {
     mockTopTracks,
     mockTopAlbums,
     mockTopArtists,
+    mockHistory,
 } from '../../data/mockData.js';
 import {
     normalizeTrackData,
@@ -23,6 +24,8 @@ import {
 } from '../../constants/fallbacks.js';
 
 const delay = (ms = 350) => new Promise((resolve) => setTimeout(resolve, ms));
+
+let mutableHistory = [...mockHistory];
 
 const populatePlaylistTracks = (playlist) => {
     const tracks = (playlist.trackIds || [])
@@ -100,6 +103,36 @@ export const getUserLibrary   = async () => { await delay(); return mockTracks.m
 export const getUserFavorites = async () => { await delay(); return mockTracks.filter((t) => t.is_liked).map(normalizeTrackData).filter(Boolean); };
 export const getUserHistory   = async () => { await delay(); return [...mockTracks].reverse().map(normalizeTrackData).filter(Boolean); };
 export const getFriendsActivity = async () => { await delay(); return mockTracks.slice(0, 6).map(normalizeTrackData).filter(Boolean); };
+
+export const getListeningHistory = async () => {
+    await delay(400);
+    return mutableHistory
+        .map((entry) => {
+            const normalized = normalizeTrackData(entry);
+            if (!normalized) return null;
+            return {
+                ...normalized,
+                historyEntryId: entry.historyEntryId,
+                playedAt:       entry.playedAt,
+            };
+        })
+        .filter(Boolean);
+};
+
+export const clearListeningHistory = async () => {
+    await delay(500);
+    mutableHistory = [];
+    return { success: true };
+};
+
+export const removeTrackFromHistory = async (historyEntryId) => {
+    await delay(300);
+    const index = mutableHistory.findIndex((e) => e.historyEntryId === historyEntryId);
+    if (index !== -1) {
+        mutableHistory.splice(index, 1);
+    }
+    return { success: true };
+};
 
 export const getLikedSongs = async () => {
     await delay(400);

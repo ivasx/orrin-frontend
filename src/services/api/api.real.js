@@ -155,6 +155,32 @@ export const getUserHistory = async () => {
     return tracks.map(normalizeTrackData).filter(Boolean);
 };
 
+export const getListeningHistory = async () => {
+    const data = await fetchJson('/api/v1/history/');
+    const entries = Array.isArray(data) ? data : (data.results || []);
+    return entries
+        .map((entry) => {
+            const normalized = normalizeTrackData(entry);
+            if (!normalized) return null;
+            return {
+                ...normalized,
+                historyEntryId: entry.historyEntryId || entry.history_entry_id || entry.id,
+                playedAt:       entry.playedAt       || entry.played_at        || null,
+            };
+        })
+        .filter(Boolean);
+};
+
+export const clearListeningHistory = async () => {
+    await fetchJson('/api/v1/history/', { method: 'DELETE' });
+    return { success: true };
+};
+
+export const removeTrackFromHistory = async (historyEntryId) => {
+    await fetchJson(`/api/v1/history/${historyEntryId}/`, { method: 'DELETE' });
+    return { success: true };
+};
+
 export const getLikedSongs = async () => {
     const data = await fetchJson('/api/v1/library/liked/');
     return Array.isArray(data) ? data.map(normalizeTrackData).filter(Boolean) : [];

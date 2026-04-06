@@ -52,6 +52,24 @@
     scroll-behavior: smooth;
 }
 
+.track-section-collapse-btn {
+    display: block;
+    margin-top: 12px;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 0;
+    transition: color var(--transition-fast);
+}
+
+.track-section-collapse-btn:hover {
+    color: var(--color-text-main);
+}
+
 @media (max-width: 768px) {
     .track-section-grid {
         grid-auto-columns: 280px;

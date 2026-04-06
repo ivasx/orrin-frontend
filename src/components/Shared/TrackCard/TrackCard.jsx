@@ -15,16 +15,18 @@ import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
  * Renders a single track row with playback controls, a context menu, and
  * optional queue-management actions when rendered inside `QueueList`.
  *
- * @param {Object}  props
- * @param {string}  props.trackId          - Unique track identifier.
- * @param {string}  props.title            - Track title.
- * @param {string}  props.artist           - Artist display name.
- * @param {string}  [props.artistSlug]     - Artist slug for routing.
- * @param {string}  [props.cover]          - Album art URL.
- * @param {string}  [props.audio]          - Audio file URL.
- * @param {Array}   [props.tracks]         - Sibling tracks for queue initialization.
- * @param {boolean} [props.isQueueContext] - True when rendered inside QueueList.
- * @param {number}  [props.indexInQueue]   - Full-queue index (set by QueueList).
+ * @param {Object}   props
+ * @param {string}   props.trackId                - Unique track identifier.
+ * @param {string}   props.title                  - Track title.
+ * @param {string}   props.artist                 - Artist display name.
+ * @param {string}   [props.artistSlug]           - Artist slug for routing.
+ * @param {string}   [props.cover]                - Album art URL.
+ * @param {string}   [props.audio]                - Audio file URL.
+ * @param {Array}    [props.tracks]               - Sibling tracks for queue initialization.
+ * @param {boolean}  [props.isQueueContext]       - True when rendered inside QueueList.
+ * @param {number}   [props.indexInQueue]         - Full-queue index (set by QueueList).
+ * @param {Function} [props.onRemoveFromHistory]  - When provided, adds "Remove from history"
+ *                                                  to the context menu. Called with no args.
  */
 function TrackCard(props) {
     const { t } = useTranslation();
@@ -55,21 +57,20 @@ function TrackCard(props) {
 
     const hasValidAudio = isTrackPlayable(track);
 
-    const [coverError, setCoverError]         = useState(false);
-    const [audioError, setAudioError]         = useState(false);
-    const [isAudioLoading, setIsAudioLoading] = useState(false);
-    const [showControls, setShowControls]     = useState(false);
-    const [isTouchDevice, setIsTouchDevice]   = useState(false);
-    const [showMenu, setShowMenu]             = useState(false);
-    const [menuPosition, setMenuPosition]     = useState({ x: 0, y: 0 });
-    const [rippleStyle, setRippleStyle]       = useState({});
-    const [showRipple, setShowRipple]         = useState(false);
+    const [coverError, setCoverError]           = useState(false);
+    const [audioError, setAudioError]           = useState(false);
+    const [isAudioLoading, setIsAudioLoading]   = useState(false);
+    const [showControls, setShowControls]       = useState(false);
+    const [isTouchDevice, setIsTouchDevice]     = useState(false);
+    const [showMenu, setShowMenu]               = useState(false);
+    const [menuPosition, setMenuPosition]       = useState({ x: 0, y: 0 });
+    const [rippleStyle, setRippleStyle]         = useState({});
+    const [showRipple, setShowRipple]           = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-    const dotsButtonRef  = useRef(null);
-    const displayCover   = coverError ? '/orrin-logo.svg' : track.cover;
+    const dotsButtonRef = useRef(null);
+    const displayCover  = coverError ? '/orrin-logo.svg' : track.cover;
 
-    // Device detection
     useEffect(() => {
         const mq = window.matchMedia('(pointer: coarse)');
         const onChange = (e) => setIsTouchDevice(e.matches);
@@ -78,14 +79,13 @@ function TrackCard(props) {
         return () => mq.removeEventListener('change', onChange);
     }, []);
 
-    // Audio event listeners (only for the current track)
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || currentTrack?.trackId !== track.trackId) return;
 
-        const onError    = () => { setAudioError(true); setIsAudioLoading(false); };
+        const onError     = () => { setAudioError(true); setIsAudioLoading(false); };
         const onLoadStart = () => setIsAudioLoading(true);
-        const onCanPlay  = () => setIsAudioLoading(false);
+        const onCanPlay   = () => setIsAudioLoading(false);
 
         audio.addEventListener('error',     onError);
         audio.addEventListener('loadstart', onLoadStart);
@@ -98,8 +98,8 @@ function TrackCard(props) {
         };
     }, [audioRef, currentTrack, track.trackId]);
 
-    const isPlaying          = isTrackPlaying(track.trackId);
-    const isCurrentTrack     = currentTrack && currentTrack.trackId === track.trackId;
+    const isPlaying            = isTrackPlaying(track.trackId);
+    const isCurrentTrack       = currentTrack && currentTrack.trackId === track.trackId;
     const showLoadingIndicator = isCurrentTrack && isAudioLoading;
     const showErrorIndicator   = isCurrentTrack && audioError;
 
@@ -122,6 +122,13 @@ function TrackCard(props) {
         setShowMenu(false);
     }, [removeFromQueue, track.trackId, props.isQueueContext, props.indexInQueue]);
 
+    const handleRemoveFromHistory = useCallback(() => {
+        if (props.onRemoveFromHistory) {
+            props.onRemoveFromHistory();
+        }
+        setShowMenu(false);
+    }, [props.onRemoveFromHistory]);
+
     const getMenuItems = useCallback(
         () =>
             createTrackMenuItems({
@@ -133,21 +140,25 @@ function TrackCard(props) {
                 isCurrentTrack,
                 toggleMute,
                 updateVolume,
-                title: track.title,
-                artist: track.artist,
-                audio: track.audio,
+                title:             track.title,
+                artist:            track.artist,
+                audio:             track.audio,
                 hasValidAudio,
                 isQueueContext:    props.isQueueContext ?? false,
                 indexInQueue:      props.indexInQueue,
                 trackId:           track.trackId,
                 onInsertNext:      handleInsertNext,
                 onRemoveFromQueue: handleRemoveFromQueue,
+                onRemoveFromHistory: props.onRemoveFromHistory
+                    ? handleRemoveFromHistory
+                    : undefined,
             }),
         [
             t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
             toggleMute, updateVolume, track.title, track.artist, track.audio,
             hasValidAudio, props.isQueueContext, props.indexInQueue, track.trackId,
-            handleInsertNext, handleRemoveFromQueue,
+            handleInsertNext, handleRemoveFromQueue, handleRemoveFromHistory,
+            props.onRemoveFromHistory,
         ],
     );
 

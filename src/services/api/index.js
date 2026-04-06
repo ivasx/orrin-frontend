@@ -29,6 +29,10 @@ export const getUserLibrary   = api.getUserLibrary   || realApi.getUserLibrary;
 export const getUserFavorites = api.getUserFavorites || realApi.getUserFavorites;
 export const getUserHistory   = api.getUserHistory   || realApi.getUserHistory;
 
+export const getListeningHistory    = api.getListeningHistory    || realApi.getListeningHistory;
+export const clearListeningHistory  = api.clearListeningHistory  || realApi.clearListeningHistory;
+export const removeTrackFromHistory = api.removeTrackFromHistory || realApi.removeTrackFromHistory;
+
 export const getLikedSongs       = api.getLikedSongs       || realApi.getLikedSongs;
 export const getUserPlaylists    = api.getUserPlaylists    || realApi.getUserPlaylists;
 export const getPlaylistById     = api.getPlaylistById     || realApi.getPlaylistById;

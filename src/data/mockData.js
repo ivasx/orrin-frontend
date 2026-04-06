@@ -37,3 +37,7 @@ export {
     mockTopAlbums,
     mockTopArtists,
 } from './mocks/stats.mock.js';
+
+export {
+    mockHistory,
+} from './mocks/history.mock.js';

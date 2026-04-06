@@ -9,34 +9,38 @@ import {
     AlertCircle,
     ListStart,
     ListX,
+    Trash2,
 } from 'lucide-react';
 import { logger } from '../../../utils/logger.js';
 
 /**
  * @typedef {Object} TrackMenuConfig
- * @property {Function} t                   - i18next translation function.
- * @property {boolean}  isPlaying           - Whether this track is currently playing.
- * @property {boolean}  isMuted             - Whether audio is muted.
- * @property {number}   volume              - Current volume 0–1.
- * @property {Function} handlePlayPause     - Toggle playback for this track.
- * @property {boolean}  isCurrentTrack      - Whether this is the active track.
- * @property {Function} toggleMute          - Toggle mute state.
- * @property {Function} updateVolume        - Set a new volume level.
- * @property {string}   title               - Track title.
- * @property {string}   artist              - Track artist name.
- * @property {string}   [audio]             - Audio file URL.
- * @property {boolean}  [hasValidAudio]     - Whether playable audio exists.
- * @property {boolean}  [isQueueContext]    - True when rendered inside QueueList.
- * @property {number}   [indexInQueue]      - Full-queue index (required when isQueueContext is true).
- * @property {string}   [trackId]           - Track ID (required for queue operations).
- * @property {Function} [onInsertNext]      - Callback: insert this track immediately after current.
- * @property {Function} [onRemoveFromQueue] - Callback: remove this track from the queue.
+ * @property {Function} t                      - i18next translation function.
+ * @property {boolean}  isPlaying              - Whether this track is currently playing.
+ * @property {boolean}  isMuted                - Whether audio is muted.
+ * @property {number}   volume                 - Current volume 0–1.
+ * @property {Function} handlePlayPause        - Toggle playback for this track.
+ * @property {boolean}  isCurrentTrack         - Whether this is the active track.
+ * @property {Function} toggleMute             - Toggle mute state.
+ * @property {Function} updateVolume           - Set a new volume level.
+ * @property {string}   title                  - Track title.
+ * @property {string}   artist                 - Track artist name.
+ * @property {string}   [audio]                - Audio file URL.
+ * @property {boolean}  [hasValidAudio]        - Whether playable audio exists.
+ * @property {boolean}  [isQueueContext]       - True when rendered inside QueueList.
+ * @property {number}   [indexInQueue]         - Full-queue index (required when isQueueContext is true).
+ * @property {string}   [trackId]              - Track ID (required for queue operations).
+ * @property {Function} [onInsertNext]         - Callback: insert this track immediately after current.
+ * @property {Function} [onRemoveFromQueue]    - Callback: remove this track from the queue.
+ * @property {Function} [onRemoveFromHistory]  - Callback: remove this entry from listening history.
  */
 
 /**
  * Builds the context-menu items for a TrackCard.
  * Queue-specific actions (Play Next, Remove from Queue) are injected only when
  * `isQueueContext` is `true`, keeping the menu clean in non-queue contexts.
+ * History-specific action (Remove from History) is injected only when
+ * `onRemoveFromHistory` is provided.
  *
  * @param {TrackMenuConfig} config
  * @returns {Array<Object>} Array of menu item descriptors consumed by ContextMenu.
@@ -59,6 +63,7 @@ export const createTrackMenuItems = ({
                                          trackId,
                                          onInsertNext,
                                          onRemoveFromQueue,
+                                         onRemoveFromHistory,
                                      }) => {
     const menuItems = [
         {
@@ -68,7 +73,7 @@ export const createTrackMenuItems = ({
             shortcut: 'Space',
             disabled: !hasValidAudio || isPlaying,
             action: () => !isPlaying && hasValidAudio && handlePlayPause(),
-            tooltip: !hasValidAudio ? t('track_no_audio', 'Audio unavailable') : undefined,
+            tooltip: !hasValidAudio ? t('track_no_audio') : undefined,
         },
         {
             id: 'pause',
@@ -77,7 +82,7 @@ export const createTrackMenuItems = ({
             shortcut: 'Space',
             disabled: !hasValidAudio || !isPlaying,
             action: () => isPlaying && hasValidAudio && handlePlayPause(),
-            tooltip: !hasValidAudio ? t('track_no_audio', 'Audio unavailable') : undefined,
+            tooltip: !hasValidAudio ? t('track_no_audio') : undefined,
         },
         { type: 'separator' },
     ];
@@ -113,7 +118,7 @@ export const createTrackMenuItems = ({
 
     menuItems.push({
         id: 'play-next',
-        label: t('menu_play_next', 'Play next'),
+        label: t('menu_play_next'),
         icon: <ListStart size={16} />,
         disabled: !hasValidAudio,
         action: () => {
@@ -124,7 +129,7 @@ export const createTrackMenuItems = ({
     if (isQueueContext) {
         menuItems.push({
             id: 'remove-from-queue',
-            label: t('menu_remove_from_queue', 'Remove from queue'),
+            label: t('menu_remove_from_queue'),
             icon: <ListX size={16} />,
             variant: 'danger',
             action: () => {
@@ -173,15 +178,28 @@ export const createTrackMenuItems = ({
                     link.click();
                 }
             },
-            tooltip: !audio ? t('track_no_audio', 'Audio unavailable') : undefined,
+            tooltip: !audio ? t('track_no_audio') : undefined,
         },
     );
+
+    if (onRemoveFromHistory) {
+        menuItems.push(
+            { type: 'separator' },
+            {
+                id: 'remove-from-history',
+                label: t('menu_remove_from_history'),
+                icon: <Trash2 size={16} />,
+                isDanger: true,
+                action: () => onRemoveFromHistory(),
+            },
+        );
+    }
 
     if (!hasValidAudio) {
         menuItems.unshift(
             {
                 id: 'unavailable-info',
-                label: t('track_unavailable', 'Track unavailable'),
+                label: t('track_unavailable'),
                 icon: <AlertCircle size={16} />,
                 disabled: true,
                 variant: 'danger',
