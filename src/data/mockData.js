@@ -41,3 +41,8 @@ export {
 export {
     mockHistory,
 } from './mocks/history.mock.js';
+
+export {
+    mockChats,
+    mockMessages,
+} from './mocks/chat.mock.js';

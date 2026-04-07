@@ -6,22 +6,23 @@ import HeaderOnlyLayout from '../layouts/HeaderOnlyLayout.jsx';
 import VinylLoader from '../components/UI/Spinner/VinylLoader.jsx';
 import { ProtectedRoute } from './ProtectedRoute.jsx';
 
-const HomePage = lazy(() => import('../pages/HomePage/HomePage.jsx'));
-const FeedPage = lazy(() => import('../pages/FeedPage/FeedPage.jsx'));
-const LibraryPage = lazy(() => import('../pages/LibraryPage/LibraryPage.jsx'));
-const FavoritesPage = lazy(() => import('../pages/FavoritesPage/FavoritesPage.jsx'));
-const HistoryPage = lazy(() => import('../pages/HistoryPage/HistoryPage.jsx'));
-const SettingsPage = lazy(() => import('../pages/SettingsPage/SettingsPage.jsx'));
-const TrackPage = lazy(() => import('../pages/TrackPage/TrackPage.jsx'));
-const SearchResultsPage = lazy(() => import('../pages/SearchResultsPage/SearchResultsPage.jsx'));
-const ArtistPage = lazy(() => import('../pages/ArtistPage/ArtistPage.jsx'));
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage/NotFoundPage.jsx'));
-const RegisterPage = lazy(() => import('../pages/Auth/Register.jsx'));
-const LoginPage = lazy(() => import('../pages/Auth/Login.jsx'));
-const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword.jsx'));
-const ResetPassword = lazy(() => import('../pages/Auth/ResetPassword.jsx'));
-const UserProfilePage = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
-const PlaylistPage = lazy(() => import('../pages/PlaylistsPage/PlaylistsPage.jsx'));
+const HomePage            = lazy(() => import('../pages/HomePage/HomePage.jsx'));
+const FeedPage            = lazy(() => import('../pages/FeedPage/FeedPage.jsx'));
+const LibraryPage         = lazy(() => import('../pages/LibraryPage/LibraryPage.jsx'));
+const FavoritesPage       = lazy(() => import('../pages/FavoritesPage/FavoritesPage.jsx'));
+const HistoryPage         = lazy(() => import('../pages/HistoryPage/HistoryPage.jsx'));
+const SettingsPage        = lazy(() => import('../pages/SettingsPage/SettingsPage.jsx'));
+const TrackPage           = lazy(() => import('../pages/TrackPage/TrackPage.jsx'));
+const SearchResultsPage   = lazy(() => import('../pages/SearchResultsPage/SearchResultsPage.jsx'));
+const ArtistPage          = lazy(() => import('../pages/ArtistPage/ArtistPage.jsx'));
+const NotFoundPage        = lazy(() => import('../pages/NotFoundPage/NotFoundPage.jsx'));
+const RegisterPage        = lazy(() => import('../pages/Auth/Register.jsx'));
+const LoginPage           = lazy(() => import('../pages/Auth/Login.jsx'));
+const ForgotPassword      = lazy(() => import('../pages/Auth/ForgotPassword.jsx'));
+const ResetPassword       = lazy(() => import('../pages/Auth/ResetPassword.jsx'));
+const UserProfilePage     = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
+const PlaylistPage        = lazy(() => import('../pages/PlaylistsPage/PlaylistsPage.jsx'));
+const MessagesPage        = lazy(() => import('../pages/MessagesPage/MessagesPage.jsx'));
 
 const ArtistDashboardPage = lazy(() => import('../pages/ArtistDashboardPage/ArtistDashboardPage.jsx'));
 
@@ -43,6 +44,8 @@ export default function AppRouter() {
                         <Route path="/playlist/:id" element={<PlaylistPage />} />
                         <Route path="/favorites" element={<FavoritesPage />} />
                         <Route path="/history" element={<HistoryPage />} />
+                        <Route path="/messages" element={<MessagesPage />} />
+                        <Route path="/messages/:chatId" element={<MessagesPage />} />
                     </Route>
 
                     <Route element={<ProtectedRoute requireArtistManagement={true} />}>

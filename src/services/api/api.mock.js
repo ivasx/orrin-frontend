@@ -15,6 +15,8 @@ import {
     mockTopAlbums,
     mockTopArtists,
     mockHistory,
+    mockChats,
+    mockMessages,
 } from '../../data/mockData.js';
 import {
     normalizeTrackData,
@@ -25,7 +27,9 @@ import {
 
 const delay = (ms = 350) => new Promise((resolve) => setTimeout(resolve, ms));
 
-let mutableHistory = [...mockHistory];
+let mutableHistory  = [...mockHistory];
+let mutableChats    = mockChats.map((c) => ({ ...c }));
+let mutableMessages = [...mockMessages];
 
 const populatePlaylistTracks = (playlist) => {
     const tracks = (playlist.trackIds || [])
@@ -427,4 +431,70 @@ export const getTopAlbums = async () => {
 export const getTopArtists = async () => {
     await delay(380);
     return mockTopArtists;
+};
+
+export const getUserChats = async () => {
+    await delay(400);
+    return [...mutableChats].sort(
+        (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
+    );
+};
+
+export const getChatMessages = async (chatId) => {
+    await delay(350);
+    const chat = mutableChats.find((c) => c.id === chatId);
+    if (!chat) throw new Error(`Chat not found: ${chatId}`);
+
+    const messages = mutableMessages
+        .filter((m) => m.chatId === chatId)
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    mutableMessages = mutableMessages.map((m) =>
+        m.chatId === chatId && m.senderId !== 'user-4'
+            ? { ...m, isRead: true }
+            : m,
+    );
+
+    mutableChats = mutableChats.map((c) =>
+        c.id === chatId ? { ...c, unreadCount: 0 } : c,
+    );
+
+    return messages;
+};
+
+export const sendMessage = async (chatId, text) => {
+    await delay(250);
+
+    const chat = mutableChats.find((c) => c.id === chatId);
+    if (!chat) throw new Error(`Chat not found: ${chatId}`);
+
+    const now = new Date().toISOString();
+    const newMessage = {
+        id:        'msg-new-' + Date.now(),
+        chatId,
+        senderId:  'user-4',
+        text:      text.trim(),
+        timestamp: now,
+        isRead:    false,
+    };
+
+    mutableMessages = [...mutableMessages, newMessage];
+
+    mutableChats = mutableChats.map((c) =>
+        c.id === chatId
+            ? {
+                ...c,
+                lastMessage: {
+                    id:        newMessage.id,
+                    senderId:  newMessage.senderId,
+                    text:      newMessage.text,
+                    timestamp: newMessage.timestamp,
+                    isRead:    false,
+                },
+                updatedAt: now,
+            }
+            : c,
+    );
+
+    return newMessage;
 };

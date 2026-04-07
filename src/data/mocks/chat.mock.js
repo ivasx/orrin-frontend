@@ -1,0 +1,237 @@
+import { mockUsers } from './users.mock.js';
+
+const minutesAgo = (m) => new Date(Date.now() - m * 60 * 1000).toISOString();
+const hoursAgo   = (h) => new Date(Date.now() - h * 60 * 60 * 1000).toISOString();
+const daysAgo    = (d) => new Date(Date.now() - d * 24 * 60 * 60 * 1000).toISOString();
+
+// Participants exclude the current user (user-4 / orrin_demo)
+export const mockChats = [
+    {
+        id: 'chat-1',
+        participantIds: ['user-1'],
+        participant: {
+            id:       mockUsers[0].id,
+            username: mockUsers[0].username,
+            name:     mockUsers[0].name,
+            avatar:   mockUsers[0].avatar,
+            is_verified: mockUsers[0].is_verified,
+        },
+        lastMessage: {
+            id:        'msg-7',
+            senderId:  'user-1',
+            text:      '505 on repeat all night, no regrets.',
+            timestamp: minutesAgo(4),
+            isRead:    false,
+        },
+        unreadCount: 2,
+        updatedAt:   minutesAgo(4),
+    },
+    {
+        id: 'chat-2',
+        participantIds: ['user-2'],
+        participant: {
+            id:       mockUsers[1].id,
+            username: mockUsers[1].username,
+            name:     mockUsers[1].name,
+            avatar:   mockUsers[1].avatar,
+            is_verified: mockUsers[1].is_verified,
+        },
+        lastMessage: {
+            id:        'msg-14',
+            senderId:  'user-4',
+            text:      'Let me know how the concert goes!',
+            timestamp: hoursAgo(2),
+            isRead:    true,
+        },
+        unreadCount: 0,
+        updatedAt:   hoursAgo(2),
+    },
+    {
+        id: 'chat-3',
+        participantIds: ['user-3'],
+        participant: {
+            id:       mockUsers[2].id,
+            username: mockUsers[2].username,
+            name:     mockUsers[2].name,
+            avatar:   mockUsers[2].avatar,
+            is_verified: mockUsers[2].is_verified,
+        },
+        lastMessage: {
+            id:        'msg-20',
+            senderId:  'user-3',
+            text:      'Master of Puppets solo is genuinely top 5 of all time.',
+            timestamp: daysAgo(1),
+            isRead:    false,
+        },
+        unreadCount: 1,
+        updatedAt:   daysAgo(1),
+    },
+];
+
+export let mockMessages = [
+    // chat-1: orrin_demo ↔ alex_rocks
+    {
+        id:        'msg-1',
+        chatId:    'chat-1',
+        senderId:  'user-4',
+        text:      'Hey! Did you catch the Arctic Monkeys set from Glastonbury?',
+        timestamp: hoursAgo(3),
+        isRead:    true,
+    },
+    {
+        id:        'msg-2',
+        chatId:    'chat-1',
+        senderId:  'user-1',
+        text:      'Yes! Alex Turner looked like he didn\'t even break a sweat. Absolute legend.',
+        timestamp: hoursAgo(3),
+        isRead:    true,
+    },
+    {
+        id:        'msg-3',
+        chatId:    'chat-1',
+        senderId:  'user-4',
+        text:      'The way they opened with Do I Wanna Know was perfect.',
+        timestamp: hoursAgo(2),
+        isRead:    true,
+    },
+    {
+        id:        'msg-4',
+        chatId:    'chat-1',
+        senderId:  'user-1',
+        text:      'Honestly I replayed that opening like 6 times. The crowd energy was insane.',
+        timestamp: hoursAgo(2),
+        isRead:    true,
+    },
+    {
+        id:        'msg-5',
+        chatId:    'chat-1',
+        senderId:  'user-4',
+        text:      'Same. What\'s your all-time favourite AM track? I keep going back to 505.',
+        timestamp: minutesAgo(40),
+        isRead:    true,
+    },
+    {
+        id:        'msg-6',
+        chatId:    'chat-1',
+        senderId:  'user-1',
+        text:      'Impossible question honestly. But yeah, 505 hits different at 2am.',
+        timestamp: minutesAgo(10),
+        isRead:    false,
+    },
+    {
+        id:        'msg-7',
+        chatId:    'chat-1',
+        senderId:  'user-1',
+        text:      '505 on repeat all night, no regrets.',
+        timestamp: minutesAgo(4),
+        isRead:    false,
+    },
+
+    // chat-2: orrin_demo ↔ katya_music
+    {
+        id:        'msg-8',
+        chatId:    'chat-2',
+        senderId:  'user-2',
+        text:      'Hey! I just got tickets to Chase Atlantic in Kyiv next month 🎉',
+        timestamp: hoursAgo(5),
+        isRead:    true,
+    },
+    {
+        id:        'msg-9',
+        chatId:    'chat-2',
+        senderId:  'user-4',
+        text:      'No way! That\'s amazing, how did you even get them? They sold out instantly.',
+        timestamp: hoursAgo(5),
+        isRead:    true,
+    },
+    {
+        id:        'msg-10',
+        chatId:    'chat-2',
+        senderId:  'user-2',
+        text:      'Refreshed the page at 10am sharp and just got lucky I think.',
+        timestamp: hoursAgo(4),
+        isRead:    true,
+    },
+    {
+        id:        'msg-11',
+        chatId:    'chat-2',
+        senderId:  'user-4',
+        text:      'That dedication is real. What are you hoping they play?',
+        timestamp: hoursAgo(4),
+        isRead:    true,
+    },
+    {
+        id:        'msg-12',
+        chatId:    'chat-2',
+        senderId:  'user-2',
+        text:      'Swim for sure. If they play Swim I will actually cry on the spot.',
+        timestamp: hoursAgo(3),
+        isRead:    true,
+    },
+    {
+        id:        'msg-13',
+        chatId:    'chat-2',
+        senderId:  'user-2',
+        text:      'Also maybe Okay or Gravity. Their slower stuff hits so hard live.',
+        timestamp: hoursAgo(3),
+        isRead:    true,
+    },
+    {
+        id:        'msg-14',
+        chatId:    'chat-2',
+        senderId:  'user-4',
+        text:      'Let me know how the concert goes!',
+        timestamp: hoursAgo(2),
+        isRead:    true,
+    },
+
+    // chat-3: orrin_demo ↔ metal_ivan
+    {
+        id:        'msg-15',
+        chatId:    'chat-3',
+        senderId:  'user-4',
+        text:      'Ivan, that post about Master of Puppets was a great take.',
+        timestamp: daysAgo(2),
+        isRead:    true,
+    },
+    {
+        id:        'msg-16',
+        chatId:    'chat-3',
+        senderId:  'user-3',
+        text:      'Thanks man. People underestimate how complex the structure of that song is.',
+        timestamp: daysAgo(2),
+        isRead:    true,
+    },
+    {
+        id:        'msg-17',
+        chatId:    'chat-3',
+        senderId:  'user-4',
+        text:      'The clean interlude in the middle is so unexpected for a thrash track.',
+        timestamp: daysAgo(1),
+        isRead:    true,
+    },
+    {
+        id:        'msg-18',
+        chatId:    'chat-3',
+        senderId:  'user-3',
+        text:      'Exactly. That contrast is what separates it from anything else in the genre.',
+        timestamp: daysAgo(1),
+        isRead:    true,
+    },
+    {
+        id:        'msg-19',
+        chatId:    'chat-3',
+        senderId:  'user-3',
+        text:      'Kirk\'s solo there is just... surgical. Every note is deliberate.',
+        timestamp: daysAgo(1),
+        isRead:    true,
+    },
+    {
+        id:        'msg-20',
+        chatId:    'chat-3',
+        senderId:  'user-3',
+        text:      'Master of Puppets solo is genuinely top 5 of all time.',
+        timestamp: daysAgo(1),
+        isRead:    false,
+    },
+];

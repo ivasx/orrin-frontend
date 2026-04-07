@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, NewspaperIcon, Library, Heart, Clock, Settings } from 'lucide-react';
+import { Home, NewspaperIcon, Library, Heart, Clock, Settings, MessageSquare } from 'lucide-react';
 
 import { useAuth } from '../../../context/AuthContext.jsx';
 import AuthPromptModal from '../../Shared/AuthPromptModal/AuthPromptModal.jsx';
 import SidebarItem from './SidebarItem/SidebarItem.jsx';
 import styles from './Sidebar.module.css';
 
-const PROTECTED_PATHS = ['/library', '/favorites', '/history'];
+const PROTECTED_PATHS = ['/library', '/favorites', '/history', '/messages'];
 
 export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
     const { t } = useTranslation();
@@ -18,21 +18,24 @@ export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+    // TODO: Replace with real unread count from chat context / query
+    const totalUnreadMessages = 3;
+
     const menuItems = useMemo(() => [
-        { icon: Home, label: t('sidebar_main'), path: '/' },
-        { icon: NewspaperIcon, label: t('sidebar_feed'), path: '/feed' },
-        { icon: Library, label: t('sidebar_library'), path: '/library' }
-    ], [t]);
+        { icon: Home,          label: t('sidebar_main'),     path: '/'        },
+        { icon: NewspaperIcon, label: t('sidebar_feed'),     path: '/feed'    },
+        { icon: MessageSquare, label: t('sidebar_messages'), path: '/messages', badge: totalUnreadMessages },
+        { icon: Library,       label: t('sidebar_library'),  path: '/library' },
+    ], [t, totalUnreadMessages]);
 
     const libraryItems = useMemo(() => [
         { icon: Heart, label: t('sidebar_favorites'), path: '/favorites' },
-        { icon: Clock, label: t('sidebar_history'), path: '/history' },
+        { icon: Clock, label: t('sidebar_history'),   path: '/history'   },
     ], [t]);
 
     const settingsItems = useMemo(() => [
-        { icon: Settings, label: t('sidebar_settings'), path: '/settings' }
+        { icon: Settings, label: t('sidebar_settings'), path: '/settings' },
     ], [t]);
-
 
     const handleNavigation = (path, e) => {
         if (e) e.preventDefault();
@@ -50,8 +53,8 @@ export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
     };
 
     const sidebarClasses = `${styles.container} ${isOpen ? styles.open : styles.collapsed}`;
-    const footerClasses = `${styles.footer} ${isPlayerVisible ? styles.footerWithPlayer : ''}`;
-    const isCollapsed = !isOpen;
+    const footerClasses  = `${styles.footer} ${isPlayerVisible ? styles.footerWithPlayer : ''}`;
+    const isCollapsed    = !isOpen;
 
     return (
         <>
@@ -68,7 +71,11 @@ export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
                                 {...item}
                                 onClick={(e) => handleNavigation(item.path, e)}
                                 isCollapsed={isCollapsed}
-                                isActive={location.pathname === item.path}
+                                isActive={
+                                    item.path === '/'
+                                        ? location.pathname === '/'
+                                        : location.pathname.startsWith(item.path)
+                                }
                             />
                         ))}
                     </ul>

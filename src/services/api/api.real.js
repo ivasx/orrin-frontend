@@ -256,11 +256,11 @@ export const getFeedPosts = async ({ type, sort, contentType, pageParam = 1 } = 
     return posts.map(normalizePostData);
 };
 
-export const createPost = async (postData) => fetchJson('/api/v1/feed/posts/', { method: 'POST', body: postData });
-export const toggleLikePost = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/like/`,   { method: 'POST' });
-export const repostPost      = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/repost/`, { method: 'POST' });
-export const toggleSavePost  = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/save/`,   { method: 'POST' });
-export const reportPost      = async (postId, reason = 'spam') =>
+export const createPost      = async (postData) => fetchJson('/api/v1/feed/posts/', { method: 'POST', body: postData });
+export const toggleLikePost  = async (postId)   => fetchJson(`/api/v1/feed/posts/${postId}/like/`,   { method: 'POST' });
+export const repostPost       = async (postId)   => fetchJson(`/api/v1/feed/posts/${postId}/repost/`, { method: 'POST' });
+export const toggleSavePost   = async (postId)   => fetchJson(`/api/v1/feed/posts/${postId}/save/`,   { method: 'POST' });
+export const reportPost       = async (postId, reason = 'spam') =>
     fetchJson(`/api/v1/feed/posts/${postId}/report/`, { method: 'POST', body: JSON.stringify({ reason }) });
 
 export const addComment = async (postId, text) =>
@@ -309,11 +309,10 @@ export const getUserFollowers = async (username) => {
     return Array.isArray(data) ? data.map(normalizeUserData) : [];
 };
 
-export const getNotifications = async () => {
+export const getNotifications           = async () => {
     const data = await fetchJson('/api/v1/notifications/');
     return Array.isArray(data) ? data : (data.results || []);
 };
-
 export const markNotificationAsRead     = async (id) => fetchJson(`/api/v1/notifications/${id}/read/`, { method: 'POST' });
 export const markAllNotificationsAsRead = async ()   => fetchJson('/api/v1/notifications/read-all/',   { method: 'POST' });
 
@@ -345,4 +344,22 @@ export const getTopAlbums = async () => {
 export const getTopArtists = async () => {
     const data = await fetchJson('/api/v1/stats/top-artists/');
     return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const getUserChats = async () => {
+    const data = await fetchJson('/api/v1/chats/');
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const getChatMessages = async (chatId) => {
+    const data = await fetchJson(`/api/v1/chats/${chatId}/messages/`);
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const sendMessage = async (chatId, text) => {
+    const data = await fetchJson(`/api/v1/chats/${chatId}/messages/`, {
+        method: 'POST',
+        body:   JSON.stringify({ text }),
+    });
+    return data;
 };
