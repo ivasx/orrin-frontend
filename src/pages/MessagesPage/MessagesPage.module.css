@@ -8,38 +8,10 @@
 .sidebar {
     width: 320px;
     flex-shrink: 0;
+    border-right: 1px solid var(--color-border-main);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--color-border-main);
-    background: var(--color-surface-0);
-    overflow: hidden;
-}
-
-.sidebarHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 20px 16px;
-    border-bottom: 1px solid var(--color-border-subtle);
-    flex-shrink: 0;
-}
-
-.sidebarTitle {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--color-text-main);
-    margin: 0;
-    font-family: var(--font-main);
-}
-
-.chatListPlaceholder {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-muted);
-    font-size: 14px;
-    font-family: var(--font-body);
 }
 
 .main {

@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import ChatSidebar from './components/ChatSidebar/ChatSidebar';
 import styles from './MessagesPage.module.css';
 
 export default function MessagesPage() {
@@ -7,14 +8,12 @@ export default function MessagesPage() {
     const { chatId } = useParams();
 
     return (
-        <div className={styles.wrapper}>
+        <div
+            className={styles.wrapper}
+            data-chat-active={chatId ? 'true' : 'false'}
+        >
             <aside className={styles.sidebar}>
-                <div className={styles.sidebarHeader}>
-                    <h2 className={styles.sidebarTitle}>{t('messages_title')}</h2>
-                </div>
-                <div className={styles.chatListPlaceholder}>
-                    {t('messages_loading_chats')}
-                </div>
+                <ChatSidebar activeChatId={chatId} />
             </aside>
 
             <main className={styles.main}>
