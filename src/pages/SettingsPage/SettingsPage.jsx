@@ -1,93 +1,91 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
+import ToggleSwitch from '../../components/UI/ToggleSwitch/ToggleSwitch.jsx';
+import SettingsItem from './components/SettingsItem/SettingsItem.jsx';
+import LanguageSelector from './components/LanguageSelector/LanguageSelector.jsx';
 import styles from './SettingsPage.module.css';
 
 export default function SettingsPage() {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const [notifications, setNotifications] = useState(false);
+    const [saving, setSaving] = useState(false);
 
-    const handleLanguageChange = (event) => {
-        i18n.changeLanguage(event.target.value);
-    };
+    const simulateSave = useCallback((fn) => {
+        setSaving(true);
+        fn();
+        const timer = setTimeout(() => setSaving(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const handleNotificationsChange = useCallback(() => {
+        simulateSave(() => setNotifications((prev) => !prev));
+    }, [simulateSave]);
 
     return (
         <MusicSectionWrapper spacing="top-only">
             <div className={styles.container}>
-                <h1 className={styles.title}>{t('settings_title')}</h1>
-
-                <div className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>General</h2>
-                    </div>
-
-                    <div className={styles.row}>
-                        <div className={styles.labelGroup}>
-                            <span className={styles.label}>{t('settings_language')}</span>
-                            <span className={styles.description}>
-                                Choose your preferred language.
-                            </span>
-                        </div>
-                        <div className={styles.control}>
-                            <select
-                                className={styles.select}
-                                value={i18n.language}
-                                onChange={handleLanguageChange}
-                            >
-                                <option value="uk">Українська</option>
-                                <option value="en">English</option>
-                            </select>
-                        </div>
-                    </div>
+                <div className={styles.pageHeader}>
+                    <h1 className={styles.pageTitle}>{t('settings_title')}</h1>
+                    <span className={`${styles.savingIndicator} ${saving ? styles.savingVisible : ''}`}>
+                        {t('settings_saving')}
+                    </span>
                 </div>
 
-                <div className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Privacy & Notifications</h2>
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>{t('settings_section_general')}</h2>
+                    <div className={styles.sectionBody}>
+                        <SettingsItem
+                            label={t('settings_language')}
+                            description={t('settings_language_desc')}
+                            control={<LanguageSelector />}
+                        />
                     </div>
+                </section>
 
-                    <div className={styles.row}>
-                        <div className={styles.labelGroup}>
-                            <span className={styles.label}>Push Notifications</span>
-                            <span className={styles.description}>
-                                Receive updates about new releases and friends.
-                            </span>
-                        </div>
-                        <div className={styles.control}>
-                            <label className={styles.switch}>
-                                <input
-                                    type="checkbox"
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>{t('settings_section_privacy')}</h2>
+                    <div className={styles.sectionBody}>
+                        <SettingsItem
+                            label={t('settings_notifications')}
+                            description={t('settings_notifications_desc')}
+                            control={
+                                <ToggleSwitch
                                     checked={notifications}
-                                    onChange={() => setNotifications(!notifications)}
+                                    onChange={handleNotificationsChange}
+                                    ariaLabel={t('settings_notifications')}
                                 />
-                                <span className={styles.slider}></span>
-                            </label>
-                        </div>
+                            }
+                        />
                     </div>
-                </div>
+                </section>
 
-                <div className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>About Orrin</h2>
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>{t('settings_section_account')}</h2>
+                    <div className={styles.sectionBody}>
+                        <SettingsItem
+                            label={t('settings_terms')}
+                            onClick={() => {}}
+                        />
+                        <SettingsItem
+                            label={t('settings_privacy_policy')}
+                            onClick={() => {}}
+                        />
                     </div>
+                </section>
 
-                    <div className={styles.row}>
-                        <span className={styles.label}>Version</span>
-                        <span className={styles.version}>1.0.0 (Beta)</span>
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>{t('settings_section_about')}</h2>
+                    <div className={styles.sectionBody}>
+                        <SettingsItem
+                            label={t('settings_version')}
+                            control={
+                                <span className={styles.versionLabel}>1.0.0 (Beta)</span>
+                            }
+                        />
                     </div>
-
-                    <div className={styles.row}>
-                        <span className={styles.label}>Terms of Service</span>
-                        <a href="#" className={styles.link} onClick={(e) => e.preventDefault()}>Read</a>
-                    </div>
-
-                    <div className={styles.row}>
-                        <span className={styles.label}>Privacy Policy</span>
-                        <a href="#" className={styles.link} onClick={(e) => e.preventDefault()}>Read</a>
-                    </div>
-                </div>
-
+                </section>
             </div>
         </MusicSectionWrapper>
     );

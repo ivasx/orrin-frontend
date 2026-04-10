@@ -6,19 +6,6 @@ import { useAuth } from '../../../../context/AuthContext.jsx';
 import ContextMenu from '../../../../components/UI/OptionsMenu/OptionsMenu.jsx';
 import styles from './CommentsTab.module.css';
 
-/**
- * @typedef {Object} Comment
- * @property {string}  id
- * @property {string}  authorId
- * @property {string}  authorUsername
- * @property {string}  author
- * @property {string}  avatar
- * @property {string}  text
- * @property {string}  timestamp
- * @property {number}  likesCount
- * @property {boolean} isLikedByMe
- */
-
 function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onReport }) {
     const { t } = useTranslation();
     const [menuVisible, setMenuVisible] = useState(false);
@@ -32,12 +19,6 @@ function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onRepor
         e.preventDefault();
         if (!dotsRef.current) return;
         const rect = dotsRef.current.getBoundingClientRect();
-        /*
-         * KEY FIX: use rect.left (not rect.right) as the x-anchor.
-         * OptionsMenu's useLayoutEffect clamps the menu to the viewport, so
-         * starting from the left edge of the button keeps it close to the
-         * trigger instead of launching it to the far-right of the screen.
-         */
         setMenuPosition({ x: rect.left, y: rect.bottom + 4 });
         setMenuVisible(prev => !prev);
     }, []);
@@ -46,12 +27,12 @@ function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onRepor
 
     const menuItems = isOwn
         ? [
-            { id: 'edit',   label: t('menu_edit'),   action: () => onEdit(comment) },
-            { id: 'delete', label: t('menu_delete'),  action: () => onDelete(comment.id), variant: 'danger' },
+            { id: 'edit',   label: t('menu_edit'),   onClick: () => onEdit(comment) },
+            { id: 'delete', label: t('menu_delete'), onClick: () => onDelete(comment.id), variant: 'danger' },
         ]
         : [
-            { id: 'share',  label: t('menu_share_to_chat'), action: () => {} },
-            { id: 'report', label: t('menu_report'),        action: () => onReport(comment.id), variant: 'danger' },
+            { id: 'share',  label: t('menu_share_to_chat'), onClick: () => {} },
+            { id: 'report', label: t('menu_report'),        onClick: () => onReport(comment.id), variant: 'danger' },
         ];
 
     return (
@@ -67,8 +48,6 @@ function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onRepor
                     </Link>
                     <span className={styles.timestamp}>{comment.timestamp}</span>
 
-                    {/* stopPropagation wrapper so clicking the menu
-                        doesn't bubble up to any parent handlers */}
                     <div
                         className={styles.menuWrapper}
                         onClick={(e) => e.stopPropagation()}
@@ -88,7 +67,7 @@ function CommentItem({ comment, currentUserId, onLike, onEdit, onDelete, onRepor
                             isVisible={menuVisible}
                             position={menuPosition}
                             onClose={handleMenuClose}
-                            menuItems={menuItems}
+                            items={menuItems}
                         />
                     </div>
                 </div>

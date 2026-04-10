@@ -1,0 +1,35 @@
+.group {
+    display: flex;
+    border: 1px solid var(--color-border-main);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.option {
+    flex: 1;
+    padding: 7px 16px;
+    font-family: var(--font-main);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.option + .option {
+    border-left: 1px solid var(--color-border-main);
+}
+
+.option:hover:not(.active) {
+    color: var(--color-text-main);
+    background-color: var(--color-surface-2);
+}
+
+.option.active {
+    color: var(--color-text-inverse, #000);
+    background-color: var(--color-text-main);
+    cursor: default;
+}
