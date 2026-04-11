@@ -363,3 +363,11 @@ export const sendMessage = async (chatId, text) => {
     });
     return data;
 };
+
+export const getTerms = async (_lang) => {
+    return Promise.reject(new Error('Not implemented yet'));
+};
+
+export const getPrivacyPolicy = async (_lang) => {
+    return Promise.reject(new Error('Not implemented yet'));
+};

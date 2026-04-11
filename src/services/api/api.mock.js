@@ -18,6 +18,7 @@ import {
     mockChats,
     mockMessages,
 } from '../../data/mockData.js';
+import { mockTerms, mockPrivacy } from '../../data/mocks/legal.mock.js';
 import {
     normalizeTrackData,
     normalizeArtistData,
@@ -497,4 +498,14 @@ export const sendMessage = async (chatId, text) => {
     );
 
     return newMessage;
+};
+
+export const getTerms = async (lang = 'en') => {
+    await delay(600);
+    return mockTerms[lang] || mockTerms['en'];
+};
+
+export const getPrivacyPolicy = async (lang = 'en') => {
+    await delay(600);
+    return mockPrivacy[lang] || mockPrivacy['en'];
 };

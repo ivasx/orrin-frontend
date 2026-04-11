@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import ToggleSwitch from '../../components/UI/ToggleSwitch/ToggleSwitch.jsx';
 import SettingsItem from './components/SettingsItem/SettingsItem.jsx';
@@ -8,6 +9,7 @@ import styles from './SettingsPage.module.css';
 
 export default function SettingsPage() {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     const [notifications, setNotifications] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -66,11 +68,11 @@ export default function SettingsPage() {
                     <div className={styles.sectionBody}>
                         <SettingsItem
                             label={t('settings_terms')}
-                            onClick={() => {}}
+                            onClick={() => navigate('/terms')}
                         />
                         <SettingsItem
                             label={t('settings_privacy_policy')}
-                            onClick={() => {}}
+                            onClick={() => navigate('/privacy')}
                         />
                     </div>
                 </section>

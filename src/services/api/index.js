@@ -75,3 +75,6 @@ export const getTopArtists = api.getTopArtists || realApi.getTopArtists;
 export const getUserChats    = api.getUserChats    || realApi.getUserChats;
 export const getChatMessages = api.getChatMessages || realApi.getChatMessages;
 export const sendMessage     = api.sendMessage     || realApi.sendMessage;
+
+export const getTerms         = api.getTerms         || realApi.getTerms;
+export const getPrivacyPolicy = api.getPrivacyPolicy || realApi.getPrivacyPolicy;

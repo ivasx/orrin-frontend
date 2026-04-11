@@ -23,6 +23,8 @@ const ResetPassword       = lazy(() => import('../pages/Auth/ResetPassword.jsx')
 const UserProfilePage     = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
 const PlaylistPage        = lazy(() => import('../pages/PlaylistsPage/PlaylistsPage.jsx'));
 const MessagesPage        = lazy(() => import('../pages/MessagesPage/MessagesPage.jsx'));
+const TermsPage           = lazy(() => import('../pages/LegalPages/TermsPage.jsx'));
+const PrivacyPage         = lazy(() => import('../pages/LegalPages/PrivacyPage.jsx'));
 
 const ArtistDashboardPage = lazy(() => import('../pages/ArtistDashboardPage/ArtistDashboardPage.jsx'));
 
@@ -38,6 +40,8 @@ export default function AppRouter() {
                     <Route path="/artist/:artistSlug" element={<ArtistPage />} />
                     <Route path="/user/:userId" element={<UserProfilePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/terms" element={<TermsPage />} />
+                    <Route path="/privacy" element={<PrivacyPage />} />
 
                     <Route element={<ProtectedRoute requireArtistManagement={false} />}>
                         <Route path="/library" element={<LibraryPage />} />

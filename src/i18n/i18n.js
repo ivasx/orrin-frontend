@@ -5,10 +5,10 @@ import translationUK from './uk.json';
 
 const resources = {
     en: {
-        translation: translationEN.translation
+        translation: translationEN
     },
     uk: {
-        translation: translationUK  // uk.json вже є плоским об'єктом
+        translation: translationUK
     }
 };
 
