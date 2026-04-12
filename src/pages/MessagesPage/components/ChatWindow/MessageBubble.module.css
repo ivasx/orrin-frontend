@@ -1,0 +1,68 @@
+.wrapper {
+    display: flex;
+    width: 100%;
+    margin: 2px 0;
+}
+
+.mine {
+    justify-content: flex-end;
+}
+
+.theirs {
+    justify-content: flex-start;
+}
+
+.bubble {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 68%;
+    padding: 10px 14px;
+    border-radius: var(--border-radius-md);
+    word-break: break-word;
+    transition: opacity 0.2s ease;
+}
+
+.bubbleMine {
+    background: var(--color-primary);
+    border-bottom-right-radius: var(--border-radius-xs);
+}
+
+.bubbleTheirs {
+    background: var(--color-surface-3);
+    border-bottom-left-radius: var(--border-radius-xs);
+}
+
+.optimistic {
+    opacity: 0.65;
+}
+
+.text {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text-main);
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.bubbleMine .text {
+    color: var(--color-text-inverse);
+}
+
+.time {
+    font-family: var(--font-body);
+    font-size: 10px;
+    line-height: 1;
+    align-self: flex-end;
+    opacity: 0.65;
+    white-space: nowrap;
+}
+
+.bubbleMine .time {
+    color: var(--color-text-inverse);
+}
+
+.bubbleTheirs .time {
+    color: var(--color-text-muted);
+}

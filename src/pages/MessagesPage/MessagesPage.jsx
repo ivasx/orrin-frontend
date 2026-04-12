@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ChatSidebar from './components/ChatSidebar/ChatSidebar';
+import ChatWindow from './components/ChatWindow/ChatWindow';
 import styles from './MessagesPage.module.css';
 
 export default function MessagesPage() {
@@ -18,9 +19,7 @@ export default function MessagesPage() {
 
             <main className={styles.main}>
                 {chatId ? (
-                    <div className={styles.chatPlaceholder}>
-                        {t('messages_loading_conversation')}
-                    </div>
+                    <ChatWindow chatId={chatId} />
                 ) : (
                     <div className={styles.emptyState}>
                         <p className={styles.emptyStateText}>{t('messages_select_conversation')}</p>
