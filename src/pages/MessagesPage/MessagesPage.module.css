@@ -1,17 +1,25 @@
 .wrapper {
+    position: fixed;
+    top: 64px;
+    left: 240px;
+    right: 0;
+    bottom: var(--player-height, 0px);
     display: flex;
-    height: 100%;
     overflow: hidden;
     background: var(--color-bg-main);
+    z-index: 1;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar {
     width: 320px;
     flex-shrink: 0;
     border-right: 1px solid var(--color-border-main);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    height: 100%;
 }
 
 .main {
@@ -19,18 +27,8 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: var(--color-surface-1);
     min-width: 0;
-}
-
-.chatPlaceholder {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-muted);
-    font-size: 14px;
-    font-family: var(--font-body);
+    height: 100%;
 }
 
 .emptyState {
@@ -39,7 +37,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     padding: 40px;
 }
 
@@ -54,6 +51,11 @@
 }
 
 @media (max-width: 768px) {
+    .wrapper {
+        left: 0 !important;
+        top: 64px;
+    }
+
     .sidebar {
         width: 100%;
         border-right: none;
@@ -61,10 +63,6 @@
 
     .wrapper[data-chat-active='true'] .sidebar {
         display: none;
-    }
-
-    .wrapper[data-chat-active='true'] .main {
-        display: flex;
     }
 
     .wrapper[data-chat-active='false'] .main {
