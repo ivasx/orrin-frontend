@@ -2,11 +2,11 @@
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--color-border-subtle);
-    background: var(--color-surface-0);
-    min-height: 64px;
+    gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 0.5px solid var(--chat-border-strong);
+    background: var(--chat-bg-window);
+    min-height: 56px;
 }
 
 .avatarWrapper {
@@ -15,59 +15,63 @@
 }
 
 .avatar {
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    border: 2px solid var(--color-border-subtle);
+    background: var(--chat-avatar-bg);
 }
 
 .avatarPlaceholder {
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: var(--color-surface-3);
+    background: var(--chat-avatar-bg);
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #555;
 }
 
 .verifiedBadge {
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: var(--color-primary);
     color: var(--color-text-inverse);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid var(--color-surface-0);
+    border: 1.5px solid var(--chat-bg-window);
 }
 
 .info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
     min-width: 0;
 }
 
 .name {
     font-family: var(--font-main);
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--color-text-main);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    letter-spacing: -0.2px;
 }
 
 .username {
     font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--color-text-muted);
+    font-size: 11px;
+    color: var(--chat-text-dim);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

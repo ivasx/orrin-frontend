@@ -6,20 +6,21 @@
     bottom: var(--player-height, 0px);
     display: flex;
     overflow: hidden;
-    background: var(--color-bg-main);
+    background: var(--chat-bg-base);
     z-index: 1;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar {
-    width: 320px;
+    width: 300px;
     flex-shrink: 0;
-    border-right: 1px solid var(--color-border-main);
+    border-right: 0.5px solid var(--chat-border-strong);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     height: 100%;
+    background: var(--chat-bg-convs);
 }
 
 .main {
@@ -38,16 +39,18 @@
     align-items: center;
     justify-content: center;
     padding: 40px;
+    background: var(--chat-bg-window);
 }
 
 .emptyStateText {
-    font-size: 15px;
-    color: var(--color-text-muted);
+    font-size: 13px;
+    color: var(--chat-text-dim);
     font-family: var(--font-body);
     text-align: center;
     margin: 0;
-    max-width: 260px;
-    line-height: 1.5;
+    max-width: 240px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
 }
 
 @media (max-width: 768px) {
@@ -72,6 +75,6 @@
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .sidebar {
-        width: 260px;
+        width: 240px;
     }
 }

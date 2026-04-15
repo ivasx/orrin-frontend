@@ -92,6 +92,31 @@
     --text-color-primary:      var(--color-text-main);
     --accent-color:            var(--color-primary);
     --accent-color-hover:      var(--color-primary-hover);
+
+    /* ── Chat-specific Deep Dark Tokens ── */
+    --chat-bg-base:            #000000;
+    --chat-bg-sidebar:         #0a0a0a;
+    --chat-bg-convs:           #0d0d0d;
+    --chat-bg-window:          #0a0a0a;
+    --chat-bg-input:           #111111;
+    --chat-border:             rgba(255, 255, 255, 0.05);
+    --chat-border-strong:      rgba(255, 255, 255, 0.08);
+    --chat-bubble-out-bg:      #1e1e1e;
+    --chat-bubble-out-border:  rgba(255, 255, 255, 0.08);
+    --chat-bubble-out-text:    #e8e8e8;
+    --chat-bubble-in-bg:       #151515;
+    --chat-bubble-in-text:     #b8b8b8;
+    --chat-text-dim:           #555555;
+    --chat-text-ghost:         #333333;
+    --chat-item-hover:         rgba(255, 255, 255, 0.03);
+    --chat-item-active:        #1a1a1a;
+    --chat-date-bg:            #161616;
+    --chat-date-border:        rgba(255, 255, 255, 0.07);
+    --chat-avatar-bg:          #1e1e1e;
+    --chat-send-bg:            #1e1e1e;
+    --chat-send-border:        rgba(255, 255, 255, 0.08);
+    --chat-send-active-bg:     var(--color-primary);
+    --chat-unread-badge:       #e53e3e;
 }
 
 *, *::before, *::after {

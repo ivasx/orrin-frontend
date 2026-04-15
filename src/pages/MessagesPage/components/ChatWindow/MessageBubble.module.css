@@ -1,7 +1,7 @@
 .wrapper {
     display: flex;
     width: 100%;
-    margin: 2px 0;
+    margin: 1px 0;
 }
 
 .mine {
@@ -16,38 +16,41 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    max-width: 68%;
-    padding: 10px 14px;
-    border-radius: var(--border-radius-md);
+    max-width: 72%;
+    padding: 9px 13px;
     word-break: break-word;
     transition: opacity 0.2s ease;
 }
 
 .bubbleMine {
-    background: var(--color-primary);
-    border-bottom-right-radius: var(--border-radius-xs);
+    background: var(--chat-bubble-out-bg);
+    border: 0.5px solid var(--chat-bubble-out-border);
+    border-radius: 14px 14px 3px 14px;
 }
 
 .bubbleTheirs {
-    background: var(--color-surface-3);
-    border-bottom-left-radius: var(--border-radius-xs);
+    background: var(--chat-bubble-in-bg);
+    border-radius: 14px 14px 14px 3px;
 }
 
 .optimistic {
-    opacity: 0.65;
+    opacity: 0.55;
 }
 
 .text {
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
-    color: var(--color-text-main);
     margin: 0;
     white-space: pre-wrap;
 }
 
 .bubbleMine .text {
-    color: var(--color-text-inverse);
+    color: var(--chat-bubble-out-text);
+}
+
+.bubbleTheirs .text {
+    color: var(--chat-bubble-in-text);
 }
 
 .time {
@@ -55,14 +58,8 @@
     font-size: 10px;
     line-height: 1;
     align-self: flex-end;
-    opacity: 0.65;
     white-space: nowrap;
-}
-
-.bubbleMine .time {
-    color: var(--color-text-inverse);
-}
-
-.bubbleTheirs .time {
-    color: var(--color-text-muted);
+    color: var(--chat-text-ghost);
+    padding: 0 2px;
+    margin-top: 1px;
 }

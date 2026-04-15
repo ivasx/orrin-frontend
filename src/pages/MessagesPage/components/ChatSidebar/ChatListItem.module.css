@@ -1,10 +1,10 @@
 .item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: 10px;
+    padding: 10px 12px;
     cursor: pointer;
-    border-radius: var(--border-radius-sm);
+    border-bottom: 0.5px solid #111111;
     transition: background var(--transition-fast);
     outline: none;
     position: relative;
@@ -12,20 +12,20 @@
 }
 
 .item:hover {
-    background: var(--color-surface-2);
+    background: var(--chat-item-hover);
 }
 
 .item:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: -2px;
+    outline: 1px solid var(--color-primary);
+    outline-offset: -1px;
 }
 
 .item.active {
-    background: var(--color-accent-glass-mid);
+    background: var(--chat-item-active);
 }
 
 .item.active:hover {
-    background: var(--color-accent-glass-mid);
+    background: var(--chat-item-active);
 }
 
 .avatarWrapper {
@@ -34,26 +34,42 @@
 }
 
 .avatar {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     object-fit: cover;
     display: block;
+    background: var(--chat-avatar-bg);
+}
+
+.avatarPlaceholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--chat-avatar-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-main);
+    font-size: 12px;
+    font-weight: 500;
+    color: #555;
+    flex-shrink: 0;
 }
 
 .verifiedBadge {
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: var(--color-primary);
     color: var(--color-text-inverse);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid var(--color-surface-0);
+    border: 1.5px solid var(--chat-bg-convs);
 }
 
 .content {
@@ -61,7 +77,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .topRow {
@@ -73,8 +89,8 @@
 
 .name {
     font-family: var(--font-main);
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 13px;
     color: var(--color-text-main);
     white-space: nowrap;
     overflow: hidden;
@@ -85,8 +101,8 @@
 
 .time {
     font-family: var(--font-body);
-    font-size: 11px;
-    color: var(--color-text-muted);
+    font-size: 10px;
+    color: #444;
     flex-shrink: 0;
     white-space: nowrap;
 }
@@ -100,8 +116,8 @@
 
 .preview {
     font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--color-text-muted);
+    font-size: 11px;
+    color: var(--chat-text-dim);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -111,26 +127,26 @@
 }
 
 .preview.previewUnread {
-    color: var(--color-text-secondary);
+    color: #888;
     font-weight: 500;
 }
 
 .youLabel {
-    color: var(--color-text-muted);
+    color: #444;
     font-weight: 400;
     margin-right: 2px;
 }
 
 .unreadBadge {
     flex-shrink: 0;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    border-radius: 10px;
-    background: var(--color-primary);
-    color: var(--color-text-inverse);
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--chat-unread-badge);
+    color: #fff;
     font-family: var(--font-main);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     display: flex;
     align-items: center;
