@@ -1,12 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getChatMessages, sendMessage, getUserChats } from '../services/api';
+import { socketService } from '../services/socket/socket.service';
 import { logger } from '../utils/logger';
+
+const TYPING_DEBOUNCE_MS = 400;
+const TYPING_EXPIRY_MS = 3000;
 
 export function useChat(chatId) {
     const queryClient = useQueryClient();
+    const [typingUsers, setTypingUsers] = useState({});
+    const typingDebounceRef = useRef(null);
+    const typingExpiryTimers = useRef({});
 
-    const chatsData = queryClient.getQueryData(['userChats']);
+    const { data: chatsData } = useQuery({ queryKey: ['userChats'] });
     const activeChat = chatsData?.find((c) => c.id === chatId) ?? null;
 
     const {
@@ -19,12 +26,91 @@ export function useChat(chatId) {
         queryKey: ['chatMessages', chatId],
         queryFn: () => getChatMessages(chatId),
         enabled: !!chatId,
-        staleTime: 1000 * 15,
-        refetchInterval: 1000 * 20,
-        onError: (err) => {
-            logger.error('[useChat] Failed to fetch messages:', err);
-        },
+        staleTime: 1000 * 60,
     });
+
+    useEffect(() => {
+        if (!chatId) return;
+
+        socketService.connect(chatId);
+
+        const handleReceiveMessage = (payload) => {
+            logger.log('[useChat] receive_message:', payload);
+
+            const incoming = payload.message ?? payload;
+
+            queryClient.setQueryData(['chatMessages', chatId], (old) => {
+                if (!old) return [incoming];
+                const exists = old.some((m) => m.id === incoming.id);
+                return exists ? old : [...old, incoming];
+            });
+
+            queryClient.setQueryData(['userChats'], (old) => {
+                if (!old) return old;
+                return old.map((c) =>
+                    c.id === chatId
+                        ? {
+                            ...c,
+                            lastMessage: {
+                                id: incoming.id,
+                                senderId: incoming.senderId,
+                                text: incoming.text,
+                                timestamp: incoming.timestamp,
+                                isRead: false,
+                            },
+                            updatedAt: incoming.timestamp,
+                            unreadCount: (c.unreadCount || 0) + 1,
+                        }
+                        : c
+                );
+            });
+        };
+
+        const handleTypingStart = ({ senderId }) => {
+            if (!senderId) return;
+
+            setTypingUsers((prev) => ({ ...prev, [senderId]: true }));
+
+            clearTimeout(typingExpiryTimers.current[senderId]);
+            typingExpiryTimers.current[senderId] = setTimeout(() => {
+                setTypingUsers((prev) => {
+                    const next = { ...prev };
+                    delete next[senderId];
+                    return next;
+                });
+            }, TYPING_EXPIRY_MS);
+        };
+
+        const handleTypingStop = ({ senderId }) => {
+            if (!senderId) return;
+
+            clearTimeout(typingExpiryTimers.current[senderId]);
+            delete typingExpiryTimers.current[senderId];
+
+            setTypingUsers((prev) => {
+                const next = { ...prev };
+                delete next[senderId];
+                return next;
+            });
+        };
+
+        socketService.on('receive_message', handleReceiveMessage);
+        socketService.on('typing_start', handleTypingStart);
+        socketService.on('typing_stop', handleTypingStop);
+
+        return () => {
+            socketService.off('receive_message');
+            socketService.off('typing_start');
+            socketService.off('typing_stop');
+            socketService.disconnect();
+
+            clearTimeout(typingDebounceRef.current);
+            Object.values(typingExpiryTimers.current).forEach(clearTimeout);
+            typingExpiryTimers.current = {};
+
+            setTypingUsers({});
+        };
+    }, [chatId, queryClient]);
 
     const { mutate: send, isLoading: isSending } = useMutation({
         mutationFn: (text) => sendMessage(chatId, text),
@@ -74,9 +160,20 @@ export function useChat(chatId) {
         [send, chatId]
     );
 
+    const notifyTyping = useCallback(() => {
+        if (!chatId) return;
+
+        clearTimeout(typingDebounceRef.current);
+        typingDebounceRef.current = setTimeout(() => {
+            socketService.emit('typing_start', { chatId });
+        }, TYPING_DEBOUNCE_MS);
+    }, [chatId]);
+
     const refetchMessages = useCallback(() => {
         refetch();
     }, [refetch]);
+
+    const isTyping = Object.keys(typingUsers).length > 0;
 
     return {
         messages: messages ?? [],
@@ -85,7 +182,10 @@ export function useChat(chatId) {
         error,
         isSending,
         activeChat,
+        isTyping,
+        typingUsers,
         sendChatMessage,
+        notifyTyping,
         refetchMessages,
     };
 }
