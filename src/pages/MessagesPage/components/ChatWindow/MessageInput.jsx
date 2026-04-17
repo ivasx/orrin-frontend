@@ -7,7 +7,7 @@ const MAX_ROWS = 5;
 const LINE_HEIGHT = 22;
 const PADDING_VERTICAL = 20;
 
-export default function MessageInput({ onSend, isSending, disabled }) {
+export default function MessageInput({ onSend, isSending, disabled, notifyTyping }) {
     const { t } = useTranslation();
     const [value, setValue] = useState('');
     const textareaRef = useRef(null);
@@ -29,7 +29,8 @@ export default function MessageInput({ onSend, isSending, disabled }) {
     const handleChange = useCallback((e) => {
         setValue(e.target.value);
         adjustHeight();
-    }, [adjustHeight]);
+        if (notifyTyping) notifyTyping();
+    }, [adjustHeight, notifyTyping]);
 
     const handleSubmit = useCallback(() => {
         const trimmed = value.trim();

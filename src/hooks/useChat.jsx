@@ -13,7 +13,7 @@ export function useChat(chatId) {
     const typingDebounceRef = useRef(null);
     const typingExpiryTimers = useRef({});
 
-    const { data: chatsData } = useQuery({ queryKey: ['userChats'] });
+    const { data: chatsData } = useQuery({ queryKey: ['userChats'], queryFn: getUserChats, staleTime: 1000 * 30 });
     const activeChat = chatsData?.find((c) => c.id === chatId) ?? null;
 
     const {

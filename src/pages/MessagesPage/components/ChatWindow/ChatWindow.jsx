@@ -15,13 +15,15 @@ export default function ChatWindow({ chatId }) {
         isError,
         isSending,
         activeChat,
+        isTyping,
         sendChatMessage,
+        notifyTyping,
         refetchMessages,
     } = useChat(chatId);
 
     return (
         <div className={styles.window}>
-            <ChatHeader chat={activeChat} />
+            <ChatHeader chat={activeChat} isTyping={isTyping} />
 
             <div className={styles.body}>
                 {isError ? (
@@ -50,6 +52,7 @@ export default function ChatWindow({ chatId }) {
                     onSend={sendChatMessage}
                     isSending={isSending}
                     disabled={isError}
+                    notifyTyping={notifyTyping}
                 />
             </div>
         </div>
