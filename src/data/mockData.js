@@ -46,3 +46,7 @@ export {
     mockChats,
     mockMessages,
 } from './mocks/chat.mock.js';
+
+export {
+    mockNotifications as mockAppNotifications,
+} from './mocks/notifications.mock.js';

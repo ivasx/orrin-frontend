@@ -18,6 +18,7 @@ import {
     mockChats,
     mockMessages,
 } from '../../data/mockData.js';
+import { mockNotifications as mockAppNotifications } from '../../data/mocks/notifications.mock.js';
 import { mockTerms, mockPrivacy } from '../../data/mocks/legal.mock.js';
 import {
     normalizeTrackData,
@@ -31,6 +32,7 @@ const delay = (ms = 350) => new Promise((resolve) => setTimeout(resolve, ms));
 let mutableHistory  = [...mockHistory];
 let mutableChats    = mockChats.map((c) => ({ ...c }));
 let mutableMessages = [...mockMessages];
+let mutableAppNotifications = mockAppNotifications.map((n) => ({ ...n }));
 
 const populatePlaylistTracks = (playlist) => {
     const tracks = (playlist.trackIds || [])
@@ -411,9 +413,24 @@ export const getUserFollowers = async (username) => {
     return mockFollowers;
 };
 
-export const getNotifications           = async () => { await delay(); return mockNotifications; };
-export const markNotificationAsRead     = async (id) => { await delay(150); return { success: true }; };
-export const markAllNotificationsAsRead = async ()   => { await delay(200); return { success: true }; };
+export const getNotifications = async () => {
+    await delay(400);
+    return [...mutableAppNotifications];
+};
+
+export const markNotificationAsRead = async (id) => {
+    await delay(300);
+    const notification = mutableAppNotifications.find((n) => n.id === id);
+    if (!notification) throw new Error(`Notification not found: ${id}`);
+    notification.isRead = true;
+    return { ...notification };
+};
+
+export const markAllNotificationsAsRead = async () => {
+    await delay(400);
+    mutableAppNotifications = mutableAppNotifications.map((n) => ({ ...n, isRead: true }));
+    return { success: true };
+};
 
 export const requestPasswordReset = async (email) => { await delay(600); return { success: true }; };
 export const confirmPasswordReset = async (uid, token, newPassword) => { await delay(600); return { success: true }; };

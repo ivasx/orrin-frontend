@@ -309,12 +309,20 @@ export const getUserFollowers = async (username) => {
     return Array.isArray(data) ? data.map(normalizeUserData) : [];
 };
 
-export const getNotifications           = async () => {
-    const data = await fetchJson('/api/v1/notifications/');
+export const getNotifications = async () => {
+    const data = await fetchJson('/api/notifications/');
     return Array.isArray(data) ? data : (data.results || []);
 };
-export const markNotificationAsRead     = async (id) => fetchJson(`/api/v1/notifications/${id}/read/`, { method: 'POST' });
-export const markAllNotificationsAsRead = async ()   => fetchJson('/api/v1/notifications/read-all/',   { method: 'POST' });
+
+export const markNotificationAsRead = async (id) => {
+    const data = await fetchJson(`/api/notifications/${id}/read/`, { method: 'POST' });
+    return data;
+};
+
+export const markAllNotificationsAsRead = async () => {
+    const data = await fetchJson('/api/notifications/read-all/', { method: 'POST' });
+    return data;
+};
 
 export const requestPasswordReset = (email) =>
     fetchJson('/api/v1/auth/password/reset/', {
