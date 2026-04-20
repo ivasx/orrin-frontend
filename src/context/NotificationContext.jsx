@@ -1,90 +1,70 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { useAuth } from './AuthContext';
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../services/api/index.js';
-import { logger } from '../utils/logger';
+import { useNotifications as useNotificationsHook } from '../hooks/useNotifications.jsx';
 
 const NotificationContext = createContext(null);
 
 export const NotificationProvider = ({ children }) => {
-    const { token, isLoggedIn } = useAuth();
-    const [notifications, setNotifications] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
+    const { isLoggedIn } = useAuth();
 
-    const fetchInitialNotifications = useCallback(async () => {
-        try {
-            const data = await getNotifications();
-            setNotifications(data);
-            setUnreadCount(data.filter(n => !n.is_read).length);
-        } catch (error) {
-            logger.error('Failed to fetch notifications', error);
-        }
-    }, []);
+    const {
+        notifications: rawNotifications,
+        unreadCount: rawUnreadCount,
+        isLoading,
+        isError,
+        error,
+        markAsRead,
+        markAllAsRead,
+        isMarkingAsRead,
+        isMarkingAllAsRead,
+    } = useNotificationsHook();
 
-    useEffect(() => {
-        if (!isLoggedIn) {
-            setNotifications([]);
-            setUnreadCount(0);
-            return;
-        }
+    const notifications = useMemo(
+        () => (isLoggedIn ? rawNotifications : []),
+        [isLoggedIn, rawNotifications],
+    );
 
-        fetchInitialNotifications();
+    const unreadCount = useMemo(
+        () => (isLoggedIn ? rawUnreadCount : 0),
+        [isLoggedIn, rawUnreadCount],
+    );
 
-        // Skip WebSocket entirely in mock mode
-        const isMockMode = import.meta.env.VITE_USE_MOCK_DATA === 'true';
-        if (isMockMode) return;
-
-        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsHost = import.meta.env.VITE_WS_BASE_URL || window.location.host;
-        let ws;
-
-        const connectWebSocket = () => {
-            ws = new WebSocket(`${wsProtocol}//${wsHost}/ws/notifications/?token=${token}`);
-
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                if (data.type === 'notification') {
-                    setNotifications(prev => [data.payload, ...prev]);
-                    setUnreadCount(prev => prev + 1);
-                }
-            };
-
-            ws.onclose = () => {
-                setTimeout(connectWebSocket, 5000);
-            };
-        };
-
-        connectWebSocket();
-
-        return () => {
-            if (ws) ws.close();
-        };
-    }, [isLoggedIn, token, fetchInitialNotifications]);
-
-    const readNotification = async (id) => {
-        try {
-            await markNotificationAsRead(id);
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
-            setUnreadCount(prev => Math.max(0, prev - 1));
-        } catch (error) {
-            logger.error('Failed to mark notification as read', error);
-        }
-    };
-
-    const readAll = async () => {
-        try {
-            await markAllNotificationsAsRead();
-            setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-            setUnreadCount(0);
-        } catch (error) {
-            logger.error('Failed to mark all as read', error);
-        }
-    };
+    const value = useMemo(
+        () => ({
+            notifications,
+            unreadCount,
+            isLoading: isLoggedIn ? isLoading : false,
+            isError,
+            error,
+            markAsRead,
+            markAllAsRead,
+            isMarkingAsRead,
+            isMarkingAllAsRead,
+        }),
+        [
+            notifications,
+            unreadCount,
+            isLoggedIn,
+            isLoading,
+            isError,
+            error,
+            markAsRead,
+            markAllAsRead,
+            isMarkingAsRead,
+            isMarkingAllAsRead,
+        ],
+    );
 
     return (
-        <NotificationContext.Provider value={{ notifications, unreadCount, readNotification, readAll }}>
+        <NotificationContext.Provider value={value}>
             {children}
         </NotificationContext.Provider>
     );
+};
+
+NotificationProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 };
 
 export const useNotifications = () => {
