@@ -1,0 +1,319 @@
+.dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: -8px;
+    width: 360px;
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-border-subtle);
+    display: flex;
+    flex-direction: column;
+    z-index: var(--z-modal);
+    overflow: hidden;
+    animation: dropdownIn 0.2s var(--transition-spring) forwards;
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border-main);
+    flex-shrink: 0;
+}
+
+.title {
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    letter-spacing: 0.02em;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.markAllBtn {
+    background: none;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: var(--border-radius-xs);
+    transition: color var(--transition-fast), background var(--transition-fast);
+    white-space: nowrap;
+}
+
+.markAllBtn:hover {
+    color: var(--color-primary-hover);
+    background: var(--color-primary-dim);
+}
+
+.closeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.closeBtn:hover {
+    color: var(--color-text-main);
+    background: var(--color-surface-3);
+}
+
+.body {
+    overflow-y: auto;
+    max-height: 420px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-surface-4) transparent;
+}
+
+.body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.body::-webkit-scrollbar-thumb {
+    background: var(--color-surface-4);
+    border-radius: 2px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border-subtle);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    outline: none;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.item:hover {
+    background: var(--color-bg-glass-subtle);
+}
+
+.item:focus-visible {
+    background: var(--color-bg-glass-subtle);
+    box-shadow: inset 2px 0 0 var(--color-primary);
+}
+
+.item.unread {
+    background: var(--color-accent-glass);
+}
+
+.item.unread:hover {
+    background: var(--color-accent-glass-mid);
+}
+
+.unreadDot {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 5px var(--color-primary-glow);
+    flex-shrink: 0;
+}
+
+.iconContainer {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.avatarImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.typeIcon {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
+}
+
+.text {
+    margin: 0 0 4px 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.item.unread .text {
+    color: var(--color-text-main);
+    font-weight: 500;
+}
+
+.time {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.01em;
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 10px;
+    text-align: center;
+}
+
+.emptyIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}
+
+.emptyTitle {
+    margin: 0;
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+}
+
+.emptySubtitle {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    max-width: 200px;
+}
+
+.skeletonList {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.skeletonItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.skeletonItem:last-child {
+    border-bottom: none;
+}
+
+.skeletonAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-surface-3);
+    flex-shrink: 0;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeletonLines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.skeletonLine {
+    height: 10px;
+    border-radius: var(--border-radius-xs);
+    background: var(--color-surface-3);
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@media (max-width: 480px) {
+    .dropdown {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+        border-left: none;
+        border-right: none;
+    }
+}

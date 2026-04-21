@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext.jsx";
-import { Bell, Settings, LogOut } from "lucide-react";
-import Button from "../../../UI/Button/Button.jsx";
+import { Settings, LogOut } from "lucide-react";
 import Dropdown from "../../../UI/Dropdown/Dropdown.jsx";
+import { NotificationBell } from "./NotificationBell.jsx";
 import styles from "./UserActions.module.css";
 
 export const UserActions = () => {
@@ -50,13 +50,7 @@ export const UserActions = () => {
 
     return (
         <div className={styles.actionsContainer}>
-            <Button
-                variant="icon"
-                className={styles.notificationBtn}
-                aria-label={t('notifications')}
-            >
-                <Bell size={22} strokeWidth={1.5} />
-            </Button>
+            <NotificationBell />
 
             <Dropdown
                 customTrigger={AvatarComponent}
