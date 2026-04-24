@@ -6,6 +6,19 @@ import VinylLoader from '../../components/UI/Spinner/VinylLoader';
 import ManageProfileView from './views/ManageProfileView';
 import UploadTrackView from './views/UploadTrackView';
 import InlineError from '../../components/Shared/InlineError/InlineError';
+import { useQuery } from '@tanstack/react-query';
+import { getArtistById } from '../../services/api/index.js';
+import { normalizeArtistData } from '../../constants/fallbacks.js';
+
+const TABS = {
+    MANAGE: 'manage',
+    UPLOAD: 'upload',
+};
+
+function resolveActiveTab(pathname) {
+    if (pathname.endsWith('/upload')) return TABS.UPLOAD;
+    return TABS.MANAGE;
+}
 
 export default function ArtistDashboardPage() {
     const { artistSlug } = useParams();
@@ -13,43 +26,19 @@ export default function ArtistDashboardPage() {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
-    const [artistData, setArtistData] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [fetchError, setFetchError] = useState(null);
+    const activeTab = resolveActiveTab(location.pathname);
 
-    const activeTab = location.pathname.includes('/upload') ? 'upload' : 'manage';
+    const { data: rawArtistData, isLoading, isError } = useQuery({
+        queryKey: ['artist', artistSlug],
+        queryFn: () => getArtistById(artistSlug),
+        enabled: !!artistSlug,
+        staleTime: 1000 * 60 * 5,
+    });
 
-    useEffect(() => {
-        const fetchArtistDetails = async () => {
-            setIsLoading(true);
-            setFetchError(null);
-            try {
-                const response = await fetch(`/api/artists/${artistSlug}/`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to load artist dashboard data.');
-                }
-
-                const data = await response.json();
-                setArtistData(data);
-            } catch (error) {
-                setFetchError(error.message || 'An unexpected error occurred.');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        if (artistSlug) {
-            fetchArtistDetails();
-        }
-    }, [artistSlug]);
+    const artistData = rawArtistData ? normalizeArtistData(rawArtistData) : null;
 
     const handleTabChange = (tab) => {
-        navigate(`/artist/${artistSlug}/${tab}`);
+        navigate(`/artist/${artistSlug}/${tab}`, { replace: true });
     };
 
     if (isLoading) {
@@ -60,15 +49,15 @@ export default function ArtistDashboardPage() {
         );
     }
 
-    if (fetchError) {
+    if (isError || !artistData) {
         return (
             <div className={styles.errorContainer}>
-                <InlineError message={fetchError} />
+                <InlineError message={t('artistDashboard.fetchError', 'Failed to load artist dashboard.')} />
                 <button
                     className={styles.retryButton}
-                    onClick={() => window.location.reload()}
+                    onClick={() => navigate(`/artist/${artistSlug}`)}
                 >
-                    Try Again
+                    {t('artistDashboard.backToProfile', 'Back to Profile')}
                 </button>
             </div>
         );
@@ -80,7 +69,8 @@ export default function ArtistDashboardPage() {
                 <div>
                     <h1 className={styles.title}>{t('artistDashboard.title')}</h1>
                     <p className={styles.subtitle}>
-                        {t('artistDashboard.managingProfileFor')} <span className={styles.highlight}>{artistData?.name || 'Artist'}</span>
+                        {t('artistDashboard.managingProfileFor')}{' '}
+                        <span className={styles.highlight}>{artistData.name}</span>
                     </p>
                 </div>
                 <div className={styles.headerActions}>
@@ -95,22 +85,26 @@ export default function ArtistDashboardPage() {
 
             <nav className={styles.dashboardNav}>
                 <button
-                    className={`${styles.navButton} ${activeTab === 'manage' ? styles.active : ''}`}
-                    onClick={() => handleTabChange('manage')}
+                    className={`${styles.navButton} ${activeTab === TABS.MANAGE ? styles.active : ''}`}
+                    onClick={() => handleTabChange(TABS.MANAGE)}
                 >
                     {t('artistDashboard.tabs.profileSettings')}
                 </button>
                 <button
-                    className={`${styles.navButton} ${activeTab === 'upload' ? styles.active : ''}`}
-                    onClick={() => handleTabChange('upload')}
+                    className={`${styles.navButton} ${activeTab === TABS.UPLOAD ? styles.active : ''}`}
+                    onClick={() => handleTabChange(TABS.UPLOAD)}
                 >
                     {t('artistDashboard.tabs.uploadRelease')}
                 </button>
             </nav>
 
             <main className={styles.dashboardContent}>
-                {activeTab === 'manage' && <ManageProfileView artistData={artistData} />}
-                {activeTab === 'upload' && <UploadTrackView artistSlug={artistSlug} />}
+                {activeTab === TABS.MANAGE && (
+                    <ManageProfileView artistData={artistData} artistSlug={artistSlug} />
+                )}
+                {activeTab === TABS.UPLOAD && (
+                    <UploadTrackView artistSlug={artistSlug} />
+                )}
             </main>
         </div>
     );

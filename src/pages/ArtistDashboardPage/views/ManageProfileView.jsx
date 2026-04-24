@@ -1,41 +1,27 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { useArtistMutations } from '../../../hooks/useArtistMutations.jsx';
 import styles from '../ArtistDashboardPage.module.css';
 
-export default function ManageProfileView({ artistData }) {
+export default function ManageProfileView({ artistData, artistSlug }) {
     const { t } = useTranslation();
+    const { updateProfileMutation } = useArtistMutations(artistSlug);
 
     const [name, setName] = useState(artistData?.name || '');
-    const [bio, setBio] = useState(artistData?.bio || '');
-    const [isSaving, setIsSaving] = useState(false);
-    const [saveStatus, setSaveStatus] = useState({ type: '', message: '' });
+    const [bio, setBio] = useState(artistData?.description || artistData?.bio || '');
 
-    const handleSaveProfile = async (event) => {
+    const isSaving = updateProfileMutation.isPending;
+    const isUnchanged = name === (artistData?.name || '') && bio === (artistData?.description || artistData?.bio || '');
+
+    const handleSaveProfile = (event) => {
         event.preventDefault();
-        setIsSaving(true);
-        setSaveStatus({ type: '', message: '' });
 
-        try {
-            const response = await fetch(`/api/artists/${artistData.id}/`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                },
-                body: JSON.stringify({ name, bio })
-            });
+        const formData = new FormData();
+        formData.append('name', name.trim());
+        formData.append('description', bio.trim());
 
-            if (!response.ok) {
-                throw new Error(t('artistDashboard.manage.errorUpdateFailed'));
-            }
-
-            setSaveStatus({ type: 'success', message: t('artistDashboard.manage.successMessage') });
-        } catch (error) {
-            setSaveStatus({ type: 'error', message: error.message });
-        } finally {
-            setIsSaving(false);
-        }
+        updateProfileMutation.mutate(formData);
     };
 
     return (
@@ -68,18 +54,26 @@ export default function ManageProfileView({ artistData }) {
                     />
                 </div>
 
-                {saveStatus.message && (
-                    <div className={`${styles.statusMessage} ${styles[saveStatus.type]}`}>
-                        {saveStatus.message}
+                {updateProfileMutation.isError && (
+                    <div className={`${styles.statusMessage} ${styles.error}`}>
+                        {t('artistDashboard.manage.errorUpdateFailed')}
+                    </div>
+                )}
+
+                {updateProfileMutation.isSuccess && (
+                    <div className={`${styles.statusMessage} ${styles.success}`}>
+                        {t('artistDashboard.manage.successMessage')}
                     </div>
                 )}
 
                 <button
                     type="submit"
                     className={styles.submitButton}
-                    disabled={isSaving || (name === artistData?.name && bio === artistData?.bio)}
+                    disabled={isSaving || isUnchanged || !name.trim()}
                 >
-                    {isSaving ? t('artistDashboard.manage.savingBtn') : t('artistDashboard.manage.saveBtn')}
+                    {isSaving
+                        ? t('artistDashboard.manage.savingBtn')
+                        : t('artistDashboard.manage.saveBtn')}
                 </button>
             </form>
         </div>
@@ -88,8 +82,9 @@ export default function ManageProfileView({ artistData }) {
 
 ManageProfileView.propTypes = {
     artistData: PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         name: PropTypes.string,
-        bio: PropTypes.string
-    }).isRequired
+        bio: PropTypes.string,
+        description: PropTypes.string,
+    }).isRequired,
+    artistSlug: PropTypes.string.isRequired,
 };

@@ -2,7 +2,7 @@
     padding: 2rem;
     max-width: 1000px;
     margin: 0 auto;
-    color: #ffffff;
+    color: var(--color-text-main);
     animation: fadeIn 0.4s ease-in-out;
 }
 
@@ -12,7 +12,7 @@
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .title {
@@ -23,29 +23,29 @@
 
 .subtitle {
     font-size: 1rem;
-    color: #a0a0a0;
+    color: var(--color-text-secondary);
     margin: 0;
 }
 
 .highlight {
-    color: #1ed760;
+    color: var(--color-primary);
     font-weight: 600;
 }
 
 .viewPublicButton {
     background-color: transparent;
-    border: 1px solid #a0a0a0;
-    color: #ffffff;
+    border: 1px solid var(--color-border-focus);
+    color: var(--color-text-main);
     padding: 0.5rem 1rem;
-    border-radius: 20px;
+    border-radius: var(--border-radius-pill);
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
 }
 
 .viewPublicButton:hover {
-    border-color: #ffffff;
+    border-color: var(--color-text-main);
     transform: scale(1.02);
 }
 
@@ -58,21 +58,22 @@
 .navButton {
     background: none;
     border: none;
-    color: #a0a0a0;
+    color: var(--color-text-muted);
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
     padding: 0.5rem 0;
     position: relative;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
+    font-family: var(--font-main);
 }
 
 .navButton:hover {
-    color: #ffffff;
+    color: var(--color-text-main);
 }
 
 .navButton.active {
-    color: #ffffff;
+    color: var(--color-text-main);
 }
 
 .navButton.active::after {
@@ -82,14 +83,15 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background-color: #1ed760;
+    background-color: var(--color-primary);
     border-radius: 2px;
 }
 
 .dashboardContent {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    background-color: var(--color-bg-glass-subtle);
+    border-radius: var(--border-radius-sm);
     padding: 2rem;
+    border: 1px solid var(--color-border-subtle);
 }
 
 .viewTitle {
@@ -99,7 +101,6 @@
     margin-bottom: 1.5rem;
 }
 
-/* Forms */
 .dashboardForm {
     display: flex;
     flex-direction: column;
@@ -116,35 +117,35 @@
 .formGroup label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #e0e0e0;
+    color: var(--color-text-secondary);
 }
 
 .formGroup input[type="text"],
 .formGroup textarea {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid transparent;
-    border-radius: 4px;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-xs);
     padding: 0.75rem 1rem;
-    color: #ffffff;
-    font-family: inherit;
+    color: var(--color-text-main);
+    font-family: var(--font-main);
     font-size: 1rem;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
 }
 
 .formGroup input[type="text"]:focus,
 .formGroup textarea:focus {
     outline: none;
-    background-color: rgba(255, 255, 255, 0.15);
-    border-color: #a0a0a0;
+    background-color: var(--color-surface-3);
+    border-color: var(--color-border-focus);
 }
 
 .formGroup input[type="file"] {
-    color: #a0a0a0;
+    color: var(--color-text-secondary);
 }
 
 .fileHint {
     font-size: 0.8rem;
-    color: #1ed760;
+    color: var(--color-primary);
     margin-top: 0.25rem;
 }
 
@@ -155,58 +156,59 @@
 }
 
 .checkboxGroup input[type="checkbox"] {
-    accent-color: #1ed760;
+    accent-color: var(--color-primary);
     width: 1.2rem;
     height: 1.2rem;
     cursor: pointer;
 }
 
 .submitButton {
-    background-color: #1ed760;
-    color: #000000;
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
     border: none;
-    border-radius: 24px;
+    border-radius: var(--border-radius-pill);
     padding: 0.875rem 2rem;
     font-size: 1rem;
     font-weight: 700;
+    font-family: var(--font-main);
     cursor: pointer;
     align-self: flex-start;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
 }
 
 .submitButton:hover:not(:disabled) {
     transform: scale(1.04);
-    background-color: #1fdf64;
+    background-color: var(--color-primary-hover);
 }
 
 .submitButton:disabled {
-    background-color: #535353;
-    color: #b3b3b3;
+    background-color: var(--color-surface-3);
+    color: var(--color-text-muted);
     cursor: not-allowed;
     transform: none;
 }
 
-/* Status Messages */
 .statusMessage {
     padding: 1rem;
-    border-radius: 4px;
+    border-radius: var(--border-radius-xs);
     font-weight: 600;
     font-size: 0.9rem;
 }
 
 .statusMessage.error {
-    background-color: rgba(226, 33, 52, 0.1);
-    color: #e22134;
-    border-left: 4px solid #e22134;
+    background-color: var(--color-error-dim);
+    color: var(--color-error);
+    border-left: 4px solid var(--color-error);
 }
 
 .statusMessage.success {
-    background-color: rgba(30, 215, 96, 0.1);
-    color: #1ed760;
-    border-left: 4px solid #1ed760;
+    background-color: var(--color-success-dim);
+    color: var(--color-success);
+    border-left: 4px solid var(--color-success);
 }
 
-.loaderContainer, .errorContainer {
+.loaderContainer,
+.errorContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -217,14 +219,20 @@
 .retryButton {
     margin-top: 1rem;
     background-color: transparent;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+    border: 1px solid var(--color-border-main);
+    color: var(--color-text-main);
     padding: 0.5rem 1rem;
-    border-radius: 20px;
+    border-radius: var(--border-radius-pill);
     cursor: pointer;
+    font-family: var(--font-main);
+    transition: border-color var(--transition-fast);
+}
+
+.retryButton:hover {
+    border-color: var(--color-text-main);
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
 }
