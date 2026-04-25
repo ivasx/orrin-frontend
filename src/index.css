@@ -119,6 +119,100 @@
     --chat-unread-badge:       #e53e3e;
 }
 
+[data-theme="light"] {
+    /* ── Primary Accent: Warm Terracotta (deeper for contrast on light) ── */
+    --color-primary:           #9c7b62;
+    --color-primary-hover:     #7d6050;
+    --color-primary-dim:       rgba(156, 123, 98, 0.14);
+    --color-primary-glow:      rgba(156, 123, 98, 0.28);
+
+    /* ── Secondary Accent: Dusty Sienna ── */
+    --color-secondary:         #b57a5e;
+    --color-secondary-hover:   #9a6347;
+    --color-secondary-dim:     rgba(181, 122, 94, 0.12);
+
+    /* ── Semantic Colors ── */
+    --color-error:             #c0392b;
+    --color-error-dim:         rgba(192, 57, 43, 0.1);
+    --color-warning:           #d97706;
+    --color-success:           #0a8a60;
+    --color-success-dim:       rgba(10, 138, 96, 0.12);
+    --color-info:              #0284c7;
+
+    /* ── Background Scale: Warm Parchment ── */
+    --color-bg-base:           #faf7f4;
+    --color-bg-main:           #f5f0eb;
+    --color-surface-0:         #f5f0eb;
+    --color-surface-1:         #ede6de;
+    --color-surface-2:         #e4dbd0;
+    --color-surface-3:         #d8cfc3;
+    --color-surface-4:         #ccc2b4;
+
+    /* ── Glass / Overlay Layers ── */
+    --color-bg-glass-subtle:   rgba(0, 0, 0, 0.02);
+    --color-bg-glass-light:    rgba(0, 0, 0, 0.06);
+    --color-bg-glass-medium:   rgba(0, 0, 0, 0.1);
+    --color-bg-glass-heavy:    rgba(0, 0, 0, 0.18);
+    --color-bg-overlay:        rgba(245, 240, 235, 0.75);
+    --color-bg-overlay-heavy:  rgba(245, 240, 235, 0.95);
+
+    /* ── Accent Glass ── */
+    --color-accent-glass:      rgba(156, 123, 98, 0.08);
+    --color-accent-glass-mid:  rgba(156, 123, 98, 0.14);
+
+    /* ── Text Scale ── */
+    --color-text-main:         #1e1915;
+    --color-text-secondary:    #4a3f35;
+    --color-text-muted:        #8c7b6e;
+    --color-text-inverse:      #faf7f4;
+    --color-text-accent:       #7d6050;
+
+    /* ── Border Scale ── */
+    --color-border-main:       #d0c4b8;
+    --color-border-subtle:     rgba(0, 0, 0, 0.08);
+    --color-border-focus:      #b0a090;
+    --color-border-accent:     rgba(156, 123, 98, 0.35);
+
+    /* ── Shadows (warm-tinted, soft) ── */
+    --shadow-sm:               0 1px 4px rgba(80, 60, 40, 0.1);
+    --shadow-main:             0 4px 16px rgba(80, 60, 40, 0.14);
+    --shadow-lg:               0 8px 32px rgba(80, 60, 40, 0.18);
+    --shadow-accent:           0 4px 20px rgba(156, 123, 98, 0.2);
+    --shadow-accent-lg:        0 8px 36px rgba(156, 123, 98, 0.28);
+
+    /* ── Chat-specific Light Tokens ── */
+    --chat-bg-base:            #faf7f4;
+    --chat-bg-sidebar:         #f0ebe4;
+    --chat-bg-convs:           #ece6de;
+    --chat-bg-window:          #f5f0eb;
+    --chat-bg-input:           #ede6de;
+    --chat-border:             rgba(0, 0, 0, 0.06);
+    --chat-border-strong:      rgba(0, 0, 0, 0.1);
+    --chat-bubble-out-bg:      #e4dbd0;
+    --chat-bubble-out-border:  rgba(0, 0, 0, 0.07);
+    --chat-bubble-out-text:    #1e1915;
+    --chat-bubble-in-bg:       #faf7f4;
+    --chat-bubble-in-text:     #3a3028;
+    --chat-text-dim:           #a09080;
+    --chat-text-ghost:         #cdc4ba;
+    --chat-item-hover:         rgba(0, 0, 0, 0.04);
+    --chat-item-active:        #e8e0d6;
+    --chat-date-bg:            #ede6de;
+    --chat-date-border:        rgba(0, 0, 0, 0.07);
+    --chat-avatar-bg:          #ddd5c8;
+    --chat-send-bg:            #ede6de;
+    --chat-send-border:        rgba(0, 0, 0, 0.08);
+    --chat-send-active-bg:     var(--color-primary);
+    --chat-unread-badge:       #c0392b;
+
+    /* ── Legacy aliases ── */
+    --bg-color-secondary:      var(--color-surface-1);
+    --bg-color-tertiary:       var(--color-surface-2);
+    --text-color-primary:      var(--color-text-main);
+    --accent-color:            var(--color-primary);
+    --accent-color-hover:      var(--color-primary-hover);
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -132,6 +226,7 @@ html, body {
     color: var(--color-text-main);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }

@@ -5,6 +5,7 @@ import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/Mus
 import ToggleSwitch from '../../components/UI/ToggleSwitch/ToggleSwitch.jsx';
 import SettingsItem from './components/SettingsItem/SettingsItem.jsx';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector.jsx';
+import ThemeToggle from '../../components/UI/ThemeToggle/ThemeToggle.jsx';
 import styles from './SettingsPage.module.css';
 
 export default function SettingsPage() {
@@ -42,6 +43,11 @@ export default function SettingsPage() {
                             label={t('settings_language')}
                             description={t('settings_language_desc')}
                             control={<LanguageSelector />}
+                        />
+                        <SettingsItem
+                            label={t('settings_theme', 'Theme')}
+                            description={t('settings_theme_desc', 'Switch between dark and light appearance')}
+                            control={<ThemeToggle />}
                         />
                     </div>
                 </section>

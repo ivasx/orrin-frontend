@@ -25,10 +25,10 @@
 }
 
 .artist-section-grid::-webkit-scrollbar-thumb {
-    background: #555;
+    background: var(--color-surface-4);
     border-radius: 4px;
 }
 
 .artist-section-grid::-webkit-scrollbar-thumb:hover {
-    background: #777;
+    background: var(--color-border-focus);
 }

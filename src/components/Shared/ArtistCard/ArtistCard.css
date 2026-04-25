@@ -6,7 +6,7 @@
     cursor: pointer;
     text-align: center;
     gap: 12px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-main);
 }
 
 .artist-card-image-wrapper {
@@ -21,12 +21,12 @@
     border-radius: 50%;
     object-fit: cover;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-border-subtle);
 }
 
 .artist-card:hover .artist-card-image {
     transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-main);
 }
 
 .artist-card-info {
@@ -39,7 +39,7 @@
 .artist-card-name {
     font-size: 16px;
     font-weight: bold;
-    color: #fff;
+    color: var(--color-text-main);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -47,7 +47,7 @@
 
 .artist-card-subtitle {
     font-size: 14px;
-    color: #aaa;
+    color: var(--color-text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -61,8 +61,7 @@
 }
 
 .artist-card-link:focus-visible .artist-card {
-    outline: 2px solid #fff;
+    outline: 2px solid var(--color-text-main);
     outline-offset: 2px;
     border-radius: 5px;
 }
-

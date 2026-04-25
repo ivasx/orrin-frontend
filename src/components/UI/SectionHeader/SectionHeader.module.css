@@ -9,14 +9,14 @@
 .sectionTitle {
     font-size: 22px;
     font-weight: bold;
-    color: #fff;
+    color: var(--color-text-main);
     margin: 0;
 }
 
 .sectionMore {
     background: none;
     border: none;
-    color: #aaa;
+    color: var(--color-text-muted);
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
@@ -25,5 +25,5 @@
 }
 
 .sectionMore:hover {
-    color: #fff;
+    color: var(--color-text-main);
 }

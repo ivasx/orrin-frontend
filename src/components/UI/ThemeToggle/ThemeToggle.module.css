@@ -1,0 +1,101 @@
+.toggle {
+    display: inline-flex;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.toggle:focus-visible .track {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 50px;
+}
+
+.track {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    background: var(--color-surface-3);
+    border-radius: 50px;
+    border: 1px solid var(--color-border-main);
+    transition:
+            background-color 0.3s ease,
+            border-color 0.3s ease;
+    overflow: hidden;
+}
+
+[data-theme="light"] .track {
+    background: var(--color-surface-2);
+}
+
+.thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-surface-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.thumbLight {
+    transform: translateX(24px);
+    background: var(--color-primary);
+}
+
+.iconSun,
+.iconMoon {
+    position: absolute;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+.iconSun {
+    color: var(--color-text-inverse);
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.7);
+}
+
+.iconMoon {
+    color: var(--color-text-secondary);
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+.thumbLight .iconSun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+.thumbLight .iconMoon {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.7);
+}
+
+.md .track {
+    width: 52px;
+    height: 28px;
+}
+
+.sm .track {
+    width: 40px;
+    height: 22px;
+}
+
+.sm .thumb {
+    width: 16px;
+    height: 16px;
+    top: 2px;
+    left: 2px;
+}
+
+.sm .thumbLight {
+    transform: translateX(18px);
+}

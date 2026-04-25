@@ -13,30 +13,30 @@
 .input {
     width: 100%;
     height: 40px;
-    background: #272727;
+    background: var(--color-surface-2);
     border: 1px solid transparent;
     border-radius: 10px;
-    color: #fff;
+    color: var(--color-text-main);
     font-weight: 500;
     font-size: 0.875rem;
     padding-left: 40px;
     padding-right: 40px;
     transition: border-color 0.2s, background-color 0.2s, border-radius 0.2s;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-main);
 }
 
 .input::placeholder {
-    color: #636363;
+    color: var(--color-text-muted);
 }
 
 .input:hover {
-    border-color: #fff;
+    border-color: var(--color-border-focus);
 }
 
 .input:focus {
-    background: #272727;
-    border-color: #fff;
-    color: #fff;
+    background: var(--color-surface-2);
+    border-color: var(--color-text-main);
+    color: var(--color-text-main);
     outline: none;
     border-radius: 10px;
 }
@@ -59,7 +59,7 @@
     padding: 0;
     width: 24px;
     height: 24px;
-    color: #636363;
+    color: var(--color-text-muted);
     z-index: 10;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .iconWrapper:hover {
-    color: #fff;
+    color: var(--color-text-main);
 }
 
 .clearBtn {
@@ -79,7 +79,7 @@
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #636363;
+    color: var(--color-text-muted);
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0;
@@ -93,5 +93,5 @@
 }
 
 .clearBtn:hover {
-    color: #fff;
+    color: var(--color-text-main);
 }

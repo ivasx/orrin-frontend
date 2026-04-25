@@ -4,8 +4,8 @@
     left: 0;
     width: 100%;
     height: 70px;
-    background: #000;
-    border-bottom: 1px solid #333;
+    background: var(--color-bg-base);
+    border-bottom: 1px solid var(--color-border-main);
     z-index: 1200;
 }
 
@@ -48,13 +48,13 @@
 .navbarTogglerIcon span {
     display: block;
     height: 3px;
-    background: #fff;
+    background: var(--color-text-main);
     border-radius: 2px;
     transition: background 0.2s;
 }
 
 .menuToggle:hover .navbarTogglerIcon span {
-    background: #636363;
+    background: var(--color-text-muted);
 }
 
 .logoWrapper {
@@ -75,7 +75,7 @@
 .siteName {
     font-weight: 600;
     font-size: 1.25rem;
-    color: #fff;
+    color: var(--color-text-main);
     white-space: nowrap;
 }
 
@@ -97,7 +97,7 @@
     display: none;
     background: none;
     border: none;
-    color: #fff;
+    color: var(--color-text-main);
     cursor: pointer;
     padding: 0;
     width: 24px;
@@ -111,15 +111,14 @@
 .username {
     font-weight: 500;
     font-size: 0.875rem;
-    color: #fff;
+    color: var(--color-text-main);
     white-space: nowrap;
 }
-
 
 .registerBtn {
     font-weight: 600 !important;
     font-size: 0.875rem !important;
-    color: #fff !important;
+    color: var(--color-text-main) !important;
     white-space: nowrap !important;
     padding: 0 !important;
     background: transparent !important;
@@ -128,7 +127,7 @@
 }
 
 .registerBtn:hover {
-    color: #636363 !important;
+    color: var(--color-text-muted) !important;
     background: transparent !important;
 }
 
@@ -158,7 +157,7 @@
     left: 0;
     width: 100vw;
     height: 70px;
-    background: #000;
+    background: var(--color-bg-base);
     z-index: 2500;
     display: none;
     align-items: center;
@@ -211,7 +210,6 @@
     .username {
         display: none;
     }
-
 
     .registerBtn {
         display: none !important;

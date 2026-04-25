@@ -5,7 +5,7 @@
     position: relative;
     border: none;
     border-radius: 50px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-main);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -23,16 +23,15 @@
     pointer-events: none;
 }
 
-
 .primary {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--color-text-main);
+    color: var(--color-text-inverse);
 }
 
 .primary:hover:not(:disabled) {
-    background-color: #ffffff;
+    background-color: var(--color-text-main);
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-sm);
 }
 
 .primary:active:not(:disabled) {
@@ -40,52 +39,50 @@
 }
 
 .secondary {
-    background-color: #333333;
-    color: #ffffff;
+    background-color: var(--color-surface-3);
+    color: var(--color-text-main);
 }
 
 .secondary:hover:not(:disabled) {
-    background-color: #444444;
+    background-color: var(--color-surface-4);
 }
 
 .outline {
     background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
+    border: 1px solid var(--color-border-focus);
+    color: var(--color-text-main);
 }
 
 .outline:hover:not(:disabled) {
-    border-color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-text-main);
+    background-color: var(--color-bg-glass-light);
 }
 
 .ghost {
     background-color: transparent;
-    color: #b3b3b3;
+    color: var(--color-text-secondary);
     padding: 0 16px;
     height: 40px;
 }
 
 .ghost:hover:not(:disabled) {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-main);
+    background-color: var(--color-bg-glass-light);
 }
 
 .icon {
     background-color: transparent;
-    color: #ffffff;
+    color: var(--color-text-main);
     border-radius: 50%;
     padding: 0;
     aspect-ratio: 1;
 }
 
 .icon:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--color-bg-glass-light);
     transform: scale(1.1);
 }
 
-
-/* Sizes */
 .small {
     height: 32px;
     padding: 0 12px;

@@ -3,14 +3,14 @@
     top: 100%;
     left: 0;
     width: 100%;
-    background: #272727;
-    border: 1px solid #fff;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-text-main);
     border-top: none;
     border-radius: 0 0 10px 10px;
     max-height: 350px;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-main);
     box-sizing: border-box;
 }
 
@@ -28,11 +28,11 @@
     background: transparent;
 }
 .container::-webkit-scrollbar-thumb {
-    background: #555;
+    background: var(--color-surface-4);
     border-radius: 4px;
 }
 .container::-webkit-scrollbar-thumb:hover {
-    background: #777;
+    background: var(--color-border-focus);
 }
 
 .list {
@@ -45,10 +45,10 @@
     padding: 12px 16px;
     padding-right: 44px;
     font-size: 0.875rem;
-    color: #fff;
+    color: var(--color-text-main);
     cursor: pointer;
     transition: background-color 0.15s ease;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--color-border-main);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -61,11 +61,11 @@
 }
 
 .item:hover {
-    background-color: #333;
+    background-color: var(--color-surface-3);
 }
 
 .loading .item {
-    color: #888;
+    color: var(--color-text-muted);
     cursor: default;
     border-bottom: none;
     justify-content: center;
@@ -78,7 +78,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888;
+    color: var(--color-text-muted);
     flex-shrink: 0;
 }
 
@@ -100,7 +100,7 @@
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #888;
+    color: var(--color-text-muted);
     cursor: pointer;
     padding: 4px;
     border-radius: 50%;
@@ -118,8 +118,8 @@
 }
 
 .removeBtn:hover {
-    background-color: #444;
-    color: #fff;
+    background-color: var(--color-surface-4);
+    color: var(--color-text-main);
 }
 
 @media (max-width: 1024px) {
