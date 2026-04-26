@@ -1,24 +1,16 @@
 :root {
-    --player-height: 80px;             /* approximate rendered height of the bar */
-    --player-handle-height: 28px;      /* height of the floating collapse handle  */
+    --player-height: 80px;
+    --player-handle-height: 28px;
     --player-transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/*
- * Fixed to the bottom of the viewport at all times.
- * Both the sliding panel AND the floating handle live inside this element so
- * they share the same stacking context and z-index budget.
- */
 .playerWrapper {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: var(--z-player);
-    /* Height equals the handle alone; the inner panel sits on top via
-       negative margin / absolute positioning trick is not needed because
-       the wrapper height grows naturally to contain the panel when visible. */
-    pointer-events: none; /* children opt-in individually */
+    pointer-events: none;
 }
 
 .playerWrapper.hidden .bottomPlayer,
@@ -26,16 +18,8 @@
     display: none;
 }
 
-
-/*
- * Always rendered; hidden via opacity + pointer-events when player is
- * expanded so it doesn't overlap the player bar chrome.
- * Uses transform for its own show/hide so nothing repaints layout.
- */
 .floatingHandle {
     position: absolute;
-    /* Sits just above the player bar. When the bar slides away the handle
-       lands exactly at the bottom edge of the screen. */
     bottom: calc(100% - var(--player-handle-height));
     right: 20px;
     height: var(--player-handle-height);
@@ -43,7 +27,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--color-bg-main, #1a1a1a);
+    background: var(--color-bg-main);
     border: 1px solid var(--color-border-main);
     border-bottom: none;
     border-radius: 8px 8px 0 0;
@@ -86,7 +70,7 @@
     transition: transform var(--player-transition);
 }
 
-.floatingIconUp  { transform: rotate(0deg);    }
+.floatingIconUp  { transform: rotate(0deg); }
 .floatingIconDown { transform: rotate(180deg); }
 
 .bottomPlayer {
@@ -98,7 +82,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 -4px 20px var(--color-bg-overlay);
     pointer-events: auto;
     transform: translateY(0);
     transition: transform var(--player-transition);
@@ -184,7 +168,6 @@
     background: var(--color-bg-glass-light);
 }
 
-
 @media (max-width: 768px) {
     .playerCenter {
         flex-shrink: 0;
@@ -195,11 +178,6 @@
         display: none;
     }
 
-    /*
-     * On mobile the collapse toggle inside .playerRight is hidden along with
-     * it, so the floating handle is the only way to collapse/expand. Make it
-     * slightly larger for easier tap targets.
-     */
     .floatingHandle {
         height: 32px;
         padding: 0 14px;

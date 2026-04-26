@@ -1,67 +1,50 @@
 .pill {
-    /* Positioned by JS imperatively (left + bottom).
-       Fixed so it floats above all page content.                              */
     position: fixed;
-    z-index: calc(var(--z-player, 500) - 1); /* just below the player bar */
+    z-index: calc(var(--z-player, 500) - 1);
 
     display: flex;
     align-items: center;
     gap: 10px;
 
-    /* Size */
     height: 52px;
     padding: 0 10px 0 6px;
     max-width: min(280px, calc(100vw - 32px));
 
-    /* Visuals */
-    background: var(--color-surface-2, #1e1e1e);
-    border: 1px solid var(--color-border-main, rgba(255,255,255,0.1));
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border-main);
     border-radius: 999px;
-    box-shadow:
-            0 4px 24px rgba(0, 0, 0, 0.45),
-            0 1px 4px  rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
 
-    /* Default: invisible and below the fold */
     opacity: 0;
     transform: translateY(calc(100% + 24px));
     pointer-events: none;
-    /* Initial left is written by JS — we don't declare it here to avoid a
-       flash at position 0 before the first rAF fires.                         */
 
     transition:
             opacity    0.3s cubic-bezier(0.4, 0, 0.2, 1),
             transform  0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Prevent text selection during drag */
     user-select: none;
     -webkit-user-select: none;
-    touch-action: none; /* we handle all pointer events manually */
+    touch-action: none;
 
     cursor: grab;
     will-change: transform, opacity, left;
 }
 
-/* Revealed when the player bar is collapsed */
 .pillVisible {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
 }
 
-/* Active drag state */
 .pillDragging {
     cursor: grabbing;
-    /* Lift the pill slightly to give tactile feedback */
-    box-shadow:
-            0 8px 32px rgba(0, 0, 0, 0.55),
-            0 2px 8px  rgba(0, 0, 0, 0.4);
-    /* Scale up just a touch */
+    box-shadow: var(--shadow-accent-lg);
     transform: translateY(0) scale(1.03);
 }
 
-/* Focus ring for keyboard users */
 .pill:focus-visible {
-    outline: 2px solid var(--color-primary, #af947e);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
@@ -71,24 +54,21 @@
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    /* Subtle inner shadow so the art feels embedded */
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
-    /* Spin slowly while playing — toggled via JS class if desired;
-       can be enabled in a future iteration.                                   */
+    box-shadow: inset 0 0 0 1px var(--color-border-subtle);
 }
 
 .info {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-width: 0;   /* allow ellipsis */
+    min-width: 0;
     flex: 1;
 }
 
 .title {
     font-size: 12px;
     font-weight: 700;
-    color: var(--color-text-main, #fff);
+    color: var(--color-text-main);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -98,7 +78,7 @@
 .artist {
     font-size: 11px;
     font-weight: 400;
-    color: var(--color-text-secondary, rgba(255,255,255,0.55));
+    color: var(--color-text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -112,8 +92,8 @@
     height: 32px;
     border-radius: 50%;
     border: none;
-    background: var(--color-text-main, #fff);
-    color: var(--color-bg-base, #000);
+    background: var(--color-text-main);
+    color: var(--color-text-inverse);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,28 +105,27 @@
 
 .playBtn:hover {
     transform: scale(1.1);
-    background: #f0f0f0;
+    background: var(--color-text-secondary);
 }
 
 .playBtn:active {
     transform: scale(0.95);
 }
 
-/* Push the play icon 1 px right so it looks optically centred */
 .playIcon {
     margin-left: 2px;
 }
 
 .chevron {
     flex-shrink: 0;
-    color: var(--color-text-secondary, rgba(255,255,255,0.4));
+    color: var(--color-text-muted);
     display: flex;
     align-items: center;
     transition: color 0.15s ease;
 }
 
 .pill:hover .chevron {
-    color: var(--color-text-main, #fff);
+    color: var(--color-text-main);
 }
 
 @media (max-width: 480px) {
@@ -170,6 +149,5 @@
         height: 28px;
     }
 
-    /* Hide the chevron on very small screens to save space */
     .chevron { display: none; }
 }

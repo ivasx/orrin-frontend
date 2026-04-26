@@ -8,14 +8,14 @@
 .textarea {
     flex: 1;
     resize: none;
-    background: #151515;
-    border: 0.5px solid #222222;
+    background: var(--chat-bg-input);
+    border: 0.5px solid var(--chat-border-strong);
     border-radius: 22px;
     padding: 9px 16px;
     font-family: var(--font-body);
     font-size: 13px;
     line-height: 1.5;
-    color: #888;
+    color: var(--chat-text-dim);
     outline: none;
     transition: border-color var(--transition-fast), background var(--transition-fast);
     overflow-y: auto;
@@ -23,11 +23,11 @@
 }
 
 .textarea::placeholder {
-    color: #444;
+    color: var(--chat-text-ghost);
 }
 
 .textarea:focus {
-    border-color: #2a2a2a;
+    border-color: var(--chat-border-strong);
     color: var(--color-text-main);
 }
 
@@ -51,8 +51,12 @@
     justify-content: center;
     cursor: not-allowed;
     background: var(--chat-send-bg);
-    color: #666;
-    transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
+    color: var(--chat-text-dim);
+    transition:
+            background var(--transition-fast),
+            color var(--transition-fast),
+            transform var(--transition-fast),
+            border-color var(--transition-fast);
     outline: none;
 }
 
@@ -62,7 +66,7 @@
 }
 
 .sendButton.active {
-    background: var(--color-primary);
+    background: var(--chat-send-active-bg);
     border-color: transparent;
     color: var(--color-text-inverse);
     cursor: pointer;

@@ -2,8 +2,8 @@
     display: flex;
     gap: 2rem;
     padding: 0 2rem;
-    border-bottom: 1px solid var(--border-color, #2a2a2a);
-    background: var(--bg-color-secondary, #121212);
+    border-bottom: 1px solid var(--color-border-main);
+    background: var(--color-surface-0);
     overflow-x: auto;
     scrollbar-width: none;
 }
@@ -15,31 +15,32 @@
 .tabButton {
     background: none;
     border: none;
-    color: var(--text-color-secondary, #b3b3b3);
+    color: var(--color-text-muted);
     font-size: 1rem;
     font-weight: 600;
+    font-family: var(--font-main);
     padding: 1rem 0;
     cursor: pointer;
     position: relative;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
     white-space: nowrap;
 }
 
 .tabButton:hover {
-    color: var(--text-color-primary, #ffffff);
+    color: var(--color-text-secondary);
 }
 
 .tabButton.active {
-    color: var(--text-color-primary, #ffffff);
+    color: var(--color-text-main);
 }
 
 .tabButton.active::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -1px;
     left: 0;
     width: 100%;
-    height: 3px;
-    background-color: var(--accent-color, #1db954);
-    border-radius: 3px 3px 0 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: 2px 2px 0 0;
 }

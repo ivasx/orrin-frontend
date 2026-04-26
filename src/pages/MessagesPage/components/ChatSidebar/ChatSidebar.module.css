@@ -32,7 +32,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    background: #1a1a1a;
+    background: var(--chat-bg-input);
     border-radius: var(--border-radius-sm);
     padding: 0 10px;
     gap: 6px;
@@ -40,7 +40,7 @@
 }
 
 .searchIcon {
-    color: #444;
+    color: var(--chat-text-dim);
     pointer-events: none;
     flex-shrink: 0;
 }
@@ -57,7 +57,7 @@
 }
 
 .searchInput::placeholder {
-    color: #444;
+    color: var(--chat-text-dim);
 }
 
 .clearButton {
@@ -65,7 +65,7 @@
     border: none;
     padding: 0;
     cursor: pointer;
-    color: #444;
+    color: var(--chat-text-dim);
     display: flex;
     align-items: center;
     justify-content: center;

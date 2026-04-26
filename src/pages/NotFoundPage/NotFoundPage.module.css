@@ -6,10 +6,9 @@
     height: calc(100vh - var(--header-height, 64px));
     overflow: hidden;
     text-align: center;
-    color: var(--text-primary, #fff);
-    font-family: var(--font-main, 'Montserrat', sans-serif);
-    background-color: #000;
-    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 60%);
+    color: var(--color-text-main);
+    font-family: var(--font-main);
+    background: radial-gradient(circle at center, var(--color-surface-1) 0%, var(--color-bg-base) 60%);
     animation: fadeIn 0.5s ease-out;
     padding: 20px;
     box-sizing: border-box;
@@ -35,9 +34,9 @@
     font-size: 14rem;
     font-weight: 800;
     line-height: 0.8;
-    color: #ffffff;
+    color: var(--color-text-main);
     margin: 0;
-    text-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+    text-shadow: var(--shadow-accent);
 }
 
 .catImage {
@@ -46,7 +45,7 @@
     object-fit: contain;
     margin: 0 -0.5rem;
     z-index: 2;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+    filter: drop-shadow(0 0 15px var(--color-primary-glow));
     animation: float 6s ease-in-out infinite;
 }
 
@@ -62,7 +61,7 @@
 .text {
     font-size: 1.2rem;
     font-weight: 500;
-    color: #fff;
+    color: var(--color-text-main);
     margin-bottom: 3rem;
     line-height: 1.5;
 }

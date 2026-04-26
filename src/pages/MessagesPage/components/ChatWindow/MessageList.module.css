@@ -44,7 +44,7 @@
     font-family: var(--font-body);
     font-size: 10px;
     font-weight: 400;
-    color: #444;
+    color: var(--chat-text-dim);
     background: var(--chat-date-bg);
     border: 0.5px solid var(--chat-date-border);
     border-radius: var(--border-radius-pill);
