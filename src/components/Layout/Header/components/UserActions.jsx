@@ -1,10 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../../context/AuthContext.jsx";
-import { Settings, LogOut } from "lucide-react";
-import Dropdown from "../../../UI/Dropdown/Dropdown.jsx";
-import { NotificationBell } from "./NotificationBell.jsx";
-import styles from "./UserActions.module.css";
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../../context/AuthContext.jsx';
+import { User, Settings, LogOut } from 'lucide-react';
+import Dropdown from '../../../UI/Dropdown/Dropdown.jsx';
+import { NotificationBell } from './NotificationBell.jsx';
+import styles from './UserActions.module.css';
 
 export const UserActions = () => {
     const { t } = useTranslation();
@@ -33,8 +33,14 @@ export const UserActions = () => {
         },
         { type: 'separator' },
         {
+            value: 'profile',
+            label: t('profile'),
+            icon: <User size={16} />,
+            action: () => navigate(`/user/${user?.username}`),
+        },
+        {
             value: 'settings',
-            label: t('edit_profile'),
+            label: t('settings_title'),
             icon: <Settings size={16} />,
             action: () => navigate('/settings'),
         },
