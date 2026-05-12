@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ways, popularArtists } from '../../data';
+import { searchGlobal } from '../../services/api/index.js';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper';
@@ -12,46 +12,37 @@ export default function SearchResultsPage() {
     const { t } = useTranslation();
     const query = searchParams.get('q') || '';
 
-    const [foundTracks, setFoundTracks] = useState([]);
+    const [foundTracks, setFoundTracks]   = useState([]);
     const [foundArtists, setFoundArtists] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading]       = useState(false);
 
     useEffect(() => {
-        setIsLoading(true);
-        const searchTerm = query.trim().toLowerCase();
+        const searchTerm = query.trim();
 
         if (!searchTerm) {
             setFoundTracks([]);
             setFoundArtists([]);
-            setIsLoading(false);
             return;
         }
 
-        const searchWords = searchTerm.split(/\s+/).filter(word => word.length > 0);
+        let cancelled = false;
+        setIsLoading(true);
 
-        const searchTimer = setTimeout(() => {
-
-            const tracks = ways.filter(track => {
-                const titleLower = track.title.toLowerCase();
-                const artistLower = track.artist.toLowerCase();
-                return searchWords.some(word =>
-                    titleLower.includes(word) || artistLower.includes(word)
-                );
+        searchGlobal(searchTerm)
+            .then(({ tracks, artists }) => {
+                if (cancelled) return;
+                setFoundTracks(tracks);
+                setFoundArtists(artists);
+            })
+            .catch(() => {})
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
             });
 
-            const artists = popularArtists.filter(artist => {
-                const nameLower = artist.name.toLowerCase();
-                return searchWords.some(word => nameLower.includes(word));
-            });
-
-            setFoundTracks(tracks);
-            setFoundArtists(artists);
-            setIsLoading(false);
-        }, 300);
-
-        return () => clearTimeout(searchTimer);
-
+        return () => { cancelled = true; };
     }, [query]);
+
+    const hasResults = foundTracks.length > 0 || foundArtists.length > 0;
 
     return (
         <MusicSectionWrapper spacing="top-only">
@@ -62,44 +53,31 @@ export default function SearchResultsPage() {
                     </h1>
                 )}
 
-                {isLoading ? (
-                    <p> {t('searching')}</p>
-                ) : (
+                {isLoading && <p>{t('searching')}</p>}
+
+                {!isLoading && (
                     <>
                         {foundArtists.length > 0 && (
-                            <MusicSectionWrapper spacing="default">
-                                <ArtistSection
-                                    title={t('found_artists')}
-                                    artists={foundArtists}
-                                    onMoreClick={() => {
-                                        // TODO: Implement "More" functionality for artists
-                                    }}
-                                />
-                            </MusicSectionWrapper>
+                            <ArtistSection
+                                title={t('found_artists')}
+                                artists={foundArtists}
+                            />
                         )}
 
                         {foundTracks.length > 0 && (
-                            <MusicSectionWrapper spacing="default">
-                                <TrackSection
-                                    title={t('found_tracks')}
-                                    tracks={foundTracks}
-                                    onMoreClick={() => {
-                                        // TODO: Implement "More" functionality for tracks
-                                    }}
-                                />
-                            </MusicSectionWrapper>
+                            <TrackSection
+                                title={t('found_tracks')}
+                                tracks={foundTracks}
+                            />
                         )}
 
-                        {foundTracks.length === 0 && foundArtists.length === 0 && !isLoading && query && (
+                        {query && !hasResults && (
                             <p className="no-results-message">
                                 {t('no_results_found_for_request')} "{query}"
                             </p>
                         )}
-                        {!query && (
-                            <p>
-                                {t('type_something_in_search_field')}
-                            </p>
-                        )}
+
+                        {!query && <p>{t('type_something_in_search_field')}</p>}
                     </>
                 )}
             </div>
