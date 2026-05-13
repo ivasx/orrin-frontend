@@ -1,20 +1,24 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { searchGlobal } from '../../services/api/index.js';
+import {useState, useEffect} from 'react';
+import {useSearchParams, useNavigate} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {searchGlobal} from '../../services/api/index.js';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper';
 import './SearchResultsPage.css';
 
+const PREVIEW_TRACKS = 6;
+const PREVIEW_ARTISTS = 4;
+
 export default function SearchResultsPage() {
     const [searchParams] = useSearchParams();
-    const { t } = useTranslation();
+    const {t} = useTranslation();
+    const navigate = useNavigate();
     const query = searchParams.get('q') || '';
 
-    const [foundTracks, setFoundTracks]   = useState([]);
+    const [foundTracks, setFoundTracks] = useState([]);
     const [foundArtists, setFoundArtists] = useState([]);
-    const [isLoading, setIsLoading]       = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const searchTerm = query.trim();
@@ -29,20 +33,26 @@ export default function SearchResultsPage() {
         setIsLoading(true);
 
         searchGlobal(searchTerm)
-            .then(({ tracks, artists }) => {
+            .then(({tracks, artists}) => {
                 if (cancelled) return;
                 setFoundTracks(tracks);
                 setFoundArtists(artists);
             })
-            .catch(() => {})
+            .catch(() => {
+            })
             .finally(() => {
                 if (!cancelled) setIsLoading(false);
             });
 
-        return () => { cancelled = true; };
+        return () => {
+            cancelled = true;
+        };
     }, [query]);
 
     const hasResults = foundTracks.length > 0 || foundArtists.length > 0;
+
+    const handleMoreTracks = () => navigate(`/search/tracks?q=${encodeURIComponent(query)}`);
+    const handleMoreArtists = () => navigate(`/search/artists?q=${encodeURIComponent(query)}`);
 
     return (
         <MusicSectionWrapper spacing="top-only">
@@ -60,14 +70,16 @@ export default function SearchResultsPage() {
                         {foundArtists.length > 0 && (
                             <ArtistSection
                                 title={t('found_artists')}
-                                artists={foundArtists}
+                                artists={foundArtists.slice(0, PREVIEW_ARTISTS)}
+                                onMoreClick={foundArtists.length > PREVIEW_ARTISTS ? handleMoreArtists : undefined}
                             />
                         )}
 
                         {foundTracks.length > 0 && (
                             <TrackSection
                                 title={t('found_tracks')}
-                                tracks={foundTracks}
+                                tracks={foundTracks.slice(0, PREVIEW_TRACKS)}
+                                onMoreClick={foundTracks.length > PREVIEW_TRACKS ? handleMoreTracks : undefined}
                             />
                         )}
 

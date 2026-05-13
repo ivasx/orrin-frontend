@@ -1,0 +1,36 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 60px;
+}
+
+.backBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-family: var(--font-main);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--border-radius-sm);
+    align-self: flex-start;
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.backBtn:hover {
+    color: var(--color-text-main);
+    background: var(--color-bg-glass-light);
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin: 0;
+    letter-spacing: -0.02em;
+}

@@ -1,71 +1,87 @@
-import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import {lazy, Suspense} from 'react';
+import {Routes, Route} from 'react-router-dom';
+import {useSearchParams} from 'react-router-dom';
 
 import MainLayout from '../layouts/MainLayout.jsx';
 import HeaderOnlyLayout from '../layouts/HeaderOnlyLayout.jsx';
 import VinylLoader from '../components/UI/Spinner/VinylLoader.jsx';
-import { ProtectedRoute } from './ProtectedRoute.jsx';
+import {ProtectedRoute} from './ProtectedRoute.jsx';
 
-const HomePage            = lazy(() => import('../pages/HomePage/HomePage.jsx'));
-const FeedPage            = lazy(() => import('../pages/FeedPage/FeedPage.jsx'));
-const LibraryPage         = lazy(() => import('../pages/LibraryPage/LibraryPage.jsx'));
-const FavoritesPage       = lazy(() => import('../pages/FavoritesPage/FavoritesPage.jsx'));
-const HistoryPage         = lazy(() => import('../pages/HistoryPage/HistoryPage.jsx'));
-const SettingsPage        = lazy(() => import('../pages/SettingsPage/SettingsPage.jsx'));
-const TrackPage           = lazy(() => import('../pages/TrackPage/TrackPage.jsx'));
-const SearchResultsPage   = lazy(() => import('../pages/SearchResultsPage/SearchResultsPage.jsx'));
-const ArtistPage          = lazy(() => import('../pages/ArtistPage/ArtistPage.jsx'));
-const NotFoundPage        = lazy(() => import('../pages/NotFoundPage/NotFoundPage.jsx'));
-const RegisterPage        = lazy(() => import('../pages/Auth/Register.jsx'));
-const LoginPage           = lazy(() => import('../pages/Auth/Login.jsx'));
-const ForgotPassword      = lazy(() => import('../pages/Auth/ForgotPassword.jsx'));
-const ResetPassword       = lazy(() => import('../pages/Auth/ResetPassword.jsx'));
-const UserProfilePage     = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
-const PlaylistPage        = lazy(() => import('../pages/PlaylistsPage/PlaylistsPage.jsx'));
-const MessagesPage        = lazy(() => import('../pages/MessagesPage/MessagesPage.jsx'));
-const TermsPage           = lazy(() => import('../pages/LegalPages/TermsPage.jsx'));
-const PrivacyPage         = lazy(() => import('../pages/LegalPages/PrivacyPage.jsx'));
-
+const HomePage = lazy(() => import('../pages/HomePage/HomePage.jsx'));
+const FeedPage = lazy(() => import('../pages/FeedPage/FeedPage.jsx'));
+const LibraryPage = lazy(() => import('../pages/LibraryPage/LibraryPage.jsx'));
+const FavoritesPage = lazy(() => import('../pages/FavoritesPage/FavoritesPage.jsx'));
+const HistoryPage = lazy(() => import('../pages/HistoryPage/HistoryPage.jsx'));
+const SettingsPage = lazy(() => import('../pages/SettingsPage/SettingsPage.jsx'));
+const TrackPage = lazy(() => import('../pages/TrackPage/TrackPage.jsx'));
+const SearchResultsPage = lazy(() => import('../pages/SearchResultsPage/SearchResultsPage.jsx'));
+const BrowseAllPage = lazy(() => import('../pages/BrowseAllPage/BrowseAllPage.jsx'));
+const ArtistPage = lazy(() => import('../pages/ArtistPage/ArtistPage.jsx'));
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage/NotFoundPage.jsx'));
+const RegisterPage = lazy(() => import('../pages/Auth/Register.jsx'));
+const LoginPage = lazy(() => import('../pages/Auth/Login.jsx'));
+const ForgotPassword = lazy(() => import('../pages/Auth/ForgotPassword.jsx'));
+const ResetPassword = lazy(() => import('../pages/Auth/ResetPassword.jsx'));
+const UserProfilePage = lazy(() => import('../pages/UserProfilePage/UserProfilePage.jsx'));
+const PlaylistPage = lazy(() => import('../pages/PlaylistsPage/PlaylistsPage.jsx'));
+const MessagesPage = lazy(() => import('../pages/MessagesPage/MessagesPage.jsx'));
+const TermsPage = lazy(() => import('../pages/LegalPages/TermsPage.jsx'));
+const PrivacyPage = lazy(() => import('../pages/LegalPages/PrivacyPage.jsx'));
 const ArtistDashboardPage = lazy(() => import('../pages/ArtistDashboardPage/ArtistDashboardPage.jsx'));
+
+function SearchTracksWrapper() {
+    const [params] = useSearchParams();
+    return <BrowseAllPage type="search/tracks" query={params.get('q') || ''}/>;
+}
+
+function SearchArtistsWrapper() {
+    const [params] = useSearchParams();
+    return <BrowseAllPage type="search/artists" query={params.get('q') || ''}/>;
+}
 
 export default function AppRouter() {
     return (
-        <Suspense fallback={<VinylLoader />}>
+        <Suspense fallback={<VinylLoader/>}>
             <Routes>
-                <Route element={<MainLayout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/feed" element={<FeedPage />} />
-                    <Route path="/track/:trackId" element={<TrackPage />} />
-                    <Route path="/search" element={<SearchResultsPage />} />
-                    <Route path="/artist/:artistSlug" element={<ArtistPage />} />
-                    <Route path="/user/:userId" element={<UserProfilePage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
-                    <Route path="/terms" element={<TermsPage />} />
-                    <Route path="/privacy" element={<PrivacyPage />} />
+                <Route element={<MainLayout/>}>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/feed" element={<FeedPage/>}/>
+                    <Route path="/track/:trackId" element={<TrackPage/>}/>
+                    <Route path="/search" element={<SearchResultsPage/>}/>
+                    <Route path="/search/tracks" element={<SearchTracksWrapper/>}/>
+                    <Route path="/search/artists" element={<SearchArtistsWrapper/>}/>
+                    <Route path="/tracks" element={<BrowseAllPage type="tracks"/>}/>
+                    <Route path="/artists" element={<BrowseAllPage type="artists"/>}/>
+                    <Route path="/friends" element={<BrowseAllPage type="friends"/>}/>
+                    <Route path="/artist/:artistSlug" element={<ArtistPage/>}/>
+                    <Route path="/user/:userId" element={<UserProfilePage/>}/>
+                    <Route path="/settings" element={<SettingsPage/>}/>
+                    <Route path="/terms" element={<TermsPage/>}/>
+                    <Route path="/privacy" element={<PrivacyPage/>}/>
 
-                    <Route element={<ProtectedRoute requireArtistManagement={false} />}>
-                        <Route path="/library" element={<LibraryPage />} />
-                        <Route path="/playlist/:id" element={<PlaylistPage />} />
-                        <Route path="/favorites" element={<FavoritesPage />} />
-                        <Route path="/history" element={<HistoryPage />} />
-                        <Route path="/messages" element={<MessagesPage />} />
-                        <Route path="/messages/:chatId" element={<MessagesPage />} />
+                    <Route element={<ProtectedRoute requireArtistManagement={false}/>}>
+                        <Route path="/library" element={<LibraryPage/>}/>
+                        <Route path="/playlist/:id" element={<PlaylistPage/>}/>
+                        <Route path="/favorites" element={<FavoritesPage/>}/>
+                        <Route path="/history" element={<HistoryPage/>}/>
+                        <Route path="/messages" element={<MessagesPage/>}/>
+                        <Route path="/messages/:chatId" element={<MessagesPage/>}/>
                     </Route>
 
-                    <Route element={<ProtectedRoute requireArtistManagement={true} />}>
-                        <Route path="/artist/:artistSlug/manage" element={<ArtistDashboardPage />} />
-                        <Route path="/artist/:artistSlug/upload" element={<ArtistDashboardPage />} />
+                    <Route element={<ProtectedRoute requireArtistManagement={true}/>}>
+                        <Route path="/artist/:artistSlug/manage" element={<ArtistDashboardPage/>}/>
+                        <Route path="/artist/:artistSlug/upload" element={<ArtistDashboardPage/>}/>
                     </Route>
                 </Route>
 
-                <Route element={<HeaderOnlyLayout />}>
-                    <Route path="*" element={<NotFoundPage />} />
+                <Route element={<HeaderOnlyLayout/>}>
+                    <Route path="*" element={<NotFoundPage/>}/>
                 </Route>
 
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/register" element={<RegisterPage/>}/>
+                <Route path="/login" element={<LoginPage/>}/>
+                <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                <Route path="/reset-password" element={<ResetPassword/>}/>
             </Routes>
         </Suspense>
     );
