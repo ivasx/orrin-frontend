@@ -16,29 +16,33 @@ async function authFetch(endpoint, options = {}) {
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
-        headers
+        headers,
     });
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error ${response.status}`);
+        const message = errorData.detail || errorData.message || `HTTP error ${response.status}`;
+        throw new Error(message);
     }
 
-    const data = await response.json();
-    return data;
+    if (response.status === 204) return null;
+    return response.json();
 }
 
-export const login = async (credentials) => {
+// SimpleJWT expects { email, password } because USERNAME_FIELD = 'email',
+// but our custom backend EmailOrUsernameModelBackend reads from 'username' key.
+// We send it as 'username' — the backend handles both email and username values.
+export const login = async ({ username, password }) => {
     return authFetch('/api/v1/auth/token/', {
         method: 'POST',
-        body: JSON.stringify(credentials)
+        body: JSON.stringify({ username, password }),
     });
 };
 
 export const register = async (userData) => {
     return authFetch('/api/v1/auth/register/', {
         method: 'POST',
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
     });
 };
 

@@ -39,7 +39,7 @@ const refreshAuthToken = async () => {
         const refreshToken = localStorage.getItem('refresh_token');
         if (!refreshToken) throw new Error('Refresh token is missing');
 
-        const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh/`, {
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/token/refresh/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refresh: refreshToken }),
@@ -289,7 +289,7 @@ export const getUserProfile = async (username) => {
 
 export const updateUserProfile = async (username, payload) => {
     const isFormData = payload instanceof FormData;
-    const data = await fetchJson(`/api/v1/users/${username}/`, {
+    const data = await fetchJson(`/api/v1/users/me/`, {
         method: 'PATCH',
         body:   isFormData ? payload : JSON.stringify(payload),
     });
@@ -336,8 +336,9 @@ export const confirmPasswordReset = (uid, token, newPassword) =>
         body:   JSON.stringify({ uid, token, new_password: newPassword }),
     });
 
-export const getSocialLoginUrl = (provider) =>
-    `${API_BASE_URL}/api/v1/auth/${provider.toLowerCase()}/login/`;
+// URL matches the backend endpoint /api/v1/auth/google/login/
+export const getSocialLoginUrl = (_provider) =>
+    `${API_BASE_URL}/api/v1/auth/google/login/`;
 
 export const getTopTracks = async () => {
     const data = await fetchJson('/api/v1/stats/top-tracks/');
