@@ -1,15 +1,16 @@
 import './TrackCard.css';
-import { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
+import {useState, useEffect, useCallback, useRef, useMemo, memo} from 'react';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
-import { useAudioCore } from '../../../context/AudioCoreContext.jsx';
-import { useQueue } from '../../../context/QueueContext.jsx';
-import { useTranslation } from 'react-i18next';
-import { createTrackMenuItems } from './trackMenuItems.jsx';
-import { Link } from 'react-router-dom';
-import { MoreHorizontal, Music } from 'lucide-react';
-import { isTrackPlayable } from '../../../constants/fallbacks.js';
-import { logger } from '../../../utils/logger.js';
+import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
+import {useQueue} from '../../../context/QueueContext.jsx';
+import {useTranslation} from 'react-i18next';
+import {createTrackMenuItems} from './trackMenuItems.jsx';
+import {Link} from 'react-router-dom';
+import {MoreHorizontal, Music} from 'lucide-react';
+import {isTrackPlayable} from '../../../constants/fallbacks.js';
+import {logger} from '../../../utils/logger.js';
 import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
+import ShareToChatModal from '../ShareToChatModal/ShareToChatModal.jsx';
 
 /**
  * Renders a single track row with playback controls, a context menu, and
@@ -29,7 +30,7 @@ import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
  *                                                  to the context menu. Called with no args.
  */
 function TrackCard(props) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const {
         currentTrack,
         playTrack,
@@ -43,7 +44,7 @@ function TrackCard(props) {
         updateVolume,
     } = useAudioCore();
 
-    const { insertNext, removeFromQueue } = useQueue();
+    const {insertNext, removeFromQueue} = useQueue();
 
     const track = useMemo(() => {
         if (!props.trackId) {
@@ -57,19 +58,20 @@ function TrackCard(props) {
 
     const hasValidAudio = isTrackPlayable(track);
 
-    const [coverError, setCoverError]           = useState(false);
-    const [audioError, setAudioError]           = useState(false);
-    const [isAudioLoading, setIsAudioLoading]   = useState(false);
-    const [showControls, setShowControls]       = useState(false);
-    const [isTouchDevice, setIsTouchDevice]     = useState(false);
-    const [showMenu, setShowMenu]               = useState(false);
-    const [menuPosition, setMenuPosition]       = useState({ x: 0, y: 0 });
-    const [rippleStyle, setRippleStyle]         = useState({});
-    const [showRipple, setShowRipple]           = useState(false);
+    const [coverError, setCoverError] = useState(false);
+    const [audioError, setAudioError] = useState(false);
+    const [isAudioLoading, setIsAudioLoading] = useState(false);
+    const [showControls, setShowControls] = useState(false);
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
+    const [rippleStyle, setRippleStyle] = useState({});
+    const [showRipple, setShowRipple] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
     const dotsButtonRef = useRef(null);
-    const displayCover  = coverError ? '/orrin-logo.svg' : track.cover;
+    const displayCover = coverError ? '/orrin-logo.svg' : track.cover;
 
     useEffect(() => {
         const mq = window.matchMedia('(pointer: coarse)');
@@ -83,29 +85,32 @@ function TrackCard(props) {
         const audio = audioRef.current;
         if (!audio || currentTrack?.trackId !== track.trackId) return;
 
-        const onError     = () => { setAudioError(true); setIsAudioLoading(false); };
+        const onError = () => {
+            setAudioError(true);
+            setIsAudioLoading(false);
+        };
         const onLoadStart = () => setIsAudioLoading(true);
-        const onCanPlay   = () => setIsAudioLoading(false);
+        const onCanPlay = () => setIsAudioLoading(false);
 
-        audio.addEventListener('error',     onError);
+        audio.addEventListener('error', onError);
         audio.addEventListener('loadstart', onLoadStart);
-        audio.addEventListener('canplay',   onCanPlay);
+        audio.addEventListener('canplay', onCanPlay);
 
         return () => {
-            audio.removeEventListener('error',     onError);
+            audio.removeEventListener('error', onError);
             audio.removeEventListener('loadstart', onLoadStart);
-            audio.removeEventListener('canplay',   onCanPlay);
+            audio.removeEventListener('canplay', onCanPlay);
         };
     }, [audioRef, currentTrack, track.trackId]);
 
-    const isPlaying            = isTrackPlaying(track.trackId);
-    const isCurrentTrack       = currentTrack && currentTrack.trackId === track.trackId;
+    const isPlaying = isTrackPlaying(track.trackId);
+    const isCurrentTrack = currentTrack && currentTrack.trackId === track.trackId;
     const showLoadingIndicator = isCurrentTrack && isAudioLoading;
-    const showErrorIndicator   = isCurrentTrack && audioError;
+    const showErrorIndicator = isCurrentTrack && audioError;
 
     const handlePlayPause = useCallback(() => {
         if (!track.trackId || !hasValidAudio) return;
-        if (isCurrentTrack && isPlaying)  return pauseTrack();
+        if (isCurrentTrack && isPlaying) return pauseTrack();
         if (isCurrentTrack && !isPlaying) return resumeTrack();
         playTrack(track, props.tracks);
     }, [isCurrentTrack, isPlaying, playTrack, pauseTrack, resumeTrack, track, props.tracks, hasValidAudio]);
@@ -129,6 +134,11 @@ function TrackCard(props) {
         setShowMenu(false);
     }, [props.onRemoveFromHistory]);
 
+    const handleShareToChat = useCallback(() => {
+        setIsShareModalOpen(true);
+        setShowMenu(false);
+    }, []);
+
     const getMenuItems = useCallback(
         () =>
             createTrackMenuItems({
@@ -140,25 +150,26 @@ function TrackCard(props) {
                 isCurrentTrack,
                 toggleMute,
                 updateVolume,
-                title:             track.title,
-                artist:            track.artist,
-                audio:             track.audio,
+                title: track.title,
+                artist: track.artist,
+                audio: track.audio,
                 hasValidAudio,
-                isQueueContext:    props.isQueueContext ?? false,
-                indexInQueue:      props.indexInQueue,
-                trackId:           track.trackId,
-                onInsertNext:      handleInsertNext,
+                isQueueContext: props.isQueueContext ?? false,
+                indexInQueue: props.indexInQueue,
+                trackId: track.trackId,
+                onInsertNext: handleInsertNext,
                 onRemoveFromQueue: handleRemoveFromQueue,
                 onRemoveFromHistory: props.onRemoveFromHistory
                     ? handleRemoveFromHistory
                     : undefined,
+                onShareToChat: handleShareToChat,
             }),
         [
             t, isPlaying, isMuted, volume, handlePlayPause, isCurrentTrack,
             toggleMute, updateVolume, track.title, track.artist, track.audio,
             hasValidAudio, props.isQueueContext, props.indexInQueue, track.trackId,
             handleInsertNext, handleRemoveFromQueue, handleRemoveFromHistory,
-            props.onRemoveFromHistory,
+            props.onRemoveFromHistory, handleShareToChat,
         ],
     );
 
@@ -166,10 +177,10 @@ function TrackCard(props) {
         const rect = e.currentTarget.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
         setRippleStyle({
-            width:  size,
+            width: size,
             height: size,
-            left:   e.clientX - rect.left - size / 2,
-            top:    e.clientY - rect.top  - size / 2,
+            left: e.clientX - rect.left - size / 2,
+            top: e.clientY - rect.top - size / 2,
         });
         setShowRipple(true);
         setTimeout(() => setShowRipple(false), 600);
@@ -190,7 +201,7 @@ function TrackCard(props) {
 
     const handleContextMenu = (e) => {
         e.preventDefault();
-        setMenuPosition({ x: e.clientX, y: e.clientY });
+        setMenuPosition({x: e.clientX, y: e.clientY});
         setShowMenu(true);
     };
 
@@ -198,7 +209,7 @@ function TrackCard(props) {
         e.stopPropagation();
         if (dotsButtonRef.current) {
             const rect = dotsButtonRef.current.getBoundingClientRect();
-            setMenuPosition({ x: rect.right, y: rect.top });
+            setMenuPosition({x: rect.right, y: rect.top});
             setShowMenu(prev => !prev);
         }
     };
@@ -209,7 +220,7 @@ function TrackCard(props) {
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
-            aria-label={t('track_card_aria_label', { title: track.title, artist: track.artist })}
+            aria-label={t('track_card_aria_label', {title: track.title, artist: track.artist})}
         >
             <div
                 className={`track-cover-wrapper ${isPlaying ? 'playing' : ''} ${!hasValidAudio ? 'disabled' : ''}`}
@@ -220,7 +231,7 @@ function TrackCard(props) {
             >
                 {coverError ? (
                     <div className="track-cover-fallback">
-                        <Music size={32} />
+                        <Music size={32}/>
                     </div>
                 ) : (
                     <img
@@ -232,28 +243,28 @@ function TrackCard(props) {
                     />
                 )}
 
-                {showRipple && <div className="ripple-effect" style={rippleStyle} />}
+                {showRipple && <div className="ripple-effect" style={rippleStyle}/>}
 
                 {showLoadingIndicator && (
                     <div className="loading-indicator">
-                        <div className="spinner-small" />
+                        <div className="spinner-small"/>
                     </div>
                 )}
 
                 {showControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
                     <div className="play-icon" onClick={handlePlayButtonClick}>
                         {!isPlaying
-                            ? <div className="triangle" />
-                            : <div className="pause"><span /><span /></div>
+                            ? <div className="triangle"/>
+                            : <div className="pause"><span/><span/></div>
                         }
                     </div>
                 )}
 
                 {isPlaying && !showControls && hasValidAudio && (
                     <div className="bars">
-                        <span />
-                        <span />
-                        <span />
+                        <span/>
+                        <span/>
+                        <span/>
                     </div>
                 )}
             </div>
@@ -289,7 +300,7 @@ function TrackCard(props) {
                     aria-expanded={showMenu}
                     aria-haspopup="menu"
                 >
-                    <MoreHorizontal size={18} />
+                    <MoreHorizontal size={18}/>
                 </button>
 
                 <ContextMenu
@@ -303,6 +314,12 @@ function TrackCard(props) {
             <AuthPromptModal
                 isOpen={isAuthModalOpen}
                 onClose={() => setIsAuthModalOpen(false)}
+            />
+
+            <ShareToChatModal
+                isOpen={isShareModalOpen}
+                onClose={() => setIsShareModalOpen(false)}
+                trackId={track.trackId}
             />
         </div>
     );

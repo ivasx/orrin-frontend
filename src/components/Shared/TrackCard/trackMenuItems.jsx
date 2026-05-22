@@ -10,8 +10,9 @@ import {
     ListStart,
     ListX,
     Trash2,
+    Send
 } from 'lucide-react';
-import { logger } from '../../../utils/logger.js';
+import {logger} from '../../../utils/logger.js';
 
 /**
  * @typedef {Object} TrackMenuConfig
@@ -64,12 +65,13 @@ export const createTrackMenuItems = ({
                                          onInsertNext,
                                          onRemoveFromQueue,
                                          onRemoveFromHistory,
+                                         onShareToChat,
                                      }) => {
     const menuItems = [
         {
             id: 'play',
             label: t('menu_play'),
-            icon: <Play size={16} />,
+            icon: <Play size={16}/>,
             shortcut: 'Space',
             disabled: !hasValidAudio || isPlaying,
             action: () => !isPlaying && hasValidAudio && handlePlayPause(),
@@ -78,13 +80,13 @@ export const createTrackMenuItems = ({
         {
             id: 'pause',
             label: t('menu_pause'),
-            icon: <Pause size={16} />,
+            icon: <Pause size={16}/>,
             shortcut: 'Space',
             disabled: !hasValidAudio || !isPlaying,
             action: () => isPlaying && hasValidAudio && handlePlayPause(),
             tooltip: !hasValidAudio ? t('track_no_audio') : undefined,
         },
-        { type: 'separator' },
+        {type: 'separator'},
     ];
 
     if (hasValidAudio && isCurrentTrack) {
@@ -92,14 +94,14 @@ export const createTrackMenuItems = ({
             {
                 id: 'mute',
                 label: isMuted ? t('menu_unmute') : t('menu_mute'),
-                icon: isMuted ? <Volume2 size={16} /> : <VolumeX size={16} />,
+                icon: isMuted ? <Volume2 size={16}/> : <VolumeX size={16}/>,
                 disabled: !isCurrentTrack,
                 action: () => isCurrentTrack && toggleMute(),
             },
             {
                 id: 'volumeUp',
                 label: t('menu_volume_up'),
-                icon: <Volume2 size={16} />,
+                icon: <Volume2 size={16}/>,
                 shortcut: '↑',
                 disabled: !isCurrentTrack || volume >= 1,
                 action: () => isCurrentTrack && updateVolume(Math.min(1, volume + 0.1)),
@@ -107,19 +109,19 @@ export const createTrackMenuItems = ({
             {
                 id: 'volumeDown',
                 label: t('menu_volume_down'),
-                icon: <Volume1 size={16} />,
+                icon: <Volume1 size={16}/>,
                 shortcut: '↓',
                 disabled: !isCurrentTrack || volume <= 0,
                 action: () => isCurrentTrack && updateVolume(Math.max(0, volume - 0.1)),
             },
-            { type: 'separator' },
+            {type: 'separator'},
         );
     }
 
     menuItems.push({
         id: 'play-next',
         label: t('menu_play_next'),
-        icon: <ListStart size={16} />,
+        icon: <ListStart size={16}/>,
         disabled: !hasValidAudio,
         action: () => {
             if (hasValidAudio && onInsertNext) onInsertNext();
@@ -130,7 +132,7 @@ export const createTrackMenuItems = ({
         menuItems.push({
             id: 'remove-from-queue',
             label: t('menu_remove_from_queue'),
-            icon: <ListX size={16} />,
+            icon: <ListX size={16}/>,
             variant: 'danger',
             action: () => {
                 if (onRemoveFromQueue) onRemoveFromQueue();
@@ -139,11 +141,22 @@ export const createTrackMenuItems = ({
     }
 
     menuItems.push(
-        { type: 'separator' },
+        {type: 'separator'},
+        {
+            id: 'share-to-chat',
+            label: t('menu_share_to_chat'),
+            icon: <Send size={16}/>,
+            disabled: !hasValidAudio,
+            action: () => {
+                if (hasValidAudio && onShareToChat && trackId) {
+                    onShareToChat(trackId);
+                }
+            },
+        },
         {
             id: 'share',
             label: t('menu_share'),
-            icon: <Share2 size={16} />,
+            icon: <Share2 size={16}/>,
             disabled: !hasValidAudio,
             action: () => {
                 if (!hasValidAudio) return;
@@ -168,7 +181,7 @@ export const createTrackMenuItems = ({
         {
             id: 'download',
             label: t('menu_download'),
-            icon: <Download size={16} />,
+            icon: <Download size={16}/>,
             disabled: !audio || !hasValidAudio,
             action: () => {
                 if (audio && hasValidAudio) {
@@ -184,11 +197,11 @@ export const createTrackMenuItems = ({
 
     if (onRemoveFromHistory) {
         menuItems.push(
-            { type: 'separator' },
+            {type: 'separator'},
             {
                 id: 'remove-from-history',
                 label: t('menu_remove_from_history'),
-                icon: <Trash2 size={16} />,
+                icon: <Trash2 size={16}/>,
                 isDanger: true,
                 action: () => onRemoveFromHistory(),
             },
@@ -200,12 +213,12 @@ export const createTrackMenuItems = ({
             {
                 id: 'unavailable-info',
                 label: t('track_unavailable'),
-                icon: <AlertCircle size={16} />,
+                icon: <AlertCircle size={16}/>,
                 disabled: true,
                 variant: 'danger',
                 className: 'menu-item-info',
             },
-            { type: 'separator' },
+            {type: 'separator'},
         );
     }
 

@@ -1,8 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { getChatMessages, sendMessage, getUserChats } from '../services/api';
-import { socketService } from '../services/socket/socket.service';
-import { logger } from '../utils/logger';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {getChatMessages, sendMessage, getUserChats} from '../services/api';
+import {socketService} from '../services/socket/socket.service';
+import {logger} from '../utils/logger';
 
 const TYPING_DEBOUNCE_MS = 400;
 const TYPING_EXPIRY_MS = 3000;
@@ -13,7 +13,7 @@ export function useChat(chatId) {
     const typingDebounceRef = useRef(null);
     const typingExpiryTimers = useRef({});
 
-    const { data: chatsData } = useQuery({ queryKey: ['userChats'], queryFn: getUserChats, staleTime: 1000 * 30 });
+    const {data: chatsData} = useQuery({queryKey: ['userChats'], queryFn: getUserChats, staleTime: 1000 * 30});
     const activeChat = chatsData?.find((c) => c.id === chatId) ?? null;
 
     const {
@@ -55,6 +55,7 @@ export function useChat(chatId) {
                                 id: incoming.id,
                                 senderId: incoming.senderId,
                                 text: incoming.text,
+                                trackId: incoming.trackId,
                                 timestamp: incoming.timestamp,
                                 isRead: false,
                             },
@@ -66,29 +67,29 @@ export function useChat(chatId) {
             });
         };
 
-        const handleTypingStart = ({ senderId }) => {
+        const handleTypingStart = ({senderId}) => {
             if (!senderId) return;
 
-            setTypingUsers((prev) => ({ ...prev, [senderId]: true }));
+            setTypingUsers((prev) => ({...prev, [senderId]: true}));
 
             clearTimeout(typingExpiryTimers.current[senderId]);
             typingExpiryTimers.current[senderId] = setTimeout(() => {
                 setTypingUsers((prev) => {
-                    const next = { ...prev };
+                    const next = {...prev};
                     delete next[senderId];
                     return next;
                 });
             }, TYPING_EXPIRY_MS);
         };
 
-        const handleTypingStop = ({ senderId }) => {
+        const handleTypingStop = ({senderId}) => {
             if (!senderId) return;
 
             clearTimeout(typingExpiryTimers.current[senderId]);
             delete typingExpiryTimers.current[senderId];
 
             setTypingUsers((prev) => {
-                const next = { ...prev };
+                const next = {...prev};
                 delete next[senderId];
                 return next;
             });
@@ -112,10 +113,10 @@ export function useChat(chatId) {
         };
     }, [chatId, queryClient]);
 
-    const { mutate: send, isLoading: isSending } = useMutation({
-        mutationFn: (text) => sendMessage(chatId, text),
-        onMutate: async (text) => {
-            await queryClient.cancelQueries({ queryKey: ['chatMessages', chatId] });
+    const {mutate: send, isLoading: isSending} = useMutation({
+        mutationFn: (payload) => sendMessage(chatId, payload.text, payload.trackId),
+        onMutate: async (payload) => {
+            await queryClient.cancelQueries({queryKey: ['chatMessages', chatId]});
 
             const previous = queryClient.getQueryData(['chatMessages', chatId]);
 
@@ -123,7 +124,8 @@ export function useChat(chatId) {
                 id: 'optimistic-' + Date.now(),
                 chatId,
                 senderId: 'user-4',
-                text: text.trim(),
+                text: payload.text?.trim() || '',
+                trackId: payload.trackId || null,
                 timestamp: new Date().toISOString(),
                 isRead: false,
                 isOptimistic: true,
@@ -133,9 +135,9 @@ export function useChat(chatId) {
                 old ? [...old, optimistic] : [optimistic]
             );
 
-            return { previous };
+            return {previous};
         },
-        onError: (err, _text, context) => {
+        onError: (err, _payload, context) => {
             logger.error('[useChat] Failed to send message:', err);
             if (context?.previous) {
                 queryClient.setQueryData(['chatMessages', chatId], context.previous);
@@ -148,14 +150,14 @@ export function useChat(chatId) {
                 const filtered = old.filter((m) => !m.isOptimistic);
                 return [...filtered, newMessage];
             });
-            queryClient.invalidateQueries({ queryKey: ['userChats'] });
+            queryClient.invalidateQueries({queryKey: ['userChats']});
         },
     });
 
     const sendChatMessage = useCallback(
-        (text) => {
-            if (!text?.trim() || !chatId) return;
-            send(text.trim());
+        (text, trackId = null) => {
+            if ((!text?.trim() && !trackId) || !chatId) return;
+            send({text: text?.trim() || '', trackId});
         },
         [send, chatId]
     );
@@ -165,7 +167,7 @@ export function useChat(chatId) {
 
         clearTimeout(typingDebounceRef.current);
         typingDebounceRef.current = setTimeout(() => {
-            socketService.emit('typing_start', { chatId });
+            socketService.emit('typing_start', {chatId});
         }, TYPING_DEBOUNCE_MS);
     }, [chatId]);
 
