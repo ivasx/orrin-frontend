@@ -1,35 +1,65 @@
-/* src/pages/SearchResultsPage/SearchResultsPage.css */
 .search-results-page {
     padding-top: 20px;
 }
 
 .search-results-title {
     font-size: 1.8rem;
-    margin-bottom: 30px;
-    padding-left: 5px; /* Невеликий відступ як у заголовків секцій */
+    margin-bottom: 20px;
+    padding-left: 5px;
+}
+
+.search-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--color-border);
+    padding-left: 5px;
+}
+
+.search-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    margin-bottom: -1px;
+    text-transform: capitalize;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.search-tab:hover {
+    color: var(--color-text-main);
+}
+
+.search-tab--active {
+    color: var(--color-text-main);
+    border-bottom-color: var(--color-text-main);
 }
 
 .no-results-message {
     text-align: center;
-    color: #aaa;
+    color: var(--color-text-muted);
     margin-top: 40px;
     font-size: 1.1rem;
 }
 
-/* Модифікація TrackSection для сторінки результатів: показувати всі треки */
 .search-results-page .track-section-grid {
-    grid-template-rows: none; /* Прибираємо обмеження в 2 ряди */
-    grid-auto-flow: row; /* Розташовуємо елементи по рядках */
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Адаптивна сітка */
-    overflow-x: hidden; /* Забороняємо горизонтальний скрол */
-    padding-bottom: 20px; /* Повертаємо стандартний відступ */
-    scrollbar-width: none; /* Ховаємо скролбар Firefox */
+    grid-template-rows: none;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    overflow-x: hidden;
+    padding-bottom: 20px;
+    scrollbar-width: none;
 }
-/* Ховаємо скролбар Webkit */
+
 .search-results-page .track-section-grid::-webkit-scrollbar {
     display: none;
 }
-/* Прибираємо кнопку "Більше" у секціях на сторінці пошуку */
+
 .search-results-page .section-header .section-more {
     display: none;
 }

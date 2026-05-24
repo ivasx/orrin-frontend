@@ -10,18 +10,21 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000
 export class ApiError extends Error {
     constructor(message, status = null, endpoint = null) {
         super(message);
-        this.name     = 'ApiError';
-        this.status   = status;
+        this.name = 'ApiError';
+        this.status = status;
         this.endpoint = endpoint;
     }
 }
 
 let inMemoryAccessToken = localStorage.getItem('access_token');
 let isRefreshing = false;
-let failedQueue  = [];
-let onSessionExpiredCallback = () => {};
+let failedQueue = [];
+let onSessionExpiredCallback = () => {
+};
 
-export const setAccessToken = (token) => { inMemoryAccessToken = token; };
+export const setAccessToken = (token) => {
+    inMemoryAccessToken = token;
+};
 
 export const setSessionExpiredCallback = (callback) => {
     onSessionExpiredCallback = callback;
@@ -41,18 +44,18 @@ const refreshAuthToken = async () => {
 
         const response = await fetch(`${API_BASE_URL}/api/v1/auth/token/refresh/`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ refresh: refreshToken }),
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({refresh: refreshToken}),
         });
 
         if (!response.ok) throw new Error('Refresh token request failed');
 
-        const data           = await response.json();
+        const data = await response.json();
         const newAccessToken = data.access || data.access_token;
-        const newRefresh     = data.refresh || data.refresh_token || refreshToken;
+        const newRefresh = data.refresh || data.refresh_token || refreshToken;
 
         setAccessToken(newAccessToken);
-        localStorage.setItem('access_token',  newAccessToken);
+        localStorage.setItem('access_token', newAccessToken);
         localStorage.setItem('refresh_token', newRefresh);
         return newAccessToken;
     } catch (error) {
@@ -66,7 +69,7 @@ const refreshAuthToken = async () => {
 
 async function handleResponse(response, endpoint) {
     if (!response.ok) {
-        const errorData    = await response.json().catch(() => ({}));
+        const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.detail || errorData.message || `HTTP error ${response.status}`;
         throw new ApiError(errorMessage, response.status, endpoint);
     }
@@ -76,8 +79,8 @@ async function handleResponse(response, endpoint) {
 }
 
 const executeFetch = async (endpoint, options, token) => {
-    const url     = `${API_BASE_URL}${endpoint}`;
-    const headers = { ...options.headers };
+    const url = `${API_BASE_URL}${endpoint}`;
+    const headers = {...options.headers};
 
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -85,7 +88,7 @@ const executeFetch = async (endpoint, options, token) => {
         headers['Content-Type'] = 'application/json';
     }
 
-    const response = await fetch(url, { ...options, headers });
+    const response = await fetch(url, {...options, headers});
     if (response.status === 401) throw new ApiError('Unauthorized', 401, endpoint);
     return handleResponse(response, endpoint);
 };
@@ -98,7 +101,7 @@ export async function fetchJson(endpoint, options = {}) {
 
         if (isRefreshing) {
             return new Promise((resolve, reject) => {
-                failedQueue.push({ resolve, reject });
+                failedQueue.push({resolve, reject});
             })
                 .then((token) => executeFetch(endpoint, options, token))
                 .catch((err) => Promise.reject(err));
@@ -116,12 +119,14 @@ export async function fetchJson(endpoint, options = {}) {
                     processQueue(err, null);
                     reject(err);
                 })
-                .finally(() => { isRefreshing = false; });
+                .finally(() => {
+                    isRefreshing = false;
+                });
         });
     }
 }
 
-export { loginUser, registerUser, getCurrentUser } from '../auth/index.js';
+export {loginUser, registerUser, getCurrentUser} from '../auth/index.js';
 
 export const getTracks = async () => {
     const data = await fetchJson('/api/v1/tracks/');
@@ -165,20 +170,20 @@ export const getListeningHistory = async () => {
             return {
                 ...normalized,
                 historyEntryId: entry.historyEntryId || entry.history_entry_id || entry.id,
-                playedAt:       entry.playedAt       || entry.played_at        || null,
+                playedAt: entry.playedAt || entry.played_at || null,
             };
         })
         .filter(Boolean);
 };
 
 export const clearListeningHistory = async () => {
-    await fetchJson('/api/v1/history/', { method: 'DELETE' });
-    return { success: true };
+    await fetchJson('/api/v1/history/', {method: 'DELETE'});
+    return {success: true};
 };
 
 export const removeTrackFromHistory = async (historyEntryId) => {
-    await fetchJson(`/api/v1/history/${historyEntryId}/`, { method: 'DELETE' });
-    return { success: true };
+    await fetchJson(`/api/v1/history/${historyEntryId}/`, {method: 'DELETE'});
+    return {success: true};
 };
 
 export const getLikedSongs = async () => {
@@ -197,8 +202,8 @@ export const getPlaylistById = async (id) => {
 };
 
 export const deletePlaylist = async (id) => {
-    await fetchJson(`/api/v1/library/playlists/${id}/`, { method: 'DELETE' });
-    return { success: true };
+    await fetchJson(`/api/v1/library/playlists/${id}/`, {method: 'DELETE'});
+    return {success: true};
 };
 
 export const getSavedAlbums = async () => {
@@ -214,7 +219,7 @@ export const getFollowingArtists = async () => {
 export const createPlaylist = async (formData) => {
     const data = await fetchJson('/api/v1/library/playlists/', {
         method: 'POST',
-        body:   formData,
+        body: formData,
     });
     return data;
 };
@@ -232,7 +237,7 @@ export const getArtistById = async (slugOrId) => {
 export const updateArtistProfile = async (slugOrId, formData) => {
     const data = await fetchJson(`/api/v1/artists/${slugOrId}/`, {
         method: 'PATCH',
-        body:   formData,
+        body: formData,
     });
     return normalizeArtistData(data);
 };
@@ -243,28 +248,28 @@ export const getArtistPosts = async (slugOrId) => {
     return posts.map(normalizePostData).filter(Boolean);
 };
 
-export const getFeedPosts = async ({ type, sort, contentType, pageParam = 1 } = {}) => {
+export const getFeedPosts = async ({type, sort, contentType, pageParam = 1} = {}) => {
     const params = new URLSearchParams();
-    if (type)        params.append('feed_type',    type);
-    if (sort)        params.append('sort',         sort);
+    if (type) params.append('feed_type', type);
+    if (sort) params.append('sort', sort);
     if (contentType) params.append('content_type', contentType);
-    if (pageParam)   params.append('page',         pageParam);
+    if (pageParam) params.append('page', pageParam);
 
-    const qs    = params.toString();
-    const data  = await fetchJson(`/api/v1/feed/${qs ? `?${qs}` : ''}`);
+    const qs = params.toString();
+    const data = await fetchJson(`/api/v1/feed/${qs ? `?${qs}` : ''}`);
     const posts = Array.isArray(data) ? data : (data.results || []);
     return posts.map(normalizePostData);
 };
 
-export const createPost      = async (postData) => fetchJson('/api/v1/feed/posts/', { method: 'POST', body: postData });
-export const toggleLikePost  = async (postId)   => fetchJson(`/api/v1/feed/posts/${postId}/like/`,   { method: 'POST' });
-export const repostPost       = async (postId)   => fetchJson(`/api/v1/feed/posts/${postId}/repost/`, { method: 'POST' });
-export const toggleSavePost   = async (postId)   => fetchJson(`/api/v1/feed/posts/${postId}/save/`,   { method: 'POST' });
-export const reportPost       = async (postId, reason = 'spam') =>
-    fetchJson(`/api/v1/feed/posts/${postId}/report/`, { method: 'POST', body: JSON.stringify({ reason }) });
+export const createPost = async (postData) => fetchJson('/api/v1/feed/posts/', {method: 'POST', body: postData});
+export const toggleLikePost = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/like/`, {method: 'POST'});
+export const repostPost = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/repost/`, {method: 'POST'});
+export const toggleSavePost = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/save/`, {method: 'POST'});
+export const reportPost = async (postId, reason = 'spam') =>
+    fetchJson(`/api/v1/feed/posts/${postId}/report/`, {method: 'POST', body: JSON.stringify({reason})});
 
 export const addComment = async (postId, text) =>
-    fetchJson(`/api/v1/feed/posts/${postId}/comments/`, { method: 'POST', body: JSON.stringify({ text }) });
+    fetchJson(`/api/v1/feed/posts/${postId}/comments/`, {method: 'POST', body: JSON.stringify({text})});
 
 export const getFriendsActivity = async () => {
     const data = await fetchJson('/api/v1/friends/activity/');
@@ -272,13 +277,15 @@ export const getFriendsActivity = async () => {
 };
 
 export const searchGlobal = async (query) => {
-    const [tracks, artists] = await Promise.all([
+    const [tracks, artists, users] = await Promise.all([
         fetchJson(`/api/v1/tracks/?search=${encodeURIComponent(query)}`),
         fetchJson(`/api/v1/artists/?search=${encodeURIComponent(query)}`),
+        fetchJson(`/api/v1/users/search/?search=${encodeURIComponent(query)}`),
     ]);
     return {
-        tracks:  (Array.isArray(tracks)  ? tracks  : tracks.results  || []).map(normalizeTrackData),
+        tracks: (Array.isArray(tracks) ? tracks : tracks.results || []).map(normalizeTrackData),
         artists: (Array.isArray(artists) ? artists : artists.results || []).map(normalizeArtistData),
+        users: (Array.isArray(users) ? users : users.results || []).map(normalizeUserData),
     };
 };
 
@@ -291,13 +298,13 @@ export const updateUserProfile = async (username, payload) => {
     const isFormData = payload instanceof FormData;
     const data = await fetchJson(`/api/v1/users/me/`, {
         method: 'PATCH',
-        body:   isFormData ? payload : JSON.stringify(payload),
+        body: isFormData ? payload : JSON.stringify(payload),
     });
     return normalizeUserData(data);
 };
 
 export const toggleFollowUser = async (username) =>
-    fetchJson(`/api/v1/users/${username}/follow/`, { method: 'POST' });
+    fetchJson(`/api/v1/users/${username}/follow/`, {method: 'POST'});
 
 export const getUserPosts = async (username) => {
     const data = await fetchJson(`/api/v1/users/${username}/posts/`);
@@ -315,25 +322,25 @@ export const getNotifications = async () => {
 };
 
 export const markNotificationAsRead = async (id) => {
-    const data = await fetchJson(`/api/notifications/${id}/read/`, { method: 'POST' });
+    const data = await fetchJson(`/api/notifications/${id}/read/`, {method: 'POST'});
     return data;
 };
 
 export const markAllNotificationsAsRead = async () => {
-    const data = await fetchJson('/api/notifications/read-all/', { method: 'POST' });
+    const data = await fetchJson('/api/notifications/read-all/', {method: 'POST'});
     return data;
 };
 
 export const requestPasswordReset = (email) =>
     fetchJson('/api/v1/auth/password/reset/', {
         method: 'POST',
-        body:   JSON.stringify({ email }),
+        body: JSON.stringify({email}),
     });
 
 export const confirmPasswordReset = (uid, token, newPassword) =>
     fetchJson('/api/v1/auth/password/reset/confirm/', {
         method: 'POST',
-        body:   JSON.stringify({ uid, token, new_password: newPassword }),
+        body: JSON.stringify({uid, token, new_password: newPassword}),
     });
 
 // URL matches the backend endpoint /api/v1/auth/google/login/
@@ -368,7 +375,7 @@ export const getChatMessages = async (chatId) => {
 export const sendMessage = async (chatId, text) => {
     const data = await fetchJson(`/api/v1/chats/${chatId}/messages/`, {
         method: 'POST',
-        body:   JSON.stringify({ text }),
+        body: JSON.stringify({text}),
     });
     return data;
 };

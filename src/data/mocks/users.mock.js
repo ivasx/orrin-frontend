@@ -37,7 +37,7 @@ export const mockUsers = [
         location: 'Lviv, Ukraine', website: null,
         is_verified: false, is_artist: false,
         followers_count: 12, following_count: 44, is_following: false,
-        managed_artists: ['arctic-monkeys'],
+        managed_artists: ['arctic-monkeys', 'metallica'],
     },
 ];
 
