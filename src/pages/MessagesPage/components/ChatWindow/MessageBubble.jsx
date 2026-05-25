@@ -2,7 +2,8 @@ import {useMemo} from 'react';
 import {useQuery} from '@tanstack/react-query';
 import {Play, Music} from 'lucide-react';
 import {useAudioCore} from '../../../../context/AudioCoreContext';
-import {getTrackBySlug} from '../../../../services/api/index.js';
+import {fetchJson} from '../../../../services/api/index.js';
+import {normalizeTrackData} from '../../../../constants/fallbacks.js';
 import styles from './MessageBubble.module.css';
 
 function formatTime(timestamp) {
@@ -10,22 +11,42 @@ function formatTime(timestamp) {
     return new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
 }
 
+async function fetchTrackById(trackId) {
+    const isMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+    if (isMock) {
+        const {mockTracks} = await import('../../../../data/mockData.js');
+        const track = mockTracks.find(
+            (t) => String(t.id) === String(trackId) || t.slug === String(trackId),
+        );
+        if (!track) throw new Error('Track not found');
+        return normalizeTrackData(track);
+    }
+
+    const isSlug = isNaN(Number(trackId));
+    const url = isSlug
+        ? `/api/v1/tracks/${trackId}/`
+        : `/api/v1/tracks/?id=${trackId}`;
+
+    const data = await fetchJson(url);
+    const raw = Array.isArray(data) ? data[0] : data?.results?.[0] ?? data;
+    return normalizeTrackData(raw);
+}
+
 function TrackAttachment({trackId, isMine}) {
-    const {playTrack, currentTrack, isPlaying} = useAudioCore();
+    const {playTrack, isTrackPlaying} = useAudioCore();
 
     const {data: track, isLoading} = useQuery({
-        queryKey: ['track', trackId],
-        queryFn: () => getTrackBySlug(trackId),
+        queryKey: ['track-in-chat', String(trackId)],
+        queryFn: () => fetchTrackById(trackId),
         enabled: !!trackId,
         staleTime: 1000 * 60 * 10,
+        retry: 1,
     });
 
-    const isCurrentlyPlaying =
-        currentTrack?.trackId === trackId || currentTrack?.slug === trackId;
+    const playing = isTrackPlaying(track?.trackId ?? trackId);
 
     const handlePlay = () => {
-        if (!track) return;
-        playTrack(track);
+        if (track) playTrack(track);
     };
 
     if (isLoading) {
@@ -60,7 +81,7 @@ function TrackAttachment({trackId, isMine}) {
                         <Music size={16}/>
                     </div>
                 )}
-                <div className={`${styles.trackPlayOverlay} ${isCurrentlyPlaying && isPlaying ? styles.playing : ''}`}>
+                <div className={`${styles.trackPlayOverlay} ${playing ? styles.playing : ''}`}>
                     <Play size={12} fill="currentColor"/>
                 </div>
             </div>
