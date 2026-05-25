@@ -1,7 +1,7 @@
 import {useState, useCallback, useMemo} from 'react';
-import {useParams} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {FileText, Info, Users} from 'lucide-react';
 
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
@@ -11,9 +11,10 @@ import {ProfileHero} from './components/ProfileHero/ProfileHero.jsx';
 import {ProfileEditModal} from './components/ProfileEditModal/ProfileEditModal.jsx';
 import {PostsTab, AboutTab, FollowersTab} from './tabs/index.js';
 
-import {getUserProfile, toggleFollowUser} from '../../services/api/index.js';
+import {getUserProfile, toggleFollowUser, getUserChats, fetchJson} from '../../services/api/index.js';
 import {useAuth} from '../../context/AuthContext.jsx';
 import {useUserProfileMutations} from '../../hooks/useUserProfileMutations.jsx';
+import {useToast} from '../../context/ToastContext.jsx';
 import {logger} from '../../utils/logger';
 
 import styles from './UserProfilePage.module.css';
@@ -22,18 +23,21 @@ export default function UserProfilePage() {
     const {t} = useTranslation();
     const {userId, username} = useParams();
     const routeParam = username || userId;
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const {showToast} = useToast();
 
     const {user: currentUser, isLoggedIn} = useAuth();
     const [activeTab, setActiveTab] = useState('posts');
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [followLoading, setFollowLoading] = useState(false);
+    const [messageLoading, setMessageLoading] = useState(false);
 
     const {data: profileData, isLoading, isError} = useQuery({
         queryKey: ['userProfile', routeParam],
         queryFn: () => getUserProfile(routeParam),
         enabled: !!routeParam,
         retry: 1,
-        onError: (error) => logger.error(`Failed to fetch profile: ${error.message}`),
     });
 
     const isOwnProfile = useMemo(() => {
@@ -68,16 +72,57 @@ export default function UserProfilePage() {
     }, [updateMutation]);
 
     const handleFollow = useCallback(async () => {
-        if (!isLoggedIn || isOwnProfile) return;
+        if (!isLoggedIn || isOwnProfile || !profileData) return;
         setFollowLoading(true);
         try {
-            await toggleFollowUser(profileData?.username);
+            await toggleFollowUser(profileData.username);
+            queryClient.setQueryData(['userProfile', routeParam], (old) => {
+                if (!old) return old;
+                const wasFollowing = old.is_following;
+                return {
+                    ...old,
+                    is_following: !wasFollowing,
+                    followers_count: wasFollowing
+                        ? Math.max(0, (old.followers_count ?? 1) - 1)
+                        : (old.followers_count ?? 0) + 1,
+                };
+            });
         } catch (err) {
             logger.error('Follow failed:', err);
+            showToast(t('error_generic'), 'error');
         } finally {
             setFollowLoading(false);
         }
-    }, [isLoggedIn, isOwnProfile, profileData]);
+    }, [isLoggedIn, isOwnProfile, profileData, queryClient, routeParam, showToast, t]);
+
+    const handleMessage = useCallback(async () => {
+        if (!isLoggedIn || !profileData) return;
+        setMessageLoading(true);
+        try {
+            const isMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+            let chat;
+
+            if (isMock) {
+                const chats = await getUserChats();
+                chat = chats[0];
+            } else {
+                chat = await fetchJson('/api/v1/chats/', {
+                    method: 'POST',
+                    body: JSON.stringify({recipient_username: profileData.username}),
+                });
+            }
+
+            if (chat?.id) {
+                queryClient.invalidateQueries({queryKey: ['userChats']});
+                navigate(`/messages/${chat.id}`);
+            }
+        } catch (err) {
+            logger.error('Create chat failed:', err);
+            showToast(t('error_generic'), 'error');
+        } finally {
+            setMessageLoading(false);
+        }
+    }, [isLoggedIn, profileData, navigate, queryClient, showToast, t]);
 
     const renderTab = () => {
         switch (activeTab) {
@@ -111,7 +156,9 @@ export default function UserProfilePage() {
                 isOwnProfile={isOwnProfile}
                 onEditClick={() => setIsEditOpen(true)}
                 onFollow={handleFollow}
+                onMessage={handleMessage}
                 followLoading={followLoading}
+                messageLoading={messageLoading}
                 isLoggedIn={isLoggedIn}
             />
 

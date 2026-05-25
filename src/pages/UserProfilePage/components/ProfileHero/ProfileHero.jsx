@@ -1,5 +1,5 @@
 import {useTranslation} from 'react-i18next';
-import {Edit3, Share2, Settings, Flag, UserX, Loader2} from 'lucide-react';
+import {Edit3, Share2, Settings, Flag, UserX, Loader2, MessageCircle} from 'lucide-react';
 import {FaUserPlus, FaUserCheck} from 'react-icons/fa';
 import PageHero from '../../../../components/Shared/PageHero/PageHero.jsx';
 import Button from '../../../../components/UI/Button/Button.jsx';
@@ -10,7 +10,9 @@ export const ProfileHero = ({
                                 isOwnProfile,
                                 onEditClick,
                                 onFollow,
+                                onMessage,
                                 followLoading,
+                                messageLoading,
                                 isLoggedIn,
                             }) => {
     const {t} = useTranslation();
@@ -30,46 +32,29 @@ export const ProfileHero = ({
 
     const ownMenuItems = [
         {
-            id: 'share',
-            label: t('menu_share'),
-            icon: <Share2 size={14}/>,
-            action: () => {
-            },
+            id: 'share', label: t('menu_share'), icon: <Share2 size={14}/>, action: () => {
+            }
         },
         {type: 'separator'},
         {
-            id: 'settings',
-            label: t('menu_account_settings'),
-            icon: <Settings size={14}/>,
-            action: () => {
-            },
+            id: 'settings', label: t('menu_account_settings'), icon: <Settings size={14}/>, action: () => {
+            }
         },
     ];
 
     const otherMenuItems = [
         {
-            id: 'share',
-            label: t('menu_share'),
-            icon: <Share2 size={14}/>,
-            action: () => {
-            },
+            id: 'share', label: t('menu_share'), icon: <Share2 size={14}/>, action: () => {
+            }
         },
         {type: 'separator'},
         {
-            id: 'report',
-            label: t('menu_report_user'),
-            icon: <Flag size={14}/>,
-            variant: 'danger',
-            action: () => {
-            },
+            id: 'report', label: t('menu_report_user'), icon: <Flag size={14}/>, variant: 'danger', action: () => {
+            }
         },
         {
-            id: 'block',
-            label: t('menu_block_user'),
-            icon: <UserX size={14}/>,
-            variant: 'danger',
-            action: () => {
-            },
+            id: 'block', label: t('menu_block_user'), icon: <UserX size={14}/>, variant: 'danger', action: () => {
+            }
         },
     ];
 
@@ -79,20 +64,39 @@ export const ProfileHero = ({
             {t('profile_action_edit')}
         </Button>
     ) : (
-        <Button
-            variant={profile.is_following ? 'ghost' : 'primary'}
-            className={`${styles.followBtn} ${profile.is_following ? styles.followBtnActive : ''}`}
-            onClick={onFollow}
-            disabled={followLoading || !isLoggedIn}
-        >
-            {followLoading ? (
-                <Loader2 size={16} className={styles.spinIcon}/>
-            ) : profile.is_following ? (
-                <><FaUserCheck size={15}/>{t('profile_action_unfollow')}</>
-            ) : (
-                <><FaUserPlus size={15}/>{t('profile_action_follow')}</>
+        <div className={styles.actionGroup}>
+            <Button
+                variant={profile.is_following ? 'ghost' : 'primary'}
+                className={`${styles.followBtn} ${profile.is_following ? styles.followBtnActive : ''}`}
+                onClick={onFollow}
+                disabled={followLoading || !isLoggedIn}
+            >
+                {followLoading ? (
+                    <Loader2 size={16} className={styles.spinIcon}/>
+                ) : profile.is_following ? (
+                    <><FaUserCheck size={15}/>{t('profile_action_unfollow')}</>
+                ) : (
+                    <><FaUserPlus size={15}/>{t('profile_action_follow')}</>
+                )}
+            </Button>
+
+            {isLoggedIn && (
+                <Button
+                    variant="ghost"
+                    className={styles.messageBtn}
+                    onClick={onMessage}
+                    disabled={messageLoading}
+                    title={t('profile_action_message')}
+                >
+                    {messageLoading ? (
+                        <Loader2 size={16} className={styles.spinIcon}/>
+                    ) : (
+                        <MessageCircle size={16}/>
+                    )}
+                    {t('profile_action_message')}
+                </Button>
             )}
-        </Button>
+        </div>
     );
 
     const badge = profile.is_verified ? (

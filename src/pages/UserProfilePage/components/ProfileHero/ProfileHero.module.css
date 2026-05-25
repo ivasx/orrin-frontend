@@ -19,6 +19,12 @@
     overflow: hidden;
 }
 
+.actionGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .editBtn {
     display: inline-flex;
     align-items: center;
@@ -53,6 +59,33 @@
     color: var(--color-error) !important;
 }
 
+.messageBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    background: var(--color-accent-glass);
+    border: 1.5px solid var(--color-border-main);
+    border-radius: var(--border-radius-pill);
+    color: var(--color-text-secondary);
+    font-family: var(--font-main);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.messageBtn:hover:not(:disabled) {
+    background: var(--color-surface-2);
+    border-color: var(--color-border-accent);
+    color: var(--color-text-main);
+}
+
+.messageBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .spinIcon {
     animation: spin 0.9s linear infinite;
 }
@@ -69,5 +102,10 @@
         padding: 0 1.5rem 1.25rem;
         text-align: center;
         max-width: 100%;
+    }
+
+    .actionGroup {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }

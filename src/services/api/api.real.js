@@ -372,10 +372,13 @@ export const getChatMessages = async (chatId) => {
     return Array.isArray(data) ? data : (data.results || []);
 };
 
-export const sendMessage = async (chatId, text) => {
+export const sendMessage = async (chatId, text, trackId = null) => {
+    const body = { text: text || '' };
+    if (trackId) body.track_id = trackId;
+
     const data = await fetchJson(`/api/v1/chats/${chatId}/messages/`, {
         method: 'POST',
-        body: JSON.stringify({text}),
+        body: JSON.stringify(body),
     });
     return data;
 };

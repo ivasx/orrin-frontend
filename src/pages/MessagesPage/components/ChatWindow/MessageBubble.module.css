@@ -15,7 +15,7 @@
 .bubble {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     max-width: 72%;
     padding: 9px 13px;
     word-break: break-word;
@@ -62,4 +62,124 @@
     color: var(--chat-text-ghost);
     padding: 0 2px;
     margin-top: 1px;
+}
+
+/* Track card */
+
+.trackCard {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: filter var(--transition-fast);
+    min-width: 200px;
+    max-width: 260px;
+}
+
+.trackCard:hover {
+    filter: brightness(1.08);
+}
+
+.trackCardMine {
+    background: var(--chat-bubble-out-track-bg, rgba(255, 255, 255, 0.12));
+    border: 0.5px solid var(--chat-bubble-out-border);
+}
+
+.trackCardTheirs {
+    background: var(--chat-bubble-in-track-bg, rgba(255, 255, 255, 0.06));
+    border: 0.5px solid var(--color-border-subtle);
+}
+
+.trackCoverWrapper {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.trackCover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.trackCoverFallback {
+    width: 100%;
+    height: 100%;
+    background: var(--color-surface-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+}
+
+.trackPlayOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.trackCard:hover .trackPlayOverlay {
+    opacity: 1;
+}
+
+.trackPlayOverlay.playing {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.trackInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.trackTitle {
+    font-family: var(--font-main);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trackCardMine .trackTitle {
+    color: var(--chat-bubble-out-text);
+}
+
+.trackArtist {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--chat-text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trackCardMine .trackArtist {
+    color: var(--chat-bubble-out-text);
+    opacity: 0.7;
+}
+
+.trackCardLoading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 40px;
+    color: var(--color-text-muted);
+    opacity: 0.5;
 }
