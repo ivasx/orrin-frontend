@@ -498,6 +498,11 @@
   "sf_search": "Search",
   "sf_search_placeholder": "What do you want to listen to?",
   "share": "Share",
+  "share_message_placeholder": "Add a message...",
+  "share_no_results": "No users found",
+  "share_recent": "Recent conversations",
+  "share_results": "Results",
+  "share_search_placeholder": "Search people...",
   "share_to_chat": "Share to chat",
   "shortcut_label": "Shortcut",
   "show_less": "Show less",
@@ -720,5 +725,9 @@
   "year_placeholder": "yyyy",
   "year_range": "Year must be between {{start}} and {{end}}.",
   "year_required": "Please enter a year.",
-  "you": "You"
+  "you": "You",
+  "history_today": "Today",
+  "history_yesterday": "Yesterday",
+  "history_two_days_ago": "Two days ago",
+  "history_older": "Earlier"
 }

@@ -1,6 +1,7 @@
 .page {
     min-height: 100vh;
     animation: fadeIn 0.4s ease;
+    overflow-x: hidden;
 }
 
 .tabContent {
@@ -41,6 +42,9 @@
     font-size: 0.9rem;
     line-height: 1.65;
     white-space: pre-wrap;
+    /* Prevent text overflow */
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .membersGrid {
@@ -54,7 +58,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 28px;
+    padding: 10px 24px;
     background: var(--color-primary);
     color: var(--color-text-main);
     border: none;
@@ -67,6 +71,7 @@
     transform var(--transition-fast),
     box-shadow var(--transition-fast);
     box-shadow: var(--shadow-accent);
+    white-space: nowrap;
 }
 
 .playBtn:hover {
@@ -79,21 +84,22 @@
 }
 
 .followBtn {
-    padding: 9px 22px;
+    padding: 9px 20px;
     background: transparent;
     color: var(--color-text-main);
-    border: 1.5px solid var(--color-border-main);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
     border-radius: var(--border-radius-pill);
     font-family: var(--font-main);
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
     transition: all var(--transition-fast);
+    white-space: nowrap;
 }
 
 .followBtn:hover:not(:disabled) {
-    border-color: var(--color-text-main);
-    background: var(--color-bg-glass-light);
+    border-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .followBtnActive {
@@ -114,28 +120,60 @@
 }
 
 .iconBtn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-bg-glass-light);
-    border: 1.5px solid var(--color-border-main);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
     border-radius: 50%;
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     transition: all var(--transition-fast);
     backdrop-filter: blur(10px);
+    flex-shrink: 0;
 }
 
 .iconBtn:hover {
-    color: var(--color-text-main);
-    border-color: var(--color-text-main);
-    background: var(--color-bg-glass-medium);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .spinIcon {
     animation: spin 0.9s linear infinite;
+}
+
+@media (max-width: 640px) {
+    .membersGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .bioBanner {
+        padding: 1rem;
+        border-radius: var(--border-radius-sm);
+    }
+
+    .bioBannerText {
+        font-size: 0.85rem;
+    }
+
+    .playBtn {
+        padding: 9px 18px;
+        font-size: 0.85rem;
+    }
+
+    .followBtn {
+        padding: 8px 16px;
+        font-size: 0.82rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .membersGrid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @keyframes fadeIn {
@@ -153,11 +191,5 @@
     }
     to {
         transform: rotate(360deg);
-    }
-}
-
-@media (max-width: 480px) {
-    .membersGrid {
-        grid-template-columns: 1fr;
     }
 }

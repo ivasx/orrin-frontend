@@ -497,6 +497,11 @@
   "sf_search": "Пошук",
   "sf_search_placeholder": "Що хочете послухати?",
   "share": "Поділитись",
+  "share_message_placeholder": "Add a message...",
+  "share_no_results": "No users found",
+  "share_recent": "Recent conversations",
+  "share_results": "Results",
+  "share_search_placeholder": "Search people...",
   "share_to_chat": "Поділитись у чаті",
   "shortcut_label": "Гаряча клавіша",
   "show_less": "Показати менше",
@@ -713,5 +718,9 @@
   "year_placeholder": "рррр",
   "year_range": "Рік має бути між {{start}} та {{end}}.",
   "year_required": "Вкажіть рік.",
-  "you": "Ви"
+  "you": "Ви",
+  "history_today": "Сьогодні",
+  "history_yesterday": "Вчора",
+  "history_two_days_ago": "Позавчора",
+  "history_older": "Раніше"
 }
