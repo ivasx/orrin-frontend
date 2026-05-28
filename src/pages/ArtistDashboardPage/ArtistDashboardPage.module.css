@@ -13,24 +13,28 @@
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--color-border-subtle);
+    gap: 1rem;
 }
 
 .title {
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
     font-weight: 800;
     margin: 0 0 0.5rem 0;
 }
 
 .subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--color-text-secondary);
     margin: 0;
+    word-break: break-word;
 }
 
 .highlight {
     color: var(--color-primary);
     font-weight: 600;
 }
+
+.headerActions { flex-shrink: 0; }
 
 .viewPublicButton {
     background-color: transparent;
@@ -42,6 +46,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-fast);
+    white-space: nowrap;
 }
 
 .viewPublicButton:hover {
@@ -53,7 +58,13 @@
     display: flex;
     gap: 1.5rem;
     margin-bottom: 2rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid var(--color-border-subtle);
 }
+
+.dashboardNav::-webkit-scrollbar { display: none; }
 
 .navButton {
     background: none;
@@ -66,15 +77,12 @@
     position: relative;
     transition: color var(--transition-fast);
     font-family: var(--font-main);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.navButton:hover {
-    color: var(--color-text-main);
-}
-
-.navButton.active {
-    color: var(--color-text-main);
-}
+.navButton:hover { color: var(--color-text-main); }
+.navButton.active { color: var(--color-text-main); }
 
 .navButton.active::after {
     content: '';
@@ -130,6 +138,7 @@
     font-family: var(--font-main);
     font-size: 1rem;
     transition: all var(--transition-fast);
+    width: 100%;
 }
 
 .formGroup input[type="text"]:focus,
@@ -141,12 +150,14 @@
 
 .formGroup input[type="file"] {
     color: var(--color-text-secondary);
+    width: 100%;
 }
 
 .fileHint {
     font-size: 0.8rem;
     color: var(--color-primary);
     margin-top: 0.25rem;
+    word-break: break-all;
 }
 
 .checkboxGroup {
@@ -160,6 +171,7 @@
     width: 1.2rem;
     height: 1.2rem;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .submitButton {
@@ -228,8 +240,45 @@
     transition: border-color var(--transition-fast);
 }
 
-.retryButton:hover {
-    border-color: var(--color-text-main);
+.retryButton:hover { border-color: var(--color-text-main); }
+
+@media (max-width: 640px) {
+    .dashboardContainer {
+        padding: 1rem;
+    }
+
+    .dashboardHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1rem;
+    }
+
+    .headerActions { width: 100%; }
+
+    .viewPublicButton {
+        width: 100%;
+        text-align: center;
+    }
+
+    .dashboardContent {
+        padding: 1.25rem 1rem;
+    }
+
+    .viewTitle {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .dashboardForm {
+        max-width: 100%;
+        gap: 1.25rem;
+    }
+
+    .submitButton {
+        align-self: stretch;
+        text-align: center;
+    }
 }
 
 @keyframes fadeIn {

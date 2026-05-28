@@ -322,3 +322,102 @@
 .auth-link:hover {
     text-decoration: underline;
 }
+
+.form-input,
+.form-select {
+    font-size: max(16px, 0.95rem);
+}
+
+@media (max-width: 480px) {
+    .auth-page {
+        padding: 12px;
+        align-items: flex-start;
+        padding-top: max(24px, env(safe-area-inset-top, 24px));
+    }
+
+    .auth-container {
+        padding: 28px 20px;
+        border-radius: 16px;
+        max-width: 100%;
+    }
+
+    .back-to-home {
+        top: 24px;
+        left: 20px;
+        font-size: 1rem;
+    }
+
+    .auth-header {
+        margin-bottom: 24px;
+    }
+
+    .auth-logo {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 12px;
+    }
+
+    .auth-title {
+        font-size: 1.6rem;
+    }
+
+    .auth-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .auth-form {
+        gap: 14px;
+    }
+
+    .form-input,
+    .form-select {
+        padding: 11px 14px;
+    }
+
+    .date-inputs {
+        flex-wrap: wrap;
+    }
+
+    .date-inputs .date-day {
+        flex: 0 0 70px;
+    }
+
+    .date-inputs .form-select {
+        flex: 1 1 calc(100% - 80px);
+        min-width: 120px;
+    }
+
+    .date-inputs .date-year {
+        flex: 0 0 80px;
+    }
+
+    .auth-button {
+        padding: 13px 20px;
+        font-size: 0.95rem;
+        margin-top: 10px;
+    }
+
+    .social-register {
+        margin-top: 20px;
+    }
+
+    .social-buttons {
+        gap: 10px;
+    }
+
+    .social-button {
+        padding: 11px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .auth-container {
+        padding: 24px 16px;
+        border-radius: 12px;
+    }
+
+    .auth-title {
+        font-size: 1.4rem;
+    }
+}

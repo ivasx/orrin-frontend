@@ -1,6 +1,7 @@
 .page {
     min-height: 100vh;
     animation: fadeIn 0.35s ease;
+    overflow-x: hidden;
 }
 
 .tabContent {
@@ -8,17 +9,13 @@
     animation: fadeIn 0.25s ease;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
 @media (max-width: 768px) {
     .tabContent {
         min-height: 200px;
     }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }

@@ -1,17 +1,18 @@
 .page {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 32px;
     padding-bottom: 80px;
+    overflow-x: hidden;
 }
 
 .hero {
     display: flex;
     align-items: flex-end;
-    gap: 32px;
+    gap: 28px;
     background: linear-gradient(160deg, var(--color-surface-2) 0%, var(--color-surface-1) 60%, transparent 100%);
     border-radius: var(--border-radius-lg);
-    padding: 36px;
+    padding: 32px;
     border: 1px solid var(--color-border-subtle);
     position: relative;
     overflow: hidden;
@@ -27,8 +28,8 @@
 
 .heroCoverWrapper {
     flex-shrink: 0;
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
     border-radius: var(--border-radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-accent-lg);
@@ -36,12 +37,7 @@
     z-index: 1;
 }
 
-.heroCover {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
+.heroCover { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .heroCoverFallback {
     width: 100%;
@@ -52,15 +48,12 @@
     justify-content: center;
 }
 
-.heroCoverIcon {
-    color: var(--color-primary);
-    opacity: 0.5;
-}
+.heroCoverIcon { color: var(--color-primary); opacity: 0.5; }
 
 .heroContent {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     position: relative;
     z-index: 1;
     flex: 1;
@@ -70,14 +63,14 @@
 .heroMeta {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
 }
 
 .heroEyebrow {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -85,19 +78,19 @@
 }
 
 .heroTitle {
-    font-size: 2.6rem;
+    font-size: clamp(1.4rem, 4vw, 2.4rem);
     font-weight: 800;
     color: var(--color-text-main);
     margin: 0;
     letter-spacing: -0.04em;
     line-height: 1.05;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .heroDescription {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--color-text-secondary);
     margin: 0;
     line-height: 1.55;
@@ -112,47 +105,41 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 2px;
+    flex-wrap: wrap;
 }
 
 .heroStat {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--color-text-muted);
     font-weight: 500;
 }
 
-.heroStatIcon {
-    color: var(--color-text-muted);
-    flex-shrink: 0;
-}
-
-.heroStatDivider {
-    color: var(--color-text-muted);
-    opacity: 0.5;
-    font-size: 0.9rem;
-}
+.heroStatIcon { color: var(--color-text-muted); flex-shrink: 0; }
+.heroStatDivider { color: var(--color-text-muted); opacity: 0.5; }
 
 .heroActions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .heroOptionsBtn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--border-radius-sm);
     border: 1px solid var(--color-border-subtle);
     background: var(--color-bg-glass-subtle);
     color: var(--color-text-secondary);
     cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
 }
 
 .heroOptionsBtn:hover,
@@ -160,11 +147,6 @@
     background: var(--color-bg-glass-light);
     color: var(--color-text-main);
     border-color: var(--color-border-focus);
-}
-
-.heroOptionsBtn:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
 }
 
 .tracksSection {
@@ -177,7 +159,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 300px;
+    min-height: 280px;
 }
 
 .errorState {
@@ -185,20 +167,21 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    min-height: 300px;
+    gap: 14px;
+    min-height: 260px;
     text-align: center;
+    padding: 24px;
 }
 
 .errorTitle {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--color-text-main);
     margin: 0;
 }
 
 .errorText {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--color-text-muted);
     margin: 0;
 }
@@ -208,56 +191,85 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    min-height: 220px;
+    gap: 10px;
+    min-height: 200px;
     text-align: center;
     background: var(--color-bg-glass-subtle);
     border-radius: var(--border-radius-md);
     border: 1px dashed var(--color-border-subtle);
+    padding: 24px;
 }
 
-.emptyIcon {
-    color: var(--color-primary);
-    opacity: 0.3;
-}
+.emptyIcon { color: var(--color-primary); opacity: 0.3; }
 
 .emptyText {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--color-text-muted);
     margin: 0;
-    font-weight: 500;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
+    .page { gap: 20px; }
+
+    .hero {
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 14px;
+        border-radius: var(--border-radius-md);
+    }
+
+    .heroCoverWrapper {
+        width: 100px;
+        height: 100px;
+        border-radius: var(--border-radius-sm);
+        flex-shrink: 0;
+    }
+
+    .heroContent {
+        gap: 10px;
+    }
+
+    .heroTitle {
+        font-size: 1.15rem;
+        line-height: 1.2;
+    }
+
+    .heroDescription {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .heroStats {
+        gap: 6px;
+    }
+
+    .heroStat {
+        font-size: 0.75rem;
+    }
+
+    .heroActions {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 400px) {
     .hero {
         flex-direction: column;
-        align-items: flex-start;
-        padding: 24px 20px;
-        gap: 20px;
-        border-radius: var(--border-radius-sm);
+        align-items: center;
+        text-align: center;
     }
 
     .heroCoverWrapper {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
     }
 
-    .heroTitle {
-        font-size: 1.9rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .page {
-        gap: 28px;
+    .heroStats {
+        justify-content: center;
     }
 
-    .heroCoverWrapper {
-        width: 110px;
-        height: 110px;
-    }
-
-    .heroTitle {
-        font-size: 1.5rem;
+    .heroActions {
+        justify-content: center;
     }
 }

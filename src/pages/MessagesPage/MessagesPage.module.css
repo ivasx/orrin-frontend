@@ -8,8 +8,9 @@
     overflow: hidden;
     background: var(--chat-bg-base);
     z-index: 1;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+            left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar {
@@ -50,18 +51,26 @@
     margin: 0;
     max-width: 240px;
     line-height: 1.6;
-    letter-spacing: 0.01em;
 }
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar {
+        width: 240px;
+    }
+}
+
 
 @media (max-width: 768px) {
     .wrapper {
         left: 0 !important;
         top: 64px;
+        right: 0;
     }
 
     .sidebar {
         width: 100%;
         border-right: none;
+        flex-shrink: 0;
     }
 
     .wrapper[data-chat-active='true'] .sidebar {
@@ -71,10 +80,8 @@
     .wrapper[data-chat-active='false'] .main {
         display: none;
     }
-}
 
-@media (min-width: 769px) and (max-width: 1024px) {
-    .sidebar {
-        width: 240px;
+    .main {
+        width: 100%;
     }
 }

@@ -1,8 +1,9 @@
 .page {
-    padding: 48px 40px 120px;
+    padding: 2rem 2rem 8rem;
     color: var(--color-text-main);
     min-height: 80vh;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .loadingState {
@@ -19,30 +20,29 @@
 .contentWrapper {
     display: flex;
     flex-direction: row;
-    gap: 64px;
+    gap: 48px;
     max-width: 1400px;
     margin: 0 auto;
     align-items: flex-start;
 }
 
 .infoSide {
-    flex: 0 0 340px;
+    flex: 0 0 300px;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 24px;
     position: sticky;
-    top: 100px;
+    top: 80px;
 }
 
 .coverContainer {
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 16px;
+    border-radius: 14px;
     overflow: hidden;
     box-shadow:
             0 4px 16px rgba(0, 0, 0, 0.4),
-            0 16px 48px rgba(0, 0, 0, 0.5),
-            0 0 0 1px rgba(255, 255, 255, 0.04);
+            0 16px 48px rgba(0, 0, 0, 0.5);
     transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 
@@ -50,8 +50,7 @@
     transform: translateY(-2px);
     box-shadow:
             0 8px 24px rgba(0, 0, 0, 0.5),
-            0 24px 64px rgba(0, 0, 0, 0.6),
-            0 0 0 1px rgba(255, 255, 255, 0.06);
+            0 24px 64px rgba(0, 0, 0, 0.6);
 }
 
 .cover {
@@ -64,24 +63,23 @@
 .metadata {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .title {
-    font-size: 2.6rem;
+    font-size: clamp(1.4rem, 3vw, 2.4rem);
     font-weight: 800;
     line-height: 1.1;
     margin: 0;
     letter-spacing: -0.03em;
     color: var(--color-text-main);
-    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .artistRow {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     color: var(--color-text-secondary);
     font-weight: 500;
-    letter-spacing: -0.01em;
 }
 
 .artistRow a {
@@ -99,8 +97,6 @@
 .metaExtra {
     color: var(--color-text-muted);
     font-size: 0.85rem;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
 }
 
 .contentSide {
@@ -108,7 +104,6 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0;
 }
 
 .tabContent {
@@ -116,21 +111,17 @@
     animation: fadeSlideIn 0.22s ease both;
 }
 
-@keyframes fadeSlideIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
 .tabNav {
     display: flex;
     align-items: stretch;
     gap: 2px;
     border-bottom: 1px solid var(--color-border-main);
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 0;
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
 
 .tabNav::-webkit-scrollbar {
@@ -141,28 +132,26 @@
     position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    padding: 10px 16px 12px;
+    gap: 6px;
+    padding: 10px 14px 12px;
     background: none;
     border: none;
     cursor: pointer;
     font-family: var(--font-main);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--color-text-muted);
     white-space: nowrap;
     flex-shrink: 0;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
-    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-    border-radius: 6px 6px 0 0;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .tabButton:hover {
     color: var(--color-text-secondary);
-    background: rgba(255, 255, 255, 0.03);
 }
 
 .tabButton[aria-selected="true"],
@@ -180,10 +169,9 @@
     padding: 0 5px;
     background: var(--color-surface-2);
     color: var(--color-text-muted);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
     border-radius: 999px;
-    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .tabButtonActive .tabCount {
@@ -200,22 +188,21 @@
     border-radius: 10px;
     display: inline-flex;
     width: auto;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-mask-image: none;
+    mask-image: none;
 }
+
+.subTabNav::-webkit-scrollbar { display: none; }
 
 .subTabNav .tabButton {
     border-bottom: none;
     border-radius: 7px;
     margin-bottom: 0;
-    padding: 7px 14px;
-    font-size: 0.77rem;
-    letter-spacing: 0.04em;
-    color: var(--color-text-muted);
-    transition: color 0.18s ease, background 0.18s ease;
-}
-
-.subTabNav .tabButton:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--color-text-secondary);
+    padding: 7px 12px;
+    font-size: 0.74rem;
 }
 
 .subTabNav .tabButtonActive {
@@ -225,90 +212,30 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
-.commentsPanel {
+.placeholderPanel {
     display: flex;
     flex-direction: column;
-    gap: 0;
-}
-
-.commentItem {
-    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: 14px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--color-border-main);
-    transition: background 0.15s ease;
-    border-radius: 4px;
-    padding-inline: 10px;
-    margin-inline: -10px;
+    min-height: 240px;
+    padding: 40px 24px;
+    border: 1px dashed var(--color-border-main);
+    border-radius: 16px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(175, 148, 126, 0.04) 0%, transparent 60%);
 }
 
-.commentItem:first-child {
-    padding-top: 4px;
-}
-
-.commentItem:last-child {
-    border-bottom: none;
-}
-
-.commentItem:hover {
-    background: var(--color-bg-glass-subtle);
-}
-
-.commentAvatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    box-shadow: 0 0 0 2px var(--color-border-main);
-    margin-top: 2px;
-}
-
-.commentBody {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    flex: 1;
-    min-width: 0;
-}
-
-.commentMeta {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-}
-
-.commentAuthor {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: var(--color-text-main);
-    letter-spacing: -0.01em;
-}
-
-.commentTimestamp {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    font-variant-numeric: tabular-nums;
-}
-
-.commentText {
-    margin: 0;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    color: var(--color-text-secondary);
-}
+.placeholderIcon { color: var(--color-primary); opacity: 0.45; }
+.placeholderTitle { margin: 0; font-size: 1rem; font-weight: 700; color: var(--color-text-secondary); }
+.placeholderSubtitle { margin: 0; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.6; max-width: 300px; }
 
 .notesGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 14px;
 }
 
-/**
- * Hover lift applied to NoteCard's root element via a wrapper trick —
- * since NoteCard owns its own .note-card class we apply transition here
- * by targeting children directly.
- */
 .notesGrid > * {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-radius: 10px;
@@ -319,85 +246,85 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
-.placeholderPanel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 14px;
-    min-height: 280px;
-    padding: 48px 32px;
-    border: 1px dashed var(--color-border-main);
-    border-radius: 16px;
-    background:
-            radial-gradient(ellipse at 50% 0%, rgba(175, 148, 126, 0.04) 0%, transparent 60%);
-}
-
-.placeholderIcon {
-    color: var(--color-primary);
-    opacity: 0.45;
-    display: block;
-    flex-shrink: 0;
-}
-
-.placeholderTitle {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-text-secondary);
-    letter-spacing: -0.01em;
-}
-
-.placeholderSubtitle {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    max-width: 320px;
-}
-
 
 @media (max-width: 1100px) {
+    .page {
+        padding: 1.5rem 1.5rem 8rem;
+    }
+
     .contentWrapper {
-        gap: 40px;
+        gap: 32px;
     }
 
     .infoSide {
-        flex: 0 0 280px;
+        flex: 0 0 260px;
     }
 }
 
-@media (max-width: 860px) {
+
+@media (max-width: 768px) {
     .page {
-        padding: 28px 20px 100px;
+        padding: 1rem 1rem 7rem;
     }
 
     .contentWrapper {
         flex-direction: column;
-        align-items: center;
-        gap: 32px;
+        align-items: stretch;
+        gap: 0;
     }
 
     .infoSide {
         flex: none;
         width: 100%;
-        max-width: 400px;
-        text-align: center;
         position: static;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--color-surface-1), var(--color-surface-2));
+        border-radius: var(--border-radius-md);
+        margin-bottom: 1.25rem;
+        border: 1px solid var(--color-border-subtle);
     }
 
-    .artistRow a,
-    .artistRow span {
-        display: inline-block;
+    .coverContainer {
+        flex-shrink: 0;
+        width: 90px;
+        height: 90px;
+        border-radius: 10px;
+        aspect-ratio: unset;
+    }
+
+    .coverContainer:hover {
+        transform: none;
+    }
+
+    .metadata {
+        flex: 1;
+        min-width: 0;
+        gap: 4px;
     }
 
     .title {
-        font-size: 2rem;
+        font-size: 1.1rem;
+        letter-spacing: -0.02em;
+    }
+
+    .artistRow {
+        font-size: 0.875rem;
+    }
+
+    .metaExtra {
+        font-size: 0.78rem;
     }
 
     .contentSide {
         width: 100%;
+    }
+
+    .tabButton {
+        padding: 9px 10px 11px;
+        font-size: 0.74rem;
     }
 
     .notesGrid {
@@ -406,22 +333,30 @@
 
     .subTabNav {
         width: 100%;
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
-
-    .subTabNav::-webkit-scrollbar {
-        display: none;
     }
 }
 
 @media (max-width: 480px) {
-    .tabButton {
-        padding: 9px 12px 11px;
-        font-size: 0.75rem;
+    .page {
+        padding: 0.75rem 0.75rem 7rem;
+    }
+
+    .infoSide {
+        padding: 0.875rem;
+        gap: 0.75rem;
+    }
+
+    .coverContainer {
+        width: 76px;
+        height: 76px;
     }
 
     .title {
-        font-size: 1.7rem;
+        font-size: 1rem;
     }
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
