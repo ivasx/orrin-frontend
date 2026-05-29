@@ -42,13 +42,15 @@ export default function UserProfilePage() {
 
     const isOwnProfile = useMemo(() => {
         if (!currentUser || !profileData) return false;
-        return (
-            currentUser.username === profileData.username ||
-            String(currentUser.id) === String(profileData.id) ||
-            String(currentUser.id) === String(profileData.pk) ||
-            String(currentUser.pk) === String(profileData.id) ||
-            String(currentUser.pk) === String(profileData.pk)
-        );
+
+        const currentId = String(currentUser.id ?? currentUser.pk ?? '');
+        const profileId = String(profileData.id ?? profileData.pk ?? '');
+        const currentUsername = (currentUser.username ?? '').toLowerCase();
+        const profileUsername = (profileData.username ?? '').toLowerCase();
+
+        if (!currentId || !profileId) return false;
+
+        return currentId === profileId || currentUsername === profileUsername;
     }, [currentUser, profileData]);
 
     const {updateMutation} = useUserProfileMutations(routeParam);
@@ -96,7 +98,7 @@ export default function UserProfilePage() {
     }, [isLoggedIn, isOwnProfile, profileData, queryClient, routeParam, showToast, t]);
 
     const handleMessage = useCallback(async () => {
-        if (!isLoggedIn || !profileData) return;
+        if (!isLoggedIn || !profileData || isOwnProfile) return;
         setMessageLoading(true);
         try {
             const isMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
@@ -122,7 +124,7 @@ export default function UserProfilePage() {
         } finally {
             setMessageLoading(false);
         }
-    }, [isLoggedIn, profileData, navigate, queryClient, showToast, t]);
+    }, [isLoggedIn, isOwnProfile, profileData, navigate, queryClient, showToast, t]);
 
     const renderTab = () => {
         switch (activeTab) {

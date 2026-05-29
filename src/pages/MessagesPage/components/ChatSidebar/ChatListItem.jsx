@@ -1,5 +1,6 @@
-import { useTranslation } from 'react-i18next';
-import { BadgeCheck } from 'lucide-react';
+import {useTranslation} from 'react-i18next';
+import {BadgeCheck} from 'lucide-react';
+import {useAuth} from '../../../../context/AuthContext.jsx';
 import styles from './ChatListItem.module.css';
 
 function formatTime(timestamp) {
@@ -10,19 +11,20 @@ function formatTime(timestamp) {
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
     if (diffDays === 0) {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
     }
     if (diffDays === 1) {
         return 'Yesterday';
     }
     if (diffDays < 7) {
-        return date.toLocaleDateString([], { weekday: 'short' });
+        return date.toLocaleDateString([], {weekday: 'short'});
     }
-    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString([], {month: 'short', day: 'numeric'});
 }
 
-export default function ChatListItem({ chat, isActive, onClick }) {
-    const { t } = useTranslation();
+export default function ChatListItem({chat, isActive, onClick}) {
+    const {t} = useTranslation();
+    const {user} = useAuth();
 
     const participant = chat.participant || {};
     const lastMessage = chat.lastMessage || {};
@@ -35,7 +37,7 @@ export default function ChatListItem({ chat, isActive, onClick }) {
             role="button"
             tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onClick()}
-            aria-label={t('chat_with_user', { name: participant.name || participant.username })}
+            aria-label={t('chat_with_user', {name: participant.name || participant.username})}
             aria-current={isActive ? 'true' : 'false'}
         >
             <div className={styles.avatarWrapper}>
@@ -47,7 +49,7 @@ export default function ChatListItem({ chat, isActive, onClick }) {
                 />
                 {participant.is_verified && (
                     <span className={styles.verifiedBadge} aria-label={t('verified')}>
-                        <BadgeCheck size={12} />
+                        <BadgeCheck size={12}/>
                     </span>
                 )}
             </div>
@@ -63,13 +65,14 @@ export default function ChatListItem({ chat, isActive, onClick }) {
                 </div>
                 <div className={styles.bottomRow}>
                     <span className={`${styles.preview} ${unreadCount > 0 ? styles.previewUnread : ''}`}>
-                        {lastMessage.senderId === 'user-4' && (
+                        {String(lastMessage.senderId) === String(user?.id) && (
                             <span className={styles.youLabel}>{t('chat_you_prefix')}</span>
                         )}
                         {lastMessage.text || t('chat_no_messages')}
                     </span>
                     {unreadCount > 0 && (
-                        <span className={styles.unreadBadge} aria-label={t('unread_messages_count', { count: unreadCount })}>
+                        <span className={styles.unreadBadge}
+                              aria-label={t('unread_messages_count', {count: unreadCount})}>
                             {unreadCount > 99 ? '99+' : unreadCount}
                         </span>
                     )}

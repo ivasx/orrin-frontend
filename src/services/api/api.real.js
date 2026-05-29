@@ -8,11 +8,12 @@ import {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 export class ApiError extends Error {
-    constructor(message, status = null, endpoint = null) {
+    constructor(message, status = null, endpoint = null, data = null) {
         super(message);
         this.name = 'ApiError';
         this.status = status;
         this.endpoint = endpoint;
+        this.data = data;
     }
 }
 
@@ -67,11 +68,28 @@ const refreshAuthToken = async () => {
     }
 };
 
+function extractErrorMessage(errorData) {
+    if (!errorData || typeof errorData !== 'object') return null;
+
+    if (typeof errorData.detail === 'string') return errorData.detail;
+    if (typeof errorData.message === 'string') return errorData.message;
+
+    const messages = Object.entries(errorData)
+        .filter(([, value]) => value !== null && value !== undefined)
+        .map(([field, value]) => {
+            const text = Array.isArray(value) ? value.join(' ') : String(value);
+            return field === 'non_field_errors' ? text : `${field}: ${text}`;
+        });
+
+    return messages.length > 0 ? messages.join('\n') : null;
+}
+
 async function handleResponse(response, endpoint) {
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.detail || errorData.message || `HTTP error ${response.status}`;
-        throw new ApiError(errorMessage, response.status, endpoint);
+        const errorMessage =
+            extractErrorMessage(errorData) || `HTTP error ${response.status}`;
+        throw new ApiError(errorMessage, response.status, endpoint, errorData);
     }
     if (response.status === 204) return null;
     const data = await response.json();
@@ -197,8 +215,7 @@ export const getUserPlaylists = async () => {
 };
 
 export const getPlaylistById = async (id) => {
-    const data = await fetchJson(`/api/v1/library/playlists/${id}/`);
-    return data;
+    return fetchJson(`/api/v1/library/playlists/${id}/`);
 };
 
 export const deletePlaylist = async (id) => {
@@ -217,11 +234,10 @@ export const getFollowingArtists = async () => {
 };
 
 export const createPlaylist = async (formData) => {
-    const data = await fetchJson('/api/v1/library/playlists/', {
+    return fetchJson('/api/v1/library/playlists/', {
         method: 'POST',
         body: formData,
     });
-    return data;
 };
 
 export const getArtists = async () => {
@@ -261,15 +277,42 @@ export const getFeedPosts = async ({type, sort, contentType, pageParam = 1} = {}
     return posts.map(normalizePostData);
 };
 
-export const createPost = async (postData) => fetchJson('/api/v1/feed/posts/', {method: 'POST', body: postData});
-export const toggleLikePost = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/like/`, {method: 'POST'});
-export const repostPost = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/repost/`, {method: 'POST'});
-export const toggleSavePost = async (postId) => fetchJson(`/api/v1/feed/posts/${postId}/save/`, {method: 'POST'});
+export const createPost = async (postData) => {
+    const body = {};
+    for (const [key, value] of postData.entries()) {
+        body[key] = value;
+    }
+
+    if (body.track_id) {
+        body.track_slug = body.track_id;
+        delete body.track_id;
+    }
+    return fetchJson('/api/v1/feed/', {
+        method: 'POST',
+        body: JSON.stringify(body),
+    });
+};
+
+export const toggleLikePost = async (postId) =>
+    fetchJson(`/api/v1/feed/posts/${postId}/like/`, {method: 'POST'});
+
+export const repostPost = async (postId) =>
+    fetchJson(`/api/v1/feed/posts/${postId}/repost/`, {method: 'POST'});
+
+export const toggleSavePost = async (postId) =>
+    fetchJson(`/api/v1/feed/posts/${postId}/save/`, {method: 'POST'});
+
 export const reportPost = async (postId, reason = 'spam') =>
-    fetchJson(`/api/v1/feed/posts/${postId}/report/`, {method: 'POST', body: JSON.stringify({reason})});
+    fetchJson(`/api/v1/feed/posts/${postId}/report/`, {
+        method: 'POST',
+        body: JSON.stringify({reason}),
+    });
 
 export const addComment = async (postId, text) =>
-    fetchJson(`/api/v1/feed/posts/${postId}/comments/`, {method: 'POST', body: JSON.stringify({text})});
+    fetchJson(`/api/v1/feed/posts/${postId}/comments/`, {
+        method: 'POST',
+        body: JSON.stringify({text}),
+    });
 
 export const getFriendsActivity = async () => {
     const data = await fetchJson('/api/v1/friends/activity/');
@@ -296,7 +339,7 @@ export const getUserProfile = async (username) => {
 
 export const updateUserProfile = async (username, payload) => {
     const isFormData = payload instanceof FormData;
-    const data = await fetchJson(`/api/v1/users/me/`, {
+    const data = await fetchJson('/api/v1/users/me/', {
         method: 'PATCH',
         body: isFormData ? payload : JSON.stringify(payload),
     });
@@ -321,15 +364,11 @@ export const getNotifications = async () => {
     return Array.isArray(data) ? data : (data.results || []);
 };
 
-export const markNotificationAsRead = async (id) => {
-    const data = await fetchJson(`/api/notifications/${id}/read/`, {method: 'POST'});
-    return data;
-};
+export const markNotificationAsRead = async (id) =>
+    fetchJson(`/api/notifications/${id}/read/`, {method: 'POST'});
 
-export const markAllNotificationsAsRead = async () => {
-    const data = await fetchJson('/api/notifications/read-all/', {method: 'POST'});
-    return data;
-};
+export const markAllNotificationsAsRead = async () =>
+    fetchJson('/api/notifications/read-all/', {method: 'POST'});
 
 export const requestPasswordReset = (email) =>
     fetchJson('/api/v1/auth/password/reset/', {
@@ -343,7 +382,6 @@ export const confirmPasswordReset = (uid, token, newPassword) =>
         body: JSON.stringify({uid, token, new_password: newPassword}),
     });
 
-// URL matches the backend endpoint /api/v1/auth/google/login/
 export const getSocialLoginUrl = (_provider) =>
     `${API_BASE_URL}/api/v1/auth/google/login/`;
 
@@ -373,14 +411,12 @@ export const getChatMessages = async (chatId) => {
 };
 
 export const sendMessage = async (chatId, text, trackId = null) => {
-    const body = { text: text || '' };
+    const body = {text: text || ''};
     if (trackId) body.track_id = trackId;
-
-    const data = await fetchJson(`/api/v1/chats/${chatId}/messages/`, {
+    return fetchJson(`/api/v1/chats/${chatId}/messages/`, {
         method: 'POST',
         body: JSON.stringify(body),
     });
-    return data;
 };
 
 export const getTerms = async (_lang) => {

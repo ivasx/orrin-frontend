@@ -1,13 +1,15 @@
-import { useTranslation } from 'react-i18next';
-import { useChat } from '../../../../hooks/useChat';
+import {useTranslation} from 'react-i18next';
+import {useAuth} from '../../../../context/AuthContext.jsx';
+import {useChat} from '../../../../hooks/useChat';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import InfoSection from '../../../../components/Shared/InfoSection/InfoSection';
 import styles from './ChatWindow.module.css';
 
-export default function ChatWindow({ chatId }) {
-    const { t } = useTranslation();
+export default function ChatWindow({chatId}) {
+    const {t} = useTranslation();
+    const {user} = useAuth();
 
     const {
         messages,
@@ -19,11 +21,11 @@ export default function ChatWindow({ chatId }) {
         sendChatMessage,
         notifyTyping,
         refetchMessages,
-    } = useChat(chatId);
+    } = useChat(chatId, user?.id);
 
     return (
         <div className={styles.window}>
-            <ChatHeader chat={activeChat} isTyping={isTyping} />
+            <ChatHeader chat={activeChat} isTyping={isTyping}/>
 
             <div className={styles.body}>
                 {isError ? (
@@ -42,7 +44,7 @@ export default function ChatWindow({ chatId }) {
                     <MessageList
                         messages={messages}
                         isLoading={isLoading}
-                        currentUserId="user-4"
+                        currentUserId={user?.id}
                     />
                 )}
             </div>

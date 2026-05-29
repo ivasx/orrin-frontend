@@ -21,6 +21,9 @@ export const ProfileHero = ({
         [profile.first_name, profile.last_name].filter(Boolean).join(' ') ||
         profile.username;
 
+    const avatarSrc = profile.avatar_url || profile.avatar || '/default-avatar.png';
+    const coverSrc = profile.cover_photo_url || profile.cover_photo || null;
+
     const stats = [
         {label: t('profile_stats_followers'), value: profile.followers_count ?? 0},
         {label: t('profile_stats_following'), value: profile.following_count ?? 0},
@@ -105,8 +108,8 @@ export const ProfileHero = ({
 
     return (
         <PageHero
-            backgroundImage={profile.cover_photo || null}
-            avatar={profile.avatar || '/default-avatar.png'}
+            backgroundImage={coverSrc}
+            avatar={avatarSrc}
             avatarAlt={displayName}
             avatarShape="circle"
             badge={badge}

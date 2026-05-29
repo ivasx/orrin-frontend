@@ -1,7 +1,7 @@
 import {logger} from '../utils/logger';
 
 const FALLBACK_COVER = '/orrin-logo.svg';
-const FALLBACK_AVATAR = '/orrin-logo.svg';
+const FALLBACK_AVATAR = '/default-avatar.png';
 const FALLBACK_AUDIO = null;
 const FALLBACK_TRACK_TITLE = 'Unknown Title';
 const FALLBACK_ARTIST_NAME = 'Unknown Artist';
@@ -26,9 +26,7 @@ const getBoolean = (value, defaultValue) =>
 export const normalizeArtistData = (artist) => {
     if (!artist) return null;
 
-    if (artist._normalized === true) {
-        return artist;
-    }
+    if (artist._normalized === true) return artist;
 
     if (typeof artist === 'string') {
         return {
@@ -45,7 +43,7 @@ export const normalizeArtistData = (artist) => {
         id: artist.slug || artist.id,
         name: getFallbackValue(artist.name, FALLBACK_ARTIST_NAME),
         slug: artist.slug || '',
-        imageUrl: artist.image || artist.image_url || FALLBACK_AVATAR,
+        imageUrl: artist.image_url || artist.image || FALLBACK_AVATAR,
         listenersMonthly: artist.monthly_listeners || 0,
         isVerified: getBoolean(artist.is_verified, false),
         description: artist.about || artist.description || '',
@@ -63,9 +61,7 @@ export const normalizeArtistData = (artist) => {
 export const normalizeTrackData = (track) => {
     if (!track) return null;
 
-    if (track.trackId && track.durationFormatted && track.artistObj) {
-        return track;
-    }
+    if (track.trackId && track.durationFormatted && track.artistObj) return track;
 
     const trackId = track.trackId || track.slug || track.id;
 
@@ -102,14 +98,17 @@ export const normalizeUserData = (user) => {
     const fullName = `${firstName} ${lastName}`.trim();
 
     return {
-        id: user.id || user.pk || user.user_id,
+        id: user.id ?? user.pk ?? user.user_id ?? null,
+        pk: user.pk ?? user.id ?? null,
         name: fullName || user.name || user.username || FALLBACK_USERNAME,
         username: user.username || '',
         email: user.email || '',
         first_name: firstName,
         last_name: lastName,
-        avatar: user.avatar || user.image || FALLBACK_AVATAR,
+        avatar: user.avatar || null,
+        avatar_url: user.avatar_url || user.avatarUrl || null,
         cover_photo: user.cover_photo || null,
+        cover_photo_url: user.cover_photo_url || null,
         bio: user.bio || '',
         location: user.location || '',
         website: user.website || '',
@@ -117,9 +116,11 @@ export const normalizeUserData = (user) => {
         gender: user.gender || null,
         followers_count: user.followers_count ?? 0,
         following_count: user.following_count ?? 0,
+        date_joined: user.date_joined || null,
         managed_artists: Array.isArray(user.managed_artists) ? user.managed_artists : [],
-        isVerified: getBoolean(user.is_verified, false),
-        is_following: getBoolean(user.is_following, false),
+        is_verified: getBoolean(user.is_verified ?? user.isVerified, false),
+        isVerified: getBoolean(user.is_verified ?? user.isVerified, false),
+        is_following: getBoolean(user.is_following ?? user.isFollowing, false),
     };
 };
 

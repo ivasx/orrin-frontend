@@ -27,8 +27,13 @@ class MockSocket {
         this._listeners[event].push(callback);
     }
 
-    off(event) {
-        delete this._listeners[event];
+    off(event, callback) {
+        if (!this._listeners[event]) return;
+        if (callback) {
+            this._listeners[event] = this._listeners[event].filter((fn) => fn !== callback);
+        } else {
+            delete this._listeners[event];
+        }
     }
 
     emit(event, data) {
@@ -36,12 +41,10 @@ class MockSocket {
 
         if (event === 'typing_start') {
             const opponentId = 'user-opponent-mock';
-
-            this._fire('typing_start', { senderId: opponentId, chatId: data.chatId });
-
+            this._fire('typing_start', {senderId: opponentId, chatId: data.chatId});
             clearTimeout(this._typingTimers[opponentId]);
             this._typingTimers[opponentId] = setTimeout(() => {
-                this._fire('typing_stop', { senderId: opponentId, chatId: data.chatId });
+                this._fire('typing_stop', {senderId: opponentId, chatId: data.chatId});
             }, 2500);
         }
     }
@@ -98,13 +101,13 @@ class RealSocket {
                 return;
             }
 
-            const { type, ...payload } = parsed;
+            const {type, ...payload} = parsed;
             if (type && this._listeners[type]) {
                 this._listeners[type].forEach((fn) => fn(payload));
             }
         };
 
-        this._socket.onclose = (event) => {
+        this._socket.onclose = () => {
             if (!this._intentionalClose && this._reconnectAttempts < this._maxReconnectAttempts) {
                 this._reconnectAttempts++;
                 const delay = this._reconnectDelay * Math.pow(2, this._reconnectAttempts - 1);
@@ -114,7 +117,8 @@ class RealSocket {
             }
         };
 
-        this._socket.onerror = () => {};
+        this._socket.onerror = () => {
+        };
     }
 
     disconnect() {
@@ -147,16 +151,18 @@ class RealSocket {
         this._listeners[event].push(callback);
     }
 
-    off(event) {
-        delete this._listeners[event];
+    off(event, callback) {
+        if (!this._listeners[event]) return;
+        if (callback) {
+            this._listeners[event] = this._listeners[event].filter((fn) => fn !== callback);
+        } else {
+            delete this._listeners[event];
+        }
     }
 
     emit(event, data) {
         if (!this._socket || this._socket.readyState !== WebSocket.OPEN) return;
-
-        this._socket.send(
-            JSON.stringify({ type: event, ...data })
-        );
+        this._socket.send(JSON.stringify({type: event, ...data}));
     }
 }
 
@@ -182,8 +188,8 @@ class SocketService {
         this._impl.on(event, callback);
     }
 
-    off(event) {
-        this._impl.off(event);
+    off(event, callback) {
+        this._impl.off(event, callback);
     }
 
     emit(event, data) {

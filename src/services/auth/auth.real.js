@@ -2,6 +2,22 @@ import { normalizeUserData } from '../../constants/fallbacks';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
+function extractErrorMessage(errorData) {
+    if (!errorData || typeof errorData !== 'object') return null;
+
+    if (typeof errorData.detail === 'string') return errorData.detail;
+    if (typeof errorData.message === 'string') return errorData.message;
+
+    const messages = Object.entries(errorData)
+        .filter(([, value]) => value !== null && value !== undefined)
+        .map(([field, value]) => {
+            const text = Array.isArray(value) ? value.join(' ') : String(value);
+            return field === 'non_field_errors' ? text : `${field}: ${text}`;
+        });
+
+    return messages.length > 0 ? messages.join('\n') : null;
+}
+
 async function authFetch(endpoint, options = {}) {
     const token = localStorage.getItem('access_token');
 
@@ -21,17 +37,17 @@ async function authFetch(endpoint, options = {}) {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const message = errorData.detail || errorData.message || `HTTP error ${response.status}`;
-        throw new Error(message);
+        const message = extractErrorMessage(errorData) || `HTTP error ${response.status}`;
+        const error = new Error(message);
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
     }
 
     if (response.status === 204) return null;
     return response.json();
 }
 
-// SimpleJWT expects { email, password } because USERNAME_FIELD = 'email',
-// but our custom backend EmailOrUsernameModelBackend reads from 'username' key.
-// We send it as 'username' — the backend handles both email and username values.
 export const login = async ({ username, password }) => {
     return authFetch('/api/v1/auth/token/', {
         method: 'POST',

@@ -1,5 +1,5 @@
-import { useRef, useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useRef, useEffect, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
 import Spinner from '../../../../components/UI/Spinner/Spinner';
 import MessageBubble from './MessageBubble';
 import styles from './MessageList.module.css';
@@ -14,10 +14,10 @@ function groupMessagesByDate(messages) {
 
         if (dateKey !== currentDate) {
             currentDate = dateKey;
-            groups.push({ type: 'date', key: dateKey, date });
+            groups.push({type: 'date', key: dateKey, date});
         }
 
-        groups.push({ type: 'message', key: message.id, message });
+        groups.push({type: 'message', key: message.id, message});
     }
 
     return groups;
@@ -30,11 +30,11 @@ function formatDateLabel(date, t) {
     if (diffDays === 0) return t('chat_date_today');
     if (diffDays === 1) return t('chat_date_yesterday');
 
-    return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: diffDays > 300 ? 'numeric' : undefined });
+    return date.toLocaleDateString([], {month: 'long', day: 'numeric', year: diffDays > 300 ? 'numeric' : undefined});
 }
 
-export default function MessageList({ messages, isLoading, currentUserId }) {
-    const { t } = useTranslation();
+export default function MessageList({messages, isLoading, currentUserId}) {
+    const {t} = useTranslation();
     const bottomRef = useRef(null);
     const containerRef = useRef(null);
 
@@ -42,14 +42,14 @@ export default function MessageList({ messages, isLoading, currentUserId }) {
 
     useEffect(() => {
         if (!isLoading && bottomRef.current) {
-            bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+            bottomRef.current.scrollIntoView({behavior: 'smooth'});
         }
     }, [messages, isLoading]);
 
     if (isLoading) {
         return (
             <div className={styles.centered}>
-                <Spinner />
+                <Spinner/>
             </div>
         );
     }
@@ -63,7 +63,8 @@ export default function MessageList({ messages, isLoading, currentUserId }) {
     }
 
     return (
-        <div className={styles.list} ref={containerRef} role="log" aria-live="polite" aria-label={t('chat_messages_region')}>
+        <div className={styles.list} ref={containerRef} role="log" aria-live="polite"
+             aria-label={t('chat_messages_region')}>
             <div className={styles.inner}>
                 {grouped.map((item) => {
                     if (item.type === 'date') {
@@ -76,8 +77,8 @@ export default function MessageList({ messages, isLoading, currentUserId }) {
                         );
                     }
 
-                    const { message } = item;
-                    const isMine = message.senderId === currentUserId;
+                    const {message} = item;
+                    const isMine = String(message.senderId) === String(currentUserId);
 
                     return (
                         <MessageBubble
@@ -87,7 +88,7 @@ export default function MessageList({ messages, isLoading, currentUserId }) {
                         />
                     );
                 })}
-                <div ref={bottomRef} aria-hidden="true" />
+                <div ref={bottomRef} aria-hidden="true"/>
             </div>
         </div>
     );

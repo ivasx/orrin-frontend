@@ -1,17 +1,18 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { X, Check, Camera, Loader2 } from 'lucide-react';
+import {useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {X, Check, Camera, Loader2} from 'lucide-react';
 import styles from './ProfileEditModal.module.css';
 
-export const ProfileEditModal = ({ profile, onClose, onSave, isSaving }) => {
-    const { t } = useTranslation();
-    const [firstName, setFirstName]         = useState(profile.first_name || '');
-    const [lastName, setLastName]           = useState(profile.last_name  || '');
-    const [bio, setBio]                     = useState(profile.bio        || '');
-    const [location, setLocation]           = useState(profile.location   || '');
-    const [website, setWebsite]             = useState(profile.website    || '');
-    const [avatarFile, setAvatarFile]       = useState(null);
-    const [avatarPreview, setAvatarPreview] = useState(profile.avatar || '/default-avatar.png');
+export const ProfileEditModal = ({profile, onClose, onSave, isSaving}) => {
+    const {t} = useTranslation();
+    const [firstName, setFirstName] = useState(profile.first_name || '');
+    const [lastName, setLastName] = useState(profile.last_name || '');
+    const [username, setUsername] = useState(profile.username || '');
+    const [bio, setBio] = useState(profile.bio || '');
+    const [location, setLocation] = useState(profile.location || '');
+    const [website, setWebsite] = useState(profile.website || '');
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(profile.avatar_url || null);
 
     const handleAvatarChange = (e) => {
         const file = e.target.files?.[0];
@@ -27,10 +28,11 @@ export const ProfileEditModal = ({ profile, onClose, onSave, isSaving }) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('first_name', firstName.trim());
-        formData.append('last_name',  lastName.trim());
-        formData.append('bio',        bio.trim());
-        formData.append('location',   location.trim());
-        formData.append('website',    website.trim());
+        formData.append('last_name', lastName.trim());
+        formData.append('username', username.trim());
+        formData.append('bio', bio.trim());
+        formData.append('location', location.trim());
+        formData.append('website', website.trim());
         if (avatarFile) formData.append('avatar', avatarFile);
         onSave(formData);
     };
@@ -49,19 +51,19 @@ export const ProfileEditModal = ({ profile, onClose, onSave, isSaving }) => {
                         onClick={onClose}
                         aria-label={t('close')}
                     >
-                        <X size={20} />
+                        <X size={20}/>
                     </button>
                 </div>
 
                 <form className={styles.editModalBody} onSubmit={handleSubmit}>
                     <div className={styles.editAvatarRow}>
                         <img
-                            src={avatarPreview}
+                            src={avatarPreview || '/default-avatar.png'}
                             alt={t('avatar_preview')}
                             className={styles.editAvatarPreview}
                         />
                         <label className={styles.filePickerBtn}>
-                            <Camera size={15} />
+                            <Camera size={15}/>
                             {t('change_avatar')}
                             <input
                                 type="file"
@@ -99,6 +101,21 @@ export const ProfileEditModal = ({ profile, onClose, onSave, isSaving }) => {
                                 disabled={isSaving}
                             />
                         </div>
+                    </div>
+
+                    <div className={styles.editFormGroup}>
+                        <label htmlFor="username" className={styles.editFormLabel}>
+                            {t('username_label')}
+                        </label>
+                        <input
+                            id="username"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className={styles.editFormInput}
+                            disabled={isSaving}
+                            autoComplete="username"
+                        />
                     </div>
 
                     <div className={styles.editFormGroup}>
@@ -162,12 +179,12 @@ export const ProfileEditModal = ({ profile, onClose, onSave, isSaving }) => {
                         >
                             {isSaving ? (
                                 <>
-                                    <Loader2 size={16} className={styles.spinIcon} />
+                                    <Loader2 size={16} className={styles.spinIcon}/>
                                     {t('saving')}
                                 </>
                             ) : (
                                 <>
-                                    <Check size={16} />
+                                    <Check size={16}/>
                                     {t('save_changes')}
                                 </>
                             )}
