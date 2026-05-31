@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
-import '../Auth.css';
+import './Auth.css';
 import styles from './ResetPassword.module.css';
 import { confirmPasswordReset } from '../../services/api/index.js';
 
