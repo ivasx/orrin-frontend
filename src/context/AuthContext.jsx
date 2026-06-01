@@ -1,9 +1,11 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getCurrentUser, setAccessToken, setSessionExpiredCallback } from '../services/api/index.js';
+import {createContext, useContext, useState, useEffect, useCallback} from 'react';
+import {getCurrentUser, setAccessToken, setSessionExpiredCallback} from '../services/api/index.js';
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
+const isAuthError = (error) => error?.status === 401 || error?.status === 403;
+
+export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('access_token'));
     const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +28,9 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
             setIsLoggedIn(true);
         } catch (error) {
-            logout();
+            if (isAuthError(error)) {
+                logout();
+            }
         } finally {
             setIsLoading(false);
         }
@@ -60,7 +64,7 @@ export const AuthProvider = ({ children }) => {
         isLoggedIn,
         isLoading,
         login,
-        logout
+        logout,
     };
 
     return (

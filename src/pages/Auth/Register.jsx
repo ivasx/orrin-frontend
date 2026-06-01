@@ -1,18 +1,24 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import {useState, useEffect, useRef, useMemo} from 'react';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import {useNavigate, Link} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {FaGoogle, FaApple, FaArrowLeft} from 'react-icons/fa';
+import {Loader2} from 'lucide-react';
 import './Auth.css';
-import { FaGoogle, FaApple, FaArrowLeft } from 'react-icons/fa';
-import { registerUser, getSocialLoginUrl } from '../../services/api/index.js';
-import { useAuth } from '../../context/AuthContext';
+import {registerUser} from '../../services/api/index.js';
+import {useAuth} from '../../context/AuthContext';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 export default function Register() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const {login} = useAuth();
+    const googleButtonRef = useRef(null);
+
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState('');
 
@@ -29,13 +35,13 @@ export default function Register() {
             .typeError(t('day_invalid_format'))
             .required(t('day_required'))
             .test('is-valid-day-for-month', function (day) {
-                const { birthMonth, birthYear } = this.parent;
+                const {birthMonth, birthYear} = this.parent;
                 if (!day || !birthMonth || !birthYear || isNaN(birthYear) || isNaN(day)) return true;
                 const monthIndex = parseInt(birthMonth, 10) - 1;
                 const isLeap = (birthYear % 4 === 0 && birthYear % 100 !== 0) || (birthYear % 400 === 0);
                 const daysInMonth = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
                 if (day > 0 && day <= daysInMonth[monthIndex]) return true;
-                return this.createError({ message: t('day_invalid_for_month', { daysInMonth: daysInMonth[monthIndex] }) });
+                return this.createError({message: t('day_invalid_for_month', {daysInMonth: daysInMonth[monthIndex]})});
             }),
         birthYear: yup.number()
             .typeError(t('year_invalid_format'))
@@ -43,16 +49,15 @@ export default function Register() {
             .test('year-range', function (year) {
                 const currentYear = new Date().getFullYear();
                 if (isNaN(year) || year > currentYear || year < currentYear - 100) {
-                    return this.createError({ message: t('year_range', { start: currentYear - 100, end: currentYear }) });
+                    return this.createError({message: t('year_range', {start: currentYear - 100, end: currentYear})});
                 }
                 return true;
             })
             .test('age-check-year', t('age_check'), function (year) {
-                const { birthDay, birthMonth } = this.parent;
+                const {birthDay, birthMonth} = this.parent;
                 if (!birthDay || !birthMonth || !year || isNaN(birthDay) || isNaN(year)) return true;
                 const birthDate = new Date(year, parseInt(birthMonth, 10) - 1, parseInt(birthDay, 10));
-                const ageDiff = Date.now() - birthDate.getTime();
-                const age = Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
+                const age = Math.abs(new Date(Date.now() - birthDate.getTime()).getUTCFullYear() - 1970);
                 return age >= 12;
             }),
         gender: yup.string().optional(),
@@ -62,16 +67,16 @@ export default function Register() {
     const {
         register,
         handleSubmit,
-        formState: { errors, touchedFields },
+        formState: {errors, touchedFields},
         watch,
         trigger,
     } = useForm({
         resolver: yupResolver(validationSchema),
         mode: 'onTouched',
-        defaultValues: { birthMonth: '1', gender: 'prefer_not_to_say' },
+        defaultValues: {birthMonth: '1', gender: 'prefer_not_to_say'},
     });
 
-    const { birthDay, birthMonth, birthYear } = watch();
+    const {birthDay, birthMonth, birthYear} = watch();
 
     useEffect(() => {
         if (touchedFields.birthDay || touchedFields.birthMonth || touchedFields.birthYear) {
@@ -81,6 +86,49 @@ export default function Register() {
         }
     }, [birthDay, birthMonth, birthYear, trigger, touchedFields]);
 
+    const handleGoogleResponse = async (response) => {
+        setIsLoading(true);
+        setServerError('');
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/v1/auth/google/login/`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({token: response.credential}),
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || t('login_failed_error'));
+            }
+
+            const data = await res.json();
+            login(data.access, data.refresh, data.user);
+            navigate('/', {replace: true});
+        } catch (error) {
+            setServerError(error.message || t('login_failed_error'));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!GOOGLE_CLIENT_ID || !window.google) return;
+
+        window.google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleResponse,
+        });
+
+        if (googleButtonRef.current) {
+            window.google.accounts.id.renderButton(googleButtonRef.current, {
+                type: 'standard',
+                theme: 'outline',
+                size: 'large',
+                width: '100%',
+            });
+        }
+    }, []);
+
     const onSubmit = async (data) => {
         setIsLoading(true);
         setServerError('');
@@ -88,23 +136,20 @@ export default function Register() {
         try {
             const formattedMonth = String(data.birthMonth).padStart(2, '0');
             const formattedDay = String(data.birthDay).padStart(2, '0');
-            const dateOfBirth = `${data.birthYear}-${formattedMonth}-${formattedDay}`;
 
             const payload = {
                 first_name: data.firstName,
                 email: data.email,
                 password: data.password,
-                date_of_birth: dateOfBirth,
+                date_of_birth: `${data.birthYear}-${formattedMonth}-${formattedDay}`,
                 gender: data.gender === 'prefer_not_to_say' ? null : data.gender,
             };
 
             const response = await registerUser(payload);
 
             if (response.access_token || response.access) {
-                const accessToken = response.access_token || response.access;
-                const refreshToken = response.refresh_token || response.refresh;
-                login(accessToken, refreshToken);
-                navigate('/', { replace: true });
+                login(response.access_token || response.access, response.refresh_token || response.refresh);
+                navigate('/', {replace: true});
             } else {
                 navigate('/login');
             }
@@ -115,34 +160,30 @@ export default function Register() {
         }
     };
 
-    const handleSocialLogin = (provider) => {
-        window.location.href = getSocialLoginUrl(provider);
-    };
-
     const months = useMemo(() => ([
-        { value: '1',  label: t('months.january') },
-        { value: '2',  label: t('months.february') },
-        { value: '3',  label: t('months.march') },
-        { value: '4',  label: t('months.april') },
-        { value: '5',  label: t('months.may') },
-        { value: '6',  label: t('months.june') },
-        { value: '7',  label: t('months.july') },
-        { value: '8',  label: t('months.august') },
-        { value: '9',  label: t('months.september') },
-        { value: '10', label: t('months.october') },
-        { value: '11', label: t('months.november') },
-        { value: '12', label: t('months.december') },
+        {value: '1', label: t('months.january')},
+        {value: '2', label: t('months.february')},
+        {value: '3', label: t('months.march')},
+        {value: '4', label: t('months.april')},
+        {value: '5', label: t('months.may')},
+        {value: '6', label: t('months.june')},
+        {value: '7', label: t('months.july')},
+        {value: '8', label: t('months.august')},
+        {value: '9', label: t('months.september')},
+        {value: '10', label: t('months.october')},
+        {value: '11', label: t('months.november')},
+        {value: '12', label: t('months.december')},
     ]), [t]);
 
     return (
         <div className="auth-page">
             <div className="auth-container">
                 <Link to="/" className="back-to-home" aria-label={t('back_to_home_aria')}>
-                    <FaArrowLeft />
+                    <FaArrowLeft/>
                 </Link>
 
                 <div className="auth-header">
-                    <img src="/orrin-logo.svg" alt="Orrin Logo" className="auth-logo" />
+                    <img src="/orrin-logo.svg" alt="Orrin Logo" className="auth-logo"/>
                     <h1 className="auth-title">{t('register_title')}</h1>
                     <p className="auth-subtitle">
                         {t('register_subtitle_prefix')}{' '}
@@ -159,9 +200,7 @@ export default function Register() {
                             {...register('firstName')}
                             className={`form-input ${errors.firstName ? 'is-invalid' : ''}`}
                         />
-                        {errors.firstName && (
-                            <p className="error-message">{errors.firstName.message}</p>
-                        )}
+                        {errors.firstName && <p className="error-message">{errors.firstName.message}</p>}
                     </div>
 
                     <div className="form-group">
@@ -172,9 +211,7 @@ export default function Register() {
                             {...register('email')}
                             className={`form-input ${errors.email ? 'is-invalid' : ''}`}
                         />
-                        {errors.email && (
-                            <p className="error-message">{errors.email.message}</p>
-                        )}
+                        {errors.email && <p className="error-message">{errors.email.message}</p>}
                     </div>
 
                     <div className="form-group">
@@ -185,9 +222,7 @@ export default function Register() {
                             {...register('password')}
                             className={`form-input ${errors.password ? 'is-invalid' : ''}`}
                         />
-                        {errors.password && (
-                            <p className="error-message">{errors.password.message}</p>
-                        )}
+                        {errors.password && <p className="error-message">{errors.password.message}</p>}
                     </div>
 
                     <div className="form-group">
@@ -205,7 +240,7 @@ export default function Register() {
                                 {...register('birthMonth')}
                                 className={`form-select ${errors.birthMonth ? 'is-invalid' : ''}`}
                             >
-                                {months.map(({ value, label }) => (
+                                {months.map(({value, label}) => (
                                     <option key={value} value={value}>{label}</option>
                                 ))}
                             </select>
@@ -219,9 +254,9 @@ export default function Register() {
                         </div>
                         {(errors.birthDay || errors.birthYear || errors.birthMonth) && (
                             <div className="error-message">
-                                {errors.birthDay?.message    && <p>{errors.birthDay.message}</p>}
-                                {errors.birthMonth?.message  && <p>{errors.birthMonth.message}</p>}
-                                {errors.birthYear?.message   && <p>{errors.birthYear.message}</p>}
+                                {errors.birthDay?.message && <p>{errors.birthDay.message}</p>}
+                                {errors.birthMonth?.message && <p>{errors.birthMonth.message}</p>}
+                                {errors.birthYear?.message && <p>{errors.birthYear.message}</p>}
                             </div>
                         )}
                     </div>
@@ -231,15 +266,15 @@ export default function Register() {
                         <p className="form-sublabel">{t('gender_info')}</p>
                         <div className="gender-options">
                             <label className="radio-label">
-                                <input type="radio" {...register('gender')} value="male" />
+                                <input type="radio" {...register('gender')} value="male"/>
                                 <span>{t('gender_male')}</span>
                             </label>
                             <label className="radio-label">
-                                <input type="radio" {...register('gender')} value="female" />
+                                <input type="radio" {...register('gender')} value="female"/>
                                 <span>{t('gender_female')}</span>
                             </label>
                             <label className="radio-label">
-                                <input type="radio" {...register('gender')} value="prefer_not_to_say" />
+                                <input type="radio" {...register('gender')} value="prefer_not_to_say"/>
                                 <span>{t('gender_none')}</span>
                             </label>
                         </div>
@@ -247,39 +282,37 @@ export default function Register() {
 
                     <div className="form-group">
                         <label className="form-group-checkbox">
-                            <input type="checkbox" id="agreedToTerms" {...register('agreedToTerms')} />
+                            <input type="checkbox" id="agreedToTerms" {...register('agreedToTerms')}/>
                             <span>{t('terms_agree')}</span>
                         </label>
-                        {errors.agreedToTerms && (
-                            <p className="error-message">{errors.agreedToTerms.message}</p>
-                        )}
+                        {errors.agreedToTerms && <p className="error-message">{errors.agreedToTerms.message}</p>}
                     </div>
 
-                    {serverError && (
-                        <p className="error-message">{serverError}</p>
-                    )}
+                    {serverError && <p className="error-message">{serverError}</p>}
 
                     <button type="submit" className="auth-button" disabled={isLoading}>
-                        {isLoading ? t('creating_account') : t('create_account_button')}
+                        {isLoading
+                            ? <><Loader2 size={16} style={{
+                                marginRight: 8,
+                                animation: 'spin 0.9s linear infinite'
+                            }}/>{t('creating_account')}</>
+                            : t('create_account_button')
+                        }
                     </button>
                 </form>
 
                 <div className="social-register">
                     <div className="divider"><span>{t('register_with_divider')}</span></div>
                     <div className="social-buttons">
-                        <button
-                            type="button"
-                            className="social-button google"
-                            onClick={() => handleSocialLogin('Google')}
-                        >
-                            <FaGoogle /> Google
-                        </button>
-                        <button
-                            type="button"
-                            className="social-button apple"
-                            onClick={() => handleSocialLogin('Apple')}
-                        >
-                            <FaApple /> Apple
+                        {GOOGLE_CLIENT_ID ? (
+                            <div ref={googleButtonRef} style={{width: '100%'}}/>
+                        ) : (
+                            <button type="button" className="social-button google" disabled>
+                                <FaGoogle/> Google
+                            </button>
+                        )}
+                        <button type="button" className="social-button apple" disabled>
+                            <FaApple/> Apple
                         </button>
                     </div>
                 </div>
