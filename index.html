@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/orrin-logo.svg" />
-    <link rel="apple-touch-icon" href="/orrin-logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#000000" />
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/orrin-logo.svg"/>
+    <link rel="apple-touch-icon" href="/orrin-logo.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#000000"/>
 
     <title>Orrin</title>
     <meta
@@ -13,14 +13,18 @@
             content="Orrin — an innovative web application that combines the functionality of a music service and a social network."
     />
 
-    <link rel="alternate" href="https://orrin-yl1x.onrender.com/" hreflang="en" id="hreflang-en" />
-    <link rel="alternate" href="https://orrin-yl1x.onrender.com/uk" hreflang="uk" id="hreflang-uk" />
-    <link rel="alternate" href="https://orrin-yl1x.onrender.com/" hreflang="x-default" id="hreflang-default" />
+    <link rel="alternate" href="https://orrin-yl1x.onrender.com/" hreflang="en" id="hreflang-en"/>
+    <link rel="alternate" href="https://orrin-yl1x.onrender.com/uk" hreflang="uk" id="hreflang-uk"/>
+    <link rel="alternate" href="https://orrin-yl1x.onrender.com/" hreflang="x-default" id="hreflang-default"/>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <style>
-        body { margin: 0; background-color: #000000; }
+        body {
+            margin: 0;
+            background-color: #000000;
+        }
 
         .orrin-loader-container {
             display: flex;
@@ -35,24 +39,26 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background:
-                    radial-gradient(circle at center, #000 4%, transparent 5%),
-                    /*radial-gradient(circle at 40% 40%, #fff 2%, transparent 3%),*/
-                    radial-gradient(circle at center, #444 20%, transparent 21%),
-                    conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.05) 45deg, transparent 90deg, transparent 180deg, rgba(255,255,255,0.05) 225deg, transparent 270deg),
-                    repeating-radial-gradient(
-                            #111,
-                            #111 4px,
-                            #222 5px,
-                            #222 6px
-                    );
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.05), inset 0 0 15px rgba(0,0,0,0.8);
+            background: radial-gradient(circle at center, #000 4%, transparent 5%),
+            radial-gradient(circle at center, #444 20%, transparent 21%),
+            conic-gradient(from 0deg, transparent 0deg, rgba(255, 255, 255, 0.05) 45deg, transparent 90deg, transparent 180deg, rgba(255, 255, 255, 0.05) 225deg, transparent 270deg),
+            repeating-radial-gradient(
+                    #111,
+                    #111 4px,
+                    #222 5px,
+                    #222 6px
+            );
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.05), inset 0 0 15px rgba(0, 0, 0, 0.8);
             animation: spin-vinyl 1.5s linear infinite;
         }
 
         @keyframes spin-vinyl {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
