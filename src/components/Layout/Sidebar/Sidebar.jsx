@@ -1,40 +1,40 @@
-import React, { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, NewspaperIcon, Library, Heart, Clock, Settings, MessageSquare } from 'lucide-react';
+import React, {useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useNavigate, useLocation} from 'react-router-dom';
+import {Home, NewspaperIcon, Library, Heart, Clock, Settings, MessageSquare} from 'lucide-react';
 
-import { useAuth } from '../../../context/AuthContext.jsx';
+import {useAuth} from '../../../context/AuthContext.jsx';
+import {useUnreadMessages} from '../../../hooks/useUnreadMessages.js';
 import AuthPromptModal from '../../Shared/AuthPromptModal/AuthPromptModal.jsx';
 import SidebarItem from './SidebarItem/SidebarItem.jsx';
 import styles from './Sidebar.module.css';
 
 const PROTECTED_PATHS = ['/library', '/favorites', '/history', '/messages'];
 
-export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
-    const { t } = useTranslation();
-    const { isLoggedIn } = useAuth();
+export default function Sidebar({isOpen, onClose, isPlayerVisible}) {
+    const {t} = useTranslation();
+    const {isLoggedIn} = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-    // TODO: Replace with real unread count from chat context / query
-    const totalUnreadMessages = 3;
+    const totalUnreadMessages = useUnreadMessages();
 
     const menuItems = useMemo(() => [
-        { icon: Home,          label: t('sidebar_main'),     path: '/'        },
-        { icon: NewspaperIcon, label: t('sidebar_feed'),     path: '/feed'    },
-        { icon: MessageSquare, label: t('sidebar_messages'), path: '/messages', badge: totalUnreadMessages },
-        { icon: Library,       label: t('sidebar_library'),  path: '/library' },
+        {icon: Home, label: t('sidebar_main'), path: '/'},
+        {icon: NewspaperIcon, label: t('sidebar_feed'), path: '/feed'},
+        {icon: MessageSquare, label: t('sidebar_messages'), path: '/messages', badge: totalUnreadMessages},
+        {icon: Library, label: t('sidebar_library'), path: '/library'},
     ], [t, totalUnreadMessages]);
 
     const libraryItems = useMemo(() => [
-        { icon: Heart, label: t('sidebar_favorites'), path: '/favorites' },
-        { icon: Clock, label: t('sidebar_history'),   path: '/history'   },
+        {icon: Heart, label: t('sidebar_favorites'), path: '/favorites'},
+        {icon: Clock, label: t('sidebar_history'), path: '/history'},
     ], [t]);
 
     const settingsItems = useMemo(() => [
-        { icon: Settings, label: t('sidebar_settings'), path: '/settings' },
+        {icon: Settings, label: t('sidebar_settings'), path: '/settings'},
     ], [t]);
 
     const handleNavigation = (path, e) => {
@@ -53,13 +53,13 @@ export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
     };
 
     const sidebarClasses = `${styles.container} ${isOpen ? styles.open : styles.collapsed}`;
-    const footerClasses  = `${styles.footer} ${isPlayerVisible ? styles.footerWithPlayer : ''}`;
-    const isCollapsed    = !isOpen;
+    const footerClasses = `${styles.footer} ${isPlayerVisible ? styles.footerWithPlayer : ''}`;
+    const isCollapsed = !isOpen;
 
     return (
         <>
             {isOpen && (
-                <div className={styles.backdrop} onClick={onClose} aria-hidden="true" />
+                <div className={styles.backdrop} onClick={onClose} aria-hidden="true"/>
             )}
 
             <aside className={sidebarClasses}>
@@ -80,7 +80,7 @@ export default function Sidebar({ isOpen, onClose, isPlayerVisible }) {
                         ))}
                     </ul>
 
-                    <div className={styles.divider} />
+                    <div className={styles.divider}/>
 
                     <div className={styles.section}>
                         <h3 className={styles.sectionTitle}>{t('sidebar_my_music')}</h3>

@@ -7,6 +7,7 @@ import { Clock } from 'lucide-react';
 import { getTrackBySlug } from '../../services/api/index.js';
 import { normalizeTrackData } from '../../constants/fallbacks.js';
 import { useAudioCore } from '../../context/AudioCoreContext.jsx';
+import { createTrackComments, createTrackNotes } from '../../data/mockData.js';
 
 import MusicLyrics from '../../components/Shared/MusicLyrics/MusicLyrics.jsx';
 import QueueList    from '../../components/Shared/QueueList/QueueList.jsx';
@@ -14,15 +15,7 @@ import InlineError  from '../../components/Shared/InlineError/InlineError.jsx';
 import CommentsTab  from './tabs/CommentsTab/CommentsTab.jsx';
 import NotesTab     from './tabs/NotesTab/NotesTab.jsx';
 
-import {
-    MOCK_COMMENTS,
-    NOTES_RECOMMENDED,
-    NOTES_FROM_FRIENDS,
-    NOTES_OWN,
-} from '../../data/mockData.js';
 import styles from './TrackPage.module.css';
-
-// Tab Navigation
 
 /**
  * @param {Object}    props
@@ -57,8 +50,6 @@ function TabNav({ tabs, activeTab, onTabChange, className = '' }) {
     );
 }
 
-// History Placeholder
-
 function HistoryPanel() {
     const { t } = useTranslation();
     return (
@@ -70,8 +61,6 @@ function HistoryPanel() {
     );
 }
 
-// Tab config
-
 const PRIMARY_TAB_CONFIG = [
     { id: 'lyrics',   translationKey: 'tabs_lyrics' },
     { id: 'comments', translationKey: 'tabs_comments', hasCount: true },
@@ -79,14 +68,6 @@ const PRIMARY_TAB_CONFIG = [
     { id: 'notes',    translationKey: 'tabs_notes' },
     { id: 'queue',    translationKey: 'tabs_queue' },
 ];
-
-/** Pre-grouped notes by sub-tab id — passed as initial state to NotesTab. */
-const INITIAL_NOTES = {
-    recommended: NOTES_RECOMMENDED,
-    friends:     NOTES_FROM_FRIENDS,
-    own:         NOTES_OWN,
-};
-
 
 export default function TrackPage() {
     const { trackId } = useParams();
@@ -102,6 +83,9 @@ export default function TrackPage() {
     });
 
     const track = rawTrack ? normalizeTrackData(rawTrack) : null;
+
+    const initialComments = useMemo(() => createTrackComments(trackId), [trackId]);
+    const initialNotes    = useMemo(() => createTrackNotes(trackId),    [trackId]);
 
     const [currentTime, setCurrentTime] = useState(0);
 
@@ -132,8 +116,8 @@ export default function TrackPage() {
     const primaryTabs = useMemo(() => PRIMARY_TAB_CONFIG.map(tab => ({
         id:    tab.id,
         label: t(tab.translationKey),
-        ...(tab.hasCount ? { count: MOCK_COMMENTS.length } : {}),
-    })), [t]);
+        ...(tab.hasCount ? { count: initialComments.length } : {}),
+    })), [t, initialComments.length]);
 
     if (isLoading) {
         return (
@@ -168,11 +152,11 @@ export default function TrackPage() {
                     />
                 );
             case 'comments':
-                return <CommentsTab initialComments={MOCK_COMMENTS} />;
+                return <CommentsTab initialComments={initialComments} />;
             case 'history':
                 return <HistoryPanel />;
             case 'notes':
-                return <NotesTab initialNotes={INITIAL_NOTES} />;
+                return <NotesTab initialNotes={initialNotes} />;
             case 'queue':
                 return <QueueList />;
             default:
