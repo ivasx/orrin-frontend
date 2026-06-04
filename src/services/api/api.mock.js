@@ -568,3 +568,5 @@ export const getPrivacyPolicy = async (lang = 'en') => {
     await delay(600);
     return mockPrivacy[lang] || mockPrivacy['en'];
 };
+
+export const getUnreadMessagesCount = async () => 0;
