@@ -4,7 +4,7 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import {Home, NewspaperIcon, Library, Heart, Clock, Settings, MessageSquare} from 'lucide-react';
 
 import {useAuth} from '../../../context/AuthContext.jsx';
-import {useUnreadMessages} from '../../../hooks/useUnreadMessages.js';
+import {useUnreadMessages} from '../../../hooks/useUnreadMessages.jsx';
 import AuthPromptModal from '../../Shared/AuthPromptModal/AuthPromptModal.jsx';
 import SidebarItem from './SidebarItem/SidebarItem.jsx';
 import styles from './Sidebar.module.css';

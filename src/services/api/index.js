@@ -78,3 +78,5 @@ export const sendMessage     = api.sendMessage     || realApi.sendMessage;
 
 export const getTerms         = api.getTerms         || realApi.getTerms;
 export const getPrivacyPolicy = api.getPrivacyPolicy || realApi.getPrivacyPolicy;
+
+export const getUnreadMessagesCount = api.getUnreadMessagesCount || realApi.getUnreadMessagesCount;
