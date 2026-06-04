@@ -426,3 +426,13 @@ export const getTerms = async (_lang) => {
 export const getPrivacyPolicy = async (_lang) => {
     return Promise.reject(new Error('Not implemented yet'));
 };
+
+export const getUnreadMessagesCount = async () => {
+    try {
+        const chats = await getUserChats();
+        return chats.reduce((total, chat) => total + (chat.unreadCount || 0), 0);
+    } catch (error) {
+        console.error('Failed to fetch unread messages count:', error);
+        return 0;
+    }
+};
