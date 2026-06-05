@@ -24,6 +24,8 @@ export const getSocialLoginUrl    = api.getSocialLoginUrl    || realApi.getSocia
 export const getTracks      = api.getTracks      || realApi.getTracks;
 export const getTracksByIds = api.getTracksByIds || realApi.getTracksByIds;
 export const getTrackBySlug = api.getTrackBySlug || realApi.getTrackBySlug;
+export const getTrackComments = api.getTrackComments || realApi.getTrackComments;
+export const getTrackNotes    = api.getTrackNotes    || realApi.getTrackNotes;
 
 export const getUserLibrary   = api.getUserLibrary   || realApi.getUserLibrary;
 export const getUserFavorites = api.getUserFavorites || realApi.getUserFavorites;

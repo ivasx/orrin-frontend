@@ -1,7 +1,9 @@
-import { mockUsers } from '../../data/mockData';
-import { logger } from '../../utils/logger';
+import {mockUsers} from '../../data/mockData';
+import {logger} from '../../utils/logger';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const MOCK_CURRENT_USER_ID = 'user-4';
 
 export const login = async (credentials) => {
     await delay(800);
@@ -13,7 +15,7 @@ export const login = async (credentials) => {
 
     return {
         access: 'mock_access_token_' + Date.now(),
-        refresh: 'mock_refresh_token_' + Date.now()
+        refresh: 'mock_refresh_token_' + Date.now(),
     };
 };
 
@@ -23,11 +25,12 @@ export const register = async (userData) => {
 
     return {
         access: 'mock_access_token_' + Date.now(),
-        refresh: 'mock_refresh_token_' + Date.now()
+        refresh: 'mock_refresh_token_' + Date.now(),
     };
 };
 
 export const getMe = async () => {
     await delay(400);
-    return mockUsers[0] || null;
+    const user = mockUsers.find((u) => u.id === MOCK_CURRENT_USER_ID);
+    return user ?? null;
 };

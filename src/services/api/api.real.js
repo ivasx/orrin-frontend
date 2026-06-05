@@ -70,25 +70,21 @@ const refreshAuthToken = async () => {
 
 function extractErrorMessage(errorData) {
     if (!errorData || typeof errorData !== 'object') return null;
-
     if (typeof errorData.detail === 'string') return errorData.detail;
     if (typeof errorData.message === 'string') return errorData.message;
-
     const messages = Object.entries(errorData)
         .filter(([, value]) => value !== null && value !== undefined)
         .map(([field, value]) => {
             const text = Array.isArray(value) ? value.join(' ') : String(value);
             return field === 'non_field_errors' ? text : `${field}: ${text}`;
         });
-
     return messages.length > 0 ? messages.join('\n') : null;
 }
 
 async function handleResponse(response, endpoint) {
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-            extractErrorMessage(errorData) || `HTTP error ${response.status}`;
+        const errorMessage = extractErrorMessage(errorData) || `HTTP error ${response.status}`;
         throw new ApiError(errorMessage, response.status, endpoint, errorData);
     }
     if (response.status === 204) return null;
@@ -99,13 +95,10 @@ async function handleResponse(response, endpoint) {
 const executeFetch = async (endpoint, options, token) => {
     const url = `${API_BASE_URL}${endpoint}`;
     const headers = {...options.headers};
-
     if (token) headers['Authorization'] = `Bearer ${token}`;
-
     if (!(options.body instanceof FormData)) {
         headers['Content-Type'] = 'application/json';
     }
-
     const response = await fetch(url, {...options, headers});
     if (response.status === 401) throw new ApiError('Unauthorized', 401, endpoint);
     return handleResponse(response, endpoint);
@@ -160,6 +153,20 @@ export const getTracksByIds = async (trackIds = []) => {
 export const getTrackBySlug = async (slug) => {
     const data = await fetchJson(`/api/v1/tracks/${slug}/`);
     return normalizeTrackData(data);
+};
+
+export const getTrackComments = async (trackId) => {
+    const data = await fetchJson(`/api/v1/tracks/${trackId}/comments/`);
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const getTrackNotes = async (trackId) => {
+    const data = await fetchJson(`/api/v1/tracks/${trackId}/notes/`);
+    return {
+        recommended: Array.isArray(data.recommended) ? data.recommended : [],
+        friends: Array.isArray(data.friends) ? data.friends : [],
+        own: Array.isArray(data.own) ? data.own : [],
+    };
 };
 
 export const getUserLibrary = async () => {
@@ -270,7 +277,6 @@ export const getFeedPosts = async ({type, sort, contentType, pageParam = 1} = {}
     if (sort) params.append('sort', sort);
     if (contentType) params.append('content_type', contentType);
     if (pageParam) params.append('page', pageParam);
-
     const qs = params.toString();
     const data = await fetchJson(`/api/v1/feed/${qs ? `?${qs}` : ''}`);
     const posts = Array.isArray(data) ? data : (data.results || []);
@@ -282,7 +288,6 @@ export const createPost = async (postData) => {
     for (const [key, value] of postData.entries()) {
         body[key] = value;
     }
-
     if (body.track_id) {
         body.track_slug = body.track_id;
         delete body.track_id;
@@ -419,20 +424,19 @@ export const sendMessage = async (chatId, text, trackId = null) => {
     });
 };
 
+export const getUnreadMessagesCount = async () => {
+    try {
+        const chats = await getUserChats();
+        return chats.reduce((total, chat) => total + (chat.unreadCount || chat.unread_count || 0), 0);
+    } catch {
+        return 0;
+    }
+};
+
 export const getTerms = async (_lang) => {
     return Promise.reject(new Error('Not implemented yet'));
 };
 
 export const getPrivacyPolicy = async (_lang) => {
     return Promise.reject(new Error('Not implemented yet'));
-};
-
-export const getUnreadMessagesCount = async () => {
-    try {
-        const chats = await getUserChats();
-        return chats.reduce((total, chat) => total + (chat.unreadCount || 0), 0);
-    } catch (error) {
-        console.error('Failed to fetch unread messages count:', error);
-        return 0;
-    }
 };

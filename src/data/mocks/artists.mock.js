@@ -9,19 +9,71 @@ export const mockArtists = [
         about: "Arctic Monkeys are an English rock band formed in Sheffield in 2002. The group consists of Alex Turner (lead vocals, guitar), Jamie Cook (guitar), Nick O'Malley (bass guitar), and Matt Helders (drums). Their self-produced demo CDs, which they gave away free at concerts, rapidly spread across the UK.",
         history: "Formed in Sheffield in 2002 when they were all teenagers, Arctic Monkeys became one of the fastest-rising bands in UK music history. Their debut album \"Whatever People Say I Am, That's What I'm Not\" (2006) became the fastest-selling debut album in UK chart history at the time.\n\nOver the years, they evolved from raw indie rock to incorporate psychedelic, garage rock, and art rock influences. Their 2013 album \"AM\" marked a commercial breakthrough, while \"Tranquility Base Hotel + Casino\" (2018) showcased a more avant-garde, lounge-rock direction.",
         members: [
-            { id: 'm-1', name: 'Alex Turner',   role: 'Vocals, Guitar',        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Alex_Turner_-_Rock_Werchter_2018.jpg/440px-Alex_Turner_-_Rock_Werchter_2018.jpg' },
-            { id: 'm-2', name: 'Jamie Cook',    role: 'Guitar',                imageUrl: 'https://i.pravatar.cc/150?img=60' },
-            { id: 'm-3', name: "Nick O'Malley", role: 'Bass Guitar',           imageUrl: 'https://i.pravatar.cc/150?img=61' },
-            { id: 'm-4', name: 'Matt Helders',  role: 'Drums, Backing Vocals', imageUrl: 'https://i.pravatar.cc/150?img=62' },
+            {
+                id: 'm-1',
+                name: 'Alex Turner',
+                role: 'Vocals, Guitar',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Alex_Turner_-_Rock_Werchter_2018.jpg/440px-Alex_Turner_-_Rock_Werchter_2018.jpg'
+            },
+            {id: 'm-2', name: 'Jamie Cook', role: 'Guitar', imageUrl: 'https://i.pravatar.cc/150?img=60'},
+            {id: 'm-3', name: "Nick O'Malley", role: 'Bass Guitar', imageUrl: 'https://i.pravatar.cc/150?img=61'},
+            {
+                id: 'm-4',
+                name: 'Matt Helders',
+                role: 'Drums, Backing Vocals',
+                imageUrl: 'https://i.pravatar.cc/150?img=62'
+            },
         ],
         discography: [
-            { id: 'alb-1', title: 'Whatever People Say I Am...', year: 2006, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png' },
-            { id: 'alb-2', title: 'Favourite Worst Nightmare',   year: 2007, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Favourite_Worst_Nightmare.jpg' },
-            { id: 'alb-3', title: 'Humbug',                      year: 2009, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/6/6d/Arctic_Monkeys_Humbug_album_cover.jpg' },
-            { id: 'alb-4', title: 'Suck It and See',             year: 2011, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Arctic_Monkeys_Suck_It_and_See.png' },
-            { id: 'alb-5', title: 'AM',                          year: 2013, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png' },
-            { id: 'alb-6', title: 'Tranquility Base Hotel + Casino', year: 2018, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Arctic_Monkeys_-_Tranquility_Base_Hotel_%2B_Casino.png' },
-            { id: 'alb-7', title: 'The Car',                     year: 2022, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/0/00/The_Car_Arctic_Monkeys.png' },
+            {
+                id: 'alb-1',
+                title: 'Whatever People Say I Am...',
+                year: 2006,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/8/8b/WhateverPeopleSayIAmThatsWhatImNot.png'
+            },
+            {
+                id: 'alb-2',
+                title: 'Favourite Worst Nightmare',
+                year: 2007,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Favourite_Worst_Nightmare.jpg'
+            },
+            {
+                id: 'alb-3',
+                title: 'Humbug',
+                year: 2009,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/6/6d/Arctic_Monkeys_Humbug_album_cover.jpg'
+            },
+            {
+                id: 'alb-4',
+                title: 'Suck It and See',
+                year: 2011,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Arctic_Monkeys_Suck_It_and_See.png'
+            },
+            {
+                id: 'alb-5',
+                title: 'AM',
+                year: 2013,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Arctic_Monkeys_-_AM.png'
+            },
+            {
+                id: 'alb-6',
+                title: 'Tranquility Base Hotel + Casino',
+                year: 2018,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Arctic_Monkeys_-_Tranquility_Base_Hotel_%2B_Casino.png'
+            },
+            {
+                id: 'alb-7',
+                title: 'The Car',
+                year: 2022,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/0/00/The_Car_Arctic_Monkeys.png'
+            },
         ],
         socials: {
             instagram: 'https://instagram.com/arcticmonkeys',
@@ -43,18 +95,62 @@ export const mockArtists = [
         about: 'Metallica is an American heavy metal band. The band was formed in 1981 in Los Angeles by vocalist/guitarist James Hetfield and drummer Lars Ulrich, and has been based in San Francisco for most of its career.',
         history: 'Metallica was formed in Los Angeles in 1981 when James Hetfield responded to an advertisement posted by Lars Ulrich. They became one of the Big Four of thrash metal alongside Anthrax, Megadeth, and Slayer.\n\nTheir "Black Album" (1991) remains one of the best-selling albums of all time. They have sold over 125 million records worldwide.',
         members: [
-            { id: 'm-5', name: 'James Hetfield',  role: 'Vocals, Rhythm Guitar', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/James_Hetfield_2017.jpg/440px-James_Hetfield_2017.jpg' },
-            { id: 'm-6', name: 'Lars Ulrich',     role: 'Drums',                 imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Lars_Ulrich_2018.jpg/440px-Lars_Ulrich_2018.jpg' },
-            { id: 'm-7', name: 'Kirk Hammett',    role: 'Lead Guitar',           imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Kirk_Hammett_2009.jpg/440px-Kirk_Hammett_2009.jpg' },
-            { id: 'm-8', name: 'Robert Trujillo', role: 'Bass Guitar',           imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Robert_Trujillo_2010.jpg/440px-Robert_Trujillo_2010.jpg' },
+            {
+                id: 'm-5',
+                name: 'James Hetfield',
+                role: 'Vocals, Rhythm Guitar',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/James_Hetfield_2017.jpg/440px-James_Hetfield_2017.jpg'
+            },
+            {
+                id: 'm-6',
+                name: 'Lars Ulrich',
+                role: 'Drums',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Lars_Ulrich_2018.jpg/440px-Lars_Ulrich_2018.jpg'
+            },
+            {
+                id: 'm-7',
+                name: 'Kirk Hammett',
+                role: 'Lead Guitar',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Kirk_Hammett_2009.jpg/440px-Kirk_Hammett_2009.jpg'
+            },
+            {
+                id: 'm-8',
+                name: 'Robert Trujillo',
+                role: 'Bass Guitar',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Robert_Trujillo_2010.jpg/440px-Robert_Trujillo_2010.jpg'
+            },
         ],
         discography: [
-            { id: 'alb-8',  title: "Kill 'Em All",           year: 1983, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/6/63/Metallica_-_Kill_%27Em_All_cover.jpg' },
-            { id: 'alb-9',  title: 'Master of Puppets',       year: 1986, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg' },
-            { id: 'alb-10', title: 'Metallica (Black Album)',  year: 1991, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/f/f1/Metallica_-_Metallica_%281991%29.png' },
-            { id: 'alb-11', title: '72 Seasons',              year: 2023, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/7/7f/Metallica_-_72_Seasons.png' },
+            {
+                id: 'alb-8',
+                title: "Kill 'Em All",
+                year: 1983,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/6/63/Metallica_-_Kill_%27Em_All_cover.jpg'
+            },
+            {
+                id: 'alb-9',
+                title: 'Master of Puppets',
+                year: 1986,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/ru/a/a4/Metallica_-_Master_of_Puppets.jpg'
+            },
+            {
+                id: 'alb-10',
+                title: 'Metallica (Black Album)',
+                year: 1991,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/f/f1/Metallica_-_Metallica_%281991%29.png'
+            },
+            {
+                id: 'alb-11',
+                title: '72 Seasons',
+                year: 2023,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/7/7f/Metallica_-_72_Seasons.png'
+            },
         ],
-        socials: { instagram: 'https://instagram.com/metallica' },
+        socials: {instagram: 'https://instagram.com/metallica'},
         location: 'San Francisco, USA',
         joinDate: '1981',
         is_verified: true,
@@ -71,16 +167,39 @@ export const mockArtists = [
         about: 'Chase Atlantic is an Australian alternative pop band from Cairns, Queensland. The trio consists of brothers Mitchel Cave and Clinton Cave, and Christian Anthony.',
         history: 'Founded in Cairns, Australia in 2014, Chase Atlantic built a following through social media and streaming platforms before signing with Fearless Records. Their self-titled debut (2017) introduced their signature dark, moody sound blending alternative rock with R&B and electronic elements.',
         members: [
-            { id: 'm-9',  name: 'Mitchel Cave',      role: 'Vocals, Guitar',    imageUrl: 'https://i.pravatar.cc/150?img=12' },
-            { id: 'm-10', name: 'Clinton Cave',       role: 'Bass, Production',  imageUrl: 'https://i.pravatar.cc/150?img=13' },
-            { id: 'm-11', name: 'Christian Anthony',  role: 'Drums, Production', imageUrl: 'https://i.pravatar.cc/150?img=14' },
+            {id: 'm-9', name: 'Mitchel Cave', role: 'Vocals, Guitar', imageUrl: 'https://i.pravatar.cc/150?img=12'},
+            {id: 'm-10', name: 'Clinton Cave', role: 'Bass, Production', imageUrl: 'https://i.pravatar.cc/150?img=13'},
+            {
+                id: 'm-11',
+                name: 'Christian Anthony',
+                role: 'Drums, Production',
+                imageUrl: 'https://i.pravatar.cc/150?img=14'
+            },
         ],
         discography: [
-            { id: 'alb-12', title: 'Chase Atlantic',  year: 2017, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg' },
-            { id: 'alb-13', title: 'Phases',          year: 2019, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/c/c3/Chase_Atlantic_-_Phases.jpg' },
-            { id: 'alb-14', title: 'Beauty in Death', year: 2021, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/6/6d/Chase_Atlantic_-_Beauty_in_Death.jpg' },
+            {
+                id: 'alb-12',
+                title: 'Chase Atlantic',
+                year: 2017,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/4/4b/Chase_Atlantic_-_Chase_Atlantic.jpg'
+            },
+            {
+                id: 'alb-13',
+                title: 'Phases',
+                year: 2019,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/c/c3/Chase_Atlantic_-_Phases.jpg'
+            },
+            {
+                id: 'alb-14',
+                title: 'Beauty in Death',
+                year: 2021,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/6/6d/Chase_Atlantic_-_Beauty_in_Death.jpg'
+            },
         ],
-        socials: { instagram: 'https://instagram.com/chaseatlantic' },
+        socials: {instagram: 'https://instagram.com/chaseatlantic'},
         location: 'Cairns, Australia',
         joinDate: '2014',
         is_verified: true,
@@ -98,12 +217,36 @@ export const mockArtists = [
         history: 'Created as a fictional multimedia project, Gorillaz broke new ground by combining animation, music, and storytelling. Their self-titled debut (2001) and "Demon Days" (2005) are considered genre-defining albums.',
         members: [],
         discography: [
-            { id: 'alb-15', title: 'Gorillaz',                  year: 2001, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/b/b8/Gorillaz_-_Gorillaz.png' },
-            { id: 'alb-16', title: 'Demon Days',                year: 2005, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg' },
-            { id: 'alb-17', title: 'Plastic Beach',             year: 2010, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/7/7f/Gorillaz_-_Plastic_Beach.png' },
-            { id: 'alb-18', title: 'Song Machine, Season One',  year: 2020, type: 'Album', cover: 'https://upload.wikimedia.org/wikipedia/en/8/8f/Gorillaz_-_Song_Machine%2C_Season_One.png' },
+            {
+                id: 'alb-15',
+                title: 'Gorillaz',
+                year: 2001,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/b/b8/Gorillaz_-_Gorillaz.png'
+            },
+            {
+                id: 'alb-16',
+                title: 'Demon Days',
+                year: 2005,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/7/71/GorillazDemonDays.jpg'
+            },
+            {
+                id: 'alb-17',
+                title: 'Plastic Beach',
+                year: 2010,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/7/7f/Gorillaz_-_Plastic_Beach.png'
+            },
+            {
+                id: 'alb-18',
+                title: 'Song Machine, Season One',
+                year: 2020,
+                type: 'Album',
+                cover: 'https://upload.wikimedia.org/wikipedia/en/8/8f/Gorillaz_-_Song_Machine%2C_Season_One.png'
+            },
         ],
-        socials: { instagram: 'https://instagram.com/gorillaz' },
+        socials: {instagram: 'https://instagram.com/gorillaz'},
         location: 'London, UK',
         joinDate: '1998',
         is_verified: true,
@@ -151,53 +294,136 @@ export const mockFollowingArtists = [
     },
 ];
 
-export const mockArtistNotes = [
-    {
-        id: 'note-1',
-        authorId: 'user-1',
-        authorUsername: 'alex_rocks',
-        author: 'Alex Mercer',
-        avatar: 'https://i.pravatar.cc/150?img=11',
-        text: '505 is criminally underrated as their best track. The way it builds is just perfect.',
-        type: 'public',
-        timestamp: '3 days ago',
-        trackContext: { trackId: '505-arctic-monkeys', title: '505' },
-        timecode: '2:10',
-        likesCount: 18,
-        isLikedByMe: false,
-        lyricsLineReference: null,
-    },
-    {
-        id: 'note-2',
-        authorId: 'user-4',
-        authorUsername: 'orrin_demo',
-        author: 'You',
-        avatar: 'https://i.pravatar.cc/150?img=32',
-        text: 'Remember to listen to this before the Sheffield show.',
-        type: 'private',
-        timestamp: '1 week ago',
-        trackContext: null,
-        timecode: null,
-        likesCount: 0,
-        isLikedByMe: false,
-        lyricsLineReference: null,
-    },
-    {
-        id: 'note-3',
-        authorId: 'user-2',
-        authorUsername: 'katya_music',
-        author: 'Katya Voloshyn',
-        avatar: 'https://i.pravatar.cc/150?img=47',
-        text: "Do I Wanna Know? intro riff is maybe the most recognizable in indie rock history.",
-        type: 'public',
-        timestamp: '2 weeks ago',
-        trackContext: { trackId: 'do-i-wanna-know', title: 'Do I Wanna Know?' },
-        timecode: '0:00',
-        likesCount: 33,
-        isLikedByMe: true,
-        lyricsLineReference: null,
-    },
-];
+export const mockArtistNotes = {
+    'arctic-monkeys': [
+        {
+            id: 'note-1',
+            authorId: 'user-1',
+            authorUsername: 'alex_rocks',
+            author: 'Alex Mercer',
+            avatar: 'https://i.pravatar.cc/150?img=11',
+            text: '505 is criminally underrated as their best track. The way it builds is just perfect.',
+            type: 'public',
+            timestamp: '3 days ago',
+            trackContext: {trackId: '505-arctic-monkeys', title: '505'},
+            timecode: '2:10',
+            likesCount: 18,
+            isLikedByMe: false,
+            lyricsLineReference: null,
+        },
+        {
+            id: 'note-2',
+            authorId: 'user-4',
+            authorUsername: 'orrin_demo',
+            author: 'You',
+            avatar: 'https://i.pravatar.cc/150?img=32',
+            text: 'Remember to listen to this before the Sheffield show.',
+            type: 'private',
+            timestamp: '1 week ago',
+            trackContext: null,
+            timecode: null,
+            likesCount: 0,
+            isLikedByMe: false,
+            lyricsLineReference: null,
+        },
+        {
+            id: 'note-3',
+            authorId: 'user-2',
+            authorUsername: 'katya_music',
+            author: 'Katya Voloshyn',
+            avatar: 'https://i.pravatar.cc/150?img=47',
+            text: "Do I Wanna Know? intro riff is maybe the most recognizable in indie rock history.",
+            type: 'public',
+            timestamp: '2 weeks ago',
+            trackContext: {trackId: 'do-i-wanna-know', title: 'Do I Wanna Know?'},
+            timecode: '0:00',
+            likesCount: 33,
+            isLikedByMe: true,
+            lyricsLineReference: null,
+        },
+    ],
+    'metallica': [
+        {
+            id: 'note-4',
+            authorId: 'user-3',
+            authorUsername: 'metal_ivan',
+            author: 'Ivan Kovalchuk',
+            avatar: 'https://i.pravatar.cc/150?img=53',
+            text: 'Master of Puppets solo section is proof that Kirk Hammett is one of the greatest guitarists of all time.',
+            type: 'public',
+            timestamp: '5 days ago',
+            trackContext: {trackId: 'master-of-puppets', title: 'Master of Puppets'},
+            timecode: '5:13',
+            likesCount: 47,
+            isLikedByMe: false,
+            lyricsLineReference: null,
+        },
+        {
+            id: 'note-5',
+            authorId: 'user-4',
+            authorUsername: 'orrin_demo',
+            author: 'You',
+            avatar: 'https://i.pravatar.cc/150?img=32',
+            text: 'The clean interlude always hits different. Total contrast to the rest of the track.',
+            type: 'private',
+            timestamp: '2 weeks ago',
+            trackContext: {trackId: 'master-of-puppets', title: 'Master of Puppets'},
+            timecode: '4:20',
+            likesCount: 0,
+            isLikedByMe: false,
+            lyricsLineReference: null,
+        },
+    ],
+    'chase-atlantic': [
+        {
+            id: 'note-6',
+            authorId: 'user-2',
+            authorUsername: 'katya_music',
+            author: 'Katya Voloshyn',
+            avatar: 'https://i.pravatar.cc/150?img=47',
+            text: 'Swim has this underwater feeling that no other track can replicate. The production is flawless.',
+            type: 'public',
+            timestamp: '1 week ago',
+            trackContext: {trackId: 'swim', title: 'Swim'},
+            timecode: null,
+            likesCount: 21,
+            isLikedByMe: true,
+            lyricsLineReference: null,
+        },
+    ],
+    'gorillaz': [
+        {
+            id: 'note-7',
+            authorId: 'user-1',
+            authorUsername: 'alex_rocks',
+            author: 'Alex Mercer',
+            avatar: 'https://i.pravatar.cc/150?img=11',
+            text: "Feel Good Inc. is the song that got me into alternative music. Can't overstate its impact.",
+            type: 'public',
+            timestamp: '4 days ago',
+            trackContext: {trackId: 'feel-good-inc', title: 'Feel Good Inc.'},
+            timecode: null,
+            likesCount: 15,
+            isLikedByMe: false,
+            lyricsLineReference: null,
+        },
+        {
+            id: 'note-8',
+            authorId: 'user-4',
+            authorUsername: 'orrin_demo',
+            author: 'You',
+            avatar: 'https://i.pravatar.cc/150?img=32',
+            text: 'The windmill verse is genuinely one of the most poetic things in pop music.',
+            type: 'private',
+            timestamp: '3 weeks ago',
+            trackContext: {trackId: 'feel-good-inc', title: 'Feel Good Inc.'},
+            timecode: '1:30',
+            likesCount: 0,
+            isLikedByMe: false,
+            lyricsLineReference: {text: "Windmill, windmill for the land", time: 30},
+        },
+    ],
+};
 
 export const mockArtistPosts = {
     'arctic-monkeys': [

@@ -4,7 +4,7 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import {Home, NewspaperIcon, Library, Heart, Clock, Settings, MessageSquare} from 'lucide-react';
 
 import {useAuth} from '../../../context/AuthContext.jsx';
-import {useUnreadMessages} from '../../../hooks/useUnreadMessages.jsx';
+import {useTotalUnreadMessages} from '../../../hooks/useTotalUnreadMessages.js';
 import AuthPromptModal from '../../Shared/AuthPromptModal/AuthPromptModal.jsx';
 import SidebarItem from './SidebarItem/SidebarItem.jsx';
 import styles from './Sidebar.module.css';
@@ -16,10 +16,9 @@ export default function Sidebar({isOpen, onClose, isPlayerVisible}) {
     const {isLoggedIn} = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const totalUnreadMessages = useTotalUnreadMessages();
 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
-    const totalUnreadMessages = useUnreadMessages();
 
     const menuItems = useMemo(() => [
         {icon: Home, label: t('sidebar_main'), path: '/'},

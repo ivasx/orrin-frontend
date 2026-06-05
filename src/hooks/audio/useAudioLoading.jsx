@@ -2,8 +2,9 @@
  * Hook for tracking audio loading state and errors
  * Responsible for: isLoading, loadError states based on audio element events
  */
-import { useState, useEffect } from 'react';
-import { logger } from '../../utils/logger';
+import {useState, useEffect} from 'react';
+import {logger} from '../../utils/logger';
+import i18n from '../../i18n/i18n.js';
 
 export function useAudioLoading(audioRef) {
     const [isLoading, setIsLoading] = useState(false);
@@ -14,66 +15,68 @@ export function useAudioLoading(audioRef) {
         if (!audio) return;
 
         const handleLoadStart = () => {
-            logger.log("Audio: Load start");
+            logger.log('Audio: Load start');
             setIsLoading(true);
             setLoadError(null);
         };
 
         const handleCanPlay = () => {
-            logger.log("Audio: Can play");
+            logger.log('Audio: Can play');
             setIsLoading(false);
             setLoadError(null);
         };
 
         const handleCanPlayThrough = () => {
-            logger.log("Audio: Can play through");
+            logger.log('Audio: Can play through');
             setIsLoading(false);
             setLoadError(null);
         };
 
         const handleError = (e) => {
-            logger.error("Audio: Error event", e, audio.error);
+            logger.error('Audio: Error event', e, audio.error);
             setIsLoading(false);
 
-            let errorMessage = 'Помилка завантаження аудіо';
+            let errorMessage = i18n.t('audio_error_unknown');
             let errorType = 'unknown';
 
             if (audio.error) {
                 switch (audio.error.code) {
                     case MediaError.MEDIA_ERR_NETWORK:
-                        errorMessage = 'Помилка мережі';
+                        errorMessage = i18n.t('audio_error_network');
                         errorType = 'network';
                         break;
                     case MediaError.MEDIA_ERR_DECODE:
-                        errorMessage = 'Помилка декодування';
+                        errorMessage = i18n.t('audio_error_decode');
                         errorType = 'decode';
                         break;
                     case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                        errorMessage = 'Формат не підтримується';
+                        errorMessage = i18n.t('audio_error_format');
                         errorType = 'format';
                         break;
                     case MediaError.MEDIA_ERR_ABORTED:
-                        errorMessage = 'Завантаження перервано';
+                        errorMessage = i18n.t('audio_error_aborted');
                         errorType = 'aborted';
+                        break;
+                    default:
                         break;
                 }
             }
 
-            setLoadError({ message: errorMessage, type: errorType });
+            setLoadError({message: errorMessage, type: errorType});
         };
 
         const handleStalled = () => {
-            logger.log("Audio: Stalled");
+            logger.log('Audio: Stalled');
             setIsLoading(true);
         };
 
         const handleWaiting = () => {
-            logger.log("Audio: Waiting");
+            logger.log('Audio: Waiting');
             setIsLoading(true);
         };
 
         const handleLoadedData = () => {
-            logger.log("Audio: Loaded data");
+            logger.log('Audio: Loaded data');
             setIsLoading(false);
         };
 
@@ -96,6 +99,5 @@ export function useAudioLoading(audioRef) {
         };
     }, [audioRef]);
 
-    return { isLoading, loadError };
+    return {isLoading, loadError};
 }
-

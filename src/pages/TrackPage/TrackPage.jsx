@@ -1,19 +1,18 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
-import { Clock } from 'lucide-react';
+import {useState, useEffect, useCallback, useMemo, useRef} from 'react';
+import {useParams, Link} from 'react-router-dom';
+import {useQuery} from '@tanstack/react-query';
+import {useTranslation} from 'react-i18next';
+import {Clock} from 'lucide-react';
 
-import { getTrackBySlug } from '../../services/api/index.js';
-import { normalizeTrackData } from '../../constants/fallbacks.js';
-import { useAudioCore } from '../../context/AudioCoreContext.jsx';
-import { createTrackComments, createTrackNotes } from '../../data/mockData.js';
+import {getTrackBySlug, getTrackComments, getTrackNotes} from '../../services/api/index.js';
+import {normalizeTrackData} from '../../constants/fallbacks.js';
+import {useAudioCore} from '../../context/AudioCoreContext.jsx';
 
 import MusicLyrics from '../../components/Shared/MusicLyrics/MusicLyrics.jsx';
-import QueueList    from '../../components/Shared/QueueList/QueueList.jsx';
-import InlineError  from '../../components/Shared/InlineError/InlineError.jsx';
-import CommentsTab  from './tabs/CommentsTab/CommentsTab.jsx';
-import NotesTab     from './tabs/NotesTab/NotesTab.jsx';
+import QueueList from '../../components/Shared/QueueList/QueueList.jsx';
+import InlineError from '../../components/Shared/InlineError/InlineError.jsx';
+import CommentsTab from './tabs/CommentsTab/CommentsTab.jsx';
+import NotesTab from './tabs/NotesTab/NotesTab.jsx';
 
 import styles from './TrackPage.module.css';
 
@@ -24,7 +23,7 @@ import styles from './TrackPage.module.css';
  * @param {Function}  props.onTabChange
  * @param {string}    [props.className]
  */
-function TabNav({ tabs, activeTab, onTabChange, className = '' }) {
+function TabNav({tabs, activeTab, onTabChange, className = ''}) {
     return (
         <nav
             className={`${styles.tabNav} ${className}`}
@@ -51,10 +50,10 @@ function TabNav({ tabs, activeTab, onTabChange, className = '' }) {
 }
 
 function HistoryPanel() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     return (
         <div className={styles.placeholderPanel}>
-            <Clock size={40} className={styles.placeholderIcon} aria-hidden="true" />
+            <Clock size={40} className={styles.placeholderIcon} aria-hidden="true"/>
             <p className={styles.placeholderTitle}>{t('history_placeholder_title')}</p>
             <p className={styles.placeholderSubtitle}>{t('history_placeholder_subtitle')}</p>
         </div>
@@ -62,30 +61,39 @@ function HistoryPanel() {
 }
 
 const PRIMARY_TAB_CONFIG = [
-    { id: 'lyrics',   translationKey: 'tabs_lyrics' },
-    { id: 'comments', translationKey: 'tabs_comments', hasCount: true },
-    { id: 'history',  translationKey: 'tabs_history' },
-    { id: 'notes',    translationKey: 'tabs_notes' },
-    { id: 'queue',    translationKey: 'tabs_queue' },
+    {id: 'lyrics', translationKey: 'tabs_lyrics'},
+    {id: 'comments', translationKey: 'tabs_comments', hasCount: true},
+    {id: 'history', translationKey: 'tabs_history'},
+    {id: 'notes', translationKey: 'tabs_notes'},
+    {id: 'queue', translationKey: 'tabs_queue'},
 ];
 
 export default function TrackPage() {
-    const { trackId } = useParams();
-    const { t } = useTranslation();
-    const { seek, playTrack, currentTrack, audioRef } = useAudioCore();
+    const {trackId} = useParams();
+    const {t} = useTranslation();
+    const {seek, playTrack, currentTrack, audioRef} = useAudioCore();
 
     const [activeTab, setActiveTab] = useState('lyrics');
 
-    const { data: rawTrack, isLoading, isError, error } = useQuery({
+    const {data: rawTrack, isLoading, isError, error} = useQuery({
         queryKey: ['track', trackId],
-        queryFn:  () => getTrackBySlug(trackId),
-        enabled:  !!trackId,
+        queryFn: () => getTrackBySlug(trackId),
+        enabled: !!trackId,
+    });
+
+    const {data: initialComments = []} = useQuery({
+        queryKey: ['track-comments', trackId],
+        queryFn: () => getTrackComments(trackId),
+        enabled: !!trackId,
+    });
+
+    const {data: initialNotes = {recommended: [], friends: [], own: []}} = useQuery({
+        queryKey: ['track-notes', trackId],
+        queryFn: () => getTrackNotes(trackId),
+        enabled: !!trackId,
     });
 
     const track = rawTrack ? normalizeTrackData(rawTrack) : null;
-
-    const initialComments = useMemo(() => createTrackComments(trackId), [trackId]);
-    const initialNotes    = useMemo(() => createTrackNotes(trackId),    [trackId]);
 
     const [currentTime, setCurrentTime] = useState(0);
 
@@ -106,7 +114,7 @@ export default function TrackPage() {
             if (audio && audio.readyState >= 1) {
                 doSeek();
             } else {
-                audio?.addEventListener('loadedmetadata', doSeek, { once: true });
+                audio?.addEventListener('loadedmetadata', doSeek, {once: true});
             }
         } else {
             seek(time);
@@ -114,9 +122,9 @@ export default function TrackPage() {
     }, [seek, playTrack, track, currentTrack, audioRef]);
 
     const primaryTabs = useMemo(() => PRIMARY_TAB_CONFIG.map(tab => ({
-        id:    tab.id,
+        id: tab.id,
         label: t(tab.translationKey),
-        ...(tab.hasCount ? { count: initialComments.length } : {}),
+        ...(tab.hasCount ? {count: initialComments.length} : {}),
     })), [t, initialComments.length]);
 
     if (isLoading) {
@@ -152,13 +160,13 @@ export default function TrackPage() {
                     />
                 );
             case 'comments':
-                return <CommentsTab initialComments={initialComments} />;
+                return <CommentsTab initialComments={initialComments}/>;
             case 'history':
-                return <HistoryPanel />;
+                return <HistoryPanel/>;
             case 'notes':
-                return <NotesTab initialNotes={initialNotes} />;
+                return <NotesTab initialNotes={initialNotes}/>;
             case 'queue':
-                return <QueueList />;
+                return <QueueList/>;
             default:
                 return null;
         }

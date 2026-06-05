@@ -1,16 +1,16 @@
-import {useState, useEffect, useRef, useCallback} from "react";
-import {useTranslation} from "react-i18next";
+import {useState, useEffect, useRef, useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
 import {Search, ChevronLeft, X} from 'lucide-react';
 import SearchSuggestions from './SearchSuggestions.jsx';
 import {logger} from '../../../../utils/logger.js';
-import styles from "./SearchForm.module.css";
+import styles from './SearchForm.module.css';
 import {searchGlobal} from '../../../../services/api/index.js';
+import {useDebounce} from '../../../../hooks/useDebounce.js';
 
 const SEARCH_HISTORY_KEY = 'orrin_search_history';
 const MAX_HISTORY_ITEMS = 5;
 
-
-export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
+export default function SearchForm({initialQuery = '', onSubmit, onBack}) {
     const [query, setQuery] = useState(initialQuery);
     const {t} = useTranslation();
     const [suggestions, setSuggestions] = useState([]);
@@ -18,82 +18,60 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
     const [isSuggestionsVisible, setIsSuggestionsVisible] = useState(false);
     const [searchHistory, setSearchHistory] = useState([]);
     const searchWrapperRef = useRef(null);
-    const searchTimerRef = useRef(null);
 
+    const debouncedQuery = useDebounce(query, 400);
 
     useEffect(() => {
-        const loadSearchHistory = () => {
-            try {
-                const history = localStorage.getItem(SEARCH_HISTORY_KEY);
-                if (history) {
-                    setSearchHistory(JSON.parse(history));
-                }
-            } catch (error) {
-                logger.error('Error loading search history:', error);
-            }
-        };
-        loadSearchHistory();
+        try {
+            const stored = localStorage.getItem(SEARCH_HISTORY_KEY);
+            if (stored) setSearchHistory(JSON.parse(stored));
+        } catch (error) {
+            logger.error('Error loading search history:', error);
+        }
     }, []);
 
-    const addToSearchHistory = (searchTerm) => {
+    const addToSearchHistory = useCallback((searchTerm) => {
         const trimmedTerm = searchTerm.trim();
         if (!trimmedTerm) return;
 
         try {
-            const newHistory = [
-                trimmedTerm,
-                ...searchHistory.filter(item => item.toLowerCase() !== trimmedTerm.toLowerCase())
-            ].slice(0, MAX_HISTORY_ITEMS);
-
-            setSearchHistory(newHistory);
-            localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+            setSearchHistory(prev => {
+                const newHistory = [
+                    trimmedTerm,
+                    ...prev.filter(item => item.toLowerCase() !== trimmedTerm.toLowerCase()),
+                ].slice(0, MAX_HISTORY_ITEMS);
+                localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+                return newHistory;
+            });
         } catch (error) {
             logger.error('Error saving search history:', error);
         }
-    };
+    }, []);
 
-    const removeFromHistory = (termToRemove) => {
+    const removeFromHistory = useCallback((termToRemove) => {
         try {
-            const newHistory = searchHistory.filter(
-                item => item.toLowerCase() !== termToRemove.toLowerCase()
-            );
-            setSearchHistory(newHistory);
-            localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+            setSearchHistory(prev => {
+                const newHistory = prev.filter(
+                    item => item.toLowerCase() !== termToRemove.toLowerCase(),
+                );
+                localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+                return newHistory;
+            });
         } catch (error) {
             logger.error('Error removing from search history:', error);
         }
-    };
+    }, []);
 
-    const isInHistory = (term) => {
+    const isInHistory = useCallback((term) => {
         return searchHistory.some(item => item.toLowerCase() === term.toLowerCase());
-    };
-
-    const useDebounce = (value, delay) => {
-        const [debouncedValue, setDebouncedValue] = useState(value);
-        useEffect(() => {
-            const handler = setTimeout(() => {
-                setDebouncedValue(value);
-            }, delay);
-            return () => {
-                clearTimeout(handler);
-            };
-        }, [value, delay]);
-        return debouncedValue;
-    };
-
-    const debouncedQuery = useDebounce(query, 400);
-
+    }, [searchHistory]);
 
     useEffect(() => {
         const searchTerm = debouncedQuery.trim();
 
         if (!searchTerm) {
             if (searchHistory.length > 0) {
-                setSuggestions(searchHistory.map(item => ({
-                    type: 'history',
-                    text: item,
-                    icon: 'history'
-                })));
+                setSuggestions(searchHistory.map(item => ({type: 'history', text: item, icon: 'history'})));
             } else {
                 setSuggestions([]);
                 if (document.activeElement !== searchWrapperRef.current?.querySelector('input')) {
@@ -109,15 +87,15 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
 
         const fetchSuggestions = async () => {
             try {
-                const { tracks, artists } = await searchGlobal(searchTerm);
+                const {tracks, artists} = await searchGlobal(searchTerm);
 
-                const trackSuggestions = tracks.slice(0, 5).map(t => {
-                    const fullText = `${t.title} - ${t.artist}`;
+                const trackSuggestions = tracks.slice(0, 5).map(tr => {
+                    const fullText = `${tr.title} - ${tr.artist}`;
                     return {
                         type: 'track',
                         text: fullText,
                         icon: isInHistory(fullText) ? 'history' : 'search',
-                        data: t
+                        data: tr
                     };
                 });
 
@@ -125,18 +103,16 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
                     type: 'artist',
                     text: a.name,
                     icon: isInHistory(a.name) ? 'history' : 'search',
-                    data: a
+                    data: a,
                 }));
 
                 const combined = [...trackSuggestions, ...artistSuggestions];
-
-                if (combined.length === 0) {
-                    setSuggestions([{ type: 'info', text: t('sf_no_results'), icon: 'search' }]);
-                } else {
-                    setSuggestions(combined);
-                }
+                setSuggestions(combined.length === 0
+                    ? [{type: 'info', text: t('sf_no_results'), icon: 'search'}]
+                    : combined,
+                );
             } catch (error) {
-                logger.error("Search failed:", error);
+                logger.error('Search failed:', error);
                 setSuggestions([]);
             } finally {
                 setIsLoadingSuggestions(false);
@@ -144,29 +120,21 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
         };
 
         fetchSuggestions();
+    }, [debouncedQuery, searchHistory, isInHistory, t]);
 
-    }, [debouncedQuery, searchHistory]);
-
-
-    const handleSuggestionClick = (suggestion) => {
+    const handleSuggestionClick = useCallback((suggestion) => {
         if (suggestion.type === 'info') return;
-
-        const cleanText = suggestion.text;
-        setQuery(cleanText);
+        setQuery(suggestion.text);
         setSuggestions([]);
         setIsSuggestionsVisible(false);
+        addToSearchHistory(suggestion.text);
+        onSubmit?.(suggestion.text);
+    }, [addToSearchHistory, onSubmit]);
 
-        addToSearchHistory(cleanText);
-
-        if (onSubmit) {
-            onSubmit(cleanText);
-        }
-    };
-
-    const handleRemoveFromHistory = (suggestion, e) => {
+    const handleRemoveFromHistory = useCallback((suggestion, e) => {
         e.stopPropagation();
         removeFromHistory(suggestion.text);
-    };
+    }, [removeFromHistory]);
 
     const handleClickOutside = useCallback((event) => {
         if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
@@ -176,60 +144,44 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [handleClickOutside]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = useCallback((e) => {
         e.preventDefault();
         const trimmedQuery = query.trim();
         setIsSuggestionsVisible(false);
         if (trimmedQuery) {
             addToSearchHistory(trimmedQuery);
-            if (onSubmit) {
-                onSubmit(trimmedQuery);
-            }
+            onSubmit?.(trimmedQuery);
         }
-    };
+    }, [query, addToSearchHistory, onSubmit]);
 
-    const handleKeyPress = (e) => {
+    const handleKeyDown = useCallback((e) => {
         if (e.key === 'Escape') {
             setIsSuggestionsVisible(false);
             e.currentTarget.blur();
         }
-    };
+    }, []);
 
-    const handleInputChange = (e) => {
-        setQuery(e.target.value);
-    };
-
-    const handleFocus = () => {
+    const handleFocus = useCallback(() => {
         if (query.trim() === '' && searchHistory.length > 0) {
-            setSuggestions(searchHistory.map(item => ({
-                type: 'history',
-                text: item,
-                icon: 'history'
-            })));
+            setSuggestions(searchHistory.map(item => ({type: 'history', text: item, icon: 'history'})));
             setIsSuggestionsVisible(true);
         } else if (suggestions.length > 0) {
             setIsSuggestionsVisible(true);
         }
-    };
+    }, [query, searchHistory, suggestions.length]);
 
-    const handleClear = () => {
-        setQuery("");
+    const handleClear = useCallback(() => {
+        setQuery('');
         setSuggestions([]);
         setIsSuggestionsVisible(false);
         if (searchHistory.length > 0) {
-            setSuggestions(searchHistory.map(item => ({
-                type: 'history',
-                text: item,
-                icon: 'history'
-            })));
+            setSuggestions(searchHistory.map(item => ({type: 'history', text: item, icon: 'history'})));
             setIsSuggestionsVisible(true);
         }
-    };
+    }, [searchHistory]);
 
     const containerClasses = `${styles.form} ${isSuggestionsVisible ? styles.suggestionsOpen : ''}`;
 
@@ -263,8 +215,8 @@ export default function SearchForm({initialQuery = "", onSubmit, onBack}) {
                     className={styles.input}
                     placeholder={t('sf_search_placeholder')}
                     value={query}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyPress}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     onFocus={handleFocus}
                     aria-autocomplete="list"
                     aria-controls="search-suggestions-list"

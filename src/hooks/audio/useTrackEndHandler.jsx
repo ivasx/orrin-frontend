@@ -17,23 +17,23 @@ export function useTrackEndHandler(
         if (!audio) return;
 
         const handleTrackEnd = () => {
-            logger.log("Track ended. Repeat mode:", repeatMode, "Has repeated once:", hasRepeatedOnce);
+            logger.log('Track ended. Repeat mode:', repeatMode, 'Has repeated once:', hasRepeatedOnce);
 
             if (repeatMode === 'one') {
                 if (!hasRepeatedOnce) {
                     setHasRepeatedOnce(true);
-                    logger.log("Repeating once. Restarting playback.");
+                    logger.log('Repeating once. Restarting playback.');
                     audio.currentTime = 0;
-                    audio.play().catch(e => logger.error("Repeat play error:", e));
+                    audio.play().catch((e) => logger.error('Repeat play error:', e));
                 } else {
-                    logger.log("Finished repeating once. Playing next.");
+                    logger.log('Finished repeating once. Playing next.');
                     setHasRepeatedOnce(false);
                     nextTrack();
                 }
-            } else if (repeatMode === 'off') {
-                logger.log("Repeat off. Playing next.");
-                nextTrack();
+                return;
             }
+
+            nextTrack();
         };
 
         audio.addEventListener('ended', handleTrackEnd);

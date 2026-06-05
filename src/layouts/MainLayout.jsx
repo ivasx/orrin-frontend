@@ -1,12 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/Layout/Header/Header.jsx';
 import Sidebar from '../components/Layout/Sidebar/Sidebar.jsx';
 import { useAudioCore } from '../context/AudioCoreContext.jsx';
 import { usePlayerUI, MINI_PLAYER_PADDING } from '../context/PlayerUIContext.jsx';
+import { useSidebar } from '../context/SidebarContext.jsx';
 
 export default function MainLayout() {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const { isOpen: sidebarOpen, toggle: toggleSidebar, close: closeSidebar } = useSidebar();
     const { currentTrack } = useAudioCore();
     const { isPlayerCollapsed } = usePlayerUI();
     const isPlayerUiVisible = Boolean(currentTrack) && currentTrack.trackId !== 'song-404';
@@ -29,7 +30,6 @@ export default function MainLayout() {
      */
     const mainWrapperStyle = useMemo(() => {
         if (!isPlayerUiVisible) {
-            // No player at all — remove any bottom padding.
             return { paddingBottom: 0 };
         }
 
@@ -48,11 +48,11 @@ export default function MainLayout() {
 
     return (
         <>
-            <Header onMenuToggle={() => setSidebarOpen(prev => !prev)} />
+            <Header onMenuToggle={toggleSidebar} />
 
             <Sidebar
                 isOpen={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
+                onClose={closeSidebar}
                 isPlayerVisible={isPlayerUiVisible}
             />
 

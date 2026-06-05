@@ -106,6 +106,22 @@ export const getTrackBySlug = async (slug) => {
     return normalizeTrackData(track);
 };
 
+export const getTrackComments = async (trackId) => {
+    await delay(300);
+    const {MOCK_COMMENTS} = await import('../../data/mockData.js');
+    return MOCK_COMMENTS.map(c => ({...c}));
+};
+
+export const getTrackNotes = async (trackId) => {
+    await delay(300);
+    const {NOTES_RECOMMENDED, NOTES_FROM_FRIENDS, NOTES_OWN} = await import('../../data/mockData.js');
+    return {
+        recommended: NOTES_RECOMMENDED.map(n => ({...n})),
+        friends: NOTES_FROM_FRIENDS.map(n => ({...n})),
+        own: NOTES_OWN.map(n => ({...n})),
+    };
+};
+
 export const getUserLibrary = async () => {
     await delay();
     return mockTracks.map(normalizeTrackData).filter(Boolean);
@@ -559,6 +575,11 @@ export const sendMessage = async (chatId, text) => {
     return newMessage;
 };
 
+export const getUnreadMessagesCount = async () => {
+    await delay(200);
+    return mutableChats.reduce((total, chat) => total + (chat.unreadCount || 0), 0);
+};
+
 export const getTerms = async (lang = 'en') => {
     await delay(600);
     return mockTerms[lang] || mockTerms['en'];
@@ -568,5 +589,3 @@ export const getPrivacyPolicy = async (lang = 'en') => {
     await delay(600);
     return mockPrivacy[lang] || mockPrivacy['en'];
 };
-
-export const getUnreadMessagesCount = async () => 0;
