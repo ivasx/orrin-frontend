@@ -51,16 +51,10 @@ export default function ArtistPage() {
         enabled: !!artistSlug,
     });
 
-    const fullArtist = useMemo(() => {
-        if (!rawArtistData) return null;
-        const normalized = normalizeArtistData(rawArtistData);
-        return {
-            ...normalized,
-            popularTracks: rawArtistData.popularTracks || [],
-            notes: rawArtistData.notes || [],
-            similarArtists: rawArtistData.similarArtists || [],
-        };
-    }, [rawArtistData]);
+    const fullArtist = useMemo(
+        () => (rawArtistData ? normalizeArtistData(rawArtistData) : null),
+        [rawArtistData],
+    );
 
     const canManage = isArtistManager(artistSlug);
     const {updateProfileMutation} = useArtistMutations(artistSlug);
@@ -247,7 +241,7 @@ export default function ArtistPage() {
 
                     {activeTab === 'notes' && (
                         <ArtistNotesTab
-                            initialNotes={fullArtist.notes || []}
+                            artistSlug={artistSlug}
                             popularTracks={fullArtist.popularTracks || []}
                         />
                     )}

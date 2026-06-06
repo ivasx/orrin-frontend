@@ -1,24 +1,27 @@
-import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Music, Clock, Users, Lock, Globe } from 'lucide-react';
+import {useState, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {Music, Clock, Users, Lock, Globe, Loader2} from 'lucide-react';
 import NoteCard from '../../../../components/Shared/NoteCard/NoteCard.jsx';
+import {getArtistNotes, createNote, deleteNote, toggleLikeNote} from '../../../../services/api/index.js';
+import {useAuth} from '../../../../context/AuthContext.jsx';
 import styles from './ArtistNotesTab.module.css';
 
-const NoteForm = ({
-                      onSubmit,
-                      onCancel,
-                      popularTracks,
-                      t
-                  }) => {
+function NoteForm({onSubmit, onCancel, popularTracks, t, isSubmitting}) {
     const [text, setText] = useState('');
-    const [type, setType] = useState('private');
-    const [trackId, setTrackId] = useState('');
+    const [noteType, setNoteType] = useState('private');
+    const [trackSlug, setTrackSlug] = useState('');
     const [timecode, setTimecode] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!text.trim()) return;
-        onSubmit({ text, type, trackId, timecode });
+        onSubmit({
+            text: text.trim(),
+            note_type: noteType,
+            track_slug: trackSlug || undefined,
+            timecode: timecode || undefined,
+        });
     };
 
     return (
@@ -30,37 +33,41 @@ const NoteForm = ({
                 onChange={(e) => setText(e.target.value)}
                 rows={4}
                 autoFocus
+                disabled={isSubmitting}
             />
 
             <div className={styles.formFooter}>
                 <div className={styles.options}>
-                    {/* Privacy Selector */}
                     <div className={styles.selectWrapper}>
                         <div className={styles.selectIcon}>
-                            {type === 'private' ? <Lock size={16} /> : <Globe size={16} />}
+                            {noteType === 'private' ? <Lock size={16}/> : <Globe size={16}/>}
                         </div>
                         <select
-                            value={type}
-                            onChange={(e) => setType(e.target.value)}
+                            value={noteType}
+                            onChange={(e) => setNoteType(e.target.value)}
                             className={styles.select}
+                            disabled={isSubmitting}
                         >
                             <option value="private">{t('notes_private')}</option>
                             <option value="public">{t('notes_public')}</option>
                         </select>
                     </div>
 
-                    {/* Track Selector */}
                     {popularTracks.length > 0 && (
                         <div className={styles.selectWrapper}>
-                            <Music size={16} className={styles.selectIcon} />
+                            <Music size={16} className={styles.selectIcon}/>
                             <select
-                                value={trackId}
-                                onChange={(e) => setTrackId(e.target.value)}
+                                value={trackSlug}
+                                onChange={(e) => setTrackSlug(e.target.value)}
                                 className={styles.select}
+                                disabled={isSubmitting}
                             >
                                 <option value="">{t('notes_select_track')}</option>
-                                {popularTracks.map(track => (
-                                    <option key={track.trackId} value={track.trackId}>
+                                {popularTracks.map((track) => (
+                                    <option
+                                        key={track.slug || track.trackId}
+                                        value={track.slug || track.trackId}
+                                    >
                                         {track.title}
                                     </option>
                                 ))}
@@ -68,93 +75,173 @@ const NoteForm = ({
                         </div>
                     )}
 
-                    {/* Timecode Input (shown only if track selected) */}
-                    {trackId && (
+                    {trackSlug && (
                         <div className={styles.selectWrapper}>
-                            <Clock size={16} className={styles.selectIcon} />
+                            <Clock size={16} className={styles.selectIcon}/>
                             <input
                                 type="text"
                                 placeholder="0:00"
                                 value={timecode}
                                 onChange={(e) => setTimecode(e.target.value)}
                                 className={styles.input}
-                                style={{ width: '80px', paddingLeft: '36px' }}
+                                style={{width: '80px', paddingLeft: '36px'}}
+                                disabled={isSubmitting}
                             />
                         </div>
                     )}
                 </div>
 
                 <div className={styles.actions}>
-                    <button type="button" className={styles.cancelButton} onClick={onCancel}>
+                    <button
+                        type="button"
+                        className={styles.cancelButton}
+                        onClick={onCancel}
+                        disabled={isSubmitting}
+                    >
                         {t('cancel', 'Cancel')}
                     </button>
-                    <button type="submit" className={styles.submitButton} disabled={!text.trim()}>
-                        {t('notes_add_button', 'Add Note')}
+                    <button
+                        type="submit"
+                        className={styles.submitButton}
+                        disabled={!text.trim() || isSubmitting}
+                    >
+                        {isSubmitting
+                            ? <Loader2 size={14} className={styles.spinIcon}/>
+                            : t('notes_add_button', 'Add Note')
+                        }
                     </button>
                 </div>
             </div>
         </form>
     );
-};
+}
 
+// ── Main component ────────────────────────────────────────────────────────────
 
-export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }) {
-    const { t } = useTranslation();
-    const [notes, setNotes] = useState(initialNotes);
+/**
+ * @param {string} artistSlug
+ * @param {Array}  popularTracks - already normalised by normalizeTrackData
+ */
+export default function ArtistNotesTab({artistSlug, popularTracks = []}) {
+    const {t} = useTranslation();
+    const {user, isLoggedIn} = useAuth();
+    const queryClient = useQueryClient();
     const [isAddingNote, setIsAddingNote] = useState(false);
 
-    const handleAddNote = (noteData) => {
-        const selectedTrack = popularTracks.find(t => t.trackId === noteData.trackId);
+    const queryKey = ['artistNotes', artistSlug];
 
-        const newNote = {
-            id: `note-new-${Date.now()}`,
-            author: t('notes_you', 'You'),
-            // TODO: Replace with real user avatar from AuthContext
-            avatar: '/orrin-logo.svg',
-            text: noteData.text,
-            type: noteData.type,
-            timestamp: t('notes_just_now'),
-            relatedTrack: selectedTrack ? {
-                id: selectedTrack.trackId,
-                title: selectedTrack.title,
-                timecode: noteData.timecode
-            } : null
-        };
+    const {data: notes = [], isLoading} = useQuery({
+        queryKey,
+        queryFn: () => getArtistNotes(artistSlug),
+        enabled: !!artistSlug,
+    });
 
-        setNotes([newNote, ...notes]);
-        setIsAddingNote(false);
-    };
+    // ── mutations ─────────────────────────────────────────────────────────────
 
-    const myNotes = useMemo(() => notes.filter(n => n.type === 'private' || n.author === t('notes_you', 'You')), [notes, t]);
-    const publicNotes = useMemo(() => notes.filter(n => n.type === 'public' && n.author !== t('notes_you', 'You')), [notes, t]);
+    const createMutation = useMutation({
+        mutationFn: (noteData) => createNote({...noteData, artist_slug: artistSlug}),
+        onSuccess: (newNote) => {
+            queryClient.setQueryData(queryKey, (old = []) => [newNote, ...old]);
+            setIsAddingNote(false);
+        },
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteNote,
+        onSuccess: (_, deletedId) => {
+            queryClient.setQueryData(queryKey, (old = []) =>
+                old.filter((n) => n.id !== deletedId),
+            );
+        },
+    });
+
+    const likeMutation = useMutation({
+        mutationFn: toggleLikeNote,
+        onMutate: async (noteId) => {
+            await queryClient.cancelQueries({queryKey});
+            const previous = queryClient.getQueryData(queryKey);
+            queryClient.setQueryData(queryKey, (old = []) =>
+                old.map((n) =>
+                    n.id === noteId
+                        ? {
+                            ...n,
+                            isLikedByMe: !n.isLikedByMe,
+                            likesCount: n.isLikedByMe
+                                ? Math.max(0, n.likesCount - 1)
+                                : n.likesCount + 1,
+                        }
+                        : n,
+                ),
+            );
+            return {previous};
+        },
+        onError: (_err, _noteId, context) => {
+            if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
+        },
+    });
+
+    // ── derived data ──────────────────────────────────────────────────────────
+
+    const currentUserId = user?.id ?? user?.pk;
+
+    const myNotes = useMemo(
+        () => notes.filter((n) => String(n.author?.id) === String(currentUserId)),
+        [notes, currentUserId],
+    );
+
+    const publicNotes = useMemo(
+        () => notes.filter(
+            (n) => n.type === 'public' && String(n.author?.id) !== String(currentUserId),
+        ),
+        [notes, currentUserId],
+    );
+
+    // ── render ────────────────────────────────────────────────────────────────
+
+    if (isLoading) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.loadingRow}>
+                    <Loader2 size={20} className={styles.spinIcon}/>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.container}>
-            {!isAddingNote ? (
-                <button
-                    className={styles.toggleButton}
-                    onClick={() => setIsAddingNote(true)}
-                >
+            {isLoggedIn && !isAddingNote && (
+                <button className={styles.toggleButton} onClick={() => setIsAddingNote(true)}>
                     + {t('notes_add_button')}
                 </button>
-            ) : (
+            )}
+
+            {isAddingNote && (
                 <NoteForm
-                    onSubmit={handleAddNote}
+                    onSubmit={(data) => createMutation.mutate(data)}
                     onCancel={() => setIsAddingNote(false)}
                     popularTracks={popularTracks}
                     t={t}
+                    isSubmitting={createMutation.isPending}
                 />
             )}
 
-            <div className={styles.divider} />
+            <div className={styles.divider}/>
 
             {myNotes.length > 0 && (
                 <div className={styles.section}>
                     <h3 className={styles.sectionTitle}>
-                        <Lock size={18} /> {t('notes_my_notes')}
+                        <Lock size={18}/> {t('notes_my_notes')}
                     </h3>
                     <div className={styles.list}>
-                        {myNotes.map(note => <NoteCard key={note.id} note={note} />)}
+                        {myNotes.map((note) => (
+                            <NoteCard
+                                key={note.id}
+                                note={note}
+                                onDelete={() => deleteMutation.mutate(note.id)}
+                                onLike={() => likeMutation.mutate(note.id)}
+                            />
+                        ))}
                     </div>
                 </div>
             )}
@@ -162,18 +249,22 @@ export default function ArtistNotesTab({ initialNotes = [], popularTracks = [] }
             {publicNotes.length > 0 && (
                 <div className={styles.section}>
                     <h3 className={styles.sectionTitle}>
-                        <Users size={18} /> {t('notes_public_notes')}
+                        <Users size={18}/> {t('notes_public_notes')}
                     </h3>
                     <div className={styles.list}>
-                        {publicNotes.map(note => <NoteCard key={note.id} note={note} />)}
+                        {publicNotes.map((note) => (
+                            <NoteCard
+                                key={note.id}
+                                note={note}
+                                onLike={isLoggedIn ? () => likeMutation.mutate(note.id) : undefined}
+                            />
+                        ))}
                     </div>
                 </div>
             )}
 
             {myNotes.length === 0 && publicNotes.length === 0 && !isAddingNote && (
-                <p className={styles.emptyMessage}>
-                    {t('notes_empty')}
-                </p>
+                <p className={styles.emptyMessage}>{t('notes_empty')}</p>
             )}
         </div>
     );

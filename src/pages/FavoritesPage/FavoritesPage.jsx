@@ -7,6 +7,7 @@ import {
     getTopAlbums,
     getTopArtists,
 } from '../../services/api/index.js';
+import { normalizeArtistData } from '../../constants/fallbacks.js';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection.jsx';
@@ -75,13 +76,7 @@ export default function FavoritesPage() {
     const albums  = albumsQuery.data  || [];
     const artists = artistsQuery.data || [];
 
-    const normalizedArtists = artists.map((a) => ({
-        id:       a.id || a.slug,
-        name:     a.name,
-        imageUrl: a.imageUrl || a.image || a.image_url,
-        genre:    a.genre,
-        role:     a.role || a.genre,
-    }));
+    const normalizedArtists = artists.map(normalizeArtistData).filter(Boolean);
 
     return (
         <div className={styles.dashboard}>
