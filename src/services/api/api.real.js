@@ -160,13 +160,9 @@ export const getTrackComments = async (trackId) => {
     return Array.isArray(data) ? data : (data.results || []);
 };
 
-export const getTrackNotes = async (trackId) => {
-    const data = await fetchJson(`/api/v1/tracks/${trackId}/notes/`);
-    return {
-        recommended: Array.isArray(data.recommended) ? data.recommended : [],
-        friends: Array.isArray(data.friends) ? data.friends : [],
-        own: Array.isArray(data.own) ? data.own : [],
-    };
+export const getTrackNotes = async (trackSlug) => {
+    const data = await fetchJson(`/api/v1/tracks/${trackSlug}/notes/`);
+    return Array.isArray(data) ? data : (data.results || []);
 };
 
 export const getUserLibrary = async () => {
@@ -433,10 +429,40 @@ export const getUnreadMessagesCount = async () => {
     }
 };
 
-export const getTerms = async (_lang) => {
-    return Promise.reject(new Error('Not implemented yet'));
+export const getTerms = async (lang = 'en') => {
+    return fetchJson(`/api/v1/legal/terms/?lang=${lang}`);
 };
 
-export const getPrivacyPolicy = async (_lang) => {
-    return Promise.reject(new Error('Not implemented yet'));
+export const getPrivacyPolicy = async (lang = 'en') => {
+    return fetchJson(`/api/v1/legal/privacy/?lang=${lang}`);
+};
+
+
+
+export const getArtistNotes = async (artistSlug) => {
+    const data = await fetchJson(`/api/v1/artists/${artistSlug}/notes/`);
+    return Array.isArray(data) ? data : (data.results || []);
+};
+
+export const createNote = async (noteData) => {
+    return fetchJson('/api/v1/notes/', {
+        method: 'POST',
+        body: JSON.stringify(noteData),
+    });
+};
+
+export const updateNote = async (noteId, noteData) => {
+    return fetchJson(`/api/v1/notes/${noteId}/`, {
+        method: 'PATCH',
+        body: JSON.stringify(noteData),
+    });
+};
+
+export const deleteNote = async (noteId) => {
+    await fetchJson(`/api/v1/notes/${noteId}/`, { method: 'DELETE' });
+    return { success: true };
+};
+
+export const toggleLikeNote = async (noteId) => {
+    return fetchJson(`/api/v1/notes/${noteId}/like/`, { method: 'POST' });
 };
