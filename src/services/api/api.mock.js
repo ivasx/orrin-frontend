@@ -109,31 +109,74 @@ export const getTrackBySlug = async (slug) => {
 export const getTrackComments = async (trackId) => {
     await delay(300);
     const {MOCK_COMMENTS} = await import('../../data/mockData.js');
-    return MOCK_COMMENTS.map(c => ({...c}));
+    return MOCK_COMMENTS.map((c) => ({...c}));
 };
 
 export const getTrackNotes = async (trackId) => {
     await delay(300);
     const {NOTES_RECOMMENDED, NOTES_FROM_FRIENDS, NOTES_OWN} = await import('../../data/mockData.js');
     return {
-        recommended: NOTES_RECOMMENDED.map(n => ({...n})),
-        friends: NOTES_FROM_FRIENDS.map(n => ({...n})),
-        own: NOTES_OWN.map(n => ({...n})),
+        recommended: NOTES_RECOMMENDED.map((n) => ({...n})),
+        friends: NOTES_FROM_FRIENDS.map((n) => ({...n})),
+        own: NOTES_OWN.map((n) => ({...n})),
     };
+};
+
+export const getArtistNotes = async (slugOrId) => {
+    await delay(300);
+    return mockArtistNotes ? [...mockArtistNotes] : [];
+};
+
+export const createNote = async (slug, entityType, payload) => {
+    await delay(400);
+    return {
+        id: 'note-new-' + Date.now(),
+        author: {
+            id: mockUsers[3].id,
+            username: mockUsers[3].username,
+            name: mockUsers[3].name,
+            avatar: mockUsers[3].avatar,
+        },
+        text: payload.text || '',
+        type: payload.note_type || 'public',
+        timecode: payload.timecode || null,
+        timestamp: new Date().toISOString(),
+        likesCount: 0,
+        isLikedByMe: false,
+        lyricsLineReference: null,
+    };
+};
+
+export const updateNote = async (noteId, payload) => {
+    await delay(300);
+    return {id: noteId, ...payload};
+};
+
+export const deleteNote = async (noteId) => {
+    await delay(300);
+    return {success: true};
+};
+
+export const toggleLikeNote = async (noteId) => {
+    await delay(200);
+    return {isLiked: true};
 };
 
 export const getUserLibrary = async () => {
     await delay();
     return mockTracks.map(normalizeTrackData).filter(Boolean);
 };
+
 export const getUserFavorites = async () => {
     await delay();
     return mockTracks.filter((t) => t.is_liked).map(normalizeTrackData).filter(Boolean);
 };
+
 export const getUserHistory = async () => {
     await delay();
     return [...mockTracks].reverse().map(normalizeTrackData).filter(Boolean);
 };
+
 export const getFriendsActivity = async () => {
     await delay();
     return mockTracks.slice(0, 6).map(normalizeTrackData).filter(Boolean);
@@ -163,9 +206,7 @@ export const clearListeningHistory = async () => {
 export const removeTrackFromHistory = async (historyEntryId) => {
     await delay(300);
     const index = mutableHistory.findIndex((e) => e.historyEntryId === historyEntryId);
-    if (index !== -1) {
-        mutableHistory.splice(index, 1);
-    }
+    if (index !== -1) mutableHistory.splice(index, 1);
     return {success: true};
 };
 
@@ -189,9 +230,7 @@ export const getPlaylistById = async (id) => {
 export const deletePlaylist = async (id) => {
     await delay(500);
     const index = mockPlaylists.findIndex((p) => p.id === id);
-    if (index !== -1) {
-        mockPlaylists.splice(index, 1);
-    }
+    if (index !== -1) mockPlaylists.splice(index, 1);
     return {success: true};
 };
 
@@ -207,19 +246,19 @@ export const getFollowingArtists = async () => {
 
 export const createPlaylist = async (formData) => {
     await delay(700);
-    const getName = (key) => formData instanceof FormData ? formData.get(key) : formData[key];
+    const get = (key) => (formData instanceof FormData ? formData.get(key) : formData[key]);
     const imageFile = formData instanceof FormData ? formData.get('image') : null;
 
     const newPlaylist = {
         id: 'pl-new-' + Date.now(),
-        name: getName('name') || 'New Playlist',
-        description: getName('description') || '',
+        title: get('title') || get('name') || 'New Playlist',
+        description: get('description') || '',
         cover: imageFile instanceof File ? URL.createObjectURL(imageFile) : null,
         trackCount: 0,
         trackIds: [],
         owner: {id: mockUsers[3].id, username: mockUsers[3].username, name: mockUsers[3].name},
-        isPublic: true,
-        createdAt: new Date().toISOString(),
+        visibility: 'public',
+        created_at: new Date().toISOString(),
         totalDuration: 0,
     };
 
@@ -234,9 +273,7 @@ export const getArtists = async () => {
 
 export const getArtistById = async (slugOrId) => {
     await delay();
-    const artist = mockArtists.find(
-        (a) => a.id === slugOrId || a.slug === slugOrId,
-    );
+    const artist = mockArtists.find((a) => a.id === slugOrId || a.slug === slugOrId);
     if (!artist) throw new Error(`Artist not found: ${slugOrId}`);
 
     const normalized = normalizeArtistData(artist);
@@ -265,21 +302,17 @@ export const getArtistById = async (slugOrId) => {
 export const updateArtistProfile = async (slugOrId, formData) => {
     await delay(700);
 
-    const artist = mockArtists.find(
-        (a) => a.id === slugOrId || a.slug === slugOrId,
-    );
+    const artist = mockArtists.find((a) => a.id === slugOrId || a.slug === slugOrId);
     if (!artist) throw new Error(`Artist not found: ${slugOrId}`);
 
-    const getName = (key) =>
-        formData instanceof FormData ? formData.get(key) : formData[key];
-
-    const patch = {
-        name: getName('name') || artist.name,
-        description: getName('description') || artist.description,
-    };
-
+    const get = (key) => (formData instanceof FormData ? formData.get(key) : formData[key]);
     const imageFile = formData instanceof FormData ? formData.get('image') : null;
     const bannerFile = formData instanceof FormData ? formData.get('banner') : null;
+
+    const patch = {
+        name: get('name') || artist.name,
+        description: get('description') || artist.description,
+    };
 
     if (imageFile instanceof File) {
         patch.image = URL.createObjectURL(imageFile);
@@ -295,14 +328,9 @@ export const updateArtistProfile = async (slugOrId, formData) => {
 
 export const getArtistPosts = async (slugOrId) => {
     await delay(400);
-
-    const artist = mockArtists.find(
-        (a) => a.id === slugOrId || a.slug === slugOrId,
-    );
+    const artist = mockArtists.find((a) => a.id === slugOrId || a.slug === slugOrId);
     if (!artist) return [];
-
-    const posts = mockArtistPosts[artist.slug] || [];
-    return posts;
+    return mockArtistPosts[artist.slug] || [];
 };
 
 export const getFeedPosts = async ({type, sort, contentType, pageParam = 1} = {}) => {
@@ -321,6 +349,7 @@ export const getFeedPosts = async ({type, sort, contentType, pageParam = 1} = {}
 
     return {
         results: pagePosts,
+        count: posts.length,
         next: start + pageSize < posts.length
             ? `http://mock.api/feed?page=${pageParam + 1}`
             : null,
@@ -357,14 +386,17 @@ export const toggleLikePost = async (postId) => {
     await delay(200);
     return {success: true, postId};
 };
+
 export const repostPost = async (postId) => {
     await delay(200);
     return {success: true, postId};
 };
+
 export const toggleSavePost = async (postId) => {
     await delay(200);
     return {success: true, postId};
 };
+
 export const reportPost = async (postId) => {
     await delay(200);
     return {success: true};
@@ -387,15 +419,14 @@ export const searchGlobal = async (query) => {
     if (!q) return {tracks: [], artists: [], users: []};
 
     const tracks = mockTracks
-        .filter((t) =>
-            t.title.toLowerCase().includes(q) ||
-            t.artist?.name?.toLowerCase().includes(q),
-        )
-        .map(normalizeTrackData).filter(Boolean);
+        .filter((t) => t.title.toLowerCase().includes(q) || t.artist?.name?.toLowerCase().includes(q))
+        .map(normalizeTrackData)
+        .filter(Boolean);
 
     const artists = mockArtists
         .filter((a) => a.name.toLowerCase().includes(q))
-        .map(normalizeArtistData).filter(Boolean);
+        .map(normalizeArtistData)
+        .filter(Boolean);
 
     const users = Object.values(mockUserProfiles)
         .filter((u) =>
@@ -404,7 +435,8 @@ export const searchGlobal = async (query) => {
             u.first_name?.toLowerCase().includes(q) ||
             u.last_name?.toLowerCase().includes(q),
         )
-        .map(normalizeUserData).filter(Boolean);
+        .map(normalizeUserData)
+        .filter(Boolean);
 
     return {tracks, artists, users};
 };
@@ -429,10 +461,9 @@ export const updateUserProfile = async (username, payload) => {
 
     if (!profile) throw new Error(`User not found: ${username}`);
 
-    const get = (key) =>
-        payload instanceof FormData ? payload.get(key) : payload[key];
-
+    const get = (key) => (payload instanceof FormData ? payload.get(key) : payload[key]);
     const patch = {};
+
     ['first_name', 'last_name', 'bio', 'location', 'website'].forEach((field) => {
         const val = get(field);
         if (val !== null && val !== undefined) patch[field] = val;
@@ -488,11 +519,14 @@ export const requestPasswordReset = async (email) => {
     await delay(600);
     return {success: true};
 };
+
 export const confirmPasswordReset = async (uid, token, newPassword) => {
     await delay(600);
     return {success: true};
 };
-export const getSocialLoginUrl = (provider) => `#mock-social-login-${provider.toLowerCase()}`;
+
+export const getSocialLoginUrl = (provider) =>
+    `#mock-social-login-${provider.toLowerCase()}`;
 
 export const getTopTracks = async () => {
     await delay(400);
@@ -526,9 +560,7 @@ export const getChatMessages = async (chatId) => {
         .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
     mutableMessages = mutableMessages.map((m) =>
-        m.chatId === chatId && m.senderId !== 'user-4'
-            ? {...m, isRead: true}
-            : m,
+        m.chatId === chatId && m.senderId !== 'user-4' ? {...m, isRead: true} : m,
     );
 
     mutableChats = mutableChats.map((c) =>
@@ -538,7 +570,7 @@ export const getChatMessages = async (chatId) => {
     return messages;
 };
 
-export const sendMessage = async (chatId, text) => {
+export const sendMessage = async (chatId, text, trackId = null) => {
     await delay(250);
 
     const chat = mutableChats.find((c) => c.id === chatId);
@@ -550,6 +582,7 @@ export const sendMessage = async (chatId, text) => {
         chatId,
         senderId: 'user-4',
         text: text.trim(),
+        trackId: trackId || null,
         timestamp: now,
         isRead: false,
     };

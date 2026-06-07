@@ -155,15 +155,41 @@ export const getTrackBySlug = async (slug) => {
     return normalizeTrackData(data);
 };
 
-export const getTrackComments = async (trackId) => {
-    const data = await fetchJson(`/api/v1/tracks/${trackId}/comments/`);
+export const getTrackComments = async (trackSlug) => {
+    const data = await fetchJson(`/api/v1/tracks/${trackSlug}/comments/`);
     return Array.isArray(data) ? data : (data.results || []);
 };
 
 export const getTrackNotes = async (trackSlug) => {
     const data = await fetchJson(`/api/v1/tracks/${trackSlug}/notes/`);
+    const notes = Array.isArray(data) ? data : (data.results || []);
+    const pub = notes.filter((n) => n.type === 'public');
+    const own = notes.filter((n) => n.type === 'private');
+    return {recommended: pub, friends: [], own};
+};
+
+export const getArtistNotes = async (artistSlug) => {
+    const data = await fetchJson(`/api/v1/artists/${artistSlug}/notes/`);
     return Array.isArray(data) ? data : (data.results || []);
 };
+
+export const createNote = async (slug, entityType, payload) => {
+    const endpoint = entityType === 'artist'
+        ? `/api/v1/artists/${slug}/notes/`
+        : `/api/v1/tracks/${slug}/notes/`;
+    return fetchJson(endpoint, {method: 'POST', body: JSON.stringify(payload)});
+};
+
+export const updateNote = async (noteId, payload) =>
+    fetchJson(`/api/v1/notes/${noteId}/`, {method: 'PATCH', body: JSON.stringify(payload)});
+
+export const deleteNote = async (noteId) => {
+    await fetchJson(`/api/v1/notes/${noteId}/`, {method: 'DELETE'});
+    return {success: true};
+};
+
+export const toggleLikeNote = async (noteId) =>
+    fetchJson(`/api/v1/notes/${noteId}/like/`, {method: 'POST'});
 
 export const getUserLibrary = async () => {
     const data = await fetchJson('/api/v1/library/');
@@ -177,8 +203,8 @@ export const getUserFavorites = async () => {
 
 export const getUserHistory = async () => {
     const data = await fetchJson('/api/v1/history/');
-    const tracks = Array.isArray(data) ? data : (data.results || []);
-    return tracks.map(normalizeTrackData).filter(Boolean);
+    const entries = Array.isArray(data) ? data : (data.results || []);
+    return entries.map((e) => normalizeTrackData(e.track || e)).filter(Boolean);
 };
 
 export const getListeningHistory = async () => {
@@ -186,12 +212,12 @@ export const getListeningHistory = async () => {
     const entries = Array.isArray(data) ? data : (data.results || []);
     return entries
         .map((entry) => {
-            const normalized = normalizeTrackData(entry);
+            const normalized = normalizeTrackData(entry.track || entry);
             if (!normalized) return null;
             return {
                 ...normalized,
-                historyEntryId: entry.historyEntryId || entry.history_entry_id || entry.id,
-                playedAt: entry.playedAt || entry.played_at || null,
+                historyEntryId: entry.id,
+                playedAt: entry.played_at || null,
             };
         })
         .filter(Boolean);
@@ -217,9 +243,8 @@ export const getUserPlaylists = async () => {
     return Array.isArray(data) ? data : (data.results || []);
 };
 
-export const getPlaylistById = async (id) => {
-    return fetchJson(`/api/v1/library/playlists/${id}/`);
-};
+export const getPlaylistById = async (id) =>
+    fetchJson(`/api/v1/library/playlists/${id}/`);
 
 export const deletePlaylist = async (id) => {
     await fetchJson(`/api/v1/library/playlists/${id}/`, {method: 'DELETE'});
@@ -237,15 +262,15 @@ export const getFollowingArtists = async () => {
 };
 
 export const createPlaylist = async (formData) => {
-    return fetchJson('/api/v1/library/playlists/', {
-        method: 'POST',
-        body: formData,
-    });
+    if (formData instanceof FormData && formData.has('name') && !formData.has('title')) {
+        formData.append('title', formData.get('name'));
+    }
+    return fetchJson('/api/v1/library/playlists/', {method: 'POST', body: formData});
 };
 
 export const getArtists = async () => {
     const data = await fetchJson('/api/v1/artists/');
-    return Array.isArray(data) ? data.map(normalizeArtistData) : [];
+    return Array.isArray(data) ? data.map(normalizeArtistData).filter(Boolean) : [];
 };
 
 export const getArtistById = async (slugOrId) => {
@@ -274,9 +299,13 @@ export const getFeedPosts = async ({type, sort, contentType, pageParam = 1} = {}
     if (contentType) params.append('content_type', contentType);
     if (pageParam) params.append('page', pageParam);
     const qs = params.toString();
-    const data = await fetchJson(`/api/v1/feed/${qs ? `?${qs}` : ''}`);
-    const posts = Array.isArray(data) ? data : (data.results || []);
-    return posts.map(normalizePostData);
+    const raw = await fetchJson(`/api/v1/feed/${qs ? `?${qs}` : ''}`);
+    const results = Array.isArray(raw) ? raw : (raw.results || []);
+    return {
+        results: results.map(normalizePostData).filter(Boolean),
+        next: Array.isArray(raw) ? null : (raw.next || null),
+        count: Array.isArray(raw) ? results.length : (raw.count || 0),
+    };
 };
 
 export const createPost = async (postData) => {
@@ -327,9 +356,9 @@ export const searchGlobal = async (query) => {
         fetchJson(`/api/v1/users/search/?search=${encodeURIComponent(query)}`),
     ]);
     return {
-        tracks: (Array.isArray(tracks) ? tracks : tracks.results || []).map(normalizeTrackData),
-        artists: (Array.isArray(artists) ? artists : artists.results || []).map(normalizeArtistData),
-        users: (Array.isArray(users) ? users : users.results || []).map(normalizeUserData),
+        tracks: (Array.isArray(tracks) ? tracks : tracks.results || []).map(normalizeTrackData).filter(Boolean),
+        artists: (Array.isArray(artists) ? artists : artists.results || []).map(normalizeArtistData).filter(Boolean),
+        users: (Array.isArray(users) ? users : users.results || []).map(normalizeUserData).filter(Boolean),
     };
 };
 
@@ -338,7 +367,7 @@ export const getUserProfile = async (username) => {
     return normalizeUserData(data);
 };
 
-export const updateUserProfile = async (username, payload) => {
+export const updateUserProfile = async (_username, payload) => {
     const isFormData = payload instanceof FormData;
     const data = await fetchJson('/api/v1/users/me/', {
         method: 'PATCH',
@@ -352,12 +381,12 @@ export const toggleFollowUser = async (username) =>
 
 export const getUserPosts = async (username) => {
     const data = await fetchJson(`/api/v1/users/${username}/posts/`);
-    return Array.isArray(data) ? data.map(normalizePostData) : [];
+    return Array.isArray(data) ? data.map(normalizePostData).filter(Boolean) : [];
 };
 
 export const getUserFollowers = async (username) => {
     const data = await fetchJson(`/api/v1/users/${username}/followers/`);
-    return Array.isArray(data) ? data.map(normalizeUserData) : [];
+    return Array.isArray(data) ? data.map(normalizeUserData).filter(Boolean) : [];
 };
 
 export const getNotifications = async () => {
@@ -429,40 +458,8 @@ export const getUnreadMessagesCount = async () => {
     }
 };
 
-export const getTerms = async (lang = 'en') => {
-    return fetchJson(`/api/v1/legal/terms/?lang=${lang}`);
-};
+export const getTerms = async (lang = 'en') =>
+    fetchJson(`/api/v1/legal/terms/?lang=${lang}`);
 
-export const getPrivacyPolicy = async (lang = 'en') => {
-    return fetchJson(`/api/v1/legal/privacy/?lang=${lang}`);
-};
-
-
-
-export const getArtistNotes = async (artistSlug) => {
-    const data = await fetchJson(`/api/v1/artists/${artistSlug}/notes/`);
-    return Array.isArray(data) ? data : (data.results || []);
-};
-
-export const createNote = async (noteData) => {
-    return fetchJson('/api/v1/notes/', {
-        method: 'POST',
-        body: JSON.stringify(noteData),
-    });
-};
-
-export const updateNote = async (noteId, noteData) => {
-    return fetchJson(`/api/v1/notes/${noteId}/`, {
-        method: 'PATCH',
-        body: JSON.stringify(noteData),
-    });
-};
-
-export const deleteNote = async (noteId) => {
-    await fetchJson(`/api/v1/notes/${noteId}/`, { method: 'DELETE' });
-    return { success: true };
-};
-
-export const toggleLikeNote = async (noteId) => {
-    return fetchJson(`/api/v1/notes/${noteId}/like/`, { method: 'POST' });
-};
+export const getPrivacyPolicy = async (lang = 'en') =>
+    fetchJson(`/api/v1/legal/privacy/?lang=${lang}`);
