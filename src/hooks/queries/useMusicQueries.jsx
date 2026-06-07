@@ -1,38 +1,56 @@
-import {useEffect} from 'react';
-import {logger} from '../../utils/logger';
+import {useQuery, useInfiniteQuery} from '@tanstack/react-query';
+import {
+    getTracks,
+    getArtists,
+    getFriendsActivity,
+    getFeedPosts,
+} from '../../services/api/index.js';
 
-export function useTrackEndHandler(
-    audioRef,
-    repeatMode,
-    hasRepeatedOnce,
-    setHasRepeatedOnce,
-    nextTrack
-) {
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
+export const useTracksQuery = () => {
+    return useQuery({
+        queryKey: ['tracks'],
+        queryFn: getTracks,
+    });
+};
 
-        const handleTrackEnd = () => {
-            logger.log('Track ended. Repeat mode:', repeatMode, 'Has repeated once:', hasRepeatedOnce);
+export const useArtistsQuery = () => {
+    return useQuery({
+        queryKey: ['artists'],
+        queryFn: getArtists,
+    });
+};
 
-            if (repeatMode === 'one') {
-                if (!hasRepeatedOnce) {
-                    setHasRepeatedOnce(true);
-                    logger.log('Repeating once. Restarting playback.');
-                    audio.currentTime = 0;
-                    audio.play().catch((e) => logger.error('Repeat play error:', e));
-                } else {
-                    logger.log('Finished repeating once. Playing next.');
-                    setHasRepeatedOnce(false);
-                    nextTrack();
-                }
-                return;
+export const useFriendsActivityQuery = (isLoggedIn) => {
+    return useQuery({
+        queryKey: ['friendsActivity'],
+        queryFn: getFriendsActivity,
+        enabled: !!isLoggedIn,
+    });
+};
+
+export const useInfiniteFeedQuery = (activeTab, filters) => {
+    return useInfiniteQuery({
+        queryKey: ['feed', activeTab, filters],
+        queryFn: async ({pageParam = 1}) => {
+            const response = await getFeedPosts({
+                type: activeTab,
+                sort: filters?.sort,
+                contentType: filters?.contentType,
+                pageParam,
+            });
+
+            if (Array.isArray(response)) return response;
+            if (response && Array.isArray(response.results)) return response.results;
+            return [];
+        },
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages, lastPageParam) => {
+            const PAGE_SIZE = 4;
+            if (lastPage && lastPage.length >= PAGE_SIZE) {
+                return lastPageParam + 1;
             }
-
-            nextTrack();
-        };
-
-        audio.addEventListener('ended', handleTrackEnd);
-        return () => audio.removeEventListener('ended', handleTrackEnd);
-    }, [repeatMode, hasRepeatedOnce, nextTrack, setHasRepeatedOnce, audioRef]);
-}
+            return undefined;
+        },
+        staleTime: 60000,
+    });
+};
