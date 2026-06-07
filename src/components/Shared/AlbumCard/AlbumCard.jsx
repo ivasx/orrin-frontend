@@ -1,19 +1,20 @@
-import { memo } from 'react';
-import { Link } from 'react-router-dom';
-import { Play } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {memo} from 'react';
+import {Link} from 'react-router-dom';
+import {Play} from 'lucide-react';
+import {useTranslation} from 'react-i18next';
 import styles from './AlbumCard.module.css';
 
-function AlbumCard({ id, title, artist, cover, year, to }) {
-    const { t } = useTranslation();
+function AlbumCard({id, title, artist, cover, cover_url, coverUrl, year, to}) {
+    const {t} = useTranslation();
     const artistSlug = artist?.slug || artist?.id;
     const artistName = artist?.name || '';
+    const coverSrc = cover ?? cover_url ?? coverUrl ?? null;
 
     const inner = (
         <>
             <div className={styles.coverWrapper}>
                 <img
-                    src={cover}
+                    src={coverSrc}
                     alt={title}
                     className={styles.cover}
                     loading="lazy"
@@ -25,7 +26,7 @@ function AlbumCard({ id, title, artist, cover, year, to }) {
                         tabIndex={0}
                         onClick={(e) => e.preventDefault()}
                     >
-                        <Play size={22} fill="currentColor" />
+                        <Play size={22} fill="currentColor"/>
                     </button>
                 </div>
             </div>

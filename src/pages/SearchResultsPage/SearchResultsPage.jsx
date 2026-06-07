@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {useSearchParams, useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {searchGlobal} from '../../services/api/index.js';
+import {normalizeArtistData} from '../../constants/fallbacks.js';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection';
 import UserSearchResults from '../../components/Shared/UserSearchResults/UserSearchResults';
@@ -42,7 +43,7 @@ export default function SearchResultsPage() {
             .then(({tracks, artists, users = []}) => {
                 if (cancelled) return;
                 setFoundTracks(tracks);
-                setFoundArtists(artists);
+                setFoundArtists(artists.map(normalizeArtistData).filter(Boolean));
                 setFoundUsers(users);
             })
             .catch(() => {

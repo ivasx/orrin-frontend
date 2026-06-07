@@ -1,15 +1,16 @@
 import {useNavigate} from 'react-router-dom';
-import {useTranslation} from "react-i18next";
+import {useTranslation} from 'react-i18next';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection.jsx';
-import MusicSectionWrapper from "../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx";
+import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import InfoSection from '../../components/Shared/InfoSection/InfoSection.jsx';
 import Spinner from '../../components/UI/Spinner/Spinner.jsx';
 import {useAuth} from '../../context/AuthContext';
+import {normalizeArtistData} from '../../constants/fallbacks.js';
 import {
     useTracksQuery,
     useArtistsQuery,
-    useFriendsActivityQuery
+    useFriendsActivityQuery,
 } from '../../hooks/queries/useMusicQueries';
 import styles from './HomePage.module.css';
 
@@ -36,13 +37,15 @@ export default function HomePage() {
     } = useTracksQuery();
 
     const {
-        data: artists = [],
+        data: rawArtists = [],
         isLoading: isLoadingArtists,
         isFetching: isFetchingArtists,
         isError: isArtistsError,
         error: artistsError,
         refetch: refetchArtists,
     } = useArtistsQuery();
+
+    const artists = rawArtists.map(normalizeArtistData).filter(Boolean);
 
     const {
         data: friendsActivity = [],
@@ -54,9 +57,7 @@ export default function HomePage() {
     const handleNavigateToList = (path) => navigate(path);
 
     const renderTracksSection = () => {
-        if (isLoadingTracks) {
-            return <InfoSection title={t('listen_now')} isLoading/>;
-        }
+        if (isLoadingTracks) return <InfoSection title={t('listen_now')} isLoading/>;
         if (isTracksError) {
             return (
                 <InfoSection
@@ -66,9 +67,7 @@ export default function HomePage() {
                 />
             );
         }
-        if (!tracks.length) {
-            return <InfoSection title={t('listen_now')} message={t('no_tracks_available')}/>;
-        }
+        if (!tracks.length) return <InfoSection title={t('listen_now')} message={t('no_tracks_available')}/>;
         return (
             <div className={styles.sectionHeaderWrapper}>
                 <TrackSection
@@ -82,9 +81,7 @@ export default function HomePage() {
     };
 
     const renderArtistsSection = () => {
-        if (isLoadingArtists) {
-            return <InfoSection title={t('popular_artists')} isLoading/>;
-        }
+        if (isLoadingArtists) return <InfoSection title={t('popular_artists')} isLoading/>;
         if (isArtistsError) {
             return (
                 <InfoSection
@@ -94,9 +91,7 @@ export default function HomePage() {
                 />
             );
         }
-        if (!artists.length) {
-            return <InfoSection title={t('popular_artists')} message={t('no_artists_available')}/>;
-        }
+        if (!artists.length) return <InfoSection title={t('popular_artists')} message={t('no_artists_available')}/>;
         return (
             <div className={styles.sectionHeaderWrapper}>
                 <ArtistSection
@@ -119,15 +114,9 @@ export default function HomePage() {
                 />
             );
         }
-        if (isLoadingFriends) {
-            return <InfoSection title={t('from_friends')} isLoading/>;
-        }
-        if (isFriendsError) {
-            return <InfoSection title={t('from_friends')} message={t('error_loading_friends')}/>;
-        }
-        if (!friendsActivity.length) {
-            return <InfoSection title={t('from_friends')} message={t('empty_state_message')}/>;
-        }
+        if (isLoadingFriends) return <InfoSection title={t('from_friends')} isLoading/>;
+        if (isFriendsError) return <InfoSection title={t('from_friends')} message={t('error_loading_friends')}/>;
+        if (!friendsActivity.length) return <InfoSection title={t('from_friends')} message={t('empty_state_message')}/>;
         return (
             <TrackSection
                 title={t('from_friends')}

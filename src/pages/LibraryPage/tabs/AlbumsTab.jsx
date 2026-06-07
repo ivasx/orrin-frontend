@@ -1,14 +1,14 @@
-import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
-import { Disc3 } from 'lucide-react';
+import {useTranslation} from 'react-i18next';
+import {useQuery} from '@tanstack/react-query';
+import {Disc3} from 'lucide-react';
 import Spinner from '../../../components/UI/Spinner/Spinner.jsx';
 import AlbumCard from '../../../components/Shared/AlbumCard/AlbumCard.jsx';
-import { getSavedAlbums } from '../../../services/api/index.js';
+import {getSavedAlbums} from '../../../services/api/index.js';
 import styles from '../LibraryPage.module.css';
 
 export default function AlbumsTab() {
-    const { t } = useTranslation();
-    const { data: albums = [], isLoading } = useQuery({
+    const {t} = useTranslation();
+    const {data: albums = [], isLoading} = useQuery({
         queryKey: ['savedAlbums'],
         queryFn: getSavedAlbums,
         staleTime: 5 * 60 * 1000,
@@ -17,7 +17,7 @@ export default function AlbumsTab() {
     if (isLoading) {
         return (
             <div className={styles.tabContent}>
-                <div className={styles.loadingState}><Spinner /></div>
+                <div className={styles.loadingState}><Spinner/></div>
             </div>
         );
     }
@@ -26,7 +26,7 @@ export default function AlbumsTab() {
         return (
             <div className={styles.tabContent}>
                 <div className={styles.emptyState}>
-                    <Disc3 size={40} className={styles.emptyIcon} />
+                    <Disc3 size={40} className={styles.emptyIcon}/>
                     <p className={styles.emptyText}>{t('no_albums')}</p>
                 </div>
             </div>
@@ -42,7 +42,7 @@ export default function AlbumsTab() {
                         id={album.id}
                         title={album.title}
                         artist={album.artist}
-                        cover={album.cover}
+                        cover={album.cover ?? album.cover_url ?? album.coverUrl}
                         year={album.year}
                     />
                 ))}
