@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState, useCallback} from 'react';
+import {fetchJson} from '../services/api/index.js';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 const GOOGLE_SDK_URL = 'https://accounts.google.com/gsi/client';
 const GOOGLE_SDK_ID = 'google-gsi-script';
 
@@ -29,9 +29,11 @@ function loadGoogleSdk() {
     });
 }
 
-export function useGoogleAuth({clientId, buttonRef, onSuccess}) {
+export function useGoogleAuth({clientId, onSuccess}) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isSdkReady, setIsSdkReady] = useState(false);
+    const hiddenButtonRef = useRef(null);
     const onSuccessRef = useRef(onSuccess);
 
     useEffect(() => {
@@ -43,18 +45,10 @@ export function useGoogleAuth({clientId, buttonRef, onSuccess}) {
         setError('');
 
         try {
-            const res = await fetch(`${API_BASE_URL}/api/v1/auth/google/login/`, {
+            const data = await fetchJson('/api/v1/auth/google/login/', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({token: response.credential}),
             });
-
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.detail || 'Google login failed');
-            }
-
-            const data = await res.json();
             onSuccessRef.current(data);
         } catch (err) {
             setError(err.message || 'Google login failed');
@@ -70,30 +64,36 @@ export function useGoogleAuth({clientId, buttonRef, onSuccess}) {
 
         loadGoogleSdk()
             .then(() => {
-                if (cancelled || !buttonRef.current) return;
+                if (cancelled) return;
 
                 window.google.accounts.id.initialize({
                     client_id: clientId,
                     callback: handleCredentialResponse,
+                    ux_mode: 'popup',
                 });
 
-                window.google.accounts.id.renderButton(buttonRef.current, {
-                    type: 'standard',
-                    theme: 'outline',
-                    size: 'large',
-                    width: buttonRef.current.offsetWidth || 400,
-                });
+                if (hiddenButtonRef.current) {
+                    window.google.accounts.id.renderButton(hiddenButtonRef.current, {
+                        type: 'standard',
+                        size: 'large',
+                    });
+                }
+
+                setIsSdkReady(true);
             })
             .catch(() => {
-                if (!cancelled) {
-                    setError('Failed to load Google SDK');
-                }
+                if (!cancelled) setError('Failed to load Google SDK');
             });
 
         return () => {
             cancelled = true;
         };
-    }, [clientId, buttonRef, handleCredentialResponse]);
+    }, [clientId, handleCredentialResponse]);
 
-    return {isLoading, error};
+    const triggerGoogleLogin = useCallback(() => {
+        const googleBtn = hiddenButtonRef.current?.querySelector('div[role="button"]');
+        googleBtn?.click();
+    }, []);
+
+    return {isLoading, error, isSdkReady, triggerGoogleLogin, hiddenButtonRef};
 }

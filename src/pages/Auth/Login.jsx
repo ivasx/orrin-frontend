@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef, useCallback} from 'react';
+import {useState, useCallback} from 'react';
 import {useNavigate, Link, useLocation} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {FaGoogle, FaApple, FaArrowLeft} from 'react-icons/fa';
@@ -14,7 +14,6 @@ export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const {login} = useAuth();
-    const googleButtonRef = useRef(null);
 
     const [formData, setFormData] = useState({username: '', password: ''});
     const [isLoading, setIsLoading] = useState(false);
@@ -28,9 +27,14 @@ export default function Login() {
         navigate(from, {replace: true});
     }, [login, navigate, from]);
 
-    const {isLoading: isGoogleLoading, error: googleError} = useGoogleAuth({
+    const {
+        isLoading: isGoogleLoading,
+        error: googleError,
+        isSdkReady,
+        triggerGoogleLogin,
+        hiddenButtonRef
+    } = useGoogleAuth({
         clientId: GOOGLE_CLIENT_ID,
-        buttonRef: googleButtonRef,
         onSuccess: onGoogleSuccess,
     });
 
@@ -128,15 +132,24 @@ export default function Login() {
                     <div className="divider"><span>{t('login_with_divider')}</span></div>
                     <div className="social-buttons">
                         {GOOGLE_CLIENT_ID ? (
-                            <div ref={googleButtonRef} style={{width: '100%'}}/>
+                            <button
+                                type="button"
+                                className="social-button google"
+                                onClick={triggerGoogleLogin}
+                                disabled={isAnyLoading || !isSdkReady}
+                            >
+                                <FaGoogle/> Google
+                            </button>
                         ) : (
                             <button type="button" className="social-button google" disabled>
                                 <FaGoogle/> Google
                             </button>
                         )}
-                        <button type="button" className="social-button apple" disabled>
-                            <FaApple/> Apple
-                        </button>
+                        <div className="social-button-wrapper" data-tooltip={t('apple_coming_soon')}>
+                            <button type="button" className="social-button apple" disabled>
+                                <FaApple/> Apple
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

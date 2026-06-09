@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef, useMemo, useCallback} from 'react';
+import {useState, useEffect, useMemo, useCallback} from 'react';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -17,7 +17,6 @@ export default function Register() {
     const {t} = useTranslation();
     const navigate = useNavigate();
     const {login} = useAuth();
-    const googleButtonRef = useRef(null);
 
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState('');
@@ -91,9 +90,14 @@ export default function Register() {
         navigate('/', {replace: true});
     }, [login, navigate]);
 
-    const {isLoading: isGoogleLoading, error: googleError} = useGoogleAuth({
+    const {
+        isLoading: isGoogleLoading,
+        error: googleError,
+        isSdkReady,
+        triggerGoogleLogin,
+        hiddenButtonRef
+    } = useGoogleAuth({
         clientId: GOOGLE_CLIENT_ID,
-        buttonRef: googleButtonRef,
         onSuccess: onGoogleSuccess,
     });
 
@@ -276,15 +280,24 @@ export default function Register() {
                     <div className="divider"><span>{t('register_with_divider')}</span></div>
                     <div className="social-buttons">
                         {GOOGLE_CLIENT_ID ? (
-                            <div ref={googleButtonRef} style={{width: '100%'}}/>
+                            <button
+                                type="button"
+                                className="social-button google"
+                                onClick={triggerGoogleLogin}
+                                disabled={isAnyLoading || !isSdkReady}
+                            >
+                                <FaGoogle/> Google
+                            </button>
                         ) : (
                             <button type="button" className="social-button google" disabled>
                                 <FaGoogle/> Google
                             </button>
                         )}
-                        <button type="button" className="social-button apple" disabled>
-                            <FaApple/> Apple
-                        </button>
+                        <div className="social-button-wrapper" data-tooltip={t('apple_coming_soon')}>
+                            <button type="button" className="social-button apple" disabled>
+                                <FaApple/> Apple
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
