@@ -1,14 +1,14 @@
-.search-results-page {
+.page {
     padding-top: 20px;
 }
 
-.search-results-title {
+.title {
     font-size: 1.8rem;
     margin-bottom: 20px;
     padding-left: 5px;
 }
 
-.search-tabs {
+.tabs {
     display: flex;
     gap: 4px;
     margin-bottom: 28px;
@@ -16,7 +16,7 @@
     padding-left: 5px;
 }
 
-.search-tab {
+.tab {
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
@@ -31,35 +31,18 @@
     transition: color var(--transition-fast), border-color var(--transition-fast);
 }
 
-.search-tab:hover {
+.tab:hover {
     color: var(--color-text-main);
 }
 
-.search-tab--active {
+.tabActive {
     color: var(--color-text-main);
     border-bottom-color: var(--color-text-main);
 }
 
-.no-results-message {
+.noResults {
     text-align: center;
     color: var(--color-text-muted);
     margin-top: 40px;
     font-size: 1.1rem;
-}
-
-.search-results-page .track-section-grid {
-    grid-template-rows: none;
-    grid-auto-flow: row;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    overflow-x: hidden;
-    padding-bottom: 20px;
-    scrollbar-width: none;
-}
-
-.search-results-page .track-section-grid::-webkit-scrollbar {
-    display: none;
-}
-
-.search-results-page .section-header .section-more {
-    display: none;
 }

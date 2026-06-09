@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ListMusic } from 'lucide-react';
+import {useState, useCallback} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {ListMusic} from 'lucide-react';
 
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper.jsx';
 import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx';
@@ -10,20 +10,20 @@ import Spinner from '../../components/UI/Spinner/Spinner.jsx';
 import Button from '../../components/UI/Button/Button.jsx';
 import PlaylistHero from './PlaylistHero.jsx';
 
-import { getPlaylistById, deletePlaylist } from '../../services/api/index.js';
-import { useAudioCore } from '../../context/AudioCoreContext.jsx';
+import {getPlaylistById, deletePlaylist} from '../../services/api/index.js';
+import {useAudioCore} from '../../context/AudioCoreContext.jsx';
 
 import styles from './PlaylistPage.module.css';
 
 export default function PlaylistPage() {
-    const { id } = useParams();
-    const { t } = useTranslation();
+    const {id} = useParams();
+    const {t} = useTranslation();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { playTrack } = useAudioCore();
+    const {playTrack} = useAudioCore();
 
     const [showMenu, setShowMenu] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
 
     const {
         data: playlist,
@@ -38,7 +38,7 @@ export default function PlaylistPage() {
     const deleteMutation = useMutation({
         mutationFn: () => deletePlaylist(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['userPlaylists'] });
+            queryClient.invalidateQueries({queryKey: ['userPlaylists']});
             navigate('/library');
         },
     });
@@ -58,9 +58,9 @@ export default function PlaylistPage() {
     }, []);
 
     const handleEditDetails = useCallback(() => {
-        console.log('Edit playlist details:', id);
         setShowMenu(false);
-    }, [id]);
+        // TODO: open edit modal when PlaylistEditModal is implemented
+    }, []);
 
     const handleDeletePlaylist = useCallback(() => {
         setShowMenu(false);
@@ -71,7 +71,7 @@ export default function PlaylistPage() {
         return (
             <MusicSectionWrapper spacing="default">
                 <div className={styles.loadingState}>
-                    <Spinner />
+                    <Spinner/>
                 </div>
             </MusicSectionWrapper>
         );
@@ -81,7 +81,7 @@ export default function PlaylistPage() {
         return (
             <MusicSectionWrapper spacing="default">
                 <div className={styles.errorState}>
-                    <ListMusic size={40} style={{ color: 'var(--color-text-muted)', opacity: 0.4 }} />
+                    <ListMusic size={40} style={{color: 'var(--color-text-muted)', opacity: 0.4}}/>
                     <h2 className={styles.errorTitle}>{t('playlist_not_found')}</h2>
                     <p className={styles.errorText}>{t('playlist_not_found_desc')}</p>
                     <Button variant="secondary" onClick={() => navigate('/library')}>
@@ -114,7 +114,7 @@ export default function PlaylistPage() {
                         />
                     ) : (
                         <div className={styles.emptyState}>
-                            <ListMusic size={36} className={styles.emptyIcon} />
+                            <ListMusic size={36} className={styles.emptyIcon}/>
                             <p className={styles.emptyText}>{t('playlist_empty')}</p>
                         </div>
                     )}

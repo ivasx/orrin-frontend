@@ -7,7 +7,7 @@ import TrackSection from '../../components/Shared/TrackSection/TrackSection';
 import ArtistSection from '../../components/Shared/ArtistSection/ArtistSection';
 import UserSearchResults from '../../components/Shared/UserSearchResults/UserSearchResults';
 import MusicSectionWrapper from '../../components/Shared/MusicSectionWrapper/MusicSectionWrapper';
-import './SearchResultsPage.css';
+import styles from './SearchResultsPage.module.css';
 
 const TABS = ['all', 'tracks', 'artists', 'users'];
 const PREVIEW_TRACKS = 6;
@@ -75,21 +75,21 @@ export default function SearchResultsPage() {
 
     return (
         <MusicSectionWrapper spacing="top-only">
-            <div className="search-results-page">
+            <div className={styles.page}>
                 {query && (
-                    <h1 className="search-results-title">
-                        {t('search_results_for')} "{query}"
+                    <h1 className={styles.title}>
+                        {t('search_results_for')} &ldquo;{query}&rdquo;
                     </h1>
                 )}
 
                 {query && (
-                    <div className="search-tabs" role="tablist">
+                    <div className={styles.tabs} role="tablist">
                         {TABS.map((tab) => (
                             <button
                                 key={tab}
                                 role="tab"
                                 aria-selected={activeTab === tab}
-                                className={`search-tab ${activeTab === tab ? 'search-tab--active' : ''}`}
+                                className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
                                 onClick={() => setTab(tab)}
                             >
                                 {t(`search_tab_${tab}`, tab)}
@@ -122,13 +122,17 @@ export default function SearchResultsPage() {
                             <UserSearchResults
                                 title={t('found_users')}
                                 users={foundUsers.slice(0, PREVIEW_USERS)}
-                                onMoreClick={activeTab === 'all' && foundUsers.length > PREVIEW_USERS ? handleMoreUsers : undefined}
+                                onMoreClick={
+                                    activeTab === 'all' && foundUsers.length > PREVIEW_USERS
+                                        ? handleMoreUsers
+                                        : undefined
+                                }
                             />
                         )}
 
-                        {query && !hasResults && !isLoading && (
-                            <p className="no-results-message">
-                                {t('no_results_found_for_request')} "{query}"
+                        {query && !hasResults && (
+                            <p className={styles.noResults}>
+                                {t('no_results_found_for_request')} &ldquo;{query}&rdquo;
                             </p>
                         )}
 

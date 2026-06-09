@@ -87,3 +87,6 @@ export const getUnreadMessagesCount = api.getUnreadMessagesCount || realApi.getU
 
 export const getTerms = api.getTerms || realApi.getTerms;
 export const getPrivacyPolicy = api.getPrivacyPolicy || realApi.getPrivacyPolicy;
+
+export const uploadTrack = api.uploadTrack || realApi.uploadTrack;
+export const createChat = api.createChat || realApi.createChat;

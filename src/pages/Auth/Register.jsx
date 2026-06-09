@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef, useMemo} from 'react';
+import {useState, useEffect, useRef, useMemo, useCallback} from 'react';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -9,9 +9,9 @@ import {Loader2} from 'lucide-react';
 import './Auth.css';
 import {registerUser} from '../../services/api/index.js';
 import {useAuth} from '../../context/AuthContext';
+import {useGoogleAuth} from '../../hooks/useGoogleAuth';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 export default function Register() {
     const {t} = useTranslation();
@@ -86,48 +86,16 @@ export default function Register() {
         }
     }, [birthDay, birthMonth, birthYear, trigger, touchedFields]);
 
-    const handleGoogleResponse = async (response) => {
-        setIsLoading(true);
-        setServerError('');
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/v1/auth/google/login/`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({token: response.credential}),
-            });
+    const onGoogleSuccess = useCallback((data) => {
+        login(data.access, data.refresh, data.user);
+        navigate('/', {replace: true});
+    }, [login, navigate]);
 
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.detail || t('login_failed_error'));
-            }
-
-            const data = await res.json();
-            login(data.access, data.refresh, data.user);
-            navigate('/', {replace: true});
-        } catch (error) {
-            setServerError(error.message || t('login_failed_error'));
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (!GOOGLE_CLIENT_ID || !window.google) return;
-
-        window.google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleGoogleResponse,
-        });
-
-        if (googleButtonRef.current) {
-            window.google.accounts.id.renderButton(googleButtonRef.current, {
-                type: 'standard',
-                theme: 'outline',
-                size: 'large',
-                width: '100%',
-            });
-        }
-    }, []);
+    const {isLoading: isGoogleLoading, error: googleError} = useGoogleAuth({
+        clientId: GOOGLE_CLIENT_ID,
+        buttonRef: googleButtonRef,
+        onSuccess: onGoogleSuccess,
+    });
 
     const onSubmit = async (data) => {
         setIsLoading(true);
@@ -174,6 +142,9 @@ export default function Register() {
         {value: '11', label: t('months.november')},
         {value: '12', label: t('months.december')},
     ]), [t]);
+
+    const displayError = serverError || googleError;
+    const isAnyLoading = isLoading || isGoogleLoading;
 
     return (
         <div className="auth-page">
@@ -282,15 +253,15 @@ export default function Register() {
 
                     <div className="form-group">
                         <label className="form-group-checkbox">
-                            <input type="checkbox" id="agreedToTerms" {...register('agreedToTerms')}/>
+                            <input type="checkbox" id="agreedToTerms" {...register('agreedToTerms')} />
                             <span>{t('terms_agree')}</span>
                         </label>
                         {errors.agreedToTerms && <p className="error-message">{errors.agreedToTerms.message}</p>}
                     </div>
 
-                    {serverError && <p className="error-message">{serverError}</p>}
+                    {displayError && <p className="error-message">{displayError}</p>}
 
-                    <button type="submit" className="auth-button" disabled={isLoading}>
+                    <button type="submit" className="auth-button" disabled={isAnyLoading}>
                         {isLoading
                             ? <><Loader2 size={16} style={{
                                 marginRight: 8,

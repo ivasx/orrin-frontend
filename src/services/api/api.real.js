@@ -463,3 +463,12 @@ export const getTerms = async (lang = 'en') =>
 
 export const getPrivacyPolicy = async (lang = 'en') =>
     fetchJson(`/api/v1/legal/privacy/?lang=${lang}`);
+
+export const uploadTrack = async (formData) =>
+    fetchJson('/api/v1/tracks/', { method: 'POST', body: formData });
+
+export const createChat = async (recipientUsername) =>
+    fetchJson('/api/v1/chats/', {
+        method: 'POST',
+        body: JSON.stringify({ recipient_username: recipientUsername }),
+    });

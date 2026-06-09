@@ -11,7 +11,7 @@ import {ProfileHero} from './components/ProfileHero/ProfileHero.jsx';
 import {ProfileEditModal} from './components/ProfileEditModal/ProfileEditModal.jsx';
 import {PostsTab, AboutTab, FollowersTab} from './tabs/index.js';
 
-import {getUserProfile, toggleFollowUser, getUserChats, fetchJson} from '../../services/api/index.js';
+import {getUserProfile, toggleFollowUser, createChat} from '../../services/api/index.js';
 import {useAuth} from '../../context/AuthContext.jsx';
 import {useUserProfileMutations} from '../../hooks/useUserProfileMutations.jsx';
 import {useToast} from '../../context/ToastContext.jsx';
@@ -67,11 +67,14 @@ export default function UserProfilePage() {
         return list;
     }, [profileData, isOwnProfile, t]);
 
-    const handleSaveProfile = useCallback((formData) => {
-        updateMutation.mutate(formData, {
-            onSuccess: () => setIsEditOpen(false),
-        });
-    }, [updateMutation]);
+    const handleSaveProfile = useCallback(
+        (formData) => {
+            updateMutation.mutate(formData, {
+                onSuccess: () => setIsEditOpen(false),
+            });
+        },
+        [updateMutation],
+    );
 
     const handleFollow = useCallback(async () => {
         if (!isLoggedIn || isOwnProfile || !profileData) return;
@@ -101,19 +104,7 @@ export default function UserProfilePage() {
         if (!isLoggedIn || !profileData || isOwnProfile) return;
         setMessageLoading(true);
         try {
-            const isMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
-            let chat;
-
-            if (isMock) {
-                const chats = await getUserChats();
-                chat = chats[0];
-            } else {
-                chat = await fetchJson('/api/v1/chats/', {
-                    method: 'POST',
-                    body: JSON.stringify({recipient_username: profileData.username}),
-                });
-            }
-
+            const chat = await createChat(profileData.username);
             if (chat?.id) {
                 queryClient.invalidateQueries({queryKey: ['userChats']});
                 navigate(`/messages/${chat.id}`);
@@ -139,17 +130,21 @@ export default function UserProfilePage() {
         }
     };
 
-    if (isLoading) return (
-        <MusicSectionWrapper spacing="top-only">
-            <InfoSection title={t('state_loading')} isLoading/>
-        </MusicSectionWrapper>
-    );
+    if (isLoading) {
+        return (
+            <MusicSectionWrapper spacing="top-only">
+                <InfoSection title={t('state_loading')} isLoading/>
+            </MusicSectionWrapper>
+        );
+    }
 
-    if (isError || !profileData) return (
-        <MusicSectionWrapper spacing="top-only">
-            <InfoSection title={t('state_error')} message={t('profile_not_found')}/>
-        </MusicSectionWrapper>
-    );
+    if (isError || !profileData) {
+        return (
+            <MusicSectionWrapper spacing="top-only">
+                <InfoSection title={t('state_error')} message={t('profile_not_found')}/>
+            </MusicSectionWrapper>
+        );
+    }
 
     return (
         <div className={styles.page}>
@@ -167,9 +162,7 @@ export default function UserProfilePage() {
             <TabNav tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab}/>
 
             <MusicSectionWrapper spacing="default">
-                <div className={styles.tabContent}>
-                    {renderTab()}
-                </div>
+                <div className={styles.tabContent}>{renderTab()}</div>
             </MusicSectionWrapper>
 
             {isEditOpen && isOwnProfile && (

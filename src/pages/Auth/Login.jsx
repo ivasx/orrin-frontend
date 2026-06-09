@@ -1,10 +1,11 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useCallback} from 'react';
 import {useNavigate, Link, useLocation} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {FaGoogle, FaApple, FaArrowLeft} from 'react-icons/fa';
 import './Auth.css';
 import {loginUser} from '../../services/api/index.js';
 import {useAuth} from '../../context/AuthContext';
+import {useGoogleAuth} from '../../hooks/useGoogleAuth';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -22,51 +23,16 @@ export default function Login() {
     const successMessage = location.state?.message ?? '';
     const from = location.state?.from?.pathname ?? '/';
 
-    const handleGoogleResponse = async (response) => {
-        setIsLoading(true);
-        setServerError('');
-        try {
-            const res = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'}/api/v1/auth/google/login/`,
-                {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({token: response.credential}),
-                },
-            );
+    const onGoogleSuccess = useCallback((data) => {
+        login(data.access, data.refresh, data.user);
+        navigate(from, {replace: true});
+    }, [login, navigate, from]);
 
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.detail || t('login_failed_error'));
-            }
-
-            const data = await res.json();
-            login(data.access, data.refresh, data.user);
-            navigate(from, {replace: true});
-        } catch (error) {
-            setServerError(error.message || t('login_failed_error'));
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (!GOOGLE_CLIENT_ID || !window.google) return;
-
-        window.google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleGoogleResponse,
-        });
-
-        if (googleButtonRef.current) {
-            window.google.accounts.id.renderButton(googleButtonRef.current, {
-                type: 'standard',
-                theme: 'outline',
-                size: 'large',
-                width: '100%',
-            });
-        }
-    }, []);
+    const {isLoading: isGoogleLoading, error: googleError} = useGoogleAuth({
+        clientId: GOOGLE_CLIENT_ID,
+        buttonRef: googleButtonRef,
+        onSuccess: onGoogleSuccess,
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -89,6 +55,9 @@ export default function Login() {
     const handleChange = (e) => {
         setFormData((prev) => ({...prev, [e.target.name]: e.target.value}));
     };
+
+    const displayError = serverError || googleError;
+    const isAnyLoading = isLoading || isGoogleLoading;
 
     return (
         <div className="auth-page">
@@ -146,11 +115,11 @@ export default function Login() {
                         </Link>
                     </div>
 
-                    {serverError && (
-                        <p className="error-message">{serverError}</p>
+                    {displayError && (
+                        <p className="error-message">{displayError}</p>
                     )}
 
-                    <button type="submit" className="auth-button" disabled={isLoading}>
+                    <button type="submit" className="auth-button" disabled={isAnyLoading}>
                         {isLoading ? t('loading') : t('login_button')}
                     </button>
                 </form>

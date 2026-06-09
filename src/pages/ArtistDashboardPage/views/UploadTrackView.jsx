@@ -1,16 +1,16 @@
-import { useState, useRef } from 'react';
+import {useState, useRef} from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import {useArtistMutations} from '../../../hooks/useArtistMutations.jsx';
 import styles from '../ArtistDashboardPage.module.css';
 
-export default function UploadTrackView({ artistSlug }) {
-    const { t } = useTranslation();
+export default function UploadTrackView({artistSlug}) {
+    const {t} = useTranslation();
+    const {uploadTrackMutation} = useArtistMutations(artistSlug);
 
     const [title, setTitle] = useState('');
     const [isExplicit, setIsExplicit] = useState(false);
     const [audioFile, setAudioFile] = useState(null);
-    const [isUploading, setIsUploading] = useState(false);
-    const [uploadStatus, setUploadStatus] = useState({ type: '', message: '' });
 
     const fileInputRef = useRef(null);
 
@@ -18,59 +18,36 @@ export default function UploadTrackView({ artistSlug }) {
         const file = event.target.files[0];
         if (file && file.type.startsWith('audio/')) {
             setAudioFile(file);
-            setUploadStatus({ type: '', message: '' });
         } else {
             setAudioFile(null);
-            setUploadStatus({ type: 'error', message: t('artistDashboard.upload.errorInvalidFile') });
+            uploadTrackMutation.reset();
         }
     };
 
-    const handleUploadSubmit = async (event) => {
+    const handleUploadSubmit = (event) => {
         event.preventDefault();
 
-        if (!audioFile || !title.trim()) {
-            setUploadStatus({ type: 'error', message: t('artistDashboard.upload.errorMissingFields') });
-            return;
-        }
+        if (!audioFile || !title.trim()) return;
 
-        setIsUploading(true);
-        setUploadStatus({ type: '', message: '' });
+        const formData = new FormData();
+        formData.append('title', title.trim());
+        formData.append('artist', artistSlug);
+        formData.append('is_explicit', isExplicit);
+        formData.append('audio_file', audioFile);
 
-        try {
-            const formData = new FormData();
-            formData.append('title', title);
-            formData.append('artist', artistSlug);
-            formData.append('is_explicit', isExplicit);
-            formData.append('audio_file', audioFile);
-
-            const response = await fetch('/api/tracks/', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                },
-                body: formData
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || 'Failed to upload track.');
-            }
-
-            setUploadStatus({ type: 'success', message: t('artistDashboard.upload.successMessage') });
-
-            setTitle('');
-            setIsExplicit(false);
-            setAudioFile(null);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
-
-        } catch (error) {
-            setUploadStatus({ type: 'error', message: error.message });
-        } finally {
-            setIsUploading(false);
-        }
+        uploadTrackMutation.mutate(formData, {
+            onSuccess: () => {
+                setTitle('');
+                setIsExplicit(false);
+                setAudioFile(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+            },
+        });
     };
+
+    const isUploading = uploadTrackMutation.isPending;
 
     return (
         <div className={styles.viewContainer}>
@@ -101,7 +78,9 @@ export default function UploadTrackView({ artistSlug }) {
                         disabled={isUploading}
                         required
                     />
-                    {audioFile && <span className={styles.fileHint}>{audioFile.name}</span>}
+                    {audioFile && (
+                        <span className={styles.fileHint}>{audioFile.name}</span>
+                    )}
                 </div>
 
                 <div className={styles.checkboxGroup}>
@@ -112,21 +91,31 @@ export default function UploadTrackView({ artistSlug }) {
                         onChange={(e) => setIsExplicit(e.target.checked)}
                         disabled={isUploading}
                     />
-                    <label htmlFor="isExplicit">{t('artistDashboard.upload.explicitContent')}</label>
+                    <label htmlFor="isExplicit">
+                        {t('artistDashboard.upload.explicitContent')}
+                    </label>
                 </div>
 
-                {uploadStatus.message && (
-                    <div className={`${styles.statusMessage} ${styles[uploadStatus.type]}`}>
-                        {uploadStatus.message}
+                {uploadTrackMutation.isError && (
+                    <div className={`${styles.statusMessage} ${styles.error}`}>
+                        {uploadTrackMutation.error?.message || t('artistDashboard.upload.errorGeneric')}
+                    </div>
+                )}
+
+                {uploadTrackMutation.isSuccess && (
+                    <div className={`${styles.statusMessage} ${styles.success}`}>
+                        {t('artistDashboard.upload.successMessage')}
                     </div>
                 )}
 
                 <button
                     type="submit"
                     className={styles.submitButton}
-                    disabled={isUploading}
+                    disabled={isUploading || !audioFile || !title.trim()}
                 >
-                    {isUploading ? t('artistDashboard.upload.uploadingBtn') : t('artistDashboard.upload.publishBtn')}
+                    {isUploading
+                        ? t('artistDashboard.upload.uploadingBtn')
+                        : t('artistDashboard.upload.publishBtn')}
                 </button>
             </form>
         </div>
@@ -134,5 +123,5 @@ export default function UploadTrackView({ artistSlug }) {
 }
 
 UploadTrackView.propTypes = {
-    artistSlug: PropTypes.string.isRequired
+    artistSlug: PropTypes.string.isRequired,
 };

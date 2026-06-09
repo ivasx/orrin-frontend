@@ -622,3 +622,13 @@ export const getPrivacyPolicy = async (lang = 'en') => {
     await delay(600);
     return mockPrivacy[lang] || mockPrivacy['en'];
 };
+
+export const uploadTrack = async (formData) => {
+    await delay(800);
+    return { id: 'track-new-' + Date.now(), title: formData.get('title') };
+};
+
+export const createChat = async (recipientUsername) => {
+    await delay(400);
+    return mutableChats[0] ?? { id: 'chat-mock-1' };
+};
