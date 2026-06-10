@@ -1,34 +1,17 @@
-import './TrackCard.css';
 import {useState, useEffect, useCallback, useRef, useMemo, memo} from 'react';
-import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
-import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
-import {useQueue} from '../../../context/QueueContext.jsx';
-import {useTranslation} from 'react-i18next';
-import {createTrackMenuItems} from './trackMenuItems.jsx';
 import {Link} from 'react-router-dom';
 import {MoreHorizontal, Music} from 'lucide-react';
+import {useTranslation} from 'react-i18next';
+import {useAudioCore} from '../../../context/AudioCoreContext.jsx';
+import {useQueue} from '../../../context/QueueContext.jsx';
 import {isTrackPlayable} from '../../../constants/fallbacks.js';
 import {logger} from '../../../utils/logger.js';
+import {createTrackMenuItems} from './trackMenuItems.jsx';
+import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
 import AuthPromptModal from '../AuthPromptModal/AuthPromptModal.jsx';
 import ShareToChatModal from '../ShareToChatModal/ShareToChatModal.jsx';
+import styles from './TrackCard.module.css';
 
-/**
- * Renders a single track row with playback controls, a context menu, and
- * optional queue-management actions when rendered inside `QueueList`.
- *
- * @param {Object}   props
- * @param {string}   props.trackId                - Unique track identifier.
- * @param {string}   props.title                  - Track title.
- * @param {string}   props.artist                 - Artist display name.
- * @param {string}   [props.artistSlug]           - Artist slug for routing.
- * @param {string}   [props.cover]                - Album art URL.
- * @param {string}   [props.audio]                - Audio file URL.
- * @param {Array}    [props.tracks]               - Sibling tracks for queue initialization.
- * @param {boolean}  [props.isQueueContext]       - True when rendered inside QueueList.
- * @param {number}   [props.indexInQueue]         - Full-queue index (set by QueueList).
- * @param {Function} [props.onRemoveFromHistory]  - When provided, adds "Remove from history"
- *                                                  to the context menu. Called with no args.
- */
 function TrackCard(props) {
     const {t} = useTranslation();
     const {
@@ -48,15 +31,11 @@ function TrackCard(props) {
 
     const track = useMemo(() => {
         if (!props.trackId) {
-            logger.error('TrackCard: Received props without trackId', props);
+            logger.error('TrackCard: received props without trackId', props);
             return null;
         }
         return props;
     }, [props]);
-
-    if (!track) return null;
-
-    const hasValidAudio = isTrackPlayable(track);
 
     const [coverError, setCoverError] = useState(false);
     const [audioError, setAudioError] = useState(false);
@@ -71,6 +50,10 @@ function TrackCard(props) {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
     const dotsButtonRef = useRef(null);
+
+    if (!track) return null;
+
+    const hasValidAudio = isTrackPlayable(track);
     const displayCover = coverError ? '/orrin-logo.svg' : track.cover;
 
     useEffect(() => {
@@ -104,7 +87,7 @@ function TrackCard(props) {
     }, [audioRef, currentTrack, track.trackId]);
 
     const isPlaying = isTrackPlaying(track.trackId);
-    const isCurrentTrack = currentTrack && currentTrack.trackId === track.trackId;
+    const isCurrentTrack = currentTrack?.trackId === track.trackId;
     const showLoadingIndicator = isCurrentTrack && isAudioLoading;
     const showErrorIndicator = isCurrentTrack && audioError;
 
@@ -128,9 +111,7 @@ function TrackCard(props) {
     }, [removeFromQueue, track.trackId, props.isQueueContext, props.indexInQueue]);
 
     const handleRemoveFromHistory = useCallback(() => {
-        if (props.onRemoveFromHistory) {
-            props.onRemoveFromHistory();
-        }
+        props.onRemoveFromHistory?.();
         setShowMenu(false);
     }, [props.onRemoveFromHistory]);
 
@@ -159,9 +140,7 @@ function TrackCard(props) {
                 trackId: track.trackId,
                 onInsertNext: handleInsertNext,
                 onRemoveFromQueue: handleRemoveFromQueue,
-                onRemoveFromHistory: props.onRemoveFromHistory
-                    ? handleRemoveFromHistory
-                    : undefined,
+                onRemoveFromHistory: props.onRemoveFromHistory ? handleRemoveFromHistory : undefined,
                 onShareToChat: handleShareToChat,
             }),
         [
@@ -210,91 +189,94 @@ function TrackCard(props) {
         if (dotsButtonRef.current) {
             const rect = dotsButtonRef.current.getBoundingClientRect();
             setMenuPosition({x: rect.right, y: rect.top});
-            setShowMenu(prev => !prev);
+            setShowMenu((prev) => !prev);
         }
     };
 
+    const coverWrapperClass = [
+        styles.coverWrapper,
+        isPlaying ? styles.playing : '',
+        !hasValidAudio ? styles.notPlayable : '',
+        isAudioLoading ? styles.loading : '',
+    ]
+        .filter(Boolean)
+        .join(' ');
+
     return (
         <div
-            className="card-track"
+            className={styles.card}
             onContextMenu={handleContextMenu}
             role="button"
             tabIndex={0}
             aria-label={t('track_card_aria_label', {title: track.title, artist: track.artist})}
         >
             <div
-                className={`track-cover-wrapper ${isPlaying ? 'playing' : ''} ${!hasValidAudio ? 'disabled' : ''}`}
+                className={coverWrapperClass}
                 onClick={handleCoverClick}
                 onMouseEnter={() => !isTouchDevice && hasValidAudio && setShowControls(true)}
                 onMouseLeave={() => !isTouchDevice && setShowControls(false)}
                 onTouchStart={() => isTouchDevice && hasValidAudio && setShowControls(true)}
             >
                 {coverError ? (
-                    <div className="track-cover-fallback">
+                    <div className={styles.coverFallback}>
                         <Music size={32}/>
                     </div>
                 ) : (
                     <img
                         src={displayCover}
                         alt={track.title}
-                        className="track-cover"
+                        className={styles.cover}
                         loading="lazy"
                         onError={() => setCoverError(true)}
                     />
                 )}
 
-                {showRipple && <div className="ripple-effect" style={rippleStyle}/>}
+                {showRipple && <div className={styles.rippleEffect} style={rippleStyle}/>}
 
                 {showLoadingIndicator && (
-                    <div className="loading-indicator">
-                        <div className="spinner-small"/>
+                    <div className={styles.loadingIndicator}>
+                        <div className={styles.spinnerSmall}/>
                     </div>
                 )}
 
                 {showControls && hasValidAudio && !showLoadingIndicator && !showErrorIndicator && (
-                    <div className="play-icon" onClick={handlePlayButtonClick}>
+                    <div className={styles.playIcon} onClick={handlePlayButtonClick}>
                         {!isPlaying
-                            ? <div className="triangle"/>
-                            : <div className="pause"><span/><span/></div>
+                            ? <div className={styles.triangle}/>
+                            : <div className={styles.pause}><span/><span/></div>
                         }
                     </div>
                 )}
 
                 {isPlaying && !showControls && hasValidAudio && (
-                    <div className="bars">
-                        <span/>
-                        <span/>
-                        <span/>
+                    <div className={styles.bars}>
+                        <span/><span/><span/>
                     </div>
                 )}
             </div>
 
-            <div className="track-info">
-                <Link to={`/track/${track.trackId}`} className="track-title">
+            <div className={styles.trackInfo}>
+                <Link to={`/track/${track.trackId}`} className={styles.trackTitle}>
                     {track.title}
                 </Link>
-                <div className="track-artist">
-                    {track.artistSlug
-                        ? (
-                            <Link
-                                to={`/artist/${track.artistSlug}`}
-                                className="track-artist-link"
-                            >
-                                {track.artist}
-                            </Link>
-                        )
-                        : <span>{track.artist}</span>
-                    }
+                <div className={styles.trackArtist}>
+                    {track.artistSlug ? (
+                        <Link to={`/artist/${track.artistSlug}`} className={styles.trackArtistLink}>
+                            {track.artist}
+                        </Link>
+                    ) : (
+                        <span>{track.artist}</span>
+                    )}
                 </div>
             </div>
 
             <div
-                className="track-options-wrapper"
+                className={styles.optionsWrapper}
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
                     ref={dotsButtonRef}
-                    className={`track-options-btn${showMenu ? ' track-options-btn--open' : ''}`}
+                    className={`${styles.optionsBtn} ${showMenu ? styles.optionsBtnOpen : ''}`}
                     onClick={handleDotsClick}
                     aria-label={t('post_more_options')}
                     aria-expanded={showMenu}

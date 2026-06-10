@@ -1,4 +1,4 @@
-.artist-card {
+.card {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,27 +9,27 @@
     font-family: var(--font-main);
 }
 
-.artist-card-image-wrapper {
+.imageWrapper {
     width: 150px;
     height: 150px;
     flex-shrink: 0;
 }
 
-.artist-card-image {
+.image {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
     border: 1px solid var(--color-border-subtle);
 }
 
-.artist-card:hover .artist-card-image {
+.card:hover .image {
     transform: scale(1.05);
     box-shadow: var(--shadow-main);
 }
 
-.artist-card-info {
+.info {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -37,7 +37,7 @@
     overflow: hidden;
 }
 
-.artist-card-name {
+.name {
     font-size: 16px;
     font-weight: bold;
     color: var(--color-text-main);
@@ -46,7 +46,7 @@
     text-overflow: ellipsis;
 }
 
-.artist-card-subtitle {
+.subtitle {
     font-size: 13px;
     color: var(--color-text-secondary);
     overflow: hidden;
@@ -58,14 +58,14 @@
     word-break: break-word;
 }
 
-.artist-card-link {
+.link {
     text-decoration: none;
     color: inherit;
     display: block;
     outline: none;
 }
 
-.artist-card-link:focus-visible .artist-card {
+.link:focus-visible .card {
     outline: 2px solid var(--color-text-main);
     outline-offset: 2px;
     border-radius: 5px;

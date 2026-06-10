@@ -9,8 +9,9 @@ import TrackSection from '../../components/Shared/TrackSection/TrackSection.jsx'
 import Spinner from '../../components/UI/Spinner/Spinner.jsx';
 import Button from '../../components/UI/Button/Button.jsx';
 import PlaylistHero from './PlaylistHero.jsx';
+import PlaylistEditModal from './PlaylistEditModal/PlaylistEditModal.jsx';
 
-import {getPlaylistById, deletePlaylist} from '../../services/api/index.js';
+import {getPlaylistById, deletePlaylist, updatePlaylist} from '../../services/api/index.js';
 import {useAudioCore} from '../../context/AudioCoreContext.jsx';
 
 import styles from './PlaylistPage.module.css';
@@ -24,6 +25,7 @@ export default function PlaylistPage() {
 
     const [showMenu, setShowMenu] = useState(false);
     const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
+    const [isEditOpen, setIsEditOpen] = useState(false);
 
     const {
         data: playlist,
@@ -43,6 +45,15 @@ export default function PlaylistPage() {
         },
     });
 
+    const updateMutation = useMutation({
+        mutationFn: (formData) => updatePlaylist(id, formData),
+        onSuccess: (updated) => {
+            queryClient.setQueryData(['playlist', id], (old) => ({...old, ...updated}));
+            queryClient.invalidateQueries({queryKey: ['userPlaylists']});
+            setIsEditOpen(false);
+        },
+    });
+
     const handlePlay = useCallback(() => {
         if (!playlist?.tracks?.length) return;
         playTrack(playlist.tracks[0], playlist.tracks);
@@ -59,7 +70,7 @@ export default function PlaylistPage() {
 
     const handleEditDetails = useCallback(() => {
         setShowMenu(false);
-        // TODO: open edit modal when PlaylistEditModal is implemented
+        setIsEditOpen(true);
     }, []);
 
     const handleDeletePlaylist = useCallback(() => {
@@ -120,6 +131,15 @@ export default function PlaylistPage() {
                     )}
                 </div>
             </div>
+
+            {isEditOpen && (
+                <PlaylistEditModal
+                    playlist={playlist}
+                    onClose={() => setIsEditOpen(false)}
+                    onSave={(formData) => updateMutation.mutate(formData)}
+                    isSaving={updateMutation.isPending}
+                />
+            )}
         </MusicSectionWrapper>
     );
 }

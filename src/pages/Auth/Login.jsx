@@ -152,6 +152,8 @@ export default function Login() {
                         </div>
                     </div>
                 </div>
+
+                <div ref={hiddenButtonRef} className="google-hidden-button" aria-hidden="true"/>
             </div>
         </div>
     );

@@ -1,51 +1,11 @@
 import {
-    Play,
-    Pause,
-    VolumeX,
-    Volume1,
-    Volume2,
-    Share2,
-    Download,
-    AlertCircle,
-    ListStart,
-    ListX,
-    Trash2,
-    Send
+    Play, Pause,
+    VolumeX, Volume1, Volume2,
+    Share2, Download, AlertCircle,
+    ListStart, ListX, Trash2, Send,
 } from 'lucide-react';
 import {logger} from '../../../utils/logger.js';
 
-/**
- * @typedef {Object} TrackMenuConfig
- * @property {Function} t                      - i18next translation function.
- * @property {boolean}  isPlaying              - Whether this track is currently playing.
- * @property {boolean}  isMuted                - Whether audio is muted.
- * @property {number}   volume                 - Current volume 0–1.
- * @property {Function} handlePlayPause        - Toggle playback for this track.
- * @property {boolean}  isCurrentTrack         - Whether this is the active track.
- * @property {Function} toggleMute             - Toggle mute state.
- * @property {Function} updateVolume           - Set a new volume level.
- * @property {string}   title                  - Track title.
- * @property {string}   artist                 - Track artist name.
- * @property {string}   [audio]                - Audio file URL.
- * @property {boolean}  [hasValidAudio]        - Whether playable audio exists.
- * @property {boolean}  [isQueueContext]       - True when rendered inside QueueList.
- * @property {number}   [indexInQueue]         - Full-queue index (required when isQueueContext is true).
- * @property {string}   [trackId]              - Track ID (required for queue operations).
- * @property {Function} [onInsertNext]         - Callback: insert this track immediately after current.
- * @property {Function} [onRemoveFromQueue]    - Callback: remove this track from the queue.
- * @property {Function} [onRemoveFromHistory]  - Callback: remove this entry from listening history.
- */
-
-/**
- * Builds the context-menu items for a TrackCard.
- * Queue-specific actions (Play Next, Remove from Queue) are injected only when
- * `isQueueContext` is `true`, keeping the menu clean in non-queue contexts.
- * History-specific action (Remove from History) is injected only when
- * `onRemoveFromHistory` is provided.
- *
- * @param {TrackMenuConfig} config
- * @returns {Array<Object>} Array of menu item descriptors consumed by ContextMenu.
- */
 export const createTrackMenuItems = ({
                                          t,
                                          isPlaying,
@@ -123,9 +83,7 @@ export const createTrackMenuItems = ({
         label: t('menu_play_next'),
         icon: <ListStart size={16}/>,
         disabled: !hasValidAudio,
-        action: () => {
-            if (hasValidAudio && onInsertNext) onInsertNext();
-        },
+        action: () => hasValidAudio && onInsertNext?.(),
     });
 
     if (isQueueContext) {
@@ -134,9 +92,7 @@ export const createTrackMenuItems = ({
             label: t('menu_remove_from_queue'),
             icon: <ListX size={16}/>,
             variant: 'danger',
-            action: () => {
-                if (onRemoveFromQueue) onRemoveFromQueue();
-            },
+            action: () => onRemoveFromQueue?.(),
         });
     }
 
@@ -147,11 +103,7 @@ export const createTrackMenuItems = ({
             label: t('menu_share_to_chat'),
             icon: <Send size={16}/>,
             disabled: !hasValidAudio,
-            action: () => {
-                if (hasValidAudio && onShareToChat && trackId) {
-                    onShareToChat(trackId);
-                }
-            },
+            action: () => hasValidAudio && trackId && onShareToChat?.(trackId),
         },
         {
             id: 'share',
@@ -167,14 +119,13 @@ export const createTrackMenuItems = ({
                             text: `Listen to ${title} by ${artist}`,
                             url: window.location.href,
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             if (err.name !== 'AbortError') logger.error('Share error:', err);
                         });
                 } else {
                     navigator.clipboard
                         .writeText(`${title} by ${artist} - ${window.location.href}`)
-                        .then(() => logger.log('Link copied to clipboard'))
-                        .catch(err => logger.error('Copy error:', err));
+                        .catch((err) => logger.error('Copy error:', err));
                 }
             },
         },
@@ -184,12 +135,11 @@ export const createTrackMenuItems = ({
             icon: <Download size={16}/>,
             disabled: !audio || !hasValidAudio,
             action: () => {
-                if (audio && hasValidAudio) {
-                    const link = document.createElement('a');
-                    link.href = audio;
-                    link.download = `${title} - ${artist}.mp3`;
-                    link.click();
-                }
+                if (!audio || !hasValidAudio) return;
+                const link = document.createElement('a');
+                link.href = audio;
+                link.download = `${title} - ${artist}.mp3`;
+                link.click();
             },
             tooltip: !audio ? t('track_no_audio') : undefined,
         },
@@ -216,7 +166,6 @@ export const createTrackMenuItems = ({
                 icon: <AlertCircle size={16}/>,
                 disabled: true,
                 variant: 'danger',
-                className: 'menu-item-info',
             },
             {type: 'separator'},
         );

@@ -27,7 +27,7 @@
 }
 
 .mainTitle {
-    color: var(--text-secondary, #b3b3b3);
+    color: var(--color-text-secondary);
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
@@ -42,7 +42,7 @@
 .errorCode {
     font-size: 10rem;
     font-weight: 800;
-    color: var(--text-primary, #ffffff);
+    color: var(--color-text-main);
     line-height: 0.8;
     margin: 0;
 }
@@ -50,7 +50,7 @@
 .errorMessage {
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--text-primary, #ffffff);
+    color: var(--color-text-main);
     margin: 0;
 }
 
@@ -75,9 +75,11 @@
     .wrapper {
         gap: 2rem;
     }
+
     .errorCode {
         font-size: 8rem;
     }
+
     .catImage {
         width: 220px;
     }
@@ -93,10 +95,6 @@
     .content {
         text-align: center;
         align-items: center;
-    }
-
-    .mainTitle {
-        text-align: center;
     }
 
     .errorCode {

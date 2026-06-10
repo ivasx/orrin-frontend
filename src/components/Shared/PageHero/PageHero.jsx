@@ -1,5 +1,6 @@
-import {useState, useRef, useCallback} from 'react';
-import {MoreHorizontal} from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MoreHorizontal } from 'lucide-react';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
 import styles from './PageHero.module.css';
 
@@ -17,24 +18,25 @@ export default function PageHero({
                                      menuItems,
                                      children,
                                  }) {
+    const { t } = useTranslation();
     const moreButtonRef = useRef(null);
-    const [menuVisible, setMenuVisible] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
+    const [menuVisible, setMenuVisible]   = useState(false);
+    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
     const handleMoreClick = useCallback((e) => {
         e.stopPropagation();
         const rect = moreButtonRef.current?.getBoundingClientRect();
-        if (rect) setMenuPosition({x: rect.left, y: rect.bottom + 6});
+        if (rect) setMenuPosition({ x: rect.left, y: rect.bottom + 6 });
         setMenuVisible((v) => !v);
     }, []);
 
     return (
         <div
             className={styles.hero}
-            style={backgroundImage ? {'--hero-bg-image': `url(${backgroundImage})`} : {}}
+            style={backgroundImage ? { '--hero-bg-image': `url(${backgroundImage})` } : {}}
             data-has-bg={!!backgroundImage}
         >
-            <div className={styles.heroOverlay}/>
+            <div className={styles.heroOverlay} />
 
             <div className={styles.heroContent}>
                 {avatar && (
@@ -54,11 +56,11 @@ export default function PageHero({
 
                     {meta && <div className={styles.metaSlot}>{meta}</div>}
 
-                    {stats && stats.length > 0 && (
+                    {stats?.length > 0 && (
                         <div className={styles.stats}>
                             {stats.map((stat, i) => (
                                 <span key={stat.label} className={styles.statGroup}>
-                                    {i > 0 && <span className={styles.statDivider}/>}
+                                    {i > 0 && <span className={styles.statDivider} />}
                                     <span className={styles.stat}>
                                         <strong>{stat.value}</strong>
                                         {stat.label}
@@ -76,11 +78,11 @@ export default function PageHero({
                                 ref={moreButtonRef}
                                 className={styles.moreBtn}
                                 onClick={handleMoreClick}
-                                aria-label="More options"
+                                aria-label={t('more_options')}
                                 aria-expanded={menuVisible}
                                 aria-haspopup="menu"
                             >
-                                <MoreHorizontal size={18}/>
+                                <MoreHorizontal size={18} />
                             </button>
                         )}
                     </div>

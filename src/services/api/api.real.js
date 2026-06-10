@@ -465,10 +465,18 @@ export const getPrivacyPolicy = async (lang = 'en') =>
     fetchJson(`/api/v1/legal/privacy/?lang=${lang}`);
 
 export const uploadTrack = async (formData) =>
-    fetchJson('/api/v1/tracks/', { method: 'POST', body: formData });
+    fetchJson('/api/v1/tracks/', {method: 'POST', body: formData});
 
 export const createChat = async (recipientUsername) =>
     fetchJson('/api/v1/chats/', {
         method: 'POST',
-        body: JSON.stringify({ recipient_username: recipientUsername }),
+        body: JSON.stringify({recipient_username: recipientUsername}),
     });
+
+export const updatePlaylist = async (id, formData) => {
+    const data = await fetchJson(`/api/v1/library/playlists/${id}/`, {
+        method: 'PATCH',
+        body: formData,
+    });
+    return data;
+};

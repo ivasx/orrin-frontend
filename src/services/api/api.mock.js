@@ -625,10 +625,33 @@ export const getPrivacyPolicy = async (lang = 'en') => {
 
 export const uploadTrack = async (formData) => {
     await delay(800);
-    return { id: 'track-new-' + Date.now(), title: formData.get('title') };
+    return {id: 'track-new-' + Date.now(), title: formData.get('title')};
 };
 
 export const createChat = async (recipientUsername) => {
     await delay(400);
-    return mutableChats[0] ?? { id: 'chat-mock-1' };
+    return mutableChats[0] ?? {id: 'chat-mock-1'};
 };
+
+export const updatePlaylist = async (id, formData) => {
+    await delay(600);
+    const playlist = mockPlaylists.find((p) => p.id === id);
+    if (!playlist) throw new Error(`Playlist not found: ${id}`);
+
+    const get = (key) => (formData instanceof FormData ? formData.get(key) : formData[key]);
+    const coverFile = formData instanceof FormData ? formData.get('cover') : null;
+
+    const patch = {
+        name: get('name') || playlist.name,
+        description: get('description') ?? playlist.description,
+        isPublic: get('is_public') === 'true' || get('is_public') === true,
+    };
+
+    if (coverFile instanceof File) {
+        patch.cover = URL.createObjectURL(coverFile);
+    }
+
+    Object.assign(playlist, patch);
+    return populatePlaylistTracks({...playlist, ...patch});
+};
+

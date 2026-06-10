@@ -1,6 +1,20 @@
 import styles from './Spinner.module.css';
 
-export default function Spinner({ size = 'medium' /* small, medium, large */ }) {
-    // In future we can add more sizes
-    return <div className={styles.spinner} role="status" aria-live="polite"></div>;
+const SIZE_MAP = {
+    small: 16,
+    medium: 20,
+    large: 32,
+};
+
+export default function Spinner({size = 'medium'}) {
+    const px = SIZE_MAP[size] ?? SIZE_MAP.medium;
+
+    return (
+        <div
+            className={styles.spinner}
+            style={{width: px, height: px}}
+            role="status"
+            aria-live="polite"
+        />
+    );
 }

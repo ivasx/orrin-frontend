@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check } from 'lucide-react';
+import {useState, useRef, useEffect} from 'react';
+import {ChevronDown, Check} from 'lucide-react';
 import styles from './Dropdown.module.css';
 
 export default function Dropdown({
@@ -10,7 +10,7 @@ export default function Dropdown({
                                      onSelect,
                                      placeholder = 'Select',
                                      icon,
-                                     className = ''
+                                     className = '',
                                  }) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -24,9 +24,7 @@ export default function Dropdown({
         };
 
         const handleEscape = (event) => {
-            if (event.key === 'Escape') {
-                setIsOpen(false);
-            }
+            if (event.key === 'Escape') setIsOpen(false);
         };
 
         if (isOpen) {
@@ -48,41 +46,35 @@ export default function Dropdown({
                 dropdownRef.current?.querySelectorAll(`.${styles.dropdownItem}:not(.${styles.disabled})`) || []
             );
 
-            if (menuItems.length === 0) return;
+            if (!menuItems.length) return;
 
-            const currentIndex = menuItems.findIndex(
-                item => item === document.activeElement
-            );
+            const currentIndex = menuItems.findIndex((item) => item === document.activeElement);
 
             switch (event.key) {
-                case 'ArrowDown':
+                case 'ArrowDown': {
                     event.preventDefault();
-                    const nextIndex = (currentIndex + 1) % menuItems.length;
-                    menuItems[nextIndex]?.focus();
+                    menuItems[(currentIndex + 1) % menuItems.length]?.focus();
                     break;
-
-                case 'ArrowUp':
+                }
+                case 'ArrowUp': {
                     event.preventDefault();
-                    const prevIndex = currentIndex <= 0
-                        ? menuItems.length - 1
-                        : currentIndex - 1;
-                    menuItems[prevIndex]?.focus();
+                    menuItems[currentIndex <= 0 ? menuItems.length - 1 : currentIndex - 1]?.focus();
                     break;
-
+                }
                 case 'Enter':
                 case ' ':
                     event.preventDefault();
                     document.activeElement?.click();
                     break;
-
                 case 'Home':
                     event.preventDefault();
                     menuItems[0]?.focus();
                     break;
-
                 case 'End':
                     event.preventDefault();
                     menuItems[menuItems.length - 1]?.focus();
+                    break;
+                default:
                     break;
             }
         };
@@ -93,19 +85,12 @@ export default function Dropdown({
 
     const handleItemClick = (item) => {
         if (item.disabled) return;
-
-        if (onSelect) {
-            onSelect(item.value);
-        }
-
-        if (item.action) {
-            item.action();
-        }
-
+        onSelect?.(item.value);
+        item.action?.();
         setIsOpen(false);
     };
 
-    const selectedItem = items.find(item => item.value === selectedValue);
+    const selectedItem = items.find((item) => item.value === selectedValue);
     const displayLabel = selectedItem?.label || trigger || placeholder;
 
     return (
@@ -130,7 +115,7 @@ export default function Dropdown({
                 >
                     {icon && <span className={styles.dropdownTriggerIconLeft}>{icon}</span>}
                     <span>{displayLabel}</span>
-                    <ChevronDown size={16} className={styles.dropdownTriggerIcon} />
+                    <ChevronDown size={16} className={styles.dropdownTriggerIcon}/>
                 </button>
             )}
 
@@ -141,14 +126,9 @@ export default function Dropdown({
                             return (
                                 <div
                                     key={`header-${index}`}
-                                    className={`
-                                        ${styles.dropdownHeader} 
-                                        ${item.action ? styles.clickableHeader : ''}
-                                    `}
+                                    className={`${styles.dropdownHeader} ${item.action ? styles.clickableHeader : ''}`}
                                     onClick={() => {
-                                        const selection = window.getSelection().toString();
-                                        if (selection.length > 0) return;
-
+                                        if (window.getSelection().toString().length > 0) return;
                                         if (item.action) {
                                             item.action();
                                             setIsOpen(false);
@@ -172,35 +152,30 @@ export default function Dropdown({
                         }
 
                         const isSelected = selectedValue !== undefined && item.value === selectedValue;
-                        const isDangerItem = item.isDanger;
 
                         return (
                             <div
                                 key={item.value || `item-${index}`}
-                                className={`
-                                    ${styles.dropdownItem} 
-                                    ${isSelected ? styles.selected : ''} 
-                                    ${item.disabled ? styles.disabled : ''}
-                                `}
+                                className={[
+                                    styles.dropdownItem,
+                                    isSelected ? styles.selected : '',
+                                    item.disabled ? styles.disabled : '',
+                                    item.isDanger ? styles.danger : '',
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ')}
                                 onClick={() => handleItemClick(item)}
                                 role="menuitem"
                                 tabIndex={item.disabled ? -1 : 0}
                                 aria-disabled={item.disabled}
                                 aria-current={isSelected ? 'true' : 'false'}
-                                style={isDangerItem ? { color: '#ff4b4b' } : {}}
                             >
                                 {item.icon && (
-                                    <span className={styles.dropdownItemIcon}>
-                                        {item.icon}
-                                    </span>
+                                    <span className={styles.dropdownItemIcon}>{item.icon}</span>
                                 )}
-
-                                <span className={styles.dropdownItemLabel}>
-                                    {item.label}
-                                </span>
-
+                                <span className={styles.dropdownItemLabel}>{item.label}</span>
                                 {isSelected && (
-                                    <Check size={16} className={styles.dropdownItemCheckmark} />
+                                    <Check size={16} className={styles.dropdownItemCheckmark}/>
                                 )}
                             </div>
                         );

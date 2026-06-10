@@ -1,8 +1,17 @@
-import "./MusicSectionWrapper.css";
+import styles from './MusicSectionWrapper.module.css';
 
-export default function MusicSectionWrapper({children, spacing = "default"}) {
+const SPACING_MAP = {
+    default: styles.default,
+    tight: styles.tight,
+    'top-only': styles.topOnly,
+    none: styles.none,
+};
+
+export default function MusicSectionWrapper({children, spacing = 'default'}) {
+    const spacingClass = SPACING_MAP[spacing] ?? styles.default;
+
     return (
-        <div className={`music-section-wrapper music-section-wrapper--${spacing}`}>
+        <div className={`${styles.wrapper} ${spacingClass}`}>
             {children}
         </div>
     );

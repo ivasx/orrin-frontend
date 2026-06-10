@@ -1,10 +1,10 @@
-.track-section {
+.section {
     flex: 1;
     min-width: 0;
     width: 100%;
 }
 
-.track-section-grid {
+.grid {
     display: grid;
     grid-auto-flow: column;
     grid-template-rows: repeat(2, 1fr);
@@ -18,41 +18,37 @@
     scrollbar-color: transparent transparent;
 }
 
-.track-section-grid:hover {
+.grid:hover {
     scrollbar-color: var(--color-surface-4) transparent;
 }
 
-.track-section-grid::-webkit-scrollbar {
+.grid::-webkit-scrollbar {
     height: 10px;
 }
 
-.track-section-grid::-webkit-scrollbar-track {
+.grid::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.track-section-grid::-webkit-scrollbar-thumb {
+.grid::-webkit-scrollbar-thumb {
     background: transparent;
     border-radius: 10px;
-    transition: background 0.3s ease;
+    transition: background var(--transition-normal);
 }
 
-.track-section-grid:hover::-webkit-scrollbar-thumb {
+.grid:hover::-webkit-scrollbar-thumb {
     background: var(--color-surface-4);
 }
 
-.track-section-grid::-webkit-scrollbar-thumb:hover {
+.grid::-webkit-scrollbar-thumb:hover {
     background: var(--color-border-focus);
 }
 
-.track-section-grid::-webkit-scrollbar-button {
+.grid::-webkit-scrollbar-button {
     display: none;
 }
 
-.track-section-grid {
-    scroll-behavior: smooth;
-}
-
-.track-section-collapse-btn {
+.collapseBtn {
     display: block;
     margin-top: 12px;
     background: none;
@@ -66,18 +62,18 @@
     transition: color var(--transition-fast);
 }
 
-.track-section-collapse-btn:hover {
+.collapseBtn:hover {
     color: var(--color-text-main);
 }
 
 @media (max-width: 768px) {
-    .track-section-grid {
+    .grid {
         grid-auto-columns: 280px;
     }
 }
 
 @media (max-width: 480px) {
-    .track-section-grid {
+    .grid {
         grid-auto-columns: 250px;
     }
 }

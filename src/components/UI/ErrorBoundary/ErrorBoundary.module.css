@@ -1,0 +1,131 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 2rem;
+    background-color: var(--color-bg-base);
+}
+
+.content {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--color-surface-1);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-main);
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--color-text-main);
+}
+
+.message {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.5rem;
+    word-break: break-word;
+}
+
+.details {
+    margin: 1.5rem 0;
+    text-align: left;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border-main);
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+}
+
+.details summary {
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-main);
+}
+
+.stack {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: auto;
+    margin: 0;
+    padding: 0.5rem;
+    background-color: var(--color-surface-2);
+    border-radius: var(--border-radius-xs);
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btnPrimary,
+.btnSecondary {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-main);
+}
+
+.btnPrimary {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.btnPrimary:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+}
+
+.btnPrimary:active {
+    transform: translateY(0);
+}
+
+.btnSecondary {
+    background-color: var(--color-surface-3);
+    color: var(--color-text-main);
+}
+
+.btnSecondary:hover {
+    background-color: var(--color-surface-4);
+    transform: translateY(-1px);
+}
+
+.btnSecondary:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        min-height: 300px;
+    }
+
+    .content {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .btnPrimary,
+    .btnSecondary {
+        width: 100%;
+    }
+}

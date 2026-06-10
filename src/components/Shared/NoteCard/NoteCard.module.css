@@ -1,4 +1,4 @@
-.note-card {
+.card {
     display: flex;
     gap: 13px;
     padding: 16px;
@@ -6,39 +6,39 @@
     border-radius: 10px;
     border: 1px solid var(--color-border-main);
     position: relative;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.note-card:hover {
+.card:hover {
     border-color: var(--color-border-focus);
 }
 
-.note-card.private-note {
+.cardPrivate {
     background: var(--color-accent-glass);
     border-color: var(--color-border-accent);
 }
 
-.note-avatar-link {
+.avatarLink {
     display: block;
     flex-shrink: 0;
     align-self: flex-start;
 }
 
-.note-author-avatar {
+.authorAvatar {
     width: 36px;
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
     display: block;
     box-shadow: 0 0 0 2px var(--color-border-main);
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow var(--transition-fast);
 }
 
-.note-avatar-link:hover .note-author-avatar {
+.avatarLink:hover .authorAvatar {
     box-shadow: 0 0 0 2px var(--color-primary);
 }
 
-.note-content {
+.content {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -46,47 +46,47 @@
     gap: 6px;
 }
 
-.note-header {
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.note-author-link {
+.authorLink {
     text-decoration: none;
-    transition: color 0.15s ease;
+    transition: color var(--transition-fast);
 }
 
-.note-author-link:hover {
+.authorLink:hover {
     color: var(--color-primary);
 }
 
-.note-author-name {
+.authorName {
     font-weight: 700;
     color: var(--color-text-main);
     font-size: 0.875rem;
     letter-spacing: -0.01em;
 }
 
-.note-header-actions {
+.headerActions {
     display: flex;
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
 }
 
-.note-timestamp {
+.timestamp {
     font-size: 0.74rem;
     color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
 }
 
-.note-menu-wrapper {
+.menuWrapper {
     display: flex;
     align-items: center;
 }
 
-.note-dots-btn {
+.dotsBtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -97,28 +97,28 @@
     border-radius: 5px;
     color: var(--color-text-muted);
     opacity: 0;
-    transition: color 0.15s ease, background 0.15s ease, opacity 0.18s ease;
+    transition: color var(--transition-fast), background var(--transition-fast), opacity 0.18s ease;
     line-height: 1;
 }
 
-.note-card:hover .note-dots-btn,
-.note-dots-btn:focus-visible,
-.note-dots-btn[aria-expanded="true"] {
+.card:hover .dotsBtn,
+.dotsBtn:focus-visible,
+.dotsBtnOpen {
     opacity: 1;
 }
 
-.note-dots-btn:hover {
+.dotsBtn:hover {
     color: var(--color-text-secondary);
     background: var(--color-bg-glass-light);
 }
 
 @media (hover: none) {
-    .note-dots-btn {
+    .dotsBtn {
         opacity: 1;
     }
 }
 
-.note-lyrics-quote {
+.lyricsQuote {
     display: flex;
     align-items: flex-start;
     gap: 8px;
@@ -129,21 +129,21 @@
     margin-top: 2px;
 }
 
-.note-lyrics-quote-icon {
+.lyricsQuoteIcon {
     color: var(--color-primary);
     opacity: 0.7;
     flex-shrink: 0;
     margin-top: 1px;
 }
 
-.note-lyrics-quote-text {
+.lyricsQuoteText {
     font-size: 0.82rem;
     font-style: italic;
     color: var(--color-text-secondary);
     line-height: 1.5;
 }
 
-.note-text {
+.text {
     font-size: 0.875rem;
     color: var(--color-text-secondary);
     line-height: 1.6;
@@ -151,7 +151,7 @@
     white-space: pre-wrap;
 }
 
-.note-footer {
+.footer {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -159,7 +159,7 @@
     flex-wrap: wrap;
 }
 
-.note-track-context {
+.trackContext {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -169,21 +169,21 @@
     font-size: 0.78rem;
     color: var(--color-text-muted);
     text-decoration: none;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: background var(--transition-fast), color var(--transition-fast);
     border: 1px solid transparent;
 }
 
-.note-track-context:hover {
+.trackContext:hover {
     background: var(--color-surface-3);
     color: var(--color-text-main);
     border-color: var(--color-border-main);
 }
 
-.note-track-title {
+.trackTitle {
     font-weight: 600;
 }
 
-.note-track-timecode {
+.trackTimecode {
     font-family: monospace;
     background: var(--color-bg-overlay);
     padding: 1px 5px;
@@ -191,7 +191,7 @@
     font-size: 0.72rem;
 }
 
-.note-like-btn {
+.likeBtn {
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -204,24 +204,24 @@
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--color-text-muted);
-    transition: color 0.15s ease, background 0.15s ease;
+    transition: color var(--transition-fast), background var(--transition-fast);
     margin-left: auto;
     flex-shrink: 0;
 }
 
-.note-like-btn:hover {
+.likeBtn:hover {
     color: var(--color-text-secondary);
     background: var(--color-bg-glass-subtle);
 }
 
-.note-like-btn.liked {
+.likeBtnLiked {
     color: var(--color-error);
 }
 
-.note-like-btn.liked svg {
+.likeBtnLiked svg {
     fill: currentColor;
 }
 
-.note-like-count {
+.likeCount {
     line-height: 1;
 }

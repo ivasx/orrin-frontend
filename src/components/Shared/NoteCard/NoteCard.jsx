@@ -4,7 +4,7 @@ import {PlayCircle, Heart, MoreHorizontal, Quote} from 'lucide-react';
 import {useTranslation} from 'react-i18next';
 import {useAuth} from '../../../context/AuthContext.jsx';
 import ContextMenu from '../../UI/OptionsMenu/OptionsMenu.jsx';
-import './NoteCard.css';
+import styles from './NoteCard.module.css';
 
 export default function NoteCard({note, onLike, onEdit, onDelete, onReport}) {
     const {t} = useTranslation();
@@ -21,7 +21,7 @@ export default function NoteCard({note, onLike, onEdit, onDelete, onReport}) {
         if (!dotsRef.current) return;
         const rect = dotsRef.current.getBoundingClientRect();
         setMenuPosition({x: rect.left, y: rect.bottom + 4});
-        setMenuVisible(prev => !prev);
+        setMenuVisible((prev) => !prev);
     }, []);
 
     const handleMenuClose = useCallback(() => setMenuVisible(false), []);
@@ -42,26 +42,23 @@ export default function NoteCard({note, onLike, onEdit, onDelete, onReport}) {
     const handleLike = useCallback(() => onLike?.(note.id), [note.id, onLike]);
 
     return (
-        <div className={`note-card ${note.type === 'private' ? 'private-note' : ''}`}>
-            <Link to={`/user/${note.authorUsername}`} className="note-avatar-link">
-                <img src={note.avatar} alt={note.author} className="note-author-avatar"/>
+        <div className={`${styles.card} ${note.type === 'private' ? styles.cardPrivate : ''}`}>
+            <Link to={`/user/${note.authorUsername}`} className={styles.avatarLink}>
+                <img src={note.avatar} alt={note.author} className={styles.authorAvatar}/>
             </Link>
 
-            <div className="note-content">
-                <div className="note-header">
-                    <Link to={`/user/${note.authorUsername}`} className="note-author-name note-author-link">
-                        {note.author}
+            <div className={styles.content}>
+                <div className={styles.header}>
+                    <Link to={`/user/${note.authorUsername}`} className={styles.authorLink}>
+                        <span className={styles.authorName}>{note.author}</span>
                     </Link>
-                    <div className="note-header-actions">
-                        <span className="note-timestamp">{note.timestamp}</span>
+                    <div className={styles.headerActions}>
+                        <span className={styles.timestamp}>{note.timestamp}</span>
 
-                        <div
-                            className="note-menu-wrapper"
-                            onClick={(e) => e.stopPropagation()}
-                        >
+                        <div className={styles.menuWrapper} onClick={(e) => e.stopPropagation()}>
                             <button
                                 ref={dotsRef}
-                                className="note-dots-btn"
+                                className={`${styles.dotsBtn} ${menuVisible ? styles.dotsBtnOpen : ''}`}
                                 onClick={handleDotsClick}
                                 aria-label={t('aria_note_options')}
                                 aria-expanded={menuVisible}
@@ -81,34 +78,34 @@ export default function NoteCard({note, onLike, onEdit, onDelete, onReport}) {
                 </div>
 
                 {note.lyricsLineReference && (
-                    <div className="note-lyrics-quote">
-                        <Quote size={12} className="note-lyrics-quote-icon"/>
-                        <span className="note-lyrics-quote-text">{note.lyricsLineReference.text}</span>
+                    <div className={styles.lyricsQuote}>
+                        <Quote size={12} className={styles.lyricsQuoteIcon}/>
+                        <span className={styles.lyricsQuoteText}>{note.lyricsLineReference.text}</span>
                     </div>
                 )}
 
-                <p className="note-text">{note.text}</p>
+                <p className={styles.text}>{note.text}</p>
 
-                <div className="note-footer">
+                <div className={styles.footer}>
                     {note.trackContext && (
-                        <Link to={`/track/${note.trackContext.trackId}`} className="note-track-context">
+                        <Link to={`/track/${note.trackContext.trackId}`} className={styles.trackContext}>
                             <PlayCircle size={14}/>
-                            <span className="note-track-title">{note.trackContext.title}</span>
+                            <span className={styles.trackTitle}>{note.trackContext.title}</span>
                             {note.timecode && (
-                                <span className="note-track-timecode">{note.timecode}</span>
+                                <span className={styles.trackTimecode}>{note.timecode}</span>
                             )}
                         </Link>
                     )}
 
                     <button
-                        className={`note-like-btn ${note.isLikedByMe ? 'liked' : ''}`}
+                        className={`${styles.likeBtn} ${note.isLikedByMe ? styles.likeBtnLiked : ''}`}
                         onClick={handleLike}
                         aria-label={t('aria_like_note')}
                         aria-pressed={note.isLikedByMe}
                     >
                         <Heart size={13}/>
                         {note.likesCount > 0 && (
-                            <span className="note-like-count">{note.likesCount}</span>
+                            <span className={styles.likeCount}>{note.likesCount}</span>
                         )}
                     </button>
                 </div>

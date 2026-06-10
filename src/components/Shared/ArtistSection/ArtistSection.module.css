@@ -1,10 +1,10 @@
-.artist-section {
+.section {
     flex: 1;
     min-width: 0;
     width: 100%;
 }
 
-.artist-section-grid {
+.grid {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: max-content;
@@ -16,19 +16,19 @@
     scrollbar-width: none;
 }
 
-.artist-section-grid::-webkit-scrollbar {
+.grid::-webkit-scrollbar {
     height: 8px;
 }
 
-.artist-section-grid::-webkit-scrollbar-track {
+.grid::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.artist-section-grid::-webkit-scrollbar-thumb {
+.grid::-webkit-scrollbar-thumb {
     background: var(--color-surface-4);
     border-radius: 4px;
 }
 
-.artist-section-grid::-webkit-scrollbar-thumb:hover {
+.grid::-webkit-scrollbar-thumb:hover {
     background: var(--color-border-focus);
 }

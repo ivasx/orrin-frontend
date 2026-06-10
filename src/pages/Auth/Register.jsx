@@ -257,7 +257,7 @@ export default function Register() {
 
                     <div className="form-group">
                         <label className="form-group-checkbox">
-                            <input type="checkbox" id="agreedToTerms" {...register('agreedToTerms')} />
+                            <input type="checkbox" id="agreedToTerms" {...register('agreedToTerms')}/>
                             <span>{t('terms_agree')}</span>
                         </label>
                         {errors.agreedToTerms && <p className="error-message">{errors.agreedToTerms.message}</p>}
@@ -300,6 +300,8 @@ export default function Register() {
                         </div>
                     </div>
                 </div>
+
+                <div ref={hiddenButtonRef} className="google-hidden-button" aria-hidden="true"/>
             </div>
         </div>
     );

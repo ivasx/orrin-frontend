@@ -12,9 +12,8 @@ function loadGoogleSdk() {
         }
 
         if (document.getElementById(GOOGLE_SDK_ID)) {
-            const existingScript = document.getElementById(GOOGLE_SDK_ID);
-            existingScript.addEventListener('load', resolve);
-            existingScript.addEventListener('error', reject);
+            document.getElementById(GOOGLE_SDK_ID).addEventListener('load', resolve);
+            document.getElementById(GOOGLE_SDK_ID).addEventListener('error', reject);
             return;
         }
 
@@ -29,11 +28,32 @@ function loadGoogleSdk() {
     });
 }
 
+function waitForGoogleButton(container) {
+    return new Promise((resolve) => {
+        const existing = container.querySelector('div[role="button"]');
+        if (existing) {
+            resolve(existing);
+            return;
+        }
+
+        const observer = new MutationObserver(() => {
+            const btn = container.querySelector('div[role="button"]');
+            if (btn) {
+                observer.disconnect();
+                resolve(btn);
+            }
+        });
+
+        observer.observe(container, {childList: true, subtree: true});
+    });
+}
+
 export function useGoogleAuth({clientId, onSuccess}) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [isSdkReady, setIsSdkReady] = useState(false);
     const hiddenButtonRef = useRef(null);
+    const googleButtonRef = useRef(null);
     const onSuccessRef = useRef(onSuccess);
 
     useEffect(() => {
@@ -58,12 +78,12 @@ export function useGoogleAuth({clientId, onSuccess}) {
     }, []);
 
     useEffect(() => {
-        if (!clientId) return;
+        if (!clientId || !hiddenButtonRef.current) return;
 
         let cancelled = false;
 
         loadGoogleSdk()
-            .then(() => {
+            .then(async () => {
                 if (cancelled) return;
 
                 window.google.accounts.id.initialize({
@@ -72,14 +92,16 @@ export function useGoogleAuth({clientId, onSuccess}) {
                     ux_mode: 'popup',
                 });
 
-                if (hiddenButtonRef.current) {
-                    window.google.accounts.id.renderButton(hiddenButtonRef.current, {
-                        type: 'standard',
-                        size: 'large',
-                    });
-                }
+                window.google.accounts.id.renderButton(hiddenButtonRef.current, {
+                    type: 'standard',
+                    size: 'large',
+                });
 
-                setIsSdkReady(true);
+                const btn = await waitForGoogleButton(hiddenButtonRef.current);
+                if (!cancelled) {
+                    googleButtonRef.current = btn;
+                    setIsSdkReady(true);
+                }
             })
             .catch(() => {
                 if (!cancelled) setError('Failed to load Google SDK');
@@ -91,8 +113,7 @@ export function useGoogleAuth({clientId, onSuccess}) {
     }, [clientId, handleCredentialResponse]);
 
     const triggerGoogleLogin = useCallback(() => {
-        const googleBtn = hiddenButtonRef.current?.querySelector('div[role="button"]');
-        googleBtn?.click();
+        googleButtonRef.current?.click();
     }, []);
 
     return {isLoading, error, isSdkReady, triggerGoogleLogin, hiddenButtonRef};

@@ -4,27 +4,9 @@
     gap: 16px;
 }
 
-.notificationBtn {
-    background: transparent;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.notificationBtn:hover {
-    color: #AF947E;
-    background: rgba(175, 148, 126, 0.1);
-}
-
 .avatarTrigger {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: block;
+    transition: transform var(--transition-fast);
 }
 
 .avatarTrigger:hover {
@@ -37,11 +19,11 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid transparent;
-    transition: border-color 0.2s ease;
+    transition: border-color var(--transition-fast);
 }
 
 .avatarTrigger:hover .avatarImage {
-    border-color: #AF947E;
+    border-color: var(--color-primary);
 }
 
 .avatarPlaceholder {
@@ -51,17 +33,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #AF947E 0%, #8A6F51 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-text-accent) 100%);
+    color: var(--color-text-inverse);
     font-weight: 600;
     font-size: 16px;
-    font-family: 'Montserrat', sans-serif;
-    box-shadow: 0 4px 10px rgba(138, 111, 81, 0.25);
+    font-family: var(--font-main);
+    box-shadow: var(--shadow-accent);
     border: 2px solid transparent;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .avatarTrigger:hover .avatarPlaceholder {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 6px 14px rgba(138, 111, 81, 0.4);
+    border-color: var(--color-bg-glass-medium);
+    box-shadow: var(--shadow-accent-lg);
 }

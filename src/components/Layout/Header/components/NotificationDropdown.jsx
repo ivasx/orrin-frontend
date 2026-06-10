@@ -17,14 +17,14 @@ const formatTimeAgo = (dateString) => {
 };
 
 const TYPE_META = {
-    NEW_FOLLOWER: {Icon: UserPlus, colorVar: '--color-info', bgVar: 'rgba(56, 189, 248, 0.12)'},
-    LIKE_TRACK: {Icon: Heart, colorVar: '--color-error', bgVar: 'rgba(229, 62, 62, 0.12)'},
-    NEW_RELEASE: {Icon: Music, colorVar: '--color-success', bgVar: 'rgba(16, 185, 129, 0.12)'},
-    PLAYLIST_ADD: {Icon: ListPlus, colorVar: '--color-primary', bgVar: 'rgba(175, 148, 126, 0.14)'},
+    NEW_FOLLOWER: {Icon: UserPlus, colorVar: '--color-info', styleKey: 'iconInfo'},
+    LIKE_TRACK: {Icon: Heart, colorVar: '--color-error', styleKey: 'iconError'},
+    NEW_RELEASE: {Icon: Music, colorVar: '--color-success', styleKey: 'iconSuccess'},
+    PLAYLIST_ADD: {Icon: ListPlus, colorVar: '--color-primary', styleKey: 'iconPrimary'},
 };
 
 const getTypeMeta = (type) =>
-    TYPE_META[type] || {Icon: Bell, colorVar: '--color-text-muted', bgVar: 'rgba(255,255,255,0.06)'};
+    TYPE_META[type] ?? {Icon: Bell, colorVar: '--color-text-muted', styleKey: 'iconDefault'};
 
 const buildText = (notification, t) => {
     const actorName = notification.actor?.name || t('notifications.someone');
@@ -46,24 +46,27 @@ const buildText = (notification, t) => {
 
 const NotificationItem = ({notification, onMarkAsRead}) => {
     const {t} = useTranslation();
-    const {Icon, colorVar, bgVar} = getTypeMeta(notification.type);
+    const {Icon, colorVar, styleKey} = getTypeMeta(notification.type);
     const isUnread = !notification.isRead && !notification.is_read;
 
-    const avatarSrc = notification.actor?.avatarUrl
-        || notification.actor?.avatar
-        || notification.actor_avatar
-        || null;
+    const avatarSrc =
+        notification.actor?.avatarUrl ??
+        notification.actor?.avatar ??
+        notification.actor_avatar ??
+        null;
 
-    const coverSrc = notification.entity?.coverUrl
-        || notification.entity?.cover
-        || null;
+    const coverSrc =
+        notification.entity?.coverUrl ??
+        notification.entity?.cover ??
+        null;
 
     const displayImage = avatarSrc || coverSrc;
 
-    const timestamp = notification.timestamp
-        || notification.created_at
-        || notification.createdAt
-        || null;
+    const timestamp =
+        notification.timestamp ??
+        notification.created_at ??
+        notification.createdAt ??
+        null;
 
     const handleClick = () => {
         if (isUnread) onMarkAsRead(notification.id);
@@ -79,15 +82,19 @@ const NotificationItem = ({notification, onMarkAsRead}) => {
         >
             {isUnread && <span className={styles.unreadDot} aria-hidden="true"/>}
 
-            <div className={styles.iconContainer} style={{background: bgVar}}>
+            <div className={`${styles.iconContainer} ${styles[styleKey]}`}>
                 {displayImage ? (
                     <img src={displayImage} alt="" className={styles.avatarImg}/>
                 ) : (
-                    <Icon size={16} style={{color: `var(${colorVar})`}} strokeWidth={2}/>
+                    <Icon
+                        size={16}
+                        style={{color: `var(${colorVar})`}}
+                        strokeWidth={2}
+                    />
                 )}
                 <span
-                    className={styles.typeIcon}
-                    style={{background: bgVar, border: '1.5px solid var(--color-bg-base)'}}
+                    className={`${styles.typeIcon} ${styles[styleKey]}`}
+                    style={{border: '1.5px solid var(--color-bg-base)'}}
                 >
                     <Icon size={9} style={{color: `var(${colorVar})`}} strokeWidth={2.5}/>
                 </span>

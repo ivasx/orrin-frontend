@@ -57,7 +57,7 @@
 
 .playPauseButton:hover:not(:disabled) {
     transform: scale(1.05);
-    background-color: #f0f0f0;
+    background-color: var(--color-text-secondary);
 }
 
 .playPauseButton:active {
